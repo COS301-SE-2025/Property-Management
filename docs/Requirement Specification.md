@@ -139,5 +139,18 @@ This pattern improves modularity, security, testability, and maintenance.
 
 ---
 
+### 4. Constraints
+
+| **Constraint**   | **Details** |
+|------------------|-------------|
+| **Authentication** | Must use **AWS Cognito** for user management and login (no custom-built auth). |
+| **Frontend Library** | All UI components must be built using **PrimeNG**. |
+| **Cost Limitation** | Entire system must operate within the **AWS Free Tier** (EC2, RDS, S3, Cognito). |
+| **Mobile Features** | Must support **mobile photo capture** (proof of contractor work) via Ionic or responsive web. |
+| **No Proprietary Software** | Only **open-source or free-tier tools** may be used in development and deployment. |
+| **CI/CD** | CI/CD must be handled through **GitHub Actions**, supporting automated testing and deployments. |
+
+---
+
 ## 6. Technology Requirements
 
