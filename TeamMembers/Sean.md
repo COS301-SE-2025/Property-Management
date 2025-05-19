@@ -6,3 +6,4 @@ Hi, I'm Sean! I'm a third-year Computer Science student with a passion for codin
 Beyond coding, I’m always eager to expand my knowledge in areas like artificial intelligence and cybersecurity. I love collaborating with like-minded individuals, tackling complex problems, and constantly improving my skill set.
 
 Github: https://github.com/Sean-Mp
+LinkedIn: https://www.linkedin.com/in/sean-maritz-6b247535b/
