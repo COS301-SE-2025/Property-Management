@@ -131,7 +131,13 @@ This pattern improves modularity, security, testability, and maintenance.
 ---
 
 ### 3. Design Patterns
+- **Repository Pattern**: Abstracts database interactions in Spring Data Repositories for cleaner Kotlin service layers.
+- **Factory Pattern**: Simplifies creation of domain entities like users or inventory items with default configurations.
+- **Observer Pattern**: Used to notify subsystems (e.g., logging, notifications) of important changes like quote approval.
+- **DTO Pattern (Data Transfer Object)**: Separates backend entities from REST payloads, improving API security and flexibility.
+- **Singleton Pattern**: Applied to configuration services and global utilities to ensure consistent state and behavior.
 
+---
 
 ## 6. Technology Requirements
 
