@@ -98,6 +98,7 @@ The solution will adhere to security best practices and implement multi-tenancy 
 
 ## 4. Domain Model
 
+![Domain model](./301%20Domain.png)
 
 ## 5. Architectural Requirements
 
