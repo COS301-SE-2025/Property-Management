@@ -120,7 +120,7 @@ The solution will adhere to security best practices and implement multi-tenancy 
 
 The project uses a **Layered Architecture**, which separates concerns across the system:
 
-- **Presentation Layer**: Angular + PrimeNG frontend, optionally served via Ionic for hybrid mobile use.
+- **Presentation Layer**: Angular + PrimeNG frontend, served via Ionic for hybrid mobile use.
 - **Application Layer**: **Kotlin Spring Boot services**, implementing core business logic and REST endpoints.
 - **Persistence Layer**: PostgreSQL used for structured data. AWS S3 is used for storing media assets.
 - **Integration Layer**: RESTful APIs exposed to frontend clients and external systems.
