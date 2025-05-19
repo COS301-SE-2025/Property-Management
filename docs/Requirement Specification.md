@@ -114,6 +114,24 @@ The solution will adhere to security best practices and implement multi-tenancy 
 | **Usability**    | Frontend built with **Angular and PrimeNG**, offering both **light and dark mode**. UI is responsive and optimized for mobile, especially for capturing images on-site. |
 | **Auditability** | Maintain detailed logs for critical actions (e.g., inventory use, approvals). Include **timestamps**, **user IDs**, and **action types** for traceability and compliance. |
 
+---
+
+### 2. Architectural Patterns
+
+The project uses a **Layered Architecture**, which separates concerns across the system:
+
+- **Presentation Layer**: Angular + PrimeNG frontend, optionally served via Ionic for hybrid mobile use.
+- **Application Layer**: **Kotlin Spring Boot services**, implementing core business logic and REST endpoints.
+- **Persistence Layer**: PostgreSQL used for structured data. AWS S3 is used for storing media assets.
+- **Integration Layer**: RESTful APIs exposed to frontend clients and external systems.
+- **Security Layer**: Authentication and authorization via **AWS Cognito**, session management via Spring Security.
+
+This pattern improves modularity, security, testability, and maintenance.
+
+---
+
+### 3. Design Patterns
+
 
 ## 6. Technology Requirements
 
