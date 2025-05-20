@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://10.255.255.254:5432/property_management
+    username: postgres
+    password: pg123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
