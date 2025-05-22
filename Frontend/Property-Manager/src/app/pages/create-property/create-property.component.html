@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="header">
+    <h2>Create New Property</h2>
+    <div class="underline"></div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-card">
+    <div class="inputs">
+      <input type="text" placeholder="Property Name" formControlName="name" />
+      <input type="text" placeholder="Street Address" formControlName="address" />
+      <input type="text" placeholder="Suburb" formControlName="suburb" />
+      <input type="text" placeholder="City" formControlName="city" />
+      <input type="text" placeholder="Province" formControlName="province" />
+      <input type="text" placeholder="Type" formControlName="type" />
+      <input type="text" placeholder="Advanced Settings" formControlName="advancedSettings" />
+    </div>
+
+    <div class="image-section">
+    <label for="image-upload" class="image-placeholder">
+        <img src="https://img.icons8.com/ios/50/image.png" alt="upload" />
+        <input #fileInput id="image-upload" type="file" (change)="onFileSelected($event)" hidden />
+    </label>
+    <button type="button" class="upload-btn" (click)="fileInput.click()">Upload Image</button>
+    </div>
+
+    <button class="submit-btn" type="submit" [disabled]="form.invalid">Create Property</button>
+  </form>
+</div>

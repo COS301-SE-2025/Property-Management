@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterOwnerComponent } from './pages/register-owner/register-owner.component';
+import { CreatePropertyComponent } from './pages/create-property/create-property.component';
+
 
 export const routes: Routes = [
   {
@@ -17,5 +19,10 @@ export const routes: Routes = [
     path: 'register-owner',
     pathMatch: 'full',
     component: RegisterOwnerComponent
+  },
+  {
+    path: 'create-property',
+    pathMatch: 'full',
+    component: CreatePropertyComponent
   }
 ];
