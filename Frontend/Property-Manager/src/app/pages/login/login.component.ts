@@ -4,13 +4,15 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule],
+  imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule,RouterLink],
   template: `
     <div class = "flex w-full justify-center items-center h-screen">
-      <div class = "flex w-[700px] h-[400px] shadow-lg rounded overflow-hidden border">
+     <div class="flex w-full h-screen shadow-lg rounded-none overflow-hidden border">
+
 
           <div class = "w-2/6 bg-white flex flex-col items-center justify-center p-6">
             <img class = "h-24 mb-4" src="assets/images/tempLogo.png" alt="App logo">
@@ -48,7 +50,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 
             <div class = "text-center text-sm space-y-2">
               <a class = "block" href="">Forgot password?</a>
-              <a class = "font-semibold" href="">Create Account?</a>
+              <a class = "font-semibold" routerLink="/contractorRegister" >Create Account?</a>
             </div>
         </div>
       </div>
