@@ -1,0 +1,10 @@
+@use "tailwindcss";
+
+:root{
+    --property-yellow: #FFE372;
+}
+
+.propertyYellow-bg{
+    background-color: var(--property-yellow);
+}
+
