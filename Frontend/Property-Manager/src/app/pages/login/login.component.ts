@@ -89,7 +89,7 @@ export class LoginComponent {
     console.log(this.email)
     console.log(this.password)
 
-    this.authService.login(this.email, this.password)
+    return this.authService.login(this.email, this.password)
     .then(tokens => {
       //TODO: Store tokens
       console.log("Successfully logged in");
