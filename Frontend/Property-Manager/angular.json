@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Propery-Manager": {
+    "Property-Manager": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -107,13 +107,13 @@
               "src/**/*.html"
             ]
           }
-      },
-      "cli": {
-        "schematicCollections": [
-          "angular-eslint"
-        ]
+        }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
-}
 }

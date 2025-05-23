@@ -40,7 +40,7 @@ describe('LoginComponent', () => {
   it('should call login if fields are filled', () => {
     component.email = 'test@example.com';
     component.password = "Password@123";
-    authServiceSpy.login.and.returnValue(Promise.resolve({ accessToken: 'mock'}));
+    authServiceSpy.login.and.returnValue(Promise.resolve({ accessToken: 'mock', idToken: 'mock', refreshToken: 'mock'}));
 
     component.login();
 
