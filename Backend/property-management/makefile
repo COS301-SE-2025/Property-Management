@@ -4,7 +4,7 @@ GRADLEW=./gradlew
 
 .PHONY: all build clean run stop refresh
 
-all: build
+all: clean build run
 
 build:
 	$(GRADLEW) build

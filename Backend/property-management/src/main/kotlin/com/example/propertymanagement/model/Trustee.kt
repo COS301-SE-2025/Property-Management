@@ -3,16 +3,15 @@ package com.example.propertymanagement.model
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "\"User\"")
-data class User(
+@Table(name = "trustee")
+data class Trustee(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    val itemId: Int = 0,
-
+    @Column(name = "trustee_id")
+    val trustee_id: Int = 0,
     val name: String,
     val email: String,
     val phone: String,
-    val cognito_id: String
+    val apikey: String
 )
 
