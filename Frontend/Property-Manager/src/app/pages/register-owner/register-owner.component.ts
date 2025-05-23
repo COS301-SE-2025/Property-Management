@@ -11,11 +11,11 @@ import { FloatLabelModule } from 'primeng/floatlabel';
   imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule],
   template: `
     <div class="flex w-full justify-center items-center h-screen">
-      <div class="flex w-full h-screen shadow-lg rounded-none overflow-hidden border">
+      <div class="flex w-[700px] h-[400px] shadow-lg rounded overflow-hidden border">
 
         <div class="w-2/6 bg-white flex flex-col items-center justify-center p-6">
-          <img class="h-40 mb-4" src="assets/PM-Logo.png" alt="App logo">
-          <p class="font-bold text-2xl text-center text-gray-800">Property Manager</p>
+          <img class="h-24 mb-4" src="assets/images/PM-Logo.png" alt="App logo">
+          <p class="font-semibold text-lg">Property Manager</p>
         </div>
 
         <div class="w-4/6 propertyYellow-bg p-13 flex flex-col justify-center space-y-4">
@@ -23,14 +23,14 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 
           <p-floatlabel variant="on">
             <img *ngIf="!email" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/mail.svg" alt="">
-            <input class="w-full border rounded !bg-white" pInputText id="email_label" [(ngModel)]="email" autocomplete="off">
+            <input class="w-full border rounded" pInputText id="email_label" [(ngModel)]="email" autocomplete="off">
             <label class="pl-6" for="email_label">Enter email address</label>
           </p-floatlabel>
 
           <p-floatlabel variant="on" class="relative">
-            <img *ngIf="!password" class="absolute top-3 left-2 h-5 w-5 pointer-events-none" src="assets/icons/key_vertical.svg" alt="">
+            <img *ngIf="!password" class="absolute top-3 left-2 h-5 w-5" src="assets/icons/key_vertical.svg" alt="">
             <input
-              class="w-full border rounded py-2 pl-8 pr-10 !bg-white"
+              class="w-full border rounded py-2"
               [type]="passwordVisible ? 'text' : 'password'"
               pInputText
               id="password_label"
@@ -38,16 +38,16 @@ import { FloatLabelModule } from 'primeng/floatlabel';
               autocomplete="off"
             />
             <label class="pl-5" for="password_label">Enter password</label>
-            <button type="button" (click)="togglePassword()" class="absolute top-2.5 right-2">
+            <button type="button" (click)="togglePassword()">
               <img
-                class="h-5 w-5"
-                [src]="passwordVisible ? 'assets/icons/visibility.svg' : 'assets/icons/visibility_off.svg'"
+                class="absolute top-3 left-82 h-5 w-5"
+                [src]="passwordVisible ? 'assets/icons/visibility.svg' :'assets/icons/visibility_off.svg'"
                 alt="Toggle visibility"
               />
             </button>
           </p-floatlabel>
 
-          <div class="flex justify-center">
+          <div class="pl-25">
             <button (click)="register()" class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Register</button>
           </div>
 
@@ -94,7 +94,6 @@ export class RegisterOwnerComponent {
 
     this.authService.registerOwner(this.email, this.password)
       .then(() => {
-
         console.log('Successfully registered');
       })
       .catch(error => {
