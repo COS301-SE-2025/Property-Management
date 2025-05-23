@@ -27,6 +27,12 @@ import { FloatLabelModule } from 'primeng/floatlabel';
             <label class="pl-6" for="email_label">Enter email address</label>
           </p-floatlabel>
 
+          <p-floatlabel variant="on">
+            <img *ngIf="!contactNumber" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/telephone.svg" alt="">
+            <input class="w-full border rounded !bg-white" pInputText id="contact_label" [(ngModel)]="contactNumber" autocomplete="off">
+            <label class="pl-6" for="contact_label">Enter Contact number</label>
+          </p-floatlabel>
+
           <p-floatlabel variant="on" class="relative">
             <img *ngIf="!password" class="absolute top-3 left-2 h-5 w-5" src="assets/icons/key_vertical.svg" alt="">
             <input
@@ -52,7 +58,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
           </div>
 
           <div *ngIf="emptyField || userError || serverError" class="pl-20">
-            <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">Email or password missing</p>
+            <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">Email, contact number, or password missing</p>
             <p *ngIf="userError" class="text-red-500 py-1 font-semibold rounded">Email or password incorrect</p>
             <p *ngIf="serverError" class="text-red-500 py-1 font-semibold rounded">Internal server error</p>
           </div>
@@ -70,6 +76,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 export class RegisterOwnerComponent {
   public email: string = '';
   public password: string = '';
+  public contactNumber: string = '';
   public passwordVisible: boolean = false;
 
   public emptyField: boolean = false;
@@ -83,7 +90,7 @@ export class RegisterOwnerComponent {
   }
 
   register() {
-    if (this.email.length === 0 || this.password.length === 0) {
+    if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
       this.emptyField = true;
       return;
     }
