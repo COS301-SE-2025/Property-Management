@@ -28,8 +28,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
+                "input": "public"
               }
             ],
             "styles": [
@@ -65,10 +64,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Property-Manager:build:production"
+              "buildTarget": "Propery-Manager:build:production"
             },
             "development": {
-              "buildTarget": "Property-Manager:build:development"
+              "buildTarget": "Propery-Manager:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +79,6 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "polyfills": [
-              "src/test-global-polyfills.ts",
               "zone.js",
               "zone.js/testing"
             ],
@@ -95,25 +93,10 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
-            "karmaConfig": "karma.conf.js"
+            "scripts": []
           }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
-          }
-      },
-      "cli": {
-        "schematicCollections": [
-          "angular-eslint"
-        ]
+        }
       }
     }
   }
-}
 }
