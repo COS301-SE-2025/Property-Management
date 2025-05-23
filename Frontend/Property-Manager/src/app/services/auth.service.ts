@@ -6,6 +6,11 @@ import {
 } from 'amazon-cognito-identity-js';
 import { environment } from '../../environments/environments';
 
+export interface AuthTokens{
+  accessToken: string;
+  idToken: string;
+  refreshToken: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +21,7 @@ export class AuthService {
     ClientId: environment.cognito.userPoolWebClientId,
   });
 
-  login(email: string, password: string): Promise<any> {
+  login(email: string, password: string): Promise<AuthTokens> {
     const authenticationDetails = new AuthenticationDetails({
       Username: email,
       Password: password,
