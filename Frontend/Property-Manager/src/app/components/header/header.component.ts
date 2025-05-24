@@ -15,10 +15,10 @@ import { Router } from '@angular/router';
         <div class = "flex flex-row items-center">
           <div class = "relative">
             <button class = "cursor-pointer pr-3"> 
-              <img src= "assets/icons/settings.svg" class="w-9 h-9"> 
+              <img src= "assets/icons/settings.svg" class="w-9 h-9" alt=""> 
             </button>
             <button class = "cursor-pointer" (click)="dropDown()">
-              <img src= "assets/icons/profile.svg" class="w-9 h-9">
+              <img src= "assets/icons/profile.svg" class="w-9 h-9" alt="">
             </button>
 
             <div *ngIf="dropDownOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-22 z-50">
@@ -38,7 +38,7 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
 
-  public dropDownOpen: boolean = false;
+  public dropDownOpen = false;
 
   constructor(private authService: AuthService, private router: Router){}
 

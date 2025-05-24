@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
-import { House } from '../../models/house.model';
 import { HousesService } from '../../services/houses.service';
 
 @Component({
@@ -16,7 +15,7 @@ import { HousesService } from '../../services/houses.service';
         <app-house-card [house]="house"/>
       }
       <button class = "cursor-pointer">
-        <img class= "w-16 h-16" src= "assets/icons/add_circle.svg">
+        <img class= "w-16 h-16" src= "assets/icons/add_circle.svg" alt="">
       </button>
     </div>
   `,

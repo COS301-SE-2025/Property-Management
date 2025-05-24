@@ -29,11 +29,6 @@ export class BudgetCardComponent {
 
   budget = input.required<Budget[]>();
 
-  ngOnInit()
-  {
-    console.log(this.budget());
-  }
-
   calculateTotalBudget(): number
   {
     let total = 0;

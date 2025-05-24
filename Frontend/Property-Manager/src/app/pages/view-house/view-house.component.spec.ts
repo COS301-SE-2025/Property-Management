@@ -7,7 +7,6 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { CardModule } from 'primeng/card';
 import { ActivatedRoute } from '@angular/router';
 import { Component, Input } from '@angular/core';
-import { By } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-inventory-card',
@@ -15,7 +14,7 @@ import { By } from '@angular/platform-browser';
   standalone: true
 })
 class MockInventoryCardComponent{
-  @Input() inventory: any;
+  @Input() inventory: unknown;
 }
 
 @Component({
@@ -24,7 +23,7 @@ class MockInventoryCardComponent{
   standalone: true
 })
 class MockBudgetCardComponent {
-  @Input() budget: any;
+  @Input() budget: unknown;
 }
 
 @Component({
@@ -33,14 +32,20 @@ class MockBudgetCardComponent {
   standalone: true
 })
 class MockTimelineCardComponent {
-  @Input() timeline: any;
+  @Input() timeline: unknown;
 }
 
 describe('ViewHouseComponent', () => {
   let component: ViewHouseComponent;
   let fixture: ComponentFixture<ViewHouseComponent>;
   let mockHouseService: jasmine.SpyObj<HousesService>;
-  let mockActivatedRoute: any;
+  let mockActivatedRoute: {
+      snapshot: {
+      paramMap: {
+        get: jasmine.Spy;
+      };
+    };
+  };
 
   const mockHouse: House = {
     id: 1,

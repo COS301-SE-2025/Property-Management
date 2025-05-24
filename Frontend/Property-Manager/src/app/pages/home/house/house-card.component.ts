@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
     <div class = "shadow-md rounded-lg border w-75 text-center">
       <button class = "cursor-pointer" (click)="viewHouse(house().id)">
         <p-card>
-            <img [src] = "house().image" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md">
+            <img [src] = "house().image" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="">
             <p class = "text-lg font-bold mt-4"> {{ house().name }}</p>
             <p class = "text-gray-600 mb-4"> {{ house().address }}</p>
         </p-card>
