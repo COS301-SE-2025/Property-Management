@@ -1,11 +1,11 @@
 @use "tailwindcss";
 
-:root{
-    --property-yellow: #FFE372;
+:root {
+  --property-yellow: #FFE372;
 }
 
-.propertyYellow-bg{
-    background-color: var(--property-yellow);
+.propertyYellow-bg {
+  background-color: var(--property-yellow);
 }
 
 ::ng-deep .p-drawer {
