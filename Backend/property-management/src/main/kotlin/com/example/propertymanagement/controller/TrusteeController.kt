@@ -20,19 +20,19 @@ class TrusteeController(private val service: TrusteeService) {
 
     @GetMapping("/{id}")
     fun getById(
-        @PathVariable id: Long,
+        @PathVariable id: Long
     ): Trustee = service.getById(id)
 
     data class UserDto(
         val name: String,
         val email: String,
         val phone: String,
-        val apikey: String,
+        val apikey: String
     )
 
     @PostMapping
     fun createUser(
-        @RequestBody userDto: UserDto,
+        @RequestBody userDto: UserDto
     ): Trustee {
         return service.addUser(userDto.name, userDto.email, userDto.phone, userDto.apikey)
     }
@@ -40,12 +40,12 @@ class TrusteeController(private val service: TrusteeService) {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @RequestBody item: Trustee,
+        @RequestBody item: Trustee
     ): Trustee = service.update(id, item)
 
     @DeleteMapping("/{id}")
     fun delete(
-        @PathVariable id: Long,
+        @PathVariable id: Long
     ): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()
