@@ -74,14 +74,14 @@ import { FloatLabelModule } from 'primeng/floatlabel';
   styles: ``,
 })
 export class RegisterOwnerComponent {
-  public email: string = '';
-  public password: string = '';
-  public contactNumber: string = '';
-  public passwordVisible: boolean = false;
+   public email = '';
+  public password = '';
+  public contactNumber = '';
+  public passwordVisible = false;
 
-  public emptyField: boolean = false;
-  public userError: boolean = false;
-  public serverError: boolean = false;
+  public emptyField = false;
+  public userError = false;
+  public serverError = false;
 
   constructor(private authService: AuthService) {}
 

@@ -8,7 +8,7 @@ import {
 } from 'amazon-cognito-identity-js';
 import { environment } from '../../environments/environments';
 
-export interface AuthTokens{
+export interface AuthTokens {
   accessToken: string;
   idToken: string;
   refreshToken: string;
@@ -52,12 +52,15 @@ export class AuthService {
     });
   }
 
-  register(email: string, password: string, attributes: {[key: string]: string} = {}): Promise<ISignUpResult> {
-    
-    const randomName = () => Math.random().toString(36).substring(2, 10); 
-    
+  register(
+    email: string,
+    password: string,
+    attributes: Record<string, string> = {}
+  ): Promise<ISignUpResult> {
+    const randomName = () => Math.random().toString(36).substring(2, 10);
+
     const username = email.split('@')[0] + Date.now();
-    
+
     const list: CognitoUserAttribute[] = [
       new CognitoUserAttribute({
         Name: 'email',
@@ -69,8 +72,7 @@ export class AuthService {
       })
     ];
 
-    for(const [key, value] of Object.entries(attributes))
-    {
+    for (const [key, value] of Object.entries(attributes)) {
       list.push(new CognitoUserAttribute({
         Name: key,
         Value: value
@@ -79,17 +81,16 @@ export class AuthService {
 
     return new Promise((resolve, reject) => {
       this.userPool.signUp(username, password, list, [], (err, result) => {
-        if(err)
-        {
+        if (err) {
           reject(err);
           return;
         }
         resolve(result!);
-      }
-      )
+      });
     });
   }
-  confirmRegister(email: string, code: string): Promise<any>{
+
+  confirmRegister(email: string, code: string): Promise<string | undefined> {
     const userData = {
       Username: email,
       Pool: this.userPool,
@@ -99,8 +100,7 @@ export class AuthService {
 
     return new Promise((resolve, reject) => {
       user.confirmRegistration(code, true, (err, result) => {
-        if(err)
-        {
+        if (err) {
           reject(err);
           return;
         }
@@ -109,17 +109,14 @@ export class AuthService {
     });
   }
 
-    logout(): boolean {
+  logout(): boolean {
     const user = this.userPool.getCurrentUser();
 
-    if(user)
-    {
+    if (user) {
       user.signOut();
       console.log("user signed out");
       return true;
-    }
-    else
-    {
+    } else {
       console.error("user couldnt log out");
       return false;
     }
