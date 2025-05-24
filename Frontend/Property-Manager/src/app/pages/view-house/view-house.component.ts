@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../components/header/header.component";
 import { HousesService } from '../../services/houses.service';
@@ -22,7 +22,7 @@ import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
 
       <div class="px-4 space-y-8">
         <div class = "w-full mx-auto">
-          <img [src]="house?.image" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md">
+          <img [src]="house?.image" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="">
           <p class = "text-center text-xl font-bold mt-4"> {{ house?.name }}</p>
         </div>
 
@@ -37,9 +37,9 @@ import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
   `,
   styles: ``
 })
-export class ViewHouseComponent {
+export class ViewHouseComponent implements OnInit{
   public house: House | undefined;
-  public findHouse: boolean = false;
+  public findHouse = false;
 
   constructor(private route: ActivatedRoute, public houseService: HousesService){}
 

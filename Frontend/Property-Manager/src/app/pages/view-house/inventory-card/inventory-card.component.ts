@@ -1,4 +1,4 @@
-import { Component, inject, Input, input, Signal } from '@angular/core';
+import { Component, inject, input} from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { Inventory } from '../../../models/inventory.model';
