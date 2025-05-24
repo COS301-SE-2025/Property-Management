@@ -21,7 +21,7 @@ class InventoryController(private val service: InventoryService) {
 
     @PostMapping
     fun addOrUpdate(
-        @RequestBody request: InventoryItemRequest,
+        @RequestBody request: InventoryItemRequest
     ): ResponseEntity<String> {
         service.addOrUpdateItem(request)
         return ResponseEntity.ok("Item processed successfully")
@@ -29,18 +29,18 @@ class InventoryController(private val service: InventoryService) {
 
     @GetMapping("/{id}")
     fun getById(
-        @PathVariable id: Long,
+        @PathVariable id: Long
     ): InventoryItem = service.getById(id)
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @RequestBody item: InventoryItem,
+        @RequestBody item: InventoryItem
     ): InventoryItem = service.update(id, item)
 
     @DeleteMapping("/{id}")
     fun delete(
-        @PathVariable id: Long,
+        @PathVariable id: Long
     ): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()

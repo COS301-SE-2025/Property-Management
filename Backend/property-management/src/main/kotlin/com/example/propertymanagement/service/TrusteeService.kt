@@ -16,7 +16,7 @@ class TrusteeService(private val repository: TrusteeRepository) {
         name: String,
         email: String,
         phone: String,
-        apikey: String,
+        apikey: String
     ): Trustee {
         val newUser = Trustee(name = name, email = email, phone = phone, apikey = apikey)
         return add(newUser)
@@ -24,7 +24,7 @@ class TrusteeService(private val repository: TrusteeRepository) {
 
     fun update(
         id: Long,
-        newItem: Trustee,
+        newItem: Trustee
     ): Trustee {
         val existing = getById(id)
         val updated =
@@ -32,7 +32,7 @@ class TrusteeService(private val repository: TrusteeRepository) {
                 name = newItem.name,
                 email = newItem.email,
                 phone = newItem.phone,
-                apikey = newItem.apikey,
+                apikey = newItem.apikey
             )
         return repository.save(updated)
     }

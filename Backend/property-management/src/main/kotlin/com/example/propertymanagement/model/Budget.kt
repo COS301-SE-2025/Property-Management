@@ -26,5 +26,5 @@ data class Budget(
     @Column(name = "inventory_spent")
     val inventorySpent: BigDecimal? = null,
     @Column(name = "maintenance_spent")
-    val maintenanceSpent: BigDecimal? = null,
+    val maintenanceSpent: BigDecimal? = null
 )
