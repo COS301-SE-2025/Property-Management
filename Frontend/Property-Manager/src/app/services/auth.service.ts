@@ -108,4 +108,20 @@ export class AuthService {
       });
     });
   }
+
+    logout(): boolean {
+    const user = this.userPool.getCurrentUser();
+
+    if(user)
+    {
+      user.signOut();
+      console.log("user signed out");
+      return true;
+    }
+    else
+    {
+      console.error("user couldnt log out");
+      return false;
+    }
+  }
 }

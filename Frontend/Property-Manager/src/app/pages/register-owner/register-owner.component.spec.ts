@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegisterOwnerComponent } from './register-owner.component';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { of, throwError } from 'rxjs';
 import { CognitoUser } from 'amazon-cognito-identity-js';
 
 describe('RegisterOwnerComponent', () => {
@@ -11,7 +10,7 @@ describe('RegisterOwnerComponent', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('AuthService', ['registerOwner']);
+    const spy = jasmine.createSpyObj('AuthService', ['register']);
 
     await TestBed.configureTestingModule({
       imports: [FormsModule, RegisterOwnerComponent],
@@ -38,11 +37,11 @@ describe('RegisterOwnerComponent', () => {
     expect(component.serverError).toBeFalse();
   });
 
-  it('should call registerOwner if all fields are filled', async () => {
+  it('should call register if all fields are filled', async () => {
     component.email = 'test@example.com';
     component.password = 'Password@123';
     component.contactNumber = '1234567890';
-    authServiceSpy.registerOwner.and.returnValue(Promise.resolve({
+    authServiceSpy.register.and.returnValue(Promise.resolve({
       user: {} as CognitoUser,
       userConfirmed: true,
       userSub: 'some-user-sub',
@@ -55,7 +54,7 @@ describe('RegisterOwnerComponent', () => {
 
     await component.register();
 
-    expect(authServiceSpy.registerOwner).toHaveBeenCalledWith('test@example.com', 'Password@123');
+    expect(authServiceSpy.register).toHaveBeenCalledWith('test@example.com', 'Password@123');
     expect(component.emptyField).toBeFalse();
     expect(component.userError).toBeFalse();
     expect(component.serverError).toBeFalse();
@@ -65,7 +64,7 @@ describe('RegisterOwnerComponent', () => {
     component.email = 'test@example.com';
     component.password = 'Password@123';
     component.contactNumber = '1234567890';
-    authServiceSpy.registerOwner.and.returnValue(Promise.reject({ status: 400 }));
+    authServiceSpy.register.and.returnValue(Promise.reject({ status: 400 }));
 
     await component.register();
 
@@ -74,7 +73,7 @@ describe('RegisterOwnerComponent', () => {
     expect(component.emptyField).toBeFalse();
 
     // Test NotAuthorizedException
-    authServiceSpy.registerOwner.and.returnValue(Promise.reject({ code: 'NotAuthorizedException' }));
+    authServiceSpy.register.and.returnValue(Promise.reject({ code: 'NotAuthorizedException' }));
     await component.register();
     expect(component.userError).toBeTrue();
   });
@@ -83,7 +82,7 @@ describe('RegisterOwnerComponent', () => {
     component.email = 'test@example.com';
     component.password = 'Password@123';
     component.contactNumber = '1234567890';
-    authServiceSpy.registerOwner.and.returnValue(Promise.reject({ status: 500 }));
+    authServiceSpy.register.and.returnValue(Promise.reject({ status: 500 }));
 
     await component.register();
 
