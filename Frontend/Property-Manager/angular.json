@@ -33,8 +33,8 @@
               }
             ],
             "styles": [
-             
-  "src/styles.scss"
+           "src/styles.scss"
+  
             ],
             "scripts": []
           },
@@ -95,6 +95,7 @@
             ],
             "styles": [
               "src/styles.scss"
+  
             ],
             "scripts": [],
             "karmaConfig": "karma.conf.js"
