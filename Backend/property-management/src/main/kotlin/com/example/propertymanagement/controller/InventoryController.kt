@@ -1,5 +1,6 @@
 package com.example.propertymanagement.controller
 
+import com.example.propertymanagement.dto.InventoryItemRequest
 import com.example.propertymanagement.model.InventoryItem
 import com.example.propertymanagement.service.InventoryService
 import org.springframework.http.ResponseEntity
@@ -12,11 +13,15 @@ class InventoryController(private val service: InventoryService) {
     @GetMapping
     fun getAll(): List<InventoryItem> = service.getAll()
 
+     @PostMapping
+    fun addOrUpdate(@RequestBody request: InventoryItemRequest): ResponseEntity<String> {
+        service.addOrUpdateItem(request)
+        return ResponseEntity.ok("Item processed successfully")
+    }
+
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): InventoryItem = service.getById(id)
 
-    @PostMapping
-    fun add(@RequestBody item: InventoryItem): InventoryItem = service.add(item)
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody item: InventoryItem): InventoryItem =
