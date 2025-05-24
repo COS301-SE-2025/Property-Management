@@ -1,74 +1,88 @@
 import { Component } from '@angular/core';
-import { DrawerModule } from 'primeng/drawer';
+import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { MenuItem } from 'primeng/api';
-import { RouterModule, Router } from '@angular/router'; 
-import { Menu } from 'primeng/menu';
-import { CommonModule } from '@angular/common';
+import { RouterLink} from '@angular/router';
 @Component({
     selector: 'app-contractorHome',
-    imports: [ButtonModule,DrawerModule,Menu,RouterModule,CommonModule],
+    imports: [CardModule, ButtonModule,RouterLink],
     standalone: true,
     template: `
-  <p-drawer [(visible)]="visible" [modal]="true" class="custom-yellow-drawer">
-  <div class="h-full w-full bg-yellow-300 p-4">
- <div class="bg-yellow-300 p-2 rounded">
-  <p-menu [model]="items" class="h-full w-full bg-yellow-300 text-black">
-    <ng-template pTemplate="item" let-item>
-      <ng-container *ngIf="item.route; else elseBlock">
-        <a [routerLink]="item.route" class="p-menu-item-link flex items-center p-2 hover:bg-yellow-400 rounded">
-          <span [class]="item.icon"></span>
-          <span class="ml-2">{{ item.label }}</span>
-        </a>
-      </ng-container>
-      <ng-template #elseBlock>
-        <a [href]="item.url" class="p-menu-item-link flex items-center p-2 hover:bg-yellow-400 rounded">
-          <span [class]="item.icon"></span>
-          <span class="ml-2">{{ item.label }}</span>
-        </a>
-      </ng-template>
-    </ng-template>
-  </p-menu>
-</div>
+  
+    <div class="min-h-screen bg-white relative p-4">
+  
+  <div class="absolute top-4 right-4 flex space-x-4">
+    <img src="assets/icons/tools.svg" alt="Image 1" class="w-8 h-8" />
+    <img src="assets/icons/user.svg" alt="Image 2" class="w-8 h-8" />
   </div>
-</p-drawer>
-    <div class="min-h-screen bg-white flex flex-col items-start justify-start p-4">
-  <p-button (click)="visible = true" icon="pi pi-arrow-right" label="Open" />
+
+  <div class="p-4 text-center">
+  <img src="assets/images/logo.png" alt="Centered Image" class="mx-auto w-32 h-auto" />
+  <p class="mt-2 font-bold text-xl text-black">Property Manager</p>
+</div>
+
+
+<div class="flex justify-center p-4">
+  <div class="relative w-64">
+    <img 
+      src="assets/icons/search.svg" 
+      alt="Search Icon" 
+      class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+    />
+    <input 
+      type="text" 
+      placeholder="" 
+      class="w-full h-10 pl-10 pr-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-300 text-black" 
+    />
+  </div>
+</div>
+<div class="flex flex-wrap gap-8 pl-8 pt-8 pb-10 justify-center">
+<a [routerLink]="['/quotation']" class="block">
+  <p-card [style]="{ height: '16rem', width: '13rem', overflow: 'hidden', backgroundColor: 'white' }">
+    <ng-template #header>
+      <img alt="Card" class="w-full h-40" src="assets/images/house1.jpg" />
+    </ng-template>
+    <ng-template #title>
+      <span class="text-black">Propect A</span>
+    </ng-template>
+    <ng-template #subtitle>
+      <span class="text-black">Fix burst pipe</span>
+    </ng-template>
+    
+  </p-card>
+</a>
+<a [routerLink]="['/quotation']" class="block">
+  <p-card [style]="{ height: '16rem', width: '13rem', overflow: 'hidden', backgroundColor: 'white' }">
+    <ng-template #header>
+      <img alt="Card" class="w-full h-40" src="assets/images/house2.jpg" />
+    </ng-template>
+    <ng-template #title>
+      <span class="text-black">Project B</span>
+    </ng-template>
+    <ng-template #subtitle>
+      <span class="text-black">Fix broken toilet</span>
+    </ng-template>
+  </p-card>
+</a>
+<a [routerLink]="['/quotation']" class="block">
+  <p-card [style]="{ height: '16rem', width: '13rem', overflow: 'hidden', backgroundColor: 'white' }">
+    <ng-template #header>
+      <img alt="Card" class="w-full h-40" src="assets/images/house3.jpg" />
+    </ng-template>
+    <ng-template #title>
+      <span class="text-black">Project c</span>
+    </ng-template>
+    <ng-template #subtitle>
+      <span class="text-black"> Add landscapping</span>
+    </ng-template>
+  </p-card>
+</a>
+</div>
+<div class="h-1.5 bg-yellow-500 w-full "></div>
 </div>
   `,
     styles: ``,
 })
 
 export class ContractorHomeComponent  {
-   public visible: boolean = false;
-   items: MenuItem[] | undefined;
-
-    constructor(private router: Router) {}
-
-    ngOnInit() {
-        this.items = [
-            {
-                label: 'Navigate',
-                items: [
-                    {
-                        label: 'Router Link',
-                        icon: 'pi pi-palette',
-                        route: '/guides/csslayer'
-                    },
-                    {
-                        label: 'Programmatic',
-                        icon: 'pi pi-link',
-                        command: () => {
-                            this.router.navigate(['/installation']);
-                        }
-                    },
-                    {
-                        label: 'External',
-                        icon: 'pi pi-home',
-                        url: 'https://angular.io//'
-                    }
-                ]
-            }
-        ];
-    }
+   
 }
