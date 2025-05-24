@@ -16,25 +16,32 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/inventory")
 class InventoryController(private val service: InventoryService) {
-
     @GetMapping
     fun getAll(): List<InventoryItem> = service.getAll()
 
     @PostMapping
-    fun addOrUpdate(@RequestBody request: InventoryItemRequest): ResponseEntity<String> {
+    fun addOrUpdate(
+        @RequestBody request: InventoryItemRequest,
+    ): ResponseEntity<String> {
         service.addOrUpdateItem(request)
         return ResponseEntity.ok("Item processed successfully")
     }
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long): InventoryItem = service.getById(id)
+    fun getById(
+        @PathVariable id: Long,
+    ): InventoryItem = service.getById(id)
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody item: InventoryItem): InventoryItem =
-        service.update(id, item)
+    fun update(
+        @PathVariable id: Long,
+        @RequestBody item: InventoryItem,
+    ): InventoryItem = service.update(id, item)
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long): ResponseEntity<Void> {
+    fun delete(
+        @PathVariable id: Long,
+    ): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()
     }
