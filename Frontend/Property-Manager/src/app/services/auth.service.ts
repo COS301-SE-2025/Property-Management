@@ -7,6 +7,7 @@ import {
   ISignUpResult,
 } from 'amazon-cognito-identity-js';
 import { environment } from '../../environments/environments';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -33,10 +34,14 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: (result) => {
+          const idToken = result.getIdToken().getJwtToken();
+          const decodeToken = jwtDecode<{given_name?: string}>(idToken);
+
           resolve({
             accessToken: result.getAccessToken().getJwtToken(),
             idToken: result.getIdToken().getJwtToken(),
             refreshToken: result.getRefreshToken().getToken(),
+            givenName: decodeToken.given_name,
           });
         },
         onFailure: (err) => {
@@ -46,9 +51,7 @@ export class AuthService {
     });
   }
 
-  register(email: string, password: string, attributes: {[key: string]: string} = {}): Promise<ISignUpResult> {
-    
-    const randomName = () => Math.random().toString(36).substring(2, 10); 
+  register(email: string, password: string, type: string, attributes: {[key: string]: string} = {}): Promise<ISignUpResult> {
     
     const username = email.split('@')[0] + Date.now();
     
@@ -59,7 +62,7 @@ export class AuthService {
       }),
       new CognitoUserAttribute({
         Name: 'given_name',
-        Value: randomName()
+        Value: type
       })
     ];
 
