@@ -99,14 +99,14 @@ export class RegisterOwnerComponent {
     this.serverError = false;
     this.emptyField = false;
 
-    this.authService.registerOwner(this.email, this.password)
+    this.authService.register(this.email, this.password)
       .then(() => {
         console.log('Successfully registered');
       })
       .catch(error => {
         console.error('Registration error: ', error);
         const status = error?.status || error?.__zone_symbol__status;
-        if (status === 400 || error.code === 'NotAuthorizedException') {
+        if (status === 400 || error.code === 'NotAuthorizedException' || error.code === 'UsernameExistsException') {
           this.userError = true;
         } else {
           this.serverError = true;
