@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class PropertyManagemnetApplication
 
 fun main(args: Array<String>) {
-	runApplication<PropertyManagemnetApplication>(*args)
+    runApplication<PropertyManagemnetApplication>(*args)
 }
