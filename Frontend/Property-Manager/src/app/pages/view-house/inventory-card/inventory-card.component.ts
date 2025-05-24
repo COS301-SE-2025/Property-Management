@@ -12,7 +12,7 @@ import { HousesService } from '../../../services/houses.service';
     <div class = "flex">
       <p-card class="text-center">
         <ng-template #title>Inventory</ng-template>
-        <p-table [value] = "inventory()" [tableStyle]="{ 'min-width': '25rem' }">
+        <p-table [value] = "inventory()" [tableStyle]="{ 'min-width': '18rem' }">
           <ng-template #header>
             <tr>
               <th>Description</th>
