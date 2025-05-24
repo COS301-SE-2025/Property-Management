@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
     <div class = "flex flex-col">
       <!-- Name -->
       <div class = "flex flex-row justify-between items-center px-4 py-2"> 
-        <p class = "font-medium italic text-xl">Property manager</p>
+        <p class = "font-medium text-xl">Property Manager</p>
 
         <div class = "flex flex-row items-center">
           <div class = "relative">
