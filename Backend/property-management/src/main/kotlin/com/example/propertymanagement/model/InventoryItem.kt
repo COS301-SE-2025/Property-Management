@@ -3,7 +3,7 @@ package com.example.propertymanagement.model
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "inventoryitem") 
+@Table(name = "inventoryitem")
 data class InventoryItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
