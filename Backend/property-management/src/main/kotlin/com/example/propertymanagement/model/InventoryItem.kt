@@ -19,5 +19,5 @@ data class InventoryItem(
     @Column(name = "quantity_in_stock")
     val quantityInStock: Int,
     @Column(name = "building_id")
-    val buildingId: Int,
+    val buildingId: Int
 )

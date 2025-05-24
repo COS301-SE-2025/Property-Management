@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class InventoryService(
     private val repository: InventoryItemRepository,
-    private val jdbcTemplate: JdbcTemplate,
+    private val jdbcTemplate: JdbcTemplate
 ) {
     fun getAll(): List<InventoryItem> = repository.findAll()
 
@@ -20,7 +20,7 @@ class InventoryService(
 
     fun update(
         id: Long,
-        newItem: InventoryItem,
+        newItem: InventoryItem
     ): InventoryItem {
         val existing = getById(id)
         val updated =
