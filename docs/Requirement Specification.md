@@ -93,15 +93,141 @@ The solution will adhere to security best practices and implement multi-tenancy 
 
 - As a system administrator, I want to monitor system performance so that I can address any issues promptly.
 
-## 3. Service Contracts
+## 3. Functional Requirements 
+### FR 1. Contractor Management Subsystem
+
+#### FR - 1.1: Contractor Profile Management
+ 
+1.1.1 The system must allow users to create, update, and archive contractor profiles.
+1.1.2 Each contractor profile must include at minimum: name, contact information, specialized services, business registration details, and onboarding date.
+1.1.3 The system must support attaching necessary documentation to contractor profiles (certifications, insurance, etc.).
+
+#### FR - 1.2: Contractor Work History Tracking
+
+1.2.1 The system must maintain a comprehensive history of all work performed by each contractor.
+1.2.2 The system must allow users to upload images and documentation as proof of completed work.
+1.2.3 The system must capture metadata for work evidence including date, location (unit numbers), and project reference.
+
+#### FR - 1.3: Contractor Performance Rating
+
+1.3.1 The system must provide a rating mechanism for evaluating contractor performance.
+1.3.2 Rating criteria must include at minimum: quality of work, timeliness, cost adherence, and professionalism.
+1.3.3 The system must calculate and display average ratings over time for each contractor.
+1.3.4 The system must allow filtering and sorting contractors based on performance ratings.
+
+#### FR - 1.4: Contractor-Maintenance Plan Integration
+
+1.4.1 The system must associate contractors with specific maintenance plans and projects.
+1.4.2 The system must display contractor availability against scheduled maintenance tasks.
+1.4.3 The system must track contractor commitments across multiple maintenance plans.
+
+#### FR - 1.5: Contractor Expense Management
+
+1.5.1 The system must record all expenses associated with contractor services.
+1.5.2 The system must categorize expenses by project, maintenance type, and fiscal period.
+1.5.3 The system must integrate contractor expenses into the property's annual budget.
+1.5.4 The system must generate expense reports filtered by contractor, time period, or project.
+
+### FR 2. Inventory Management Subsystem
+
+#### FR - 2.1: Inventory Item Tracking
+
+2.1.1 The system must maintain a database of all inventory items with details including item name, description, quantity, location, and unit cost.
+2.1.2 The system must track inventory movements (additions and depletions).
+2.1.3 The system must maintain historical records of inventory levels.
+2.1.4 The system must alert users when inventory levels fall below predefined thresholds.
+
+#### FR - 2.2: Trustee Approval Workflow
+
+2.2.1 The system must implement an approval workflow for inventory item usage.
+2.2.2 The system must notify designated trustees when approval for inventory usage is required.
+2.2.3 The system must track the status of approval requests (pending, approved, rejected).
+2.2.4 The system must record trustee approval details including approver, date, and any comments.
+
+#### FR - 2.3: Inventory Usage Tracking
+
+2.3.1 The system must record the specific usage of inventory items by contractors.
+2.3.2 Each inventory usage record must be linked to a specific project and contractor.
+2.3.3 The system must calculate inventory consumption rates over time.
+2.3.4 The system must generate reports on inventory usage by project, contractor, or time period.
+
+### FR 3. Quote Management Subsystem
+
+#### FR - 3.1: Quote Collection
+
+3.1.1 The system must allow users to record quotes from multiple contractors for the same project.
+3.1.2 Each quote must include detailed line items, total cost, estimated timeline, and terms.
+3.1.3 The system must support attaching quote documentation (PDFs, images).
+3.1.4 The system must allow users to make notes and annotations on quotes.
+
+#### FR - 3.2: Quote Comparison
+
+3.2.1 The system must provide a side-by-side comparison view of quotes for the same project.
+3.2.2 The comparison must highlight differences in cost, timeline, and scope.
+3.2.3 The system must calculate and display cost variances between quotes.
+3.2.4 The system must allow users to flag specific aspects of quotes for discussion or review.
+
+#### FR - 3.3: Quote Approval Process
+
+3.3.1 The system must implement a multi-stage approval workflow for quotes.
+3.3.2 The system must notify designated trustees when quote approval is required.
+3.3.3 The system must track approval status including pending, approved, and rejected.
+3.3.4 The system must document all approvals with approver details, timestamp, and any conditions.
+3.3.5 The system must support the requirement for three quotes before approval can be granted.
+
+### FR 4. Maintenance Planning Subsystem
+
+#### FR - 4.1: Maintenance Schedule Management
+
+4.1.1 The system must allow creation and management of maintenance schedules.
+4.1.2 The system must support recurring and one-time maintenance activities.
+4.1.3 The system must provide calendar and list views of scheduled maintenance.
+4.1.4 The system must send notifications for upcoming scheduled maintenance.
+
+#### FR - 4.2: Maintenance History Tracking
+
+4.2.1 The system must maintain a comprehensive history of all completed maintenance activities.
+4.2.2 The system must link maintenance history to contractors, inventory usage, and expenses.
+4.2.3 The system must support filtering and searching maintenance history by various criteria.
+4.2.4 The system must generate maintenance history reports.
+
+#### FR - 4.3: Maintenance Budget Integration
+
+4.3.1 The system must integrate maintenance activities with budget planning.
+4.3.2 The system must track actual maintenance costs against budgeted amounts.
+4.3.3 The system must generate variance reports for maintenance budgets.
+4.3.4 The system must provide forecasting tools for future maintenance budgeting.
+
+### FR 5. Multi-tenant Administration Subsystem
+
+#### FR - 5.1: Tenant Isolation
+
+5.1.1 The system must maintain strict data isolation between different property management tenants.
+5.1.2 The system must prevent cross-tenant data access or visualization.
+5.1.3 The system must support tenant-specific configurations and customizations.
+
+#### FR - 5.2: User Access Control
+
+5.2.1 The system must implement role-based access control for all functions.
+5.2.2 The system must support custom role definitions per tenant.
+5.2.3 The system must maintain detailed access logs for security auditing.
+5.2.4 The system must enforce password complexity and rotation policies.
+
+#### FR - 5.3: AWS Cognito Integration
+
+5.3.1 The system must utilize AWS Cognito for user authentication.
+5.3.2 The system must support single sign-on where appropriate.
+5.3.3 The system must implement secure authentication workflows including multi-factor authentication.
+
+## 4. Service Contracts
 
 
-## 4. Domain Model
+## 5. Domain Model
 
 ![Domain model](./301%20Domain.png)
 
-## 5. Architectural Requirements
+## 6. Architectural Requirements
 
 
-## 6. Technology Requirements
+## 7. Technology Requirements
 
