@@ -124,7 +124,7 @@ export class ContractorRegisterComponent {
         console.log(this.email)
         console.log(this.password)
 
-        return this.authService.login(this.email, this.password)
+        return this.authService.register(this.email, this.password)
             .then(tokens => {
                 //TODO: Store tokens
                 console.log("Successfully logged in");
