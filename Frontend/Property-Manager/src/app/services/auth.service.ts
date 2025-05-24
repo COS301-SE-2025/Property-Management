@@ -117,7 +117,7 @@ export class AuthService {
       console.log("user signed out");
       return true;
     } else {
-      console.error("user couldnt log out");
+      console.error("user couldn't log out");
       return false;
     }
   }
