@@ -110,12 +110,13 @@ export class CreatePropertyComponent {
     });
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.form.patchValue({ image: file });
-    }
+onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files && input.files[0];
+  if (file) {
+    this.form.patchValue({ image: file });
   }
+}
 
   onSubmit() {
     if (this.form.valid) {
