@@ -17,5 +17,5 @@ data class Trustee(
     val name: String,
     val email: String,
     val phone: String,
-    val apikey: String,
+    val apikey: String
 )

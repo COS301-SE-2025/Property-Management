@@ -15,5 +15,5 @@ data class Building(
     @Column(name = "building_id")
     val buildingId: Int = 0,
     val name: String?,
-    val address: String?,
+    val address: String?
 )
