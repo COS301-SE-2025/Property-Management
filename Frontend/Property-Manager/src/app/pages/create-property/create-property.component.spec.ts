@@ -40,7 +40,9 @@ describe('CreatePropertyComponent', () => {
 
   it('should patch image value when onFileSelected is called', () => {
     const file = new File(['dummy content'], 'test.png', { type: 'image/png' });
-    const event = { target: { files: [file] } };
+    const event = {
+      target: { files: [file] }
+    } as unknown as Event;
     component.onFileSelected(event);
     expect(component.form.value.image).toBe(file);
   });
