@@ -14,7 +14,7 @@ jobs:
             - name: Install ktlint
               run: curl -sSLO https://github.com/pinterest/ktlint/releases/download/0.47.1/ktlint && chmod a+x ktlint
             - name: Run ktlint
-              run: ./ktlint "src/**/*.kt"
+              run: ./ktlint "Backend/property-management/src/**/*.kt"
         
     build:
         runs-on: ubuntu-latest
@@ -26,4 +26,4 @@ jobs:
               working-directory: Backend
             - name: Build with gradle
               run: ./gradlew build
-              working-directory: Backend
+              working-directory: Backend/property-management
