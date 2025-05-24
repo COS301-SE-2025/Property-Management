@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import {
   AuthenticationDetails,
   CognitoUser,
+  CognitoUserAttribute,
   CognitoUserPool,
+  ISignUpResult,
 } from 'amazon-cognito-identity-js';
 import { environment } from '../../environments/environments';
-
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,63 @@ export class AuthService {
         onFailure: (err) => {
           reject(err);
         },
+      });
+    });
+  }
+
+  register(email: string, password: string, attributes: {[key: string]: string} = {}): Promise<ISignUpResult> {
+    
+    const randomName = () => Math.random().toString(36).substring(2, 10); 
+    
+    const username = email.split('@')[0] + Date.now();
+    
+    const list: CognitoUserAttribute[] = [
+      new CognitoUserAttribute({
+        Name: 'email',
+        Value: email
+      }),
+      new CognitoUserAttribute({
+        Name: 'given_name',
+        Value: randomName()
+      })
+    ];
+
+    for(const [key, value] of Object.entries(attributes))
+    {
+      list.push(new CognitoUserAttribute({
+        Name: key,
+        Value: value
+      }));
+    }
+
+    return new Promise((resolve, reject) => {
+      this.userPool.signUp(username, password, list, [], (err, result) => {
+        if(err)
+        {
+          reject(err);
+          return;
+        }
+        resolve(result!);
+      }
+      )
+    });
+  }
+  confirmRegister(email: string, code: string): Promise<any>{
+    const userData = {
+      Username: email,
+      Pool: this.userPool,
+    };
+
+    const user = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      user.confirmRegistration(code, true, (err, result) => {
+        if(err)
+        {
+          reject(err);
+          return;
+        }
+        resolve(result);
       });
     });
   }
