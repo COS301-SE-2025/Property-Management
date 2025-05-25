@@ -3,7 +3,6 @@ package com.example.propertymanagement.service
 import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.repository.QuoteRepository
 import org.springframework.stereotype.Service
-
 import java.math.BigDecimal
 import java.util.Date
 
@@ -20,7 +19,7 @@ class QuoteService(private val repository: QuoteRepository) {
         contractor_id: Int,
         amount: BigDecimal,
         submitted_on: Date,
-        type: String
+        type: String,
     ): Quote {
         val newQuote = Quote(task_id = task_id, contractor_id = contractor_id, submitted_on = submitted_on, type = type, amount = amount)
         return add(newQuote)
@@ -28,7 +27,7 @@ class QuoteService(private val repository: QuoteRepository) {
 
     fun update(
         id: Long,
-        newItem: Quote
+        newItem: Quote,
     ): Quote {
         val existing = getById(id)
         val updated =
@@ -37,7 +36,7 @@ class QuoteService(private val repository: QuoteRepository) {
                 contractor_id = newItem.contractor_id,
                 amount = newItem.amount,
                 submitted_on = newItem.submitted_on,
-                type = newItem.type
+                type = newItem.type,
             )
         return repository.save(updated)
     }

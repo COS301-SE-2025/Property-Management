@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-
 import java.math.BigDecimal
 import java.util.Date
 
@@ -23,32 +22,34 @@ class QuoteController(private val service: QuoteService) {
 
     @GetMapping("/{id}")
     fun getById(
-        @PathVariable id: Long
+        @PathVariable id: Long,
     ): Quote = service.getById(id)
-
 
     data class QuoteDto(
         val task_id: Int,
         val contractor_id: Int,
         val amount: BigDecimal,
         val submitted_on: Date,
-        val type: String
+        val type: String,
     )
 
     @PostMapping
     fun createQuote(
-        @RequestBody QuoteDto: QuoteDto): Quote {
+        @RequestBody QuoteDto: QuoteDto,
+    ): Quote {
         return service.addQuote(QuoteDto.task_id, QuoteDto.contractor_id, QuoteDto.amount, QuoteDto.submitted_on, QuoteDto.type)
     }
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @RequestBody item: Quote): Quote = service.update(id, item)
+        @RequestBody item: Quote,
+    ): Quote = service.update(id, item)
 
     @DeleteMapping("/{id}")
     fun delete(
-        @PathVariable id: Long): ResponseEntity<Void> {
+        @PathVariable id: Long,
+    ): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()
     }

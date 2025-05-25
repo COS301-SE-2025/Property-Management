@@ -17,7 +17,7 @@ class ContractorService(private val repository: ContractorRepository) {
         email: String,
         phone: String,
         apikey: String,
-        banned: Boolean
+        banned: Boolean,
     ): Contractor {
         val newUser = Contractor(name = name, email = email, phone = phone, apikey = apikey, banned = banned)
         return add(newUser)
@@ -25,7 +25,7 @@ class ContractorService(private val repository: ContractorRepository) {
 
     fun update(
         id: Long,
-        newItem: Contractor
+        newItem: Contractor,
     ): Contractor {
         val existing = getById(id)
         val updated =
@@ -34,7 +34,7 @@ class ContractorService(private val repository: ContractorRepository) {
                 email = newItem.email,
                 phone = newItem.phone,
                 apikey = newItem.apikey,
-                banned = newItem.banned
+                banned = newItem.banned,
             )
         return repository.save(updated)
     }

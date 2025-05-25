@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class InventoryService(
     private val repository: InventoryItemRepository,
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
 ) {
     fun getAll(): List<InventoryItem> = repository.findAll()
 
@@ -20,7 +20,7 @@ class InventoryService(
 
     fun update(
         id: Long,
-        newItem: InventoryItem
+        newItem: InventoryItem,
     ): InventoryItem {
         val existing = getById(id)
         val updated =
@@ -28,7 +28,7 @@ class InventoryService(
                 name = newItem.name,
                 unit = newItem.unit,
                 quantityInStock = newItem.quantityInStock,
-                buildingId = newItem.buildingId
+                buildingId = newItem.buildingId,
             )
         return repository.save(updated)
     }
@@ -42,7 +42,7 @@ class InventoryService(
         jdbcTemplate.update(
             "UPDATE budget SET inventory_spent = COALESCE(inventory_spent, 0) + ? WHERE building_id = ?",
             totalCost,
-            request.building_id
+            request.building_id,
         )
 
         val existing = repository.findAll().find { it.name == request.name && it.buildingId == request.building_id }
@@ -51,7 +51,7 @@ class InventoryService(
             jdbcTemplate.update(
                 "UPDATE inventoryitem SET quantity_in_stock = quantity_in_stock + ? WHERE item_id = ?",
                 request.quantity,
-                existing.itemId
+                existing.itemId,
             )
         } else {
             // Insert new item
@@ -60,7 +60,7 @@ class InventoryService(
                     name = request.name,
                     unit = "unit",
                     quantityInStock = request.quantity,
-                    buildingId = request.building_id
+                    buildingId = request.building_id,
                 )
             repository.save(newItem)
         }

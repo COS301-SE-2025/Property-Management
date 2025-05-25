@@ -14,19 +14,14 @@ data class Contractor(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contractor_id")
     val contractorId: Int = 0,
-
     @Column(nullable = false)
     val name: String,
-
     @Column(nullable = false, unique = true)
     val email: String,
-
     @Column(nullable = false)
     val phone: String,
-
     @Column(nullable = false, unique = true)
     val apikey: String,
-
     @Column(nullable = false)
-    val banned: Boolean
+    val banned: Boolean,
 )
