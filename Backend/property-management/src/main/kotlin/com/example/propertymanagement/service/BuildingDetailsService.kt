@@ -10,15 +10,16 @@ class BuildingDetailsService(private val repo: BuildingDetailsRepository) {
     fun getBuildingDetails(buildingId: Long): BuildingDetailsResponse? {
         val buildingBudget = repo.findBuildingBudgetDetails(buildingId).firstOrNull() ?: return null
 
-        val maintenanceTasks = repo.findMaintenanceTasksByBuildingId(buildingId).map {
-            MaintenanceTaskDto(
-                title = it[0] as String,
-                description = it[1] as String,
-                status = it[2] as String,
-                approved = it[3] as Boolean,
-                proofImages = (it[4] as? Array<*>)?.map { img -> img as String }
-            )
-        }
+        val maintenanceTasks =
+            repo.findMaintenanceTasksByBuildingId(buildingId).map {
+                MaintenanceTaskDto(
+                    title = it[0] as String,
+                    description = it[1] as String,
+                    status = it[2] as String,
+                    approved = it[3] as Boolean,
+                    proofImages = (it[4] as? Array<*>)?.map { img -> img as String },
+                )
+            }
 
         return BuildingDetailsResponse(
             name = buildingBudget[0] as String,
@@ -28,7 +29,7 @@ class BuildingDetailsService(private val repo: BuildingDetailsRepository) {
             inventoryBudget = (buildingBudget[4] as Number).toDouble(),
             inventorySpent = (buildingBudget[5] as Number).toDouble(),
             maintenanceSpent = (buildingBudget[6] as Number).toDouble(),
-            maintenanceTasks = maintenanceTasks
+            maintenanceTasks = maintenanceTasks,
         )
     }
 }

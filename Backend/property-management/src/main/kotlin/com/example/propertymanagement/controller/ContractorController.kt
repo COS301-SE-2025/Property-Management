@@ -20,7 +20,7 @@ class ContractorController(private val service: ContractorService) {
 
     @GetMapping("/{id}")
     fun getById(
-        @PathVariable id: Long
+        @PathVariable id: Long,
     ): Contractor = service.getById(id)
 
     data class ContractorDto(
@@ -28,12 +28,12 @@ class ContractorController(private val service: ContractorService) {
         val email: String,
         val phone: String,
         val apikey: String,
-        val banned: Boolean
+        val banned: Boolean,
     )
 
     @PostMapping
     fun createUser(
-        @RequestBody ContractorDto: ContractorDto
+        @RequestBody ContractorDto: ContractorDto,
     ): Contractor {
         return service.addUser(ContractorDto.name, ContractorDto.email, ContractorDto.phone, ContractorDto.apikey, ContractorDto.banned)
     }
@@ -41,12 +41,12 @@ class ContractorController(private val service: ContractorService) {
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @RequestBody item: Contractor
+        @RequestBody item: Contractor,
     ): Contractor = service.update(id, item)
 
     @DeleteMapping("/{id}")
     fun delete(
-        @PathVariable id: Long
+        @PathVariable id: Long,
     ): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()

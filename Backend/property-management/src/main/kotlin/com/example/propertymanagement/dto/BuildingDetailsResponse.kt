@@ -5,7 +5,7 @@ data class MaintenanceTaskDto(
     val description: String,
     val status: String,
     val approved: Boolean,
-    val proofImages: List<String>?
+    val proofImages: List<String>?,
 )
 
 data class BuildingDetailsResponse(
@@ -16,5 +16,5 @@ data class BuildingDetailsResponse(
     val inventoryBudget: Double,
     val inventorySpent: Double,
     val maintenanceSpent: Double,
-    val maintenanceTasks: List<MaintenanceTaskDto>
+    val maintenanceTasks: List<MaintenanceTaskDto>,
 )
