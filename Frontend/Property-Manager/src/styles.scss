@@ -1,0 +1,13 @@
+@use "tailwindcss";
+
+:root {
+  --property-yellow: #FFE372;
+}
+
+.propertyYellow-bg {
+  background-color: var(--property-yellow);
+}
+
+::ng-deep .p-drawer {
+  background-color: #facc15 !important; 
+}
