@@ -89,28 +89,28 @@ export class RegisterOwnerComponent {
     this.passwordVisible = !this.passwordVisible;
   }
 
-  register() {
+  register(): Promise<void> {
     if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
       this.emptyField = true;
-      return;
+      return Promise.resolve();
     }
 
     this.userError = false;
     this.serverError = false;
     this.emptyField = false;
 
-    this.authService.register(this.email, this.password)
+    return this.authService.register(this.email, this.password)
       .then(() => {
         console.log('Successfully registered');
       })
       .catch(error => {
         console.error('Registration error: ', error);
-        const status = error?.status || error?.__zone_symbol__status;
-        if (status === 400 || error.code === 'NotAuthorizedException' || error.code === 'UsernameExistsException') {
+        if (error?.status === 400 || error?.code === 'NotAuthorizedException') {
           this.userError = true;
         } else {
           this.serverError = true;
         }
+        throw error;
       });
-  }
+}
 }

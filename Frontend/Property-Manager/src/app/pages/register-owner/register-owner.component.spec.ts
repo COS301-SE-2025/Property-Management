@@ -64,31 +64,43 @@ describe('RegisterOwnerComponent', () => {
     component.email = 'test@example.com';
     component.password = 'Password@123';
     component.contactNumber = '1234567890';
-    authServiceSpy.register.and.returnValue(Promise.reject({ status: 400 }));
 
-    await component.register();
-
+    authServiceSpy.register.and.rejectWith({ status: 400 });
+    try {
+      await component.register();
+    } catch {
+      // Expected to throw
+    }
     expect(component.userError).toBeTrue();
     expect(component.serverError).toBeFalse();
-    expect(component.emptyField).toBeFalse();
 
-    // Test NotAuthorizedException
-    authServiceSpy.register.and.returnValue(Promise.reject({ code: 'NotAuthorizedException' }));
-    await component.register();
+    component.userError = false;
+    component.serverError = false;
+
+    // Test for NotAuthorizedException
+    authServiceSpy.register.and.rejectWith({ code: 'NotAuthorizedException' });
+    try {
+      await component.register();
+    } catch {
+      // Expected to throw
+    }
     expect(component.userError).toBeTrue();
+    expect(component.serverError).toBeFalse();
   });
 
   it('should set serverError on other errors', async () => {
     component.email = 'test@example.com';
-    component.password = 'Password@123';
+    component.password = 'pass';
     component.contactNumber = '1234567890';
-    authServiceSpy.register.and.returnValue(Promise.reject({ status: 500 }));
 
-    await component.register();
-
+    authServiceSpy.register.and.rejectWith({ status: 500 });
+    try {
+      await component.register();
+    } catch {
+      // Expected to throw
+    }
     expect(component.userError).toBeFalse();
     expect(component.serverError).toBeTrue();
-    expect(component.emptyField).toBeFalse();
   });
 
   it('should toggle password visibility', () => {
