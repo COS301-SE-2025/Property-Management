@@ -49,7 +49,7 @@ import { Router } from '@angular/router';
 
             <div class = "text-center text-sm space-y-2">
               <a class = "block" href="">Forgot password?</a>
-              <a class = "font-semibold" href="">Create Account?</a>
+              <a class = "font-semibold" href = "/register-owner">Create Account?</a>
             </div>
         </div>
       </div>
