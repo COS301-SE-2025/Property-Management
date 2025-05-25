@@ -55,11 +55,8 @@ import { FileUploadEvent } from 'primeng/fileupload';
         <div class="flex flex-col items-center justify-center gap-2 flex-shrink-0 w-full md:w-72">
           <div class="border w-full h-40 bg-gray-50 flex items-center justify-center rounded">
             <img src="assets/icons/image.svg" alt="Placeholder" class="w-10 h-10" *ngIf="!previewUrl" />
-            <img [src]="previewUrl" *ngIf="previewUrl" class="w-full h-full object-contain rounded" />
+            <img [src]="previewUrl" *ngIf="previewUrl" class="w-full h-full object-contain rounded" alt="Uploaded image" />
           </div>
-          
-          
-
           <button 
             pButton 
             type="button" 
@@ -90,8 +87,8 @@ export class QuotationComponent {
   const file = event.files?.[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.previewUrl = e.target.result;
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      this.previewUrl = e.target && e.target.result ? e.target.result as string : null;
     };
     reader.readAsDataURL(file);
   }

@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
-    selector: 'app-contractorRegister',
+    selector: 'app-contractor-register',
     imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule],
     template: `
     <div class = "flex w-full justify-center items-center h-screen">
@@ -93,16 +93,16 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 })
 
 export class ContractorRegisterComponent {
-    public email: string = "";
-    public password: string = "";
-    public companyName: string = "";
-    public companyAddress: string = "";
-    public contactNumber: string = "";
-    public passwordVisible: boolean = false;
+    public email = "";
+    public password = "";
+    public companyName = "";
+    public companyAddress = "";
+    public contactNumber = "";
+    public passwordVisible = false;
 
-    public emptyField: boolean = false;
-    public userError: boolean = false;
-    public serverError: boolean = false;
+    public emptyField = false;
+    public userError = false;
+    public serverError = false;
 
     constructor(private authService: AuthService) { }
 
@@ -124,7 +124,7 @@ export class ContractorRegisterComponent {
         console.log(this.email)
         console.log(this.password)
 
-        return this.authService.register(this.email, this.password, 'Contractor')
+        return this.authService.register(this.email, this.password, { type: 'Contractor' })
             .then(tokens => {
                 //TODO: Store tokens
                 console.log("Successfully logged in");

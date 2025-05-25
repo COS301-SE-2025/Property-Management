@@ -3,13 +3,18 @@ import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserAttribute,
-  CognitoUserAttribute,
   CognitoUserPool,
-  ISignUpResult,
   ISignUpResult,
 } from 'amazon-cognito-identity-js';
 import { environment } from '../../environments/environments';
 import { jwtDecode } from 'jwt-decode';
+
+export interface AuthTokens {
+  accessToken: string;
+  idToken: string;
+  refreshToken: string;
+  givenName?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +42,7 @@ export class AuthService {
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: (result) => {
           const idToken = result.getIdToken().getJwtToken();
-          const decodeToken = jwtDecode<{given_name?: string}>(idToken);
+          const decodeToken = jwtDecode<{ given_name?: string }>(idToken);
 
           resolve({
             accessToken: result.getAccessToken().getJwtToken(),
@@ -53,10 +58,15 @@ export class AuthService {
     });
   }
 
-  register(email: string, password: string, type: string, attributes: {[key: string]: string} = {}): Promise<ISignUpResult> {
-    
+  register(
+    email: string,
+    password: string,
+    attributes: Record<string, string> = {}
+  ): Promise<ISignUpResult> {
+    const randomName = () => Math.random().toString(36).substring(2, 10);
+
     const username = email.split('@')[0] + Date.now();
-    
+
     const list: CognitoUserAttribute[] = [
       new CognitoUserAttribute({
         Name: 'email',
@@ -64,12 +74,11 @@ export class AuthService {
       }),
       new CognitoUserAttribute({
         Name: 'given_name',
-        Value: type
+        Value: randomName()
       })
     ];
 
-    for(const [key, value] of Object.entries(attributes))
-    {
+    for (const [key, value] of Object.entries(attributes)) {
       list.push(new CognitoUserAttribute({
         Name: key,
         Value: value
@@ -78,17 +87,16 @@ export class AuthService {
 
     return new Promise((resolve, reject) => {
       this.userPool.signUp(username, password, list, [], (err, result) => {
-        if(err)
-        {
+        if (err) {
           reject(err);
           return;
         }
         resolve(result!);
-      }
-      )
+      });
     });
   }
-  confirmRegister(email: string, code: string): Promise<any>{
+
+  confirmRegister(email: string, code: string): Promise<string | undefined> {
     const userData = {
       Username: email,
       Pool: this.userPool,
@@ -98,13 +106,25 @@ export class AuthService {
 
     return new Promise((resolve, reject) => {
       user.confirmRegistration(code, true, (err, result) => {
-        if(err)
-        {
+        if (err) {
           reject(err);
           return;
         }
         resolve(result);
       });
     });
+  }
+
+  logout(): boolean {
+    const user = this.userPool.getCurrentUser();
+
+    if (user) {
+      user.signOut();
+      console.log("user signed out");
+      return true;
+    } else {
+      console.error("user couldnt log out");
+      return false;
+    }
   }
 }
