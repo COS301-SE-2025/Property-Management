@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 class BudgetController(private val service: BudgetService) {
     @GetMapping("/{buildingId}")
     fun getBudgetByBuildingId(
-        @PathVariable buildingId: Int
+        @PathVariable buildingId: Int,
     ): ResponseEntity<Budget> {
         val budget = service.getByBuildingId(buildingId)
         return if (budget != null) {
