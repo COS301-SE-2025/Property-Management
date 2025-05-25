@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
 import { HousesService } from '../../services/houses.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +15,7 @@ import { HousesService } from '../../services/houses.service';
       {
         <app-house-card [house]="house"/>
       }
-      <button class = "cursor-pointer">
+      <button (click)="RouteToCreateProperty()" class = "cursor-pointer">
         <img class= "w-16 h-16" src= "assets/icons/add_circle.svg" alt="">
       </button>
     </div>
@@ -22,6 +23,14 @@ import { HousesService } from '../../services/houses.service';
   styles: ``
 })
 export class HomeComponent {
+
+  constructor(private router: Router) {}
+
   private houseService = inject(HousesService);
   houses = this.houseService.houses;
+
+  RouteToCreateProperty()
+  {
+    this.router.navigate(['/create-property'])
+  }
 }
