@@ -69,5 +69,5 @@ jobs:
             working-directory: Frontend/Property-Manager
 
           - name: Run unit tests
-            run: npm run test
+            run: npm run test -- --watch=false --browsers=ChromeHeadlessCI
             working-directory: Frontend/Property-Manager
