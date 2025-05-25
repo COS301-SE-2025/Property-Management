@@ -12,7 +12,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Install ktlint
-              run: curl -sSLO https://github.com/pinterest/ktlint/releases/download/0.47.1/ktlint && chmod a+x ktlint
+              run: curl -sSLO https://github.com/pinterest/ktlint/releases/download/1.2.1/ktlint && chmod a+x ktlint
             - name: Run ktlint
               run: ./ktlint "Backend/property-management/src/**/*.kt"
         
