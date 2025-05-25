@@ -4,6 +4,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
       <div class = "flex w-[700px] h-[400px] shadow-lg rounded overflow-hidden border">
 
           <div class = "w-2/6 bg-white flex flex-col items-center justify-center p-6">
-            <img class = "h-24 mb-4" src="assets/images/tempLogo.png" alt="App logo">
+            <img class = "h-24 mb-4" src="assets/images/logo.png" alt="App logo">
             <p class = "font-semibold text-lg">Property Manager</p>
           </div>
     
@@ -48,7 +49,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 
             <div class = "text-center text-sm space-y-2">
               <a class = "block" href="">Forgot password?</a>
-              <a class = "font-semibold" href="">Create Account?</a>
+              <a class = "font-semibold" href = "/register-owner">Create Account?</a>
             </div>
         </div>
       </div>
@@ -66,7 +67,7 @@ export class LoginComponent {
   public userError = false;
   public serverError = false;
 
-  constructor(private authService: AuthService){}
+  constructor(private authService: AuthService, private router: Router){}
 
   togglePassword()
   {
@@ -94,6 +95,8 @@ export class LoginComponent {
       //TODO: Store tokens
       console.log("Successfully logged in");
       console.log(tokens);
+
+      this.router.navigate(['/home']);
     })
     .catch(error => {
       console.error("Login error: ", error);
