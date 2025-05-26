@@ -121,7 +121,21 @@ onFileSelected(event: Event) {
 
   onSubmit() {
     if (this.form.valid) {
-      this.propertyService.createProperty(this.form.value).subscribe({
+      const formValue = this.form.value;
+
+      // Prepare the payload as requested
+      const payload = {
+        name: formValue.name,
+        address: formValue.address,
+        type: formValue.type,
+        trustees: null,
+        propertyValue: null,
+        primaryContractors: null,
+        latestInspectionDate: new Date().toISOString().split('T')[0], // "YYYY-MM-DD"
+        propertyImage: null
+      };
+
+      this.propertyService.createProperty(payload).subscribe({
         next: (response) => {
           console.log('Property created successfully:', response);
           // Optionally reset the form or show a success message
