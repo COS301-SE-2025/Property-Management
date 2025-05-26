@@ -228,7 +228,7 @@ Explanations:
 
 ## To get all in table
 Method: GET
-Link: http://localhost:8080/api/qoute
+Link: http://localhost:8080/api/quote
 Return:[
     {
         "quote_id": 4,
