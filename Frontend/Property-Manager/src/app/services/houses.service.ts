@@ -74,12 +74,6 @@ export class HousesService {
     })
   }
   async loadBudgetTimeline(houseId: number){
-
-    if(this.budgets().length > 0 && this.timeline().length > 0)
-    {
-      return;
-    }
-
     this.apiService.getBuildingDetails(houseId).subscribe({
       next: (details) => {
         
