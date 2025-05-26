@@ -16,7 +16,6 @@ import { FileUploadEvent } from 'primeng/fileupload';
     FormsModule,
     InputTextModule,
     ButtonModule,
-    FileUpload,
     CardModule,
     CommonModule,
     ToastModule

@@ -93,10 +93,16 @@ export class LoginComponent {
     return this.authService.login(this.email, this.password)
     .then(tokens => {
       //TODO: Store tokens
-      console.log("Successfully logged in");
-      console.log(tokens);
-
-      this.router.navigate(['/home']);
+      console.log("Successfully logged in")
+      
+      if(tokens.givenName === 'owner')
+      {
+        this.router.navigate(['/home']);
+      }
+      else if(tokens.givenName === 'contractor')
+      {
+        this.router.navigate(['/contractorHome']);
+      }
     })
     .catch(error => {
       console.error("Login error: ", error);

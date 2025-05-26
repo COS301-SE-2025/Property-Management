@@ -12,19 +12,17 @@ import { HousesService } from '../../../services/houses.service';
     <div class = "flex">
       <p-card class="text-center">
         <ng-template #title>Inventory</ng-template>
-        <p-table [value] = "inventory()" [tableStyle]="{ 'min-width': '18rem' }">
+        <p-table [value] = "inventory()" [tableStyle]="{ 'min-width': '22rem' }">
           <ng-template #header>
             <tr>
               <th>Description</th>
               <th>Quantity</th>
-              <th>Last bought</th>
             </tr>
           </ng-template>
           <ng-template #body let-inventory>
             <tr>
               <td>{{ inventory.description }}</td>
               <td>{{ inventory.quantity }}</td>
-              <td>{{ inventory.Last_bought | date: 'yyyy-MM-dd' }}</td>
             </tr>
           </ng-template>
         </p-table>

@@ -1,4 +1,5 @@
 export interface Budget{
     category: string;
-    amount: number;
+    budgetAmount: number;
+    budgetSpent?: number;
 }
