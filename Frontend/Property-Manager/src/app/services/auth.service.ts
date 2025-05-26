@@ -61,9 +61,9 @@ export class AuthService {
   register(
     email: string,
     password: string,
+    name: string,
     attributes: Record<string, string> = {}
   ): Promise<ISignUpResult> {
-    const randomName = () => Math.random().toString(36).substring(2, 10);
 
     const username = email.split('@')[0] + Date.now();
 
@@ -74,7 +74,7 @@ export class AuthService {
       }),
       new CognitoUserAttribute({
         Name: 'given_name',
-        Value: randomName()
+        Value: name
       })
     ];
 
