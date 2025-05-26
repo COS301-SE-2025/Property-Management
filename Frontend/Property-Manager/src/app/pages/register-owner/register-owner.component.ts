@@ -4,6 +4,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { ApiService } from '../../services/api.service';
+
 
 @Component({
   selector: 'app-register-owner',
@@ -65,7 +67,9 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 
           <div class="text-center text-sm space-y-2">
             <a class="block" href="">Forgot password?</a>
-            <a class="font-semibold" href="">Register as Contractor?</a>
+            <a class="font-semibold" href="/contractorRegister">Register as Contractor?</a>
+            <br>
+            <a class="font-bold" href="/login">Login?</a>
           </div>
         </div>
       </div>
@@ -83,34 +87,50 @@ export class RegisterOwnerComponent {
   public userError = false;
   public serverError = false;
 
-  constructor(private authService: AuthService) {}
-
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService
+  ) {}
   togglePassword() {
     this.passwordVisible = !this.passwordVisible;
   }
 
-  register(): Promise<void> {
+  async register(): Promise<void> {
     if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
       this.emptyField = true;
-      return Promise.resolve();
+      return;
     }
 
     this.userError = false;
     this.serverError = false;
     this.emptyField = false;
 
-    return this.authService.register(this.email, this.password, 'owner')
-      .then(() => {
-        console.log('Successfully registered');
-      })
-      .catch(error => {
-        console.error('Registration error: ', error);
-        if (error?.status === 400 || error?.code === 'NotAuthorizedException') {
+    try {
+
+      const result = await this.authService.register(this.email, this.password, this.email);
+
+      const apikey = result?.userSub || result?.user?.getUsername() || '';
+
+      await this.apiService.registerTrustee(this.email, this.email, this.contactNumber, apikey).toPromise();
+
+      console.log('Successfully registered');
+    } catch (error: unknown) {
+      console.error('Registration error: ', error);
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        ('status' in error || 'code' in error)
+      ) {
+        const err = error as { status?: number; code?: string };
+        if (err.status === 400 || err.code === 'NotAuthorizedException') {
           this.userError = true;
         } else {
           this.serverError = true;
         }
-        throw error;
-      });
-}
+      } else {
+        this.serverError = true;
+      }
+      throw error;
+    }
+  }
 }
