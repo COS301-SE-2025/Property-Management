@@ -2,6 +2,53 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+// Define interfaces for type safety
+export interface InventoryItem {
+  name: string;
+  buildingId: number;
+  quantity: number;
+  price: number;
+}
+
+export interface Building {
+  id: number;
+  name: string;
+}
+
+// export interface Budget {
+//   // Define budget fields
+// }
+
+// export interface BuildingDetails {
+//   // Define building details fields
+// }
+
+export interface Trustee {
+  trustee_id?: number;
+  name: string;
+  email: string;
+  phone: string;
+  apikey: string;
+}
+
+export interface Contractor {
+  contractor_id?: number;
+  name: string;
+  email: string;
+  phone: string;
+  apikey: string;
+  banned: boolean;
+}
+
+export interface Quote {
+  // Define quote fields
+  taskId: string;
+  contractorId: string;
+  amount: number;
+  submittedOn: Date;
+  type: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,114 +57,94 @@ export class ApiService {
   private url = '/api';
   constructor(private http: HttpClient) { }
 
-  getInventory(): Observable<any> 
-  {
-    return this.http.get(`${this.url}/inventory`);
+  getInventory(): Observable<InventoryItem[]> {
+    return this.http.get<InventoryItem[]>(`${this.url}/inventory`);
   }
 
-  addInventoryItem(name: string, buildingId: number, quantity: number, price: number): Observable<any>
-  {
-    const item = {
+  addInventoryItem(name: string, buildingId: number, quantity: number, price: number): Observable<InventoryItem> {
+    const item: InventoryItem = {
       name: name,
       buildingId: buildingId,
       quantity: quantity,
       price: price
-    }
-    return this.http.post(`${this.url}/inventory`, item);
+    };
+    return this.http.post<InventoryItem>(`${this.url}/inventory`, item);
   }
 
-  getBuildings(): Observable<any>
-  {
-    return this.http.get(`${this.url}/buildings`);
+  getBuildings(): Observable<Building[]> {
+    return this.http.get<Building[]>(`${this.url}/buildings`);
   }
 
-  getBudgets(id: number): Observable<any>
-  {
-    return this.http.get(`${this.url}/budgets/${id}`);
-  }
-
-  getBuildingDetails(id: number): Observable<any>
-  {
-    return this.http.get(`${this.url}/building/${id}/details`);
-  }
-
-  addTrustees(name: string, email: string, phone: string, apikey: string): Observable<any>
-  {
-    const item = {
-      name: name,
-      email: email,
-      phone: phone,
-      apikey: apikey
-    }
-    return this.http.post(`${this.url}/trustees`, item);
-  }
-
-  getAllTrustees(): Observable<any>
-  {
-    return this.http.get(`${this.url}/trustees`);
-  }
-
-  getTrusteesById(id: number): Observable<any>
-  {
-    return this.http.get(`${this.url}/trustees/${id}`);
-  }
-
-  updateTrustee(trusteeId: string, name: string, email: string, phone: string, apikey: string): Observable<any>
-  {
-    const item = {
-      name: name,
-      email: email,
-      phone: phone,
-      apikey: apikey
-    }
-    return this.http.put(`${this.url}/trustees/${trusteeId}`, item);
-  }
-
-  // deleteTrustee(trusteeId: string): Observable<any>
-  // {
-  //   return this.http.delete(`${this.url}/trustees/${trusteeId}`);
+  // getBudgets(id: number): Observable<Budget[]> {
+  //   return this.http.get<Budget[]>(`${this.url}/budgets/${id}`);
   // }
 
-  addContractor(name: string, email: string, phone: string, apikey: string, banned: boolean): Observable<any>
-  {
-    const item = {
+  // getBuildingDetails(id: number): Observable<BuildingDetails> {
+  //   return this.http.get<BuildingDetails>(`${this.url}/buildings/${id}/details`);
+  // }
+
+  registerTrustee(name: string, email: string, phone: string, apikey: string): Observable<Trustee> {
+    const item: Trustee = { name, email, phone, apikey };
+    return this.http.post<Trustee>(`${this.url}/trustee`, item);
+  }
+
+  getAllTrustees(): Observable<Trustee[]> {
+    return this.http.get<Trustee[]>(`${this.url}/trustee`);
+  }
+
+  getTrusteesById(id: number): Observable<Trustee> {
+    return this.http.get<Trustee>(`${this.url}/trustee/${id}`);
+  }
+
+  updateTrustee(trusteeId: string, name: string, email: string, phone: string, apikey: string): Observable<Trustee> {
+    const item: Trustee = {
+      name: name,
+      email: email,
+      phone: phone,
+      apikey: apikey
+    };
+    return this.http.put<Trustee>(`${this.url}/trustee`, { trustee_id: trusteeId, ...item });
+  }
+
+  // deleteTrustee(trusteeId: string): Observable<void> {
+  //   return this.http.delete<void>(`${this.url}/trustee`, { body: { trustee_id: trusteeId } });
+  // }
+
+  addContractor(name: string, email: string, phone: string, apikey: string, banned: boolean): Observable<Contractor> {
+    const item: Contractor = {
       name: name,
       email: email,
       phone: phone,
       apikey: apikey,
       banned: banned
-    }
-    return this.http.post(`${this.url}/contractor`, item);
+    };
+    return this.http.post<Contractor>(`${this.url}/contractors`, item);
   }
 
-  getAllContractors(): Observable<any>
-  {
-    return this.http.get(`${this.url}/contractors`);
-  }
-  getContractorById(id: number): Observable<any>
-  {
-    return this.http.get(`${this.url}/contractors/${id}`);
+  getAllContractors(): Observable<Contractor[]> {
+    return this.http.get<Contractor[]>(`${this.url}/contractors`);
   }
 
-  getQuotes(): Observable<any>
-  {
-    return this.http.get(`${this.url}/quote`);
+  getContractorById(id: number): Observable<Contractor> {
+    return this.http.get<Contractor>(`${this.url}/contractors/${id}`);
   }
 
-  addQuote(taskId: string, contractorId: string, amount: number, submittedOn: Date, type:string ): Observable<any>
-  {
-    const quote = {
+  getQuotes(): Observable<Quote[]> {
+    return this.http.get<Quote[]>(`${this.url}/quote`);
+  }
+
+  addQuote(taskId: string, contractorId: string, amount: number, submittedOn: Date, type: string): Observable<Quote> {
+    const quote: Quote = {
       taskId: taskId,
       contractorId: contractorId,
       amount: amount,
       submittedOn: submittedOn,
       type: type
-    }
-    return this.http.post(`${this.url}/quote`, quote);
+    };
+    return this.http.post<Quote>(`${this.url}/quote`, quote);
   }
 
-  getQuoteById(id: number): Observable<any>
-  {
-    return this.http.get(`${this.url}/quote/${id}`);
+  getQuoteById(id: number): Observable<Quote> {
+    return this.http.get<Quote>(`${this.url}/quote/${id}`);
   }
 }
