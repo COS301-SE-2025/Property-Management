@@ -1,0 +1,29 @@
+name: Backend CI
+
+on:
+    push:
+        branches: [backend]
+    pull_request:
+        branches: [backend]
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Install ktlint
+              run: curl -sSLO https://github.com/pinterest/ktlint/releases/download/1.2.1/ktlint && chmod a+x ktlint
+            - name: Run ktlint
+              run: ./ktlint "Backend/property-management/src/**/*.kt"
+        
+    build:
+        runs-on: ubuntu-latest
+        needs: lint
+        steps:
+            - uses: actions/checkout@v3
+            - name: Make gradlew executable
+              run: chmod +x ./gradlew
+              working-directory: Backend
+            - name: Build with gradle
+              run: ./gradlew build
+              working-directory: Backend/property-management
