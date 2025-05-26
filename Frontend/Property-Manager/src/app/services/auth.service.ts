@@ -14,6 +14,7 @@ export interface AuthTokens {
   idToken: string;
   refreshToken: string;
   givenName?: string;
+  sub?: string;
 }
 
 @Injectable({
@@ -26,44 +27,48 @@ export class AuthService {
   });
 
   login(email: string, password: string): Promise<AuthTokens> {
-    const authenticationDetails = new AuthenticationDetails({
-      Username: email,
-      Password: password,
+  const authenticationDetails = new AuthenticationDetails({
+    Username: email,
+    Password: password,
+  });
+
+  const userData = {
+    Username: email,
+    Pool: this.userPool,
+  };
+
+  const cognitoUser = new CognitoUser(userData);
+
+  return new Promise((resolve, reject) => {
+    cognitoUser.authenticateUser(authenticationDetails, {
+      onSuccess: (result) => {
+        const idToken = result.getIdToken().getJwtToken();
+        const decodedToken = jwtDecode<{ 
+          sub: string;          
+          given_name?: string; 
+        }>(idToken);
+
+        resolve({
+          accessToken: result.getAccessToken().getJwtToken(),
+          idToken: idToken,
+          refreshToken: result.getRefreshToken().getToken(),
+          givenName: decodedToken.given_name,
+          sub: decodedToken.sub,  
+        });
+      },
+      onFailure: (err) => {
+        reject(err);
+      },
     });
-
-    const userData = {
-      Username: email,
-      Pool: this.userPool,
-    };
-
-    const cognitoUser = new CognitoUser(userData);
-
-    return new Promise((resolve, reject) => {
-      cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: (result) => {
-          const idToken = result.getIdToken().getJwtToken();
-          const decodeToken = jwtDecode<{ given_name?: string }>(idToken);
-
-          resolve({
-            accessToken: result.getAccessToken().getJwtToken(),
-            idToken: result.getIdToken().getJwtToken(),
-            refreshToken: result.getRefreshToken().getToken(),
-            givenName: decodeToken.given_name,
-          });
-        },
-        onFailure: (err) => {
-          reject(err);
-        },
-      });
-    });
-  }
+  });
+}
 
   register(
     email: string,
     password: string,
+    name: string,
     attributes: Record<string, string> = {}
   ): Promise<ISignUpResult> {
-    const randomName = () => Math.random().toString(36).substring(2, 10);
 
     const username = email.split('@')[0] + Date.now();
 
@@ -74,7 +79,7 @@ export class AuthService {
       }),
       new CognitoUserAttribute({
         Name: 'given_name',
-        Value: randomName()
+        Value: name
       })
     ];
 
