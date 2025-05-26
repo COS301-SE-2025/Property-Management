@@ -118,7 +118,7 @@ export class ApiService {
       apikey: apikey,
       banned: banned
     };
-    return this.http.post<Contractor>(`${this.url}/contractors`, item);
+    return this.http.post<Contractor>(`${this.url}/contractor`, item);
   }
 
   getAllContractors(): Observable<Contractor[]> {
