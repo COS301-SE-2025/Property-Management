@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
 
-  private url = 'http://localhost:8080/api';
+  private url = '/api';
   constructor(private http: HttpClient) { }
 
   getInventory(): Observable<any> 
@@ -28,6 +28,7 @@ export class ApiService {
 
   getBuildings(): Observable<any>
   {
+    console.log("Fetching buildings from API");
     return this.http.get(`${this.url}/buildings`);
   }
 

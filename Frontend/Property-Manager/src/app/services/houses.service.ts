@@ -3,51 +3,28 @@ import { House } from '../models/house.model'
 import { Inventory } from '../models/inventory.model';
 import { Budget } from '../models/budget.model';
 import { Timeline } from '../models/timeline.model';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HousesService {
 
-   //Mock data
-  houses = signal<House[]>([
-    {
-      id: 1,
-      name: 'Property X',
-      address: '123 Example str, Hatfield, Pretoria',
-      image: "assets/images/houseDemo.jpg"
-    },
-    {
-      id: 2,
-      name: 'Property Y',
-      address: '456 Example ave, Montana, Pretoria',
-      image: "assets/images/houseDemo2.jpg"
-    },
-    {
-      id: 3,
-      name: 'Property Z',
-      address: '789 Example str, Menlyn, Pretoria',
-      image: "assets/images/houseDemo3.jpg"
-    }
-  ]);
+  constructor(private apiService: ApiService) {
+    this.loadHouses();
+  }
 
-  inventory = signal<Inventory[]>([
-    {
-      description: 'Light bulbs',
-      quantity: 3,
-      Last_bought: new Date(2025, 5, 1)
-    },
-    {
-      description: 'Grey paint 5L bucket',
-      quantity: 1,
-      Last_bought: new Date(2024, 11, 12)
-    },
-    {
-      description: 'Box of 25 tiles',
-      quantity: 2,
-      Last_bought: new Date(2025, 2, 15)
-    }
-  ]);
+   //Mock data
+  houses = signal<House[]>([]);
+
+  mockImages = [
+    "assets/images/houseDemo.jpg",
+    "assets/images/houseDemo2.jpg",
+    "assets/images/houseDemo3.jpg"
+  ];
+
+  inventory = signal<Inventory[]>([]);
+
 
   budgets = signal<Budget[]>([
     {
@@ -100,5 +77,24 @@ export class HousesService {
   getHouseById(id: number): House | undefined{
     return this.houses().find(house => house.id === id);
   }
-  
+
+  async loadHouses(){
+    console.log("Loading houses...");
+    this.apiService.getBuildings().subscribe({
+      next: (houses) => {
+        console.log("Houses loaded:", houses);
+        this.houses.set(houses.map((house: any) => {
+          return {
+            id: house.buildingId,
+            name: house.name,
+            address: house.address,
+            image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
+          }
+        }))
+      },
+      error: (err) => {
+        console.error("Error loading houses:", err); 
+      }
+    })
+  }
 }
