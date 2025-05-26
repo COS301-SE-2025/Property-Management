@@ -28,7 +28,6 @@ export class ApiService {
 
   getBuildings(): Observable<any>
   {
-    console.log("Fetching buildings from API");
     return this.http.get(`${this.url}/buildings`);
   }
 
@@ -39,7 +38,7 @@ export class ApiService {
 
   getBuildingDetails(id: number): Observable<any>
   {
-    return this.http.get(`${this.url}/buildings/${id}/details`);
+    return this.http.get(`${this.url}/building/${id}/details`);
   }
 
   addTrustees(name: string, email: string, phone: string, apikey: string): Observable<any>

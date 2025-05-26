@@ -65,7 +65,9 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 
           <div class="text-center text-sm space-y-2">
             <a class="block" href="">Forgot password?</a>
-            <a class="font-semibold" href="">Register as Contractor?</a>
+            <a class="font-semibold" href="/contractorRegister">Register as Contractor?</a>
+            <br>
+            <a class="font-bold" href="/login">Login?</a>
           </div>
         </div>
       </div>
@@ -99,7 +101,7 @@ export class RegisterOwnerComponent {
     this.serverError = false;
     this.emptyField = false;
 
-    return this.authService.register(this.email, this.password)
+    return this.authService.register(this.email, this.password, 'owner')
       .then(() => {
         console.log('Successfully registered');
       })
