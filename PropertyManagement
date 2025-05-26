@@ -1,0 +1,1330 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.5
+-- Dumped by pg_dump version 17.5
+
+-- Started on 2025-05-20 19:25:20
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+ALTER TABLE ONLY public.trusteeapproval DROP CONSTRAINT trusteeapproval_trustee_id_fkey;
+ALTER TABLE ONLY public.trusteeapproval DROP CONSTRAINT trusteeapproval_quote_id_fkey;
+ALTER TABLE ONLY public.trustee DROP CONSTRAINT trustee_user_id_fkey;
+ALTER TABLE ONLY public.trustee DROP CONSTRAINT trustee_building_id_fkey;
+ALTER TABLE ONLY public.tenyearplan DROP CONSTRAINT tenyearplan_building_id_fkey;
+ALTER TABLE ONLY public.quote DROP CONSTRAINT quote_task_id_fkey;
+ALTER TABLE ONLY public.quote DROP CONSTRAINT quote_contractor_id_fkey;
+ALTER TABLE ONLY public.projecthistory DROP CONSTRAINT projecthistory_task_id_fkey;
+ALTER TABLE ONLY public.maintenancetask DROP CONSTRAINT maintenancetask_created_by_fkey;
+ALTER TABLE ONLY public.maintenancetask DROP CONSTRAINT maintenancetask_building_id_fkey;
+ALTER TABLE ONLY public.inventoryusage DROP CONSTRAINT inventoryusage_used_by_contractor_id_fkey;
+ALTER TABLE ONLY public.inventoryusage DROP CONSTRAINT inventoryusage_task_id_fkey;
+ALTER TABLE ONLY public.inventoryusage DROP CONSTRAINT inventoryusage_item_id_fkey;
+ALTER TABLE ONLY public.inventoryitem DROP CONSTRAINT inventoryitem_building_id_fkey;
+ALTER TABLE ONLY public.contractorrating DROP CONSTRAINT contractorrating_task_id_fkey;
+ALTER TABLE ONLY public.contractorrating DROP CONSTRAINT contractorrating_rated_by_fkey;
+ALTER TABLE ONLY public.contractorrating DROP CONSTRAINT contractorrating_contractor_id_fkey;
+ALTER TABLE ONLY public.budget DROP CONSTRAINT budget_building_id_fkey;
+ALTER TABLE ONLY public.budget DROP CONSTRAINT budget_approved_by_fkey;
+ALTER TABLE ONLY public.trusteeapproval DROP CONSTRAINT trusteeapproval_pkey;
+ALTER TABLE ONLY public.trustee DROP CONSTRAINT trustee_pkey;
+ALTER TABLE ONLY public.tenyearplan DROP CONSTRAINT tenyearplan_pkey;
+ALTER TABLE ONLY public.quote DROP CONSTRAINT quote_pkey;
+ALTER TABLE ONLY public.projecthistory DROP CONSTRAINT projecthistory_pkey;
+ALTER TABLE ONLY public.maintenancetask DROP CONSTRAINT maintenancetask_pkey;
+ALTER TABLE ONLY public.inventoryusage DROP CONSTRAINT inventoryusage_pkey;
+ALTER TABLE ONLY public.inventoryitem DROP CONSTRAINT inventoryitem_pkey;
+ALTER TABLE ONLY public.contractorrating DROP CONSTRAINT contractorrating_pkey;
+ALTER TABLE ONLY public.contractor DROP CONSTRAINT contractor_pkey;
+ALTER TABLE ONLY public.building DROP CONSTRAINT building_pkey;
+ALTER TABLE ONLY public.budget DROP CONSTRAINT budget_pkey;
+ALTER TABLE ONLY public."User" DROP CONSTRAINT "User_pkey";
+ALTER TABLE ONLY public."User" DROP CONSTRAINT "User_email_key";
+ALTER TABLE ONLY public."User" DROP CONSTRAINT "User_cognito_id_key";
+ALTER TABLE public.trusteeapproval ALTER COLUMN approval_id DROP DEFAULT;
+ALTER TABLE public.trustee ALTER COLUMN trustee_id DROP DEFAULT;
+ALTER TABLE public.tenyearplan ALTER COLUMN plan_id DROP DEFAULT;
+ALTER TABLE public.quote ALTER COLUMN quote_id DROP DEFAULT;
+ALTER TABLE public.projecthistory ALTER COLUMN history_id DROP DEFAULT;
+ALTER TABLE public.maintenancetask ALTER COLUMN task_id DROP DEFAULT;
+ALTER TABLE public.inventoryusage ALTER COLUMN usage_id DROP DEFAULT;
+ALTER TABLE public.inventoryitem ALTER COLUMN item_id DROP DEFAULT;
+ALTER TABLE public.contractorrating ALTER COLUMN rating_id DROP DEFAULT;
+ALTER TABLE public.contractor ALTER COLUMN contractor_id DROP DEFAULT;
+ALTER TABLE public.building ALTER COLUMN building_id DROP DEFAULT;
+ALTER TABLE public.budget ALTER COLUMN budget_id DROP DEFAULT;
+ALTER TABLE public."User" ALTER COLUMN user_id DROP DEFAULT;
+DROP SEQUENCE public.trusteeapproval_approval_id_seq;
+DROP TABLE public.trusteeapproval;
+DROP SEQUENCE public.trustee_trustee_id_seq;
+DROP TABLE public.trustee;
+DROP SEQUENCE public.tenyearplan_plan_id_seq;
+DROP TABLE public.tenyearplan;
+DROP SEQUENCE public.quote_quote_id_seq;
+DROP TABLE public.quote;
+DROP SEQUENCE public.projecthistory_history_id_seq;
+DROP TABLE public.projecthistory;
+DROP SEQUENCE public.maintenancetask_task_id_seq;
+DROP TABLE public.maintenancetask;
+DROP SEQUENCE public.inventoryusage_usage_id_seq;
+DROP TABLE public.inventoryusage;
+DROP SEQUENCE public.inventoryitem_item_id_seq;
+DROP TABLE public.inventoryitem;
+DROP SEQUENCE public.contractorrating_rating_id_seq;
+DROP TABLE public.contractorrating;
+DROP SEQUENCE public.contractor_contractor_id_seq;
+DROP TABLE public.contractor;
+DROP SEQUENCE public.building_building_id_seq;
+DROP TABLE public.building;
+DROP SEQUENCE public.budget_budget_id_seq;
+DROP TABLE public.budget;
+DROP SEQUENCE public."User_user_id_seq";
+DROP TABLE public."User";
+DROP SCHEMA public;
+--
+-- TOC entry 4 (class 2615 OID 2200)
+-- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO pg_database_owner;
+
+--
+-- TOC entry 5046 (class 0 OID 0)
+-- Dependencies: 4
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 220 (class 1259 OID 16399)
+-- Name: User; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."User" (
+    user_id integer NOT NULL,
+    name character varying(255),
+    email character varying(255),
+    phone character varying(50),
+    cognito_id character varying(255)
+);
+
+
+ALTER TABLE public."User" OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 16398)
+-- Name: User_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."User_user_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."User_user_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 5047 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: User_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."User_user_id_seq" OWNED BY public."User".user_id;
+
+
+--
+-- TOC entry 240 (class 1259 OID 16571)
+-- Name: budget; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.budget (
+    budget_id integer NOT NULL,
+    building_id integer,
+    year integer,
+    total_budget numeric(12,2),
+    maintenance_budget numeric(12,2),
+    inventory_budget numeric(12,2),
+    approved_by integer,
+    approval_date date,
+    notes text,
+    CONSTRAINT budget_year_check CHECK ((year >= 2000))
+);
+
+
+ALTER TABLE public.budget OWNER TO postgres;
+
+--
+-- TOC entry 239 (class 1259 OID 16570)
+-- Name: budget_budget_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.budget_budget_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.budget_budget_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5048 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: budget_budget_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.budget_budget_id_seq OWNED BY public.budget.budget_id;
+
+
+--
+-- TOC entry 218 (class 1259 OID 16390)
+-- Name: building; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.building (
+    building_id integer NOT NULL,
+    name character varying(255),
+    address text,
+    complex_name character varying(255)
+);
+
+
+ALTER TABLE public.building OWNER TO postgres;
+
+--
+-- TOC entry 217 (class 1259 OID 16389)
+-- Name: building_building_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.building_building_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.building_building_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5049 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: building_building_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.building_building_id_seq OWNED BY public.building.building_id;
+
+
+--
+-- TOC entry 224 (class 1259 OID 16429)
+-- Name: contractor; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contractor (
+    contractor_id integer NOT NULL,
+    name character varying(255),
+    contact_info text,
+    tools_provided jsonb,
+    banned boolean DEFAULT false
+);
+
+
+ALTER TABLE public.contractor OWNER TO postgres;
+
+--
+-- TOC entry 223 (class 1259 OID 16428)
+-- Name: contractor_contractor_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.contractor_contractor_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.contractor_contractor_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5050 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: contractor_contractor_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.contractor_contractor_id_seq OWNED BY public.contractor.contractor_id;
+
+
+--
+-- TOC entry 236 (class 1259 OID 16530)
+-- Name: contractorrating; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contractorrating (
+    rating_id integer NOT NULL,
+    contractor_id integer,
+    task_id integer,
+    rated_by integer,
+    rating integer,
+    comment text,
+    date_rated date,
+    CONSTRAINT contractorrating_rating_check CHECK (((rating >= 1) AND (rating <= 5)))
+);
+
+
+ALTER TABLE public.contractorrating OWNER TO postgres;
+
+--
+-- TOC entry 235 (class 1259 OID 16529)
+-- Name: contractorrating_rating_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.contractorrating_rating_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.contractorrating_rating_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5051 (class 0 OID 0)
+-- Dependencies: 235
+-- Name: contractorrating_rating_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.contractorrating_rating_id_seq OWNED BY public.contractorrating.rating_id;
+
+
+--
+-- TOC entry 228 (class 1259 OID 16459)
+-- Name: inventoryitem; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inventoryitem (
+    item_id integer NOT NULL,
+    name character varying(255),
+    unit character varying(50),
+    quantity_in_stock integer,
+    building_id integer
+);
+
+
+ALTER TABLE public.inventoryitem OWNER TO postgres;
+
+--
+-- TOC entry 227 (class 1259 OID 16458)
+-- Name: inventoryitem_item_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inventoryitem_item_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.inventoryitem_item_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5052 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: inventoryitem_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inventoryitem_item_id_seq OWNED BY public.inventoryitem.item_id;
+
+
+--
+-- TOC entry 230 (class 1259 OID 16471)
+-- Name: inventoryusage; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inventoryusage (
+    usage_id integer NOT NULL,
+    task_id integer,
+    item_id integer,
+    quantity_used integer,
+    used_by_contractor_id integer,
+    trustee_approved boolean DEFAULT false,
+    approval_date date
+);
+
+
+ALTER TABLE public.inventoryusage OWNER TO postgres;
+
+--
+-- TOC entry 229 (class 1259 OID 16470)
+-- Name: inventoryusage_usage_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inventoryusage_usage_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.inventoryusage_usage_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5053 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: inventoryusage_usage_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inventoryusage_usage_id_seq OWNED BY public.inventoryusage.usage_id;
+
+
+--
+-- TOC entry 226 (class 1259 OID 16439)
+-- Name: maintenancetask; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.maintenancetask (
+    task_id integer NOT NULL,
+    building_id integer,
+    title character varying(255),
+    description text,
+    status character varying(100),
+    scheduled_date date,
+    created_by integer,
+    approved boolean DEFAULT false,
+    proof_images text[]
+);
+
+
+ALTER TABLE public.maintenancetask OWNER TO postgres;
+
+--
+-- TOC entry 225 (class 1259 OID 16438)
+-- Name: maintenancetask_task_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.maintenancetask_task_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.maintenancetask_task_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5054 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: maintenancetask_task_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.maintenancetask_task_id_seq OWNED BY public.maintenancetask.task_id;
+
+
+--
+-- TOC entry 238 (class 1259 OID 16555)
+-- Name: projecthistory; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.projecthistory (
+    history_id integer NOT NULL,
+    task_id integer,
+    event text,
+    "timestamp" timestamp without time zone,
+    details jsonb
+);
+
+
+ALTER TABLE public.projecthistory OWNER TO postgres;
+
+--
+-- TOC entry 237 (class 1259 OID 16554)
+-- Name: projecthistory_history_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.projecthistory_history_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.projecthistory_history_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5055 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: projecthistory_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.projecthistory_history_id_seq OWNED BY public.projecthistory.history_id;
+
+
+--
+-- TOC entry 232 (class 1259 OID 16494)
+-- Name: quote; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.quote (
+    quote_id integer NOT NULL,
+    task_id integer,
+    contractor_id integer,
+    amount numeric(12,2),
+    document_url text,
+    submitted_on date,
+    status character varying(100)
+);
+
+
+ALTER TABLE public.quote OWNER TO postgres;
+
+--
+-- TOC entry 231 (class 1259 OID 16493)
+-- Name: quote_quote_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.quote_quote_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.quote_quote_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5056 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: quote_quote_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.quote_quote_id_seq OWNED BY public.quote.quote_id;
+
+
+--
+-- TOC entry 242 (class 1259 OID 16591)
+-- Name: tenyearplan; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tenyearplan (
+    plan_id integer NOT NULL,
+    building_id integer,
+    year integer,
+    projected_maintenance_cost numeric(12,2),
+    projected_inventory_cost numeric(12,2),
+    notes text,
+    CONSTRAINT tenyearplan_year_check CHECK ((year >= 2000))
+);
+
+
+ALTER TABLE public.tenyearplan OWNER TO postgres;
+
+--
+-- TOC entry 241 (class 1259 OID 16590)
+-- Name: tenyearplan_plan_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.tenyearplan_plan_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.tenyearplan_plan_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5057 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: tenyearplan_plan_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.tenyearplan_plan_id_seq OWNED BY public.tenyearplan.plan_id;
+
+
+--
+-- TOC entry 222 (class 1259 OID 16412)
+-- Name: trustee; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.trustee (
+    trustee_id integer NOT NULL,
+    user_id integer,
+    building_id integer,
+    is_owner boolean,
+    role character varying(100)
+);
+
+
+ALTER TABLE public.trustee OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1259 OID 16411)
+-- Name: trustee_trustee_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.trustee_trustee_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.trustee_trustee_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5058 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: trustee_trustee_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.trustee_trustee_id_seq OWNED BY public.trustee.trustee_id;
+
+
+--
+-- TOC entry 234 (class 1259 OID 16513)
+-- Name: trusteeapproval; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.trusteeapproval (
+    approval_id integer NOT NULL,
+    quote_id integer,
+    trustee_id integer,
+    vote character varying(10),
+    vote_date date
+);
+
+
+ALTER TABLE public.trusteeapproval OWNER TO postgres;
+
+--
+-- TOC entry 233 (class 1259 OID 16512)
+-- Name: trusteeapproval_approval_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.trusteeapproval_approval_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.trusteeapproval_approval_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5059 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: trusteeapproval_approval_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.trusteeapproval_approval_id_seq OWNED BY public.trusteeapproval.approval_id;
+
+
+--
+-- TOC entry 4803 (class 2604 OID 16402)
+-- Name: User user_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."User" ALTER COLUMN user_id SET DEFAULT nextval('public."User_user_id_seq"'::regclass);
+
+
+--
+-- TOC entry 4816 (class 2604 OID 16574)
+-- Name: budget budget_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.budget ALTER COLUMN budget_id SET DEFAULT nextval('public.budget_budget_id_seq'::regclass);
+
+
+--
+-- TOC entry 4802 (class 2604 OID 16393)
+-- Name: building building_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.building ALTER COLUMN building_id SET DEFAULT nextval('public.building_building_id_seq'::regclass);
+
+
+--
+-- TOC entry 4805 (class 2604 OID 16432)
+-- Name: contractor contractor_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contractor ALTER COLUMN contractor_id SET DEFAULT nextval('public.contractor_contractor_id_seq'::regclass);
+
+
+--
+-- TOC entry 4814 (class 2604 OID 16533)
+-- Name: contractorrating rating_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contractorrating ALTER COLUMN rating_id SET DEFAULT nextval('public.contractorrating_rating_id_seq'::regclass);
+
+
+--
+-- TOC entry 4809 (class 2604 OID 16462)
+-- Name: inventoryitem item_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventoryitem ALTER COLUMN item_id SET DEFAULT nextval('public.inventoryitem_item_id_seq'::regclass);
+
+
+--
+-- TOC entry 4810 (class 2604 OID 16474)
+-- Name: inventoryusage usage_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventoryusage ALTER COLUMN usage_id SET DEFAULT nextval('public.inventoryusage_usage_id_seq'::regclass);
+
+
+--
+-- TOC entry 4807 (class 2604 OID 16442)
+-- Name: maintenancetask task_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maintenancetask ALTER COLUMN task_id SET DEFAULT nextval('public.maintenancetask_task_id_seq'::regclass);
+
+
+--
+-- TOC entry 4815 (class 2604 OID 16558)
+-- Name: projecthistory history_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.projecthistory ALTER COLUMN history_id SET DEFAULT nextval('public.projecthistory_history_id_seq'::regclass);
+
+
+--
+-- TOC entry 4812 (class 2604 OID 16497)
+-- Name: quote quote_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.quote ALTER COLUMN quote_id SET DEFAULT nextval('public.quote_quote_id_seq'::regclass);
+
+
+--
+-- TOC entry 4817 (class 2604 OID 16594)
+-- Name: tenyearplan plan_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tenyearplan ALTER COLUMN plan_id SET DEFAULT nextval('public.tenyearplan_plan_id_seq'::regclass);
+
+
+--
+-- TOC entry 4804 (class 2604 OID 16415)
+-- Name: trustee trustee_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trustee ALTER COLUMN trustee_id SET DEFAULT nextval('public.trustee_trustee_id_seq'::regclass);
+
+
+--
+-- TOC entry 4813 (class 2604 OID 16516)
+-- Name: trusteeapproval approval_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trusteeapproval ALTER COLUMN approval_id SET DEFAULT nextval('public.trusteeapproval_approval_id_seq'::regclass);
+
+
+--
+-- TOC entry 5018 (class 0 OID 16399)
+-- Dependencies: 220
+-- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public."User" (user_id, name, email, phone, cognito_id) VALUES (1, 'Alice Trustee', 'alice@example.com', '0123456789', 'cognito-alice');
+INSERT INTO public."User" (user_id, name, email, phone, cognito_id) VALUES (2, 'Bob Contractor', 'bob@example.com', '0987654321', 'cognito-bob');
+INSERT INTO public."User" (user_id, name, email, phone, cognito_id) VALUES (3, 'Charlie Trustee', 'charlie@example.com', '0711111111', 'cognito-charlie');
+
+
+--
+-- TOC entry 5038 (class 0 OID 16571)
+-- Dependencies: 240
+-- Data for Name: budget; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 5016 (class 0 OID 16390)
+-- Dependencies: 218
+-- Data for Name: building; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.building (building_id, name, address, complex_name) VALUES (1, 'Block A', '123 Main St', 'Greenwood Complex');
+INSERT INTO public.building (building_id, name, address, complex_name) VALUES (2, 'Block B', '456 Oak Ave', 'Greenwood Complex');
+
+
+--
+-- TOC entry 5022 (class 0 OID 16429)
+-- Dependencies: 224
+-- Data for Name: contractor; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.contractor (contractor_id, name, contact_info, tools_provided, banned) VALUES (1, 'FixItAll', 'fixit@example.com', '{"drill": true, "hammer": true}', false);
+INSERT INTO public.contractor (contractor_id, name, contact_info, tools_provided, banned) VALUES (2, 'PlumbPro', 'plumbpro@example.com', '{"wrench": true, "pipe_cutter": true}', false);
+
+
+--
+-- TOC entry 5034 (class 0 OID 16530)
+-- Dependencies: 236
+-- Data for Name: contractorrating; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.contractorrating (rating_id, contractor_id, task_id, rated_by, rating, comment, date_rated) VALUES (1, 1, 1, 1, 4, 'Good job overall.', '2025-05-16');
+INSERT INTO public.contractorrating (rating_id, contractor_id, task_id, rated_by, rating, comment, date_rated) VALUES (2, 2, 2, 2, 3, 'Work was delayed.', '2025-05-18');
+
+
+--
+-- TOC entry 5026 (class 0 OID 16459)
+-- Dependencies: 228
+-- Data for Name: inventoryitem; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.inventoryitem (item_id, name, unit, quantity_in_stock, building_id) VALUES (1, 'Light Bulb', 'pieces', 100, 1);
+INSERT INTO public.inventoryitem (item_id, name, unit, quantity_in_stock, building_id) VALUES (2, 'Pipe Segment', 'meters', 50, 2);
+INSERT INTO public.inventoryitem (item_id, name, unit, quantity_in_stock, building_id) VALUES (3, 'Paint Bucket', 'liters', 20, 1);
+
+
+--
+-- TOC entry 5028 (class 0 OID 16471)
+-- Dependencies: 230
+-- Data for Name: inventoryusage; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.inventoryusage (usage_id, task_id, item_id, quantity_used, used_by_contractor_id, trustee_approved, approval_date) VALUES (1, 1, 1, 10, 1, true, '2025-05-15');
+INSERT INTO public.inventoryusage (usage_id, task_id, item_id, quantity_used, used_by_contractor_id, trustee_approved, approval_date) VALUES (2, 2, 2, 5, 2, false, NULL);
+
+
+--
+-- TOC entry 5024 (class 0 OID 16439)
+-- Dependencies: 226
+-- Data for Name: maintenancetask; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.maintenancetask (task_id, building_id, title, description, status, scheduled_date, created_by, approved, proof_images) VALUES (1, 1, 'Roof Repair', 'Repair leaks in the main roof', 'Scheduled', '2025-06-01', 1, false, '{https://example.com/img1.jpg}');
+INSERT INTO public.maintenancetask (task_id, building_id, title, description, status, scheduled_date, created_by, approved, proof_images) VALUES (2, 2, 'Pipe Replacement', 'Replace old piping in Block B', 'Pending', '2025-06-05', 2, false, NULL);
+
+
+--
+-- TOC entry 5036 (class 0 OID 16555)
+-- Dependencies: 238
+-- Data for Name: projecthistory; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.projecthistory (history_id, task_id, event, "timestamp", details) VALUES (1, 1, 'Task Created', '2025-05-20 10:28:33.103395', '{"status": "created"}');
+INSERT INTO public.projecthistory (history_id, task_id, event, "timestamp", details) VALUES (2, 1, 'Quote Submitted', '2025-05-20 10:28:33.103395', '{"amount": 5000}');
+INSERT INTO public.projecthistory (history_id, task_id, event, "timestamp", details) VALUES (3, 2, 'Approval Requested', '2025-05-20 10:28:33.103395', '{"status": "pending"}');
+
+
+--
+-- TOC entry 5030 (class 0 OID 16494)
+-- Dependencies: 232
+-- Data for Name: quote; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.quote (quote_id, task_id, contractor_id, amount, document_url, submitted_on, status) VALUES (1, 1, 1, 5000.00, 'https://example.com/quote1.pdf', '2025-05-10', 'Submitted');
+INSERT INTO public.quote (quote_id, task_id, contractor_id, amount, document_url, submitted_on, status) VALUES (2, 2, 2, 3000.00, 'https://example.com/quote2.pdf', '2025-05-12', 'Pending');
+
+
+--
+-- TOC entry 5040 (class 0 OID 16591)
+-- Dependencies: 242
+-- Data for Name: tenyearplan; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 5020 (class 0 OID 16412)
+-- Dependencies: 222
+-- Data for Name: trustee; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.trustee (trustee_id, user_id, building_id, is_owner, role) VALUES (1, 1, 1, true, 'Senior Trustee');
+INSERT INTO public.trustee (trustee_id, user_id, building_id, is_owner, role) VALUES (2, 3, 2, false, 'Assistant Trustee');
+
+
+--
+-- TOC entry 5032 (class 0 OID 16513)
+-- Dependencies: 234
+-- Data for Name: trusteeapproval; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.trusteeapproval (approval_id, quote_id, trustee_id, vote, vote_date) VALUES (1, 1, 1, 'Approve', '2025-05-11');
+INSERT INTO public.trusteeapproval (approval_id, quote_id, trustee_id, vote, vote_date) VALUES (2, 2, 2, 'Reject', '2025-05-13');
+
+
+--
+-- TOC entry 5060 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: User_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."User_user_id_seq"', 3, true);
+
+
+--
+-- TOC entry 5061 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: budget_budget_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.budget_budget_id_seq', 1, false);
+
+
+--
+-- TOC entry 5062 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: building_building_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.building_building_id_seq', 2, true);
+
+
+--
+-- TOC entry 5063 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: contractor_contractor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.contractor_contractor_id_seq', 2, true);
+
+
+--
+-- TOC entry 5064 (class 0 OID 0)
+-- Dependencies: 235
+-- Name: contractorrating_rating_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.contractorrating_rating_id_seq', 2, true);
+
+
+--
+-- TOC entry 5065 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: inventoryitem_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inventoryitem_item_id_seq', 3, true);
+
+
+--
+-- TOC entry 5066 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: inventoryusage_usage_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inventoryusage_usage_id_seq', 2, true);
+
+
+--
+-- TOC entry 5067 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: maintenancetask_task_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.maintenancetask_task_id_seq', 2, true);
+
+
+--
+-- TOC entry 5068 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: projecthistory_history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.projecthistory_history_id_seq', 3, true);
+
+
+--
+-- TOC entry 5069 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: quote_quote_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.quote_quote_id_seq', 2, true);
+
+
+--
+-- TOC entry 5070 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: tenyearplan_plan_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.tenyearplan_plan_id_seq', 1, false);
+
+
+--
+-- TOC entry 5071 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: trustee_trustee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.trustee_trustee_id_seq', 2, true);
+
+
+--
+-- TOC entry 5072 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: trusteeapproval_approval_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.trusteeapproval_approval_id_seq', 2, true);
+
+
+--
+-- TOC entry 4824 (class 2606 OID 16410)
+-- Name: User User_cognito_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_cognito_id_key" UNIQUE (cognito_id);
+
+
+--
+-- TOC entry 4826 (class 2606 OID 16408)
+-- Name: User User_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_email_key" UNIQUE (email);
+
+
+--
+-- TOC entry 4828 (class 2606 OID 16406)
+-- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_pkey" PRIMARY KEY (user_id);
+
+
+--
+-- TOC entry 4848 (class 2606 OID 16579)
+-- Name: budget budget_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.budget
+    ADD CONSTRAINT budget_pkey PRIMARY KEY (budget_id);
+
+
+--
+-- TOC entry 4822 (class 2606 OID 16397)
+-- Name: building building_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.building
+    ADD CONSTRAINT building_pkey PRIMARY KEY (building_id);
+
+
+--
+-- TOC entry 4832 (class 2606 OID 16437)
+-- Name: contractor contractor_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contractor
+    ADD CONSTRAINT contractor_pkey PRIMARY KEY (contractor_id);
+
+
+--
+-- TOC entry 4844 (class 2606 OID 16538)
+-- Name: contractorrating contractorrating_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contractorrating
+    ADD CONSTRAINT contractorrating_pkey PRIMARY KEY (rating_id);
+
+
+--
+-- TOC entry 4836 (class 2606 OID 16464)
+-- Name: inventoryitem inventoryitem_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventoryitem
+    ADD CONSTRAINT inventoryitem_pkey PRIMARY KEY (item_id);
+
+
+--
+-- TOC entry 4838 (class 2606 OID 16477)
+-- Name: inventoryusage inventoryusage_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventoryusage
+    ADD CONSTRAINT inventoryusage_pkey PRIMARY KEY (usage_id);
+
+
+--
+-- TOC entry 4834 (class 2606 OID 16447)
+-- Name: maintenancetask maintenancetask_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maintenancetask
+    ADD CONSTRAINT maintenancetask_pkey PRIMARY KEY (task_id);
+
+
+--
+-- TOC entry 4846 (class 2606 OID 16562)
+-- Name: projecthistory projecthistory_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.projecthistory
+    ADD CONSTRAINT projecthistory_pkey PRIMARY KEY (history_id);
+
+
+--
+-- TOC entry 4840 (class 2606 OID 16501)
+-- Name: quote quote_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.quote
+    ADD CONSTRAINT quote_pkey PRIMARY KEY (quote_id);
+
+
+--
+-- TOC entry 4850 (class 2606 OID 16599)
+-- Name: tenyearplan tenyearplan_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tenyearplan
+    ADD CONSTRAINT tenyearplan_pkey PRIMARY KEY (plan_id);
+
+
+--
+-- TOC entry 4830 (class 2606 OID 16417)
+-- Name: trustee trustee_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trustee
+    ADD CONSTRAINT trustee_pkey PRIMARY KEY (trustee_id);
+
+
+--
+-- TOC entry 4842 (class 2606 OID 16518)
+-- Name: trusteeapproval trusteeapproval_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trusteeapproval
+    ADD CONSTRAINT trusteeapproval_pkey PRIMARY KEY (approval_id);
+
+
+--
+-- TOC entry 4867 (class 2606 OID 16585)
+-- Name: budget budget_approved_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.budget
+    ADD CONSTRAINT budget_approved_by_fkey FOREIGN KEY (approved_by) REFERENCES public.trustee(trustee_id);
+
+
+--
+-- TOC entry 4868 (class 2606 OID 16580)
+-- Name: budget budget_building_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.budget
+    ADD CONSTRAINT budget_building_id_fkey FOREIGN KEY (building_id) REFERENCES public.building(building_id);
+
+
+--
+-- TOC entry 4863 (class 2606 OID 16539)
+-- Name: contractorrating contractorrating_contractor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contractorrating
+    ADD CONSTRAINT contractorrating_contractor_id_fkey FOREIGN KEY (contractor_id) REFERENCES public.contractor(contractor_id);
+
+
+--
+-- TOC entry 4864 (class 2606 OID 16549)
+-- Name: contractorrating contractorrating_rated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contractorrating
+    ADD CONSTRAINT contractorrating_rated_by_fkey FOREIGN KEY (rated_by) REFERENCES public.trustee(trustee_id);
+
+
+--
+-- TOC entry 4865 (class 2606 OID 16544)
+-- Name: contractorrating contractorrating_task_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contractorrating
+    ADD CONSTRAINT contractorrating_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.maintenancetask(task_id);
+
+
+--
+-- TOC entry 4855 (class 2606 OID 16465)
+-- Name: inventoryitem inventoryitem_building_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventoryitem
+    ADD CONSTRAINT inventoryitem_building_id_fkey FOREIGN KEY (building_id) REFERENCES public.building(building_id);
+
+
+--
+-- TOC entry 4856 (class 2606 OID 16483)
+-- Name: inventoryusage inventoryusage_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventoryusage
+    ADD CONSTRAINT inventoryusage_item_id_fkey FOREIGN KEY (item_id) REFERENCES public.inventoryitem(item_id);
+
+
+--
+-- TOC entry 4857 (class 2606 OID 16478)
+-- Name: inventoryusage inventoryusage_task_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventoryusage
+    ADD CONSTRAINT inventoryusage_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.maintenancetask(task_id);
+
+
+--
+-- TOC entry 4858 (class 2606 OID 16488)
+-- Name: inventoryusage inventoryusage_used_by_contractor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventoryusage
+    ADD CONSTRAINT inventoryusage_used_by_contractor_id_fkey FOREIGN KEY (used_by_contractor_id) REFERENCES public.contractor(contractor_id);
+
+
+--
+-- TOC entry 4853 (class 2606 OID 16448)
+-- Name: maintenancetask maintenancetask_building_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maintenancetask
+    ADD CONSTRAINT maintenancetask_building_id_fkey FOREIGN KEY (building_id) REFERENCES public.building(building_id);
+
+
+--
+-- TOC entry 4854 (class 2606 OID 16453)
+-- Name: maintenancetask maintenancetask_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maintenancetask
+    ADD CONSTRAINT maintenancetask_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.trustee(trustee_id);
+
+
+--
+-- TOC entry 4866 (class 2606 OID 16563)
+-- Name: projecthistory projecthistory_task_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.projecthistory
+    ADD CONSTRAINT projecthistory_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.maintenancetask(task_id);
+
+
+--
+-- TOC entry 4859 (class 2606 OID 16507)
+-- Name: quote quote_contractor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.quote
+    ADD CONSTRAINT quote_contractor_id_fkey FOREIGN KEY (contractor_id) REFERENCES public.contractor(contractor_id);
+
+
+--
+-- TOC entry 4860 (class 2606 OID 16502)
+-- Name: quote quote_task_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.quote
+    ADD CONSTRAINT quote_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.maintenancetask(task_id);
+
+
+--
+-- TOC entry 4869 (class 2606 OID 16600)
+-- Name: tenyearplan tenyearplan_building_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tenyearplan
+    ADD CONSTRAINT tenyearplan_building_id_fkey FOREIGN KEY (building_id) REFERENCES public.building(building_id);
+
+
+--
+-- TOC entry 4851 (class 2606 OID 16423)
+-- Name: trustee trustee_building_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trustee
+    ADD CONSTRAINT trustee_building_id_fkey FOREIGN KEY (building_id) REFERENCES public.building(building_id);
+
+
+--
+-- TOC entry 4852 (class 2606 OID 16418)
+-- Name: trustee trustee_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trustee
+    ADD CONSTRAINT trustee_user_id_fkey FOREIGN KEY (user_id) REFERENCES public."User"(user_id);
+
+
+--
+-- TOC entry 4861 (class 2606 OID 16519)
+-- Name: trusteeapproval trusteeapproval_quote_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trusteeapproval
+    ADD CONSTRAINT trusteeapproval_quote_id_fkey FOREIGN KEY (quote_id) REFERENCES public.quote(quote_id);
+
+
+--
+-- TOC entry 4862 (class 2606 OID 16524)
+-- Name: trusteeapproval trusteeapproval_trustee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trusteeapproval
+    ADD CONSTRAINT trusteeapproval_trustee_id_fkey FOREIGN KEY (trustee_id) REFERENCES public.trustee(trustee_id);
+
+
+-- Completed on 2025-05-20 19:25:21
+
+--
+-- PostgreSQL database dump complete
+--
+
