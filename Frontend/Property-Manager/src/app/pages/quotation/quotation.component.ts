@@ -17,7 +17,6 @@ import { ApiService } from '../../services/api.service';
     FormsModule,
     InputTextModule,
     ButtonModule,
-    FileUpload,
     CardModule,
     CommonModule,
     ToastModule
