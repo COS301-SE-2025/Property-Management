@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FileUploadEvent } from 'primeng/fileupload';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-quotation',
@@ -80,7 +81,7 @@ export class QuotationComponent {
     amount: ''
   };
   previewUrl: string | null = null;
-  constructor(private messageService: MessageService) {}
+  constructor(private messageService: MessageService, private apiservice: ApiService) {}
 
     onUpload(event: FileUploadEvent) {
   const file = event.files?.[0];
@@ -100,7 +101,16 @@ export class QuotationComponent {
 }
 
   submitQuotation() {
+    
     console.log('Quotation submitted:', this.quotation);
+    
+    // this.apiservice.addQuote(101,)
+    alert(this.apiservice.getAllTrustees().subscribe(response => {
+      console.log(response); // inspect the response structure first
+
+      const firstTrustee = response[0];
+      alert('First trustee:', firstTrustee);
+    }));
     alert('Quotation submitted successfully!');
   }
 }
