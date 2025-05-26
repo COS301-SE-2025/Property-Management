@@ -2,6 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+export interface Trustee {
+  trustee_id?: number;
+  name: string;
+  email: string;
+  phone: string;
+  apikey: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -77,6 +85,11 @@ export class ApiService {
   // {
   //   return this.http.delete(`${this.url}/trustee/${trusteeId}`);
   // }
+
+  registerTrustee(name: string, email: string, phone: string, apikey: string): Observable<Trustee> {
+    const item: Trustee = { name, email, phone, apikey };
+    return this.http.post<Trustee>(`${this.url}/trustee`, item);
+  }
 
   addContractor(name: string, email: string, phone: string, apikey: string, banned: boolean): Observable<any>
   {
