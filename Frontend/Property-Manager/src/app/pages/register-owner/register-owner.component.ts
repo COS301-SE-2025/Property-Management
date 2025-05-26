@@ -99,7 +99,7 @@ export class RegisterOwnerComponent {
     this.serverError = false;
     this.emptyField = false;
 
-    return this.authService.register(this.email, this.password)
+    return this.authService.register(this.email, this.password, 'owner')
       .then(() => {
         console.log('Successfully registered');
       })
