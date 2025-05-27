@@ -1,6 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Inventory } from '../models/inventory.model';
+import { Building } from '../models/building.model';
+import { Budget } from '../models/budget.model';
+import { Contractor } from '../models/contractor.model';
+import { Quote } from '../models/quote.model';
+import { BuildingDetails } from '../models/buildingDetails.model';
 
 export interface Trustee {
   trustee_id?: number;
@@ -18,12 +24,12 @@ export class ApiService {
   private url = '/api';
   constructor(private http: HttpClient) { }
 
-  getInventory(): Observable<any> 
+  getInventory(): Observable<Inventory[]> 
   {
-    return this.http.get(`${this.url}/inventory`);
+    return this.http.get<Inventory[]>(`${this.url}/inventory`);
   }
 
-  addInventoryItem(name: string, buildingId: number, quantity: number, price: number): Observable<any>
+  addInventoryItem(name: string, buildingId: number, quantity: number, price: number): Observable<Inventory>
   {
     const item = {
       name: name,
@@ -31,46 +37,25 @@ export class ApiService {
       quantity: quantity,
       price: price
     }
-    return this.http.post(`${this.url}/inventory`, item);
+    return this.http.post<Inventory>(`${this.url}/inventory`, item);
   }
 
-  getBuildings(): Observable<any>
+  getBuildings(): Observable<Building[]>
   {
-    return this.http.get(`${this.url}/buildings`);
+    return this.http.get<Building[]>(`${this.url}/buildings`);
   }
 
-  getBudgets(id: number): Observable<any>
+  getBudgets(id: number): Observable<Budget[]>
   {
-    return this.http.get(`${this.url}/budgets/${id}`);
+    return this.http.get<Budget[]>(`${this.url}/budgets/${id}`);
   }
 
-  getBuildingDetails(id: number): Observable<any>
+  getBuildingDetails(id: number): Observable<BuildingDetails>
   {
-    return this.http.get(`${this.url}/building/${id}/details`);
+    return this.http.get<BuildingDetails>(`${this.url}/building/${id}/details`);
   }
 
-  addTrustees(name: string, email: string, phone: string, apikey: string): Observable<any>
-  {
-    const item = {
-      name: name,
-      email: email,
-      phone: phone,
-      apikey: apikey
-    }
-    return this.http.post(`${this.url}/trustee`, item);
-  }
-
-  getAllTrustees(): Observable<any>
-  {
-    return this.http.get(`${this.url}/trustee`);
-  }
-
-  getTrusteesById(id: number): Observable<any>
-  {
-    return this.http.get(`${this.url}/trustee/${id}`);
-  }
-
-  updateTrustee(trusteeId: string, name: string, email: string, phone: string, apikey: string): Observable<any>
+  addTrustees(name: string, email: string, phone: string, apikey: string): Observable<Trustee>
   {
     const item = {
       name: name,
@@ -78,7 +63,28 @@ export class ApiService {
       phone: phone,
       apikey: apikey
     }
-    return this.http.put(`${this.url}/trustee/${trusteeId}`, item);
+    return this.http.post<Trustee>(`${this.url}/trustee`, item);
+  }
+
+  getAllTrustees(): Observable<Trustee[]>
+  {
+    return this.http.get<Trustee[]>(`${this.url}/trustee`);
+  }
+
+  getTrusteesById(id: number): Observable<Trustee>
+  {
+    return this.http.get<Trustee>(`${this.url}/trustee/${id}`);
+  }
+
+  updateTrustee(trusteeId: string, name: string, email: string, phone: string, apikey: string): Observable<Trustee>
+  {
+    const item = {
+      name: name,
+      email: email,
+      phone: phone,
+      apikey: apikey
+    }
+    return this.http.put<Trustee>(`${this.url}/trustee/${trusteeId}`, item);
   }
 
   // deleteTrustee(trusteeId: string): Observable<any>
@@ -91,7 +97,7 @@ export class ApiService {
     return this.http.post<Trustee>(`${this.url}/trustee`, item);
   }
 
-  addContractor(name: string, email: string, phone: string, apikey: string, banned: boolean): Observable<any>
+  addContractor(name: string, email: string, phone: string, apikey: string, banned: boolean): Observable<Contractor>
   {
     const item = {
       name: name,
@@ -100,24 +106,24 @@ export class ApiService {
       apikey: apikey,
       banned: banned
     }
-    return this.http.post(`${this.url}/contractor`, item);
+    return this.http.post<Contractor>(`${this.url}/contractor`, item);
   }
 
-  getAllContractors(): Observable<any>
+  getAllContractors(): Observable<Contractor[]>
   {
-    return this.http.get(`${this.url}/contractor`);
+    return this.http.get<Contractor[]>(`${this.url}/contractor`);
   }
-  getContractorById(id: number): Observable<any>
+  getContractorById(id: number): Observable<Contractor>
   {
-    return this.http.get(`${this.url}/contractor/${id}`);
-  }
-
-  getQuotes(): Observable<any>
-  {
-    return this.http.get(`${this.url}/quote`);
+    return this.http.get<Contractor>(`${this.url}/contractor/${id}`);
   }
 
-  addQuote(task_id: number, contractor_id: number, amount: number, submitted_on: Date, type:string ): Observable<any>
+  getQuotes(): Observable<Quote[]>
+  {
+    return this.http.get<Quote[]>(`${this.url}/quote`);
+  }
+
+  addQuote(task_id: number, contractor_id: number, amount: number, submitted_on: Date, type:string ): Observable<Quote>
   {
     const quote = {
       task_id: task_id,
@@ -126,13 +132,11 @@ export class ApiService {
       submitted_on: submitted_on,
       type: type
     }
-    return this.http.post(`${this.url}/quote`, quote);
+    return this.http.post<Quote>(`${this.url}/quote`, quote);
   }
 
-  getQuoteById(id: number): Observable<any>
+  getQuoteById(id: number): Observable<Quote>
   {
-    return this.http.get(`${this.url}/quote/${id}`);
-  }
-
-  
+    return this.http.get<Quote>(`${this.url}/quote/${id}`);
+  }  
 }

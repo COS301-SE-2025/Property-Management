@@ -1,4 +1,7 @@
 export interface Inventory {
-    description: string;
-    quantity: number;
+    itemId: number;
+    name: string;
+    unit: string;
+    quantityInStock: number;
+    buildingId: number;
 }

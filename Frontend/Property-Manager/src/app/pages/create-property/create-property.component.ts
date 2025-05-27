@@ -5,6 +5,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PropertyService } from '../../services/property.service'; 
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -98,7 +99,7 @@ import { PropertyService } from '../../services/property.service';
 export class CreatePropertyComponent {
   form: ReturnType<FormBuilder['group']>;
 
-  constructor(private fb: FormBuilder, private propertyService: PropertyService) {
+  constructor(private fb: FormBuilder, private propertyService: PropertyService, private router: Router) {
     this.form = this.fb.group({
       name: ['', Validators.required],
       address: ['', Validators.required],
@@ -139,6 +140,7 @@ onFileSelected(event: Event) {
         next: (response) => {
           console.log('Property created successfully:', response);
           // Optionally reset the form or show a success message
+          this.router.navigate(['/home']);
         },
         error: (err) => {
           console.error('Error creating property:', err);
