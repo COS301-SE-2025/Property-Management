@@ -2,6 +2,7 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.service.QuoteService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,8 +23,16 @@ class QuoteController(private val service: QuoteService) {
 
     @GetMapping("/{id}")
     fun getById(
-        @PathVariable id: Long,
-    ): Quote = service.getById(id)
+        @PathVariable id: Int,
+    ): ResponseEntity<Any> {
+        return try {
+            val item = service.getById(id)
+            ResponseEntity.ok(item)
+        } catch (ex: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(mapOf("error" to ex.message))
+        }
+    }
 
     data class QuoteDto(
         val task_id: Int,
@@ -42,13 +51,13 @@ class QuoteController(private val service: QuoteService) {
 
     @PutMapping("/{id}")
     fun update(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
         @RequestBody item: Quote,
     ): Quote = service.update(id, item)
 
     @DeleteMapping("/{id}")
     fun delete(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
     ): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()
