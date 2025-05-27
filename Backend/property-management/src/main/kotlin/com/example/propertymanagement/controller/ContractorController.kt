@@ -18,9 +18,9 @@ class ContractorController(private val service: ContractorService) {
     @GetMapping()
     fun getAll(): List<Contractor> = service.getAll()
 
-    @GetMapping("/{id}")
+@GetMapping("/{id}")
     fun getById(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
     ): Contractor = service.getById(id)
 
     data class ContractorDto(
@@ -40,13 +40,13 @@ class ContractorController(private val service: ContractorService) {
 
     @PutMapping("/{id}")
     fun update(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
         @RequestBody item: Contractor,
     ): Contractor = service.update(id, item)
 
     @DeleteMapping("/{id}")
     fun delete(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
     ): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()
