@@ -26,9 +26,9 @@ class InventoryService(
         val existing = getById(id)
 
         if (newItem.quantityInStock < 0) {
-        throw IllegalArgumentException("Quantity in stock cannot be negative")
+            throw IllegalArgumentException("Quantity in stock cannot be negative")
         }
- 
+
         val updated =
             existing.copy(
                 name = newItem.name,
@@ -39,8 +39,7 @@ class InventoryService(
         return repository.save(updated)
     }
 
-
-  @Transactional
+    @Transactional
     fun addOrUpdateItem(request: InventoryItemRequest) {
         if (request.quantity < 0) {
             throw IllegalArgumentException("Quantity cannot be negative")
@@ -75,26 +74,26 @@ class InventoryService(
         }
     }
 
-
     fun useInventoryItem(request: InventoryUsageRequest): InventoryItem {
         if (request.unit <= 0) {
             throw IllegalArgumentException("Quantity must be greater than zero")
         }
 
-        val item = repository.findAll().find { 
-            it.buildingId == request.id && it.name.equals(request.name, ignoreCase = true)
-        } ?: throw NoSuchElementException("Item ${request.name} not found in building with ID ${request.id}")
+        val item =
+            repository.findAll().find {
+                it.buildingId == request.id && it.name.equals(request.name, ignoreCase = true)
+            } ?: throw NoSuchElementException("Item ${request.name} not found in building with ID ${request.id}")
 
         if (item.quantityInStock < request.unit) {
             throw IllegalArgumentException("Not enough stock for item ${request.name} in building with ID ${request.id}")
         }
 
-        val updatedItem = item.copy(
-            quantityInStock = item.quantityInStock - request.unit
-        )
+        val updatedItem =
+            item.copy(
+                quantityInStock = item.quantityInStock - request.unit,
+            )
 
         return repository.save(updatedItem)
-         
     }
 
     fun delete(id: Long) {
@@ -103,5 +102,4 @@ class InventoryService(
         }
         repository.deleteById(id)
     }
-
 }
