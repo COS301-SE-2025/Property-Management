@@ -1,6 +1,7 @@
 package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.dto.InventoryItemRequest
+import com.example.propertymanagement.dto.InventoryUsageRequest
 import com.example.propertymanagement.model.InventoryItem
 import com.example.propertymanagement.service.InventoryService
 import org.springframework.http.ResponseEntity
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
 
 @RestController
 @RequestMapping("/api/inventory")
@@ -19,30 +21,65 @@ class InventoryController(private val service: InventoryService) {
     @GetMapping
     fun getAll(): List<InventoryItem> = service.getAll()
 
-    @PostMapping
-    fun addOrUpdate(
-        @RequestBody request: InventoryItemRequest,
-    ): ResponseEntity<String> {
-        service.addOrUpdateItem(request)
-        return ResponseEntity.ok("Item processed successfully")
+   @PostMapping
+    fun addOrUpdate(@RequestBody request: InventoryItemRequest): ResponseEntity<Any> {
+        return try {
+            service.addOrUpdateItem(request)
+            ResponseEntity.ok("Item processed successfully")
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(mapOf("error" to e.message))
+        }
     }
 
     @GetMapping("/{id}")
-    fun getById(
-        @PathVariable id: Long,
-    ): InventoryItem = service.getById(id)
+    fun getById(@PathVariable id: Long): ResponseEntity<Any> {
+        return try {
+            val item = service.getById(id)
+            ResponseEntity.ok(item)
+        } catch (ex: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(mapOf("error" to ex.message))
+        }
+    }
 
     @PutMapping("/{id}")
-    fun update(
-        @PathVariable id: Long,
-        @RequestBody item: InventoryItem,
-    ): InventoryItem = service.update(id, item)
+fun update(
+    @PathVariable id: Long,
+    @RequestBody item: InventoryItem,
+): ResponseEntity<Any> {
+    return try {
+        val updated = service.update(id, item)
+        ResponseEntity.ok(updated)
+    } catch (e: IllegalArgumentException) {
+        ResponseEntity.badRequest().body(mapOf("error" to e.message))
+    } catch (e: NoSuchElementException) {
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to e.message))
+    }
+}
 
-    @DeleteMapping("/{id}")
-    fun delete(
-        @PathVariable id: Long,
-    ): ResponseEntity<Void> {
-        service.delete(id)
-        return ResponseEntity.noContent().build()
+
+   @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long): ResponseEntity<Any> {
+        return try {
+            service.delete(id)
+            ResponseEntity.noContent().build()
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.status(404).body(mapOf("error" to e.message))
+        }
+    }
+
+    @PostMapping("/use")
+    fun useInventoryItem(
+        @RequestBody request: InventoryUsageRequest
+    ): ResponseEntity<Any> {
+        return try {
+            val updatedItem = service.useInventoryItem(request)
+            ResponseEntity.ok(updatedItem)
+        }catch (e: IllegalArgumentException) {
+            ResponseEntity.badRequest().body(mapOf("error" to e.message))
+        }catch ( e: NoSuchElementException) {
+            ResponseEntity.status(404).body(mapOf("error" to e.message))
+        }
     }
 }

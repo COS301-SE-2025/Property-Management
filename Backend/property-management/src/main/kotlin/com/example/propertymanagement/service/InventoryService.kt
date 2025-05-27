@@ -1,6 +1,7 @@
 package com.example.propertymanagement.service
 
 import com.example.propertymanagement.dto.InventoryItemRequest
+import com.example.propertymanagement.dto.InventoryUsageRequest
 import com.example.propertymanagement.model.InventoryItem
 import com.example.propertymanagement.repository.InventoryItemRepository
 import org.springframework.jdbc.core.JdbcTemplate
@@ -23,6 +24,11 @@ class InventoryService(
         newItem: InventoryItem,
     ): InventoryItem {
         val existing = getById(id)
+
+        if (newItem.quantityInStock < 0) {
+        throw IllegalArgumentException("Quantity in stock cannot be negative")
+        }
+ 
         val updated =
             existing.copy(
                 name = newItem.name,
@@ -33,10 +39,13 @@ class InventoryService(
         return repository.save(updated)
     }
 
-    fun delete(id: Long) = repository.deleteById(id)
 
-    @Transactional
+  @Transactional
     fun addOrUpdateItem(request: InventoryItemRequest) {
+        if (request.quantity < 0) {
+            throw IllegalArgumentException("Quantity cannot be negative")
+        }
+
         val totalCost = request.quantity * request.price
 
         jdbcTemplate.update(
@@ -65,4 +74,34 @@ class InventoryService(
             repository.save(newItem)
         }
     }
+
+
+    fun useInventoryItem(request: InventoryUsageRequest): InventoryItem {
+        if (request.unit <= 0) {
+            throw IllegalArgumentException("Quantity must be greater than zero")
+        }
+
+        val item = repository.findAll().find { 
+            it.buildingId == request.id && it.name.equals(request.name, ignoreCase = true)
+        } ?: throw NoSuchElementException("Item ${request.name} not found in building with ID ${request.id}")
+
+        if (item.quantityInStock < request.unit) {
+            throw IllegalArgumentException("Not enough stock for item ${request.name} in building with ID ${request.id}")
+        }
+
+        val updatedItem = item.copy(
+            quantityInStock = item.quantityInStock - request.unit
+        )
+
+        return repository.save(updatedItem)
+         
+    }
+
+    fun delete(id: Long) {
+        if (!repository.existsById(id)) {
+            throw NoSuchElementException("Item with ID $id not found")
+        }
+        repository.deleteById(id)
+    }
+
 }
