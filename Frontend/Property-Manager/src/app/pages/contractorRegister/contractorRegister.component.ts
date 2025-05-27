@@ -4,6 +4,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-contractor-register',
@@ -70,7 +71,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 
 
             <div class="flex justify-center">
-               <button (click)="login()" class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Register</button>
+               <button (click)="register()" class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Register</button>
             </div>
 
             <div *ngIf="emptyField || userError || serverError" class="pl-20">
@@ -106,44 +107,62 @@ export class ContractorRegisterComponent {
     public userError = false;
     public serverError = false;
 
-    constructor(private authService: AuthService) { }
+    constructor(
+    private apiService: ApiService,
+    private authService: AuthService
+  ) {}
 
     togglePassword() {
         this.passwordVisible = !this.passwordVisible;
     }
 
-    login() {
+   private generateApiKey(seed: string): string {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0; // Convert to 32bit integer
+  }
+  const randomPart = Math.random().toString(36).substring(2, 10);
+  return `key_${Math.abs(hash).toString(36)}_${randomPart}`;
+}
 
-        if (this.email.length === 0 || this.password.length === 0) {
-            this.emptyField = true;
-            return;
-        }
-
-        this.userError = false;
-        this.serverError = false;
-        this.emptyField = false;
-
-        console.log(this.email)
-        console.log(this.password)
-
-        return this.authService.register(this.email, this.password, 'contractor')
-            .then(tokens => {
-                //TODO: Store tokens
-                console.log("Successfully logged in");
-                console.log(tokens);
-            })
-            .catch(error => {
-                console.error("Login error: ", error);
-
-                const status = error?.status || error?.__zone_symbol__status;
-                console.log(status);
-
-                if (status === 400 || error.code === "NotAuthorizedException") {
-                    this.userError = true;
-                }
-                else {
-                    this.serverError = true;
-                }
-            });
+   async register(): Promise<void> {
+    if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
+      this.emptyField = true;
+      return;
     }
+
+    this.userError = false;
+    this.serverError = false;
+    this.emptyField = false;
+
+    try {
+
+      //const result = await this.authService.register(this.email, this.password, this.email);
+      
+      const apikey = this.generateApiKey(this.email + Date.now()); //result?.userSub || result?.user?.getUsername() || '';
+
+      await this.apiService.addContractor(this.companyName, this.email, this.contactNumber, apikey,false).toPromise();
+
+      console.log('Successfully registered');
+    } catch (error: unknown) {
+      console.error('Registration error: ', error);
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        ('status' in error || 'code' in error)
+      ) {
+        const err = error as { status?: number; code?: string };
+        if (err.status === 400 || err.code === 'NotAuthorizedException') {
+          this.userError = true;
+        } else {
+          this.serverError = true;
+        }
+      } else {
+        this.serverError = true;
+      }
+      throw error;
+    }
+  }
 }
