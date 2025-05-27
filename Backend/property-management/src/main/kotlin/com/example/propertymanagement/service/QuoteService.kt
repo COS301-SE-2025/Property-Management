@@ -9,7 +9,8 @@ import java.util.Date
 @Service
 class QuoteService(private val repository: QuoteRepository) {
     fun getAll(): List<Quote> = repository.findAll()
-repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }repository.findById(id).orElse(null)
+
+    fun getById(id: Int): Quote = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Quote): Quote = repository.save(item)
 

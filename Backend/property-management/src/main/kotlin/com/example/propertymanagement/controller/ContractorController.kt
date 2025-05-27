@@ -2,6 +2,7 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.service.ContractorService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,10 +19,18 @@ class ContractorController(private val service: ContractorService) {
     @GetMapping()
     fun getAll(): List<Contractor> = service.getAll()
 
-@GetMapping("/{id}")
+    @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Int,
-    ): Contractor = service.getById(id)
+    ): ResponseEntity<Any> {
+        return try {
+            val item = service.getById(id)
+            ResponseEntity.ok(item)
+        } catch (ex: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(mapOf("error" to ex.message))
+        }
+    }
 
     data class ContractorDto(
         val name: String,

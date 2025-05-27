@@ -3,14 +3,12 @@ package com.example.propertymanagement.service
 import com.example.propertymanagement.model.Trustee
 import com.example.propertymanagement.repository.TrusteeRepository
 import org.springframework.stereotype.Service
-import org.springframework.data.repository.findByIdOrNull
-
 
 @Service
 class TrusteeService(private val repository: TrusteeRepository) {
     fun getAll(): List<Trustee> = repository.findAll()
 
-    fun getById(id: Int): Trustee? = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    fun getById(id: Int): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Trustee): Trustee = repository.save(item)
 
