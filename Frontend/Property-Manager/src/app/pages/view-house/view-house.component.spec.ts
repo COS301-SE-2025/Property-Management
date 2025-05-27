@@ -7,6 +7,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { CardModule } from 'primeng/card';
 import { ActivatedRoute } from '@angular/router';
 import { Component, Input } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 @Component({
   selector: 'app-inventory-card',
@@ -48,7 +49,7 @@ describe('ViewHouseComponent', () => {
   };
 
   const mockHouse: House = {
-    id: 1,
+    buildingId: 1,
     name: 'Property A',
     address: '111 Example str, Menlyn, Pretoria',
     image: "assets/images/houseDemo3.jpg",
@@ -56,11 +57,14 @@ describe('ViewHouseComponent', () => {
 
   beforeEach(async () => {
 
-    mockHouseService = jasmine.createSpyObj('HousesService', ['getHouseById', 'inventory', 'budgets', 'timeline']);
+    mockHouseService = jasmine.createSpyObj('HousesService', ['getHouseById', 'inventory', 'budgets', 'timeline', 'loadInventory', 'loadBudgetTimeline']);
     mockHouseService.getHouseById.and.returnValue(mockHouse);
     mockHouseService.inventory.and.returnValue([]);
     mockHouseService.budgets.and.returnValue([]);
     mockHouseService.timeline.and.returnValue([]);
+    mockHouseService.loadInventory.and.stub();
+    mockHouseService.loadBudgetTimeline.and.stub();
+
 
     mockActivatedRoute = {
       snapshot: {
@@ -77,7 +81,8 @@ describe('ViewHouseComponent', () => {
         CardModule, 
         MockInventoryCardComponent,
         MockBudgetCardComponent, 
-        MockTimelineCardComponent
+        MockTimelineCardComponent,
+        HttpClientTestingModule
       ],
       declarations:[],
       providers: [
