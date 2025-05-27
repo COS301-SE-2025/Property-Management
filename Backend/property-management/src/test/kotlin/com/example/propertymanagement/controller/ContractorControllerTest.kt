@@ -22,6 +22,7 @@ class ContractorControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
+    @Suppress("DEPRECATION")
     @MockBean
     lateinit var contractorService: ContractorService
 
@@ -39,7 +40,7 @@ class ContractorControllerTest {
                 apikey = "d6q5d46qw54dq",
                 banned = false,
             )
-        given(ContractorService.getById(3)).willReturn(response)
+        given(contractorService.getById(3)).willReturn(response)
 
         mockMvc.perform(get("/api/contractor/3"))
             .andExpect(status().isOk)
@@ -54,7 +55,7 @@ class ContractorControllerTest {
 
     @Test
     fun `should return 404 when contractor not found`() {
-        given(ContractorService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
+        given(contractorService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
 
         mockMvc.perform(get("/api/contractor/999"))
             .andExpect(status().isNotFound)
@@ -69,7 +70,7 @@ class ContractorControllerTest {
 
     @Test
     fun `should return 404 when ContractorId is negative`() {
-        given(ContractorService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
+        given(contractorService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
         mockMvc.perform(get("/api/contractor/-1"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: -1"))
@@ -77,7 +78,7 @@ class ContractorControllerTest {
 
     @Test
     fun `should return 404 when ContractorId is zero`() {
-        given(ContractorService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
+        given(contractorService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
         mockMvc.perform(get("/api/contractor/0"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 0"))

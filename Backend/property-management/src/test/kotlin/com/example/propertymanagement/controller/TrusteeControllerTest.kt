@@ -22,6 +22,7 @@ class TrusteeControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
+    @Suppress("DEPRECATION")
     @MockBean
     lateinit var trusteeService: TrusteeService
 
@@ -38,7 +39,7 @@ class TrusteeControllerTest {
                 phone = "0987456321",
                 apikey = "65f465f13w84fe238",
             )
-        given(TrusteeService.getById(4)).willReturn(response)
+        given(trusteeService.getById(4)).willReturn(response)
 
         mockMvc.perform(get("/api/trustee/4"))
             .andExpect(status().isOk)
@@ -52,7 +53,7 @@ class TrusteeControllerTest {
 
     @Test
     fun `should return 404 when trustee not found`() {
-        given(TrusteeService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
+        given(trusteeService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
 
         mockMvc.perform(get("/api/trustee/999"))
             .andExpect(status().isNotFound)
@@ -67,7 +68,7 @@ class TrusteeControllerTest {
 
     @Test
     fun `should return 404 when trusteeId is negative`() {
-        given(TrusteeService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
+        given(trusteeService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
         mockMvc.perform(get("/api/trustee/-1"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: -1"))
@@ -75,7 +76,7 @@ class TrusteeControllerTest {
 
     @Test
     fun `should return 404 when trusteeId is zero`() {
-        given(TrusteeService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
+        given(trusteeService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
         mockMvc.perform(get("/api/trustee/0"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 0"))

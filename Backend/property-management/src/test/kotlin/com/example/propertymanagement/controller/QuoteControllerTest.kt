@@ -23,7 +23,8 @@ import java.text.SimpleDateFormat
 class QuoteControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-
+    
+    @Suppress("DEPRECATION")
     @MockBean
     lateinit var quoteService: QuoteService
 
@@ -42,7 +43,7 @@ class QuoteControllerTest {
                 type = "Maintenance",
             )
 
-        given(QuoteService.getById(10)).willReturn(response)
+        given(quoteService.getById(10)).willReturn(response)
 
         mockMvc.perform(get("/api/quote/10"))
             .andExpect(status().isOk)
@@ -57,7 +58,7 @@ class QuoteControllerTest {
 
     @Test
     fun `should return 404 when quote not found`() {
-        given(QuoteService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
+        given(quoteService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
 
         mockMvc.perform(get("/api/quote/999"))
             .andExpect(status().isNotFound)
@@ -72,7 +73,7 @@ class QuoteControllerTest {
 
     @Test
     fun `should return 404 when QuoteId is negative`() {
-        given(QuoteService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
+        given(quoteService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
         mockMvc.perform(get("/api/quote/-1"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: -1"))
@@ -80,7 +81,7 @@ class QuoteControllerTest {
 
     @Test
     fun `should return 404 when QuoteId is zero`() {
-        given(QuoteService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
+        given(quoteService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
         mockMvc.perform(get("/api/quote/0"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 0"))
