@@ -59,17 +59,8 @@ The solution will adhere to security best practices and implement multi-tenancy 
 
 - As a property manager, I want to view annual budget reports incorporating maintenance costs so that I can plan finances effectively.
 
-### 2.2 Maintenance Coordinators
 
-- As a maintenance coordinator, I want to create and manage maintenance plans so that all required property upkeep is properly scheduled.
-
-- As a maintenance coordinator, I want to collect and compare multiple quotes for projects so that I can recommend the best value options to trustees.
-
-- As a maintenance coordinator, I want to track the progress of ongoing maintenance projects so that I can ensure timely completion.
-
-- As a maintenance coordinator, I want to assign contractors to specific maintenance tasks so that work is distributed effectively.
-
-### 2.3 Contractors
+### 2.2 Contractors
 
 - As a contractor, I want to upload images of completed work so that I can provide evidence of task completion.
 
@@ -77,21 +68,6 @@ The solution will adhere to security best practices and implement multi-tenancy 
 
 - As a contractor, I want to request inventory items for specific projects so that I have the necessary materials to complete assigned tasks.
 
-### 2.4 Inventory Managers
-
-- As an inventory manager, I want to track stock levels of maintenance items so that I can ensure adequate supplies are available.
-
-- As an inventory manager, I want to record the distribution of inventory items to contractors so that I can maintain accurate usage records.
-
-- As an inventory manager, I want to generate reports on inventory consumption by project so that I can analyze usage patterns and costs.
-
-### 2.5 System Administrators
-
-- As a system administrator, I want to manage tenant accounts so that I can ensure proper system access and data isolation.
-
-- As a system administrator, I want to configure user roles and permissions so that I can enforce appropriate access controls.
-
-- As a system administrator, I want to monitor system performance so that I can address any issues promptly.
 
 ## 3. Functional Requirements 
 ### FR 1. Contractor Management Subsystem
@@ -224,7 +200,7 @@ The solution will adhere to security best practices and implement multi-tenancy 
 
 ## 5. Domain Model
 
-![Domain model](./301%20Domain.png)
+![Domain model](images/301%20Domain.png)
 
 ## 6. Architectural Requirements
 

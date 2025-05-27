@@ -2,6 +2,7 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Trustee
 import com.example.propertymanagement.service.TrusteeService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,7 +22,15 @@ class TrusteeController(private val service: TrusteeService) {
     @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Int,
-    ): Trustee = service.getById(id)
+    ): ResponseEntity<Any> {
+        return try {
+            val item = service.getById(id)
+            ResponseEntity.ok(item)
+        } catch (ex: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(mapOf("error" to ex.message))
+        }
+    }
 
     data class UserDto(
         val name: String,

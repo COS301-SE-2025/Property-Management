@@ -10,7 +10,7 @@ import java.util.Date
 class QuoteService(private val repository: QuoteRepository) {
     fun getAll(): List<Quote> = repository.findAll()
 
-    fun getById(id: Long): Quote = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    fun getById(id: Int): Quote = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Quote): Quote = repository.save(item)
 
@@ -26,7 +26,7 @@ class QuoteService(private val repository: QuoteRepository) {
     }
 
     fun update(
-        id: Long,
+        id: Int,
         newItem: Quote,
     ): Quote {
         val existing = getById(id)
@@ -41,5 +41,5 @@ class QuoteService(private val repository: QuoteRepository) {
         return repository.save(updated)
     }
 
-    fun delete(id: Long) = repository.deleteById(id)
+    fun delete(id: Int) = repository.deleteById(id)
 }
