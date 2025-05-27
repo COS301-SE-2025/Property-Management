@@ -20,9 +20,9 @@ class QuoteController(private val service: QuoteService) {
     @GetMapping
     fun getAll(): List<Quote> = service.getAll()
 
-    @GetMapping("/{id}")
+@GetMapping("/{id}")
     fun getById(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
     ): Quote = service.getById(id)
 
     data class QuoteDto(
@@ -42,13 +42,13 @@ class QuoteController(private val service: QuoteService) {
 
     @PutMapping("/{id}")
     fun update(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
         @RequestBody item: Quote,
     ): Quote = service.update(id, item)
 
     @DeleteMapping("/{id}")
     fun delete(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
     ): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()

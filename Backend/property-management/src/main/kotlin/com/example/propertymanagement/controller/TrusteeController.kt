@@ -18,10 +18,11 @@ class TrusteeController(private val service: TrusteeService) {
     @GetMapping
     fun getAll(): List<Trustee> = service.getAll()
 
-    @GetMapping("/{id}")
+@GetMapping("/{id}")
     fun getById(
         @PathVariable id: Int,
     ): Trustee = service.getById(id)
+
 
     data class UserDto(
         val name: String,
