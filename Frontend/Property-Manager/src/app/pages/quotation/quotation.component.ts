@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { FileUpload } from 'primeng/fileupload';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FileUploadEvent } from 'primeng/fileupload';
 import { ApiService } from '../../services/api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-quotation',
@@ -81,7 +81,7 @@ export class QuotationComponent {
     amount: ''
   };
   previewUrl: string | null = null;
-  constructor(private messageService: MessageService, private apiservice: ApiService) {}
+  constructor(private messageService: MessageService, private apiservice: ApiService, private router: Router) {}
 
     onUpload(event: FileUploadEvent) {
   const file = event.files?.[0];
@@ -120,6 +120,7 @@ export class QuotationComponent {
         });
         console.log();
         alert('Quotation submitted:' + this.quotation);
+        this.router.navigate(['/contractorHome'])
       }
     }
 

@@ -21,8 +21,8 @@ import { HousesService } from '../../../services/houses.service';
           </ng-template>
           <ng-template #body let-inventory>
             <tr>
-              <td>{{ inventory.description }}</td>
-              <td>{{ inventory.quantity }}</td>
+              <td>{{ inventory.name }}</td>
+              <td>{{ inventory.quantityInStock }}</td>
             </tr>
           </ng-template>
         </p-table>
