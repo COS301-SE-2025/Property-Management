@@ -16,6 +16,7 @@ data class Trustee(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "trustee_id")
     val id: Int? = null, 
+    val trustee_id: Int = 0,
     val name: String,
     val email: String,
     val phone: String,
