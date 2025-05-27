@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { PropertyService } from '../../services/property.service'; 
 
 
 @Component({
@@ -97,7 +98,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 export class CreatePropertyComponent {
   form: ReturnType<FormBuilder['group']>;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private propertyService: PropertyService) {
     this.form = this.fb.group({
       name: ['', Validators.required],
       address: ['', Validators.required],
@@ -120,7 +121,29 @@ onFileSelected(event: Event) {
 
   onSubmit() {
     if (this.form.valid) {
-      console.log(this.form.value);
+      const formValue = this.form.value;
+
+      // Prepare the payload as requested
+      const payload = {
+        name: formValue.name,
+        address: formValue.address,
+        type: formValue.type,
+        trustees: null,
+        propertyValue: null,
+        primaryContractors: null,
+        latestInspectionDate: new Date().toISOString().split('T')[0], // "YYYY-MM-DD"
+        propertyImage: null
+      };
+
+      this.propertyService.createProperty(payload).subscribe({
+        next: (response) => {
+          console.log('Property created successfully:', response);
+          // Optionally reset the form or show a success message
+        },
+        error: (err) => {
+          console.error('Error creating property:', err);
+        }
+      });
     }
   }
 }

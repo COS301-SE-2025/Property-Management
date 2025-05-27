@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 class TrusteeService(private val repository: TrusteeRepository) {
     fun getAll(): List<Trustee> = repository.findAll()
 
-    fun getById(id: Long): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    fun getById(id: Int): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Trustee): Trustee = repository.save(item)
 
@@ -23,7 +23,7 @@ class TrusteeService(private val repository: TrusteeRepository) {
     }
 
     fun update(
-        id: Long,
+        id: Int,
         newItem: Trustee,
     ): Trustee {
         val existing = getById(id)
@@ -37,5 +37,5 @@ class TrusteeService(private val repository: TrusteeRepository) {
         return repository.save(updated)
     }
 
-    fun delete(id: Long) = repository.deleteById(id)
+    fun delete(id: Int) = repository.deleteById(id)
 }
