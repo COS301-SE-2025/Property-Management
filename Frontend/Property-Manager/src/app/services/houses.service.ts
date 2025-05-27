@@ -3,93 +3,33 @@ import { House } from '../models/house.model'
 import { Inventory } from '../models/inventory.model';
 import { Budget } from '../models/budget.model';
 import { Timeline } from '../models/timeline.model';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HousesService {
 
-   //Mock data
-  houses = signal<House[]>([
-    {
-      id: 1,
-      name: 'Property X',
-      address: '123 Example str, Hatfield, Pretoria',
-      image: "assets/images/houseDemo.jpg"
-    },
-    {
-      id: 2,
-      name: 'Property Y',
-      address: '456 Example ave, Montana, Pretoria',
-      image: "assets/images/houseDemo2.jpg"
-    },
-    {
-      id: 3,
-      name: 'Property Z',
-      address: '789 Example str, Menlyn, Pretoria',
-      image: "assets/images/houseDemo3.jpg"
-    }
-  ]);
+  constructor(private apiService: ApiService) { }
 
-  inventory = signal<Inventory[]>([
-    {
-      description: 'Light bulbs',
-      quantity: 3,
-      Last_bought: new Date(2025, 5, 1)
-    },
-    {
-      description: 'Grey paint 5L bucket',
-      quantity: 1,
-      Last_bought: new Date(2024, 11, 12)
-    },
-    {
-      description: 'Box of 25 tiles',
-      quantity: 2,
-      Last_bought: new Date(2025, 2, 15)
-    }
-  ]);
+  houses = signal<House[]>([]);
+  inventory = signal<Inventory[]>([]);
+  budgets = signal<Budget[]>([]);
+  timeline = signal<Timeline[]>([]);
 
-  budgets = signal<Budget[]>([
-    {
-      category: "Plumbing",
-      amount: 5000
-    },
-    {
-      category: "Electrical",
-      amount: 5000
-    },
-    {
-      category: "Miscellaneous",
-      amount: 10000
-    }
-  ]);
-
-  timeline = signal<Timeline[]>([
-    {
-      description: "Fix broken window",
-      done: false
-    },
-    {
-      description: "Repair electrical outlet",
-      done: true
-    },
-    {
-      description: "Fix kitchen sink leak",
-      done: true
-    },
-    {
-      description: "Repain interior",
-      done: true
-    },
-    {
-      description: "Fix pavement outside",
-      done: true
-    }
-  ])
+  mockImages = [
+    "assets/images/houseDemo.jpg",
+    "assets/images/houseDemo2.jpg",
+    "assets/images/houseDemo3.jpg"
+  ];
 
   addToHouses(house: House)
   {
     this.houses.set([...this.houses(), house]);
+  }
+  addToTimeline(timeLine: Timeline)
+  {
+    this.timeline.set([...this.timeline(), timeLine]);
   }
 
   removeFromHouses(id : number)
@@ -100,5 +40,95 @@ export class HousesService {
   getHouseById(id: number): House | undefined{
     return this.houses().find(house => house.id === id);
   }
-  
+
+  private sortTimeline()
+  {
+    return this.timeline().sort((a: Timeline, b: Timeline) => {
+      //Sort by done status, done items should be at the end
+      if(!a.done && b.done) return -1;
+      else if(a.done && !b.done) return 1;
+      return 0;
+    })
+  }
+  async loadHouses(){
+
+    if(this.houses().length > 0)
+    {
+      return;
+    }
+
+    this.apiService.getBuildings().subscribe({
+      next: (houses) => {
+        this.houses.set(houses.map((house: any) => {
+          return {
+            id: house.buildingId,
+            name: house.name,
+            address: house.address,
+            image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
+          }
+        }))
+      },
+      error: (err) => {
+        console.error("Error loading houses:", err); 
+      }
+    })
+  }
+  async loadBudgetTimeline(houseId: number){
+    this.apiService.getBuildingDetails(houseId).subscribe({
+      next: (details) => {
+        
+        const budget = [
+          {
+            category: 'Inventory',
+            budgetAmount: details.inventoryBudget,
+            budgetSpent: details.inventorySpent
+          },
+          {
+            category: 'Maintenance',
+            budgetAmount: details.maintenanceBudget,
+            budgetSpent: details.maintenanceSpent
+          }
+        ];
+
+        this.budgets.set(budget);
+        
+        let timeLineArr: Timeline[] = [];
+
+        for(let i = 0; i < details.maintenanceTasks.length; i++)
+        {
+          const timelineItem: Timeline = {
+            description: details.maintenanceTasks[i].description,
+            done: details.maintenanceTasks[i].status === 'DONE'? true : false,
+          }
+          timeLineArr.push(timelineItem);
+        }
+
+        this.timeline.set(timeLineArr);
+        this.sortTimeline();
+      },
+      error: (err) => {
+      }
+    })
+  }
+  async loadInventory(houseId: number)
+  {
+    this.inventory.set([]); 
+
+    this.apiService.getInventory().subscribe({
+      next: (inventory) => {
+        inventory.filter((item: any) => {
+          return item.buildingId === houseId;
+        }).forEach((item: any) => {
+          this.inventory.set([...this.inventory(), {
+            description: item.name,
+            quantity: item.quantityInStock,
+          }]);
+        });
+
+      },
+      error: (err) => {
+        console.error("Error loading inventory:", err);
+      }
+    });
+  }
 }
