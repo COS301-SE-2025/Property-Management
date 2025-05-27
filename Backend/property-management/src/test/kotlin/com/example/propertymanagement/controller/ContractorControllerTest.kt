@@ -23,7 +23,7 @@ class ContractorControllerTest {
     lateinit var mockMvc: MockMvc
 
     @MockBean
-    lateinit var ContractorService: ContractorService
+    lateinit var contractorService: ContractorService
 
     @Autowired
     lateinit var objectMapper: ObjectMapper

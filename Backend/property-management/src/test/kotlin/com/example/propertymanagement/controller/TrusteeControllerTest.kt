@@ -23,7 +23,7 @@ class TrusteeControllerTest {
     lateinit var mockMvc: MockMvc
 
     @MockBean
-    lateinit var TrusteeService: TrusteeService
+    lateinit var trusteeService: TrusteeService
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
