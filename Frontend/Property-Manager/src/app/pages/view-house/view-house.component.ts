@@ -46,8 +46,13 @@ export class ViewHouseComponent implements OnInit{
   ngOnInit()
   {
     this.findHouse = false;
+
+    
     const houseId = Number(this.route.snapshot.paramMap.get('houseId'));
     this.house = this.houseService.getHouseById(houseId);
+
+    this.houseService.loadInventory(houseId);
+    this.houseService.loadBudgetTimeline(houseId);
 
     if(this.house === undefined)
     {
