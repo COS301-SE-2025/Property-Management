@@ -102,15 +102,32 @@ export class QuotationComponent {
 
   submitQuotation() {
     
-    console.log('Quotation submitted:', this.quotation);
-    
-    // this.apiservice.addQuote(101,)
-    alert(this.apiservice.getAllTrustees().subscribe(response => {
-      console.log(response); // inspect the response structure first
 
-      const firstTrustee = response[0];
-      alert('First trustee:', firstTrustee);
-    }));
-    alert('Quotation submitted successfully!');
-  }
+    this.apiservice.getAllContractors().subscribe((response) => {
+    const nameToFind = this.quotation.contractorName.toLowerCase();
+    let found = false;
+
+    for (const contractor of response) {
+      console.log(contractor?.name);
+      if (
+        contractor?.name &&
+        contractor.name.toLowerCase() === nameToFind
+      ) {
+        console.log("Matching Contractor ID:", contractor.contractorId);
+        found = true;
+        this.apiservice.addQuote(101, contractor.contractorId, 10 ,new Date("2025-05-27"), "Mainteneance").subscribe((response2) => {
+          console.log(response2);
+        });
+        console.log();
+        alert('Quotation submitted:' + this.quotation);
+      }
+    }
+
+    if (!found) {
+      alert("No contractor found with the name:"+ nameToFind);
+    }
+  });
+
+}
+
 }

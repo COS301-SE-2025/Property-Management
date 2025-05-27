@@ -117,13 +117,13 @@ export class ApiService {
     return this.http.get(`${this.url}/quote`);
   }
 
-  addQuote(taskId: string, contractorId: string, amount: number, submittedOn: Date, type:string ): Observable<any>
+  addQuote(task_id: number, contractor_id: number, amount: number, submitted_on: Date, type:string ): Observable<any>
   {
     const quote = {
-      taskId: taskId,
-      contractorId: contractorId,
+      task_id: task_id,
+      contractor_id: contractor_id,
       amount: amount,
-      submittedOn: submittedOn,
+      submitted_on: submitted_on,
       type: type
     }
     return this.http.post(`${this.url}/quote`, quote);
