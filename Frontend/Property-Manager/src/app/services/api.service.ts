@@ -57,17 +57,17 @@ export class ApiService {
       phone: phone,
       apikey: apikey
     }
-    return this.http.post(`${this.url}/trustees`, item);
+    return this.http.post(`${this.url}/trustee`, item);
   }
 
   getAllTrustees(): Observable<any>
   {
-    return this.http.get(`${this.url}/trustees`);
+    return this.http.get(`${this.url}/trustee`);
   }
 
   getTrusteesById(id: number): Observable<any>
   {
-    return this.http.get(`${this.url}/trustees/${id}`);
+    return this.http.get(`${this.url}/trustee/${id}`);
   }
 
   updateTrustee(trusteeId: string, name: string, email: string, phone: string, apikey: string): Observable<any>
@@ -78,12 +78,12 @@ export class ApiService {
       phone: phone,
       apikey: apikey
     }
-    return this.http.put(`${this.url}/trustees/${trusteeId}`, item);
+    return this.http.put(`${this.url}/trustee/${trusteeId}`, item);
   }
 
   // deleteTrustee(trusteeId: string): Observable<any>
   // {
-  //   return this.http.delete(`${this.url}/trustees/${trusteeId}`);
+  //   return this.http.delete(`${this.url}/trustee/${trusteeId}`);
   // }
 
   registerTrustee(name: string, email: string, phone: string, apikey: string): Observable<Trustee> {
@@ -100,16 +100,16 @@ export class ApiService {
       apikey: apikey,
       banned: banned
     }
-    return this.http.post(`${this.url}/contractors`, item);
+    return this.http.post(`${this.url}/contractor`, item);
   }
 
   getAllContractors(): Observable<any>
   {
-    return this.http.get(`${this.url}/contractors`);
+    return this.http.get(`${this.url}/contractor`);
   }
   getContractorById(id: number): Observable<any>
   {
-    return this.http.get(`${this.url}/contractors/${id}`);
+    return this.http.get(`${this.url}/contractor/${id}`);
   }
 
   getQuotes(): Observable<any>
@@ -117,13 +117,13 @@ export class ApiService {
     return this.http.get(`${this.url}/quote`);
   }
 
-  addQuote(taskId: string, contractorId: string, amount: number, submittedOn: Date, type:string ): Observable<any>
+  addQuote(task_id: number, contractor_id: number, amount: number, submitted_on: Date, type:string ): Observable<any>
   {
     const quote = {
-      taskId: taskId,
-      contractorId: contractorId,
+      task_id: task_id,
+      contractor_id: contractor_id,
       amount: amount,
-      submittedOn: submittedOn,
+      submitted_on: submitted_on,
       type: type
     }
     return this.http.post(`${this.url}/quote`, quote);
@@ -133,4 +133,6 @@ export class ApiService {
   {
     return this.http.get(`${this.url}/quote/${id}`);
   }
+
+  
 }

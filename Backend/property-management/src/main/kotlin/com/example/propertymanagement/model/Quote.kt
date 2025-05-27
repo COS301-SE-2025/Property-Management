@@ -16,9 +16,9 @@ data class Quote(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quote_id")
     val quote_id: Int = 0,
-    @Column(name = "task_id", nullable = false)
+    @Column(name = "task_id", nullable = true)
     val task_id: Int,
-    @Column(name = "contractor_id", nullable = false)
+    @Column(name = "contractor_id", nullable = true)
     val contractor_id: Int,
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     val amount: BigDecimal,
