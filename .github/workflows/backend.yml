@@ -59,5 +59,8 @@ jobs:
             SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test
             SPRING_DATASOURCE_USERNAME: postgres
             SPRING_DATASOURCE_PASSWORD: postgres
+            SPRING_JPA_HIBERNATE_DDL_AUTO: update
+            SPRING_JPA_SHOW_SQL: true
+            SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
           run: ./gradlew test
           working-directory: Backend/property-management
