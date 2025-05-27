@@ -4,7 +4,6 @@ import com.example.propertymanagement.model.Budget
 import com.example.propertymanagement.service.BudgetService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
 import org.mockito.kotlin.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -12,12 +11,13 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
 
 @WebMvcTest(BudgetController::class)
 class BudgetControllerTest {
-
     @Autowired
     lateinit var mockMvc: MockMvc
 
@@ -29,15 +29,16 @@ class BudgetControllerTest {
 
     @Test
     fun `should return budget for valid buildingId`() {
-        val budget = Budget(
-            budgetId = 1,
-            buildingId = 1,
-            totalBudget = BigDecimal("1000000.00"),
-            maintenanceBudget = BigDecimal("500000.00"),
-            inventoryBudget = BigDecimal("500000.00"),
-            inventorySpent = BigDecimal("50250.00"),
-            maintenanceSpent = BigDecimal("50000.00"),
-        )
+        val budget =
+            Budget(
+                budgetId = 1,
+                buildingId = 1,
+                totalBudget = BigDecimal("1000000.00"),
+                maintenanceBudget = BigDecimal("500000.00"),
+                inventoryBudget = BigDecimal("500000.00"),
+                inventorySpent = BigDecimal("50250.00"),
+                maintenanceSpent = BigDecimal("50000.00"),
+            )
         given(budgetService.getByBuildingId(1)).willReturn(budget)
 
         mockMvc.perform(get("/api/budget/1"))

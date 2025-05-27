@@ -9,17 +9,18 @@ import org.springframework.stereotype.Service
 class BuildingService(private val repository: BuildingRepository) {
     fun getAll(): List<Building> = repository.findAll()
 
-     fun create(request: BuildingCreateRequest): Building {
-        val building = Building(
-            name = request.name,
-            address = request.address,
-            type = request.type,
-            trustees = request.trustees,
-            propertyValue = request.propertyValue,
-            primaryContractors = request.primaryContractors,
-            latestInspectionDate = request.latestInspectionDate,
-            propertyImage = request.propertyImage,
-        )
+    fun create(request: BuildingCreateRequest): Building {
+        val building =
+            Building(
+                name = request.name,
+                address = request.address,
+                type = request.type,
+                trustees = request.trustees,
+                propertyValue = request.propertyValue,
+                primaryContractors = request.primaryContractors,
+                latestInspectionDate = request.latestInspectionDate,
+                propertyImage = request.propertyImage,
+            )
         return repository.save(building)
     }
 }

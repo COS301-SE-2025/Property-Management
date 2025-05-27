@@ -6,8 +6,6 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import jakarta.persistence.*
-
 
 @Entity
 @Table(name = "trustee")
@@ -15,8 +13,7 @@ data class Trustee(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "trustee_id")
-    val id: Int? = null, 
-    val trustee_id: Int = 0,
+    val id: Int? = null,
     val name: String,
     val email: String,
     val phone: String,
