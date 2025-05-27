@@ -22,7 +22,6 @@ class ContractorControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Suppress("DEPRECATION")
     @MockBean
     lateinit var contractorService: ContractorService
 

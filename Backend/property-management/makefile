@@ -23,4 +23,3 @@ refresh:
 	$(GRADLEW) build --refresh-dependencies
 
 rebuild: clean refresh
-

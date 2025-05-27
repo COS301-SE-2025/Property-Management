@@ -20,8 +20,7 @@ import java.math.BigDecimal
 class BudgetControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-    
-    @Suppress("DEPRECATION")
+
     @MockBean
     lateinit var budgetService: BudgetService
 

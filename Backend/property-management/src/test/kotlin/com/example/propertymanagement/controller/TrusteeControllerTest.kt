@@ -22,7 +22,6 @@ class TrusteeControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Suppress("DEPRECATION")
     @MockBean
     lateinit var trusteeService: TrusteeService
 

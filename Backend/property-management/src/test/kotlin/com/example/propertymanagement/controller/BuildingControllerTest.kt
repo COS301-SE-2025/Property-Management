@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class BuildingControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-    @Suppress("DEPRECATION")
+
     @MockBean
     lateinit var buildingService: BuildingService
 
