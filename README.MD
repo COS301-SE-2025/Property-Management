@@ -1,7 +1,7 @@
 # Property Management System
 
 <p align="center">
-  <img src="docs\PM-Logo.png" alt="Property Management System Banner" width="150" height="150"/>
+  <img src="docs\images\PM-Logo.png" alt="Property Management System Banner" width="150" height="150"/>
 </p>
 
 <p align="center">
@@ -84,7 +84,7 @@ Our GitHub Project boards facilitate effective task management, progress trackin
     <th width="35%">Description</th>
   </tr>
   <tr>
-        <img src="docs\teampic.jpg" width="700" height="350">
+        <img src="docs\images\teampic.jpg" width="700" height="350">
 
   </tr>
   <tr>
@@ -300,7 +300,7 @@ We implement a robust GitFlow branching strategy ensuring code quality and colla
 4. Code review process (minimum 2 approvals required)
 5. Automated CI/CD pipeline validation
 6. Merge to `dev` after approval
-7. Regular releases from `develop` to `main`
+7. Regular releases from `dev` to `main`
 
 
 ##  Quality Badges
@@ -314,6 +314,8 @@ We implement a robust GitFlow branching strategy ensuring code quality and colla
 [![Repository Size](https://img.shields.io/github/repo-size/COS301-SE-2025/Property-Management?style=flat-square)](https://github.com/COS301-SE-2025/Property-Management)
 
 ##  Contact
+**Email:**
+- koolkats301@gmail.com
 
 **Course Information:**
 - Course: COS 301 - Software Engineering
