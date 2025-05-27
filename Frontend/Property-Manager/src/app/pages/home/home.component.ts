@@ -26,6 +26,10 @@ export class HomeComponent {
 
   constructor(private router: Router) {}
 
+  ngOnInit(){
+    this.houseService.loadHouses();
+  }
+
   private houseService = inject(HousesService);
   houses = this.houseService.houses;
 
