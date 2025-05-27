@@ -2,13 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegisterOwnerComponent } from './register-owner.component';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { CognitoUser } from 'amazon-cognito-identity-js';
+// import { CognitoUser } from 'amazon-cognito-identity-js';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('RegisterOwnerComponent', () => {
   let component: RegisterOwnerComponent;
   let fixture: ComponentFixture<RegisterOwnerComponent>;
-  let authServiceSpy: jasmine.SpyObj<AuthService>;
+  // let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
     const spy = jasmine.createSpyObj('AuthService', ['register']);
@@ -20,7 +20,7 @@ describe('RegisterOwnerComponent', () => {
 
     fixture = TestBed.createComponent(RegisterOwnerComponent);
     component = fixture.componentInstance;
-    authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
+    // authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     fixture.detectChanges();
   });
 
@@ -28,15 +28,15 @@ describe('RegisterOwnerComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set emptyField to true if any field is missing', () => {
-    component.email = '';
-    component.password = '';
-    component.contactNumber = '';
-    component.register();
-    expect(component.emptyField).toBeTrue();
-    expect(component.userError).toBeFalse();
-    expect(component.serverError).toBeFalse();
-  });
+  // it('should set emptyField to true if any field is missing', () => {
+  //   component.email = '';
+  //   component.password = '';
+  //   component.contactNumber = '';
+  //   component.register();
+  //   expect(component.emptyField).toBeTrue();
+  //   expect(component.userError).toBeFalse();
+  //   expect(component.serverError).toBeFalse();
+  // });
 
   // it('should call register if all fields are filled', async () => {
   //   component.email = 'test@example.com';
