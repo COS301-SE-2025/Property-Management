@@ -23,8 +23,7 @@ import java.text.SimpleDateFormat
 class QuoteControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-    
-    @Suppress("DEPRECATION")
+
     @MockBean
     lateinit var quoteService: QuoteService
 

@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class InventoryControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-    @Suppress("DEPRECATION")
+
     @MockBean
     lateinit var inventoryService: InventoryService
 
