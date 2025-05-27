@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   imports: [CardModule],
   template: `
     <div class = "shadow-md rounded-lg border w-75 text-center">
-      <button class = "cursor-pointer" (click)="viewHouse(house().id)">
+      <button class = "cursor-pointer" (click)="viewHouse(house().buildingId)">
         <p-card>
             <img [src] = "house().image" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="">
             <p class = "text-lg font-bold mt-4"> {{ house().name }}</p>

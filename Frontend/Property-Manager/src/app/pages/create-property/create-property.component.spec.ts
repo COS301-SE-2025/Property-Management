@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CreatePropertyComponent } from './create-property.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -9,7 +9,7 @@ describe('CreatePropertyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreatePropertyComponent, ReactiveFormsModule]
+      imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule]
     })
     .compileComponents();
 
@@ -54,10 +54,12 @@ describe('CreatePropertyComponent', () => {
       address: '123 Main St'
     });
     component.onSubmit();
-    expect(console.log).toHaveBeenCalledWith(jasmine.objectContaining({
-      name: 'Test Property',
-      address: '123 Main St'
-    }));
+
+    const payloadArg = (console.log as jasmine.Spy).calls.allArgs()
+    .flat()
+    .find(arg => typeof arg === 'object' && arg.name === 'Test Property' && arg.address === '123 Main St');
+
+    expect(payloadArg).toBeDefined();
   });
 
   it('should not log form value on submit if form is invalid', () => {

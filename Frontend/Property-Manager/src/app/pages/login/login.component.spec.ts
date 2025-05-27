@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -12,7 +13,7 @@ describe('LoginComponent', () => {
 
     const spy = jasmine.createSpyObj('AuthService', ['login']);
     await TestBed.configureTestingModule({
-      imports: [FormsModule, LoginComponent],
+      imports: [FormsModule, LoginComponent, HttpClientTestingModule],
       providers: [{ provide: AuthService, useValue: spy}]
     })
     .compileComponents();
