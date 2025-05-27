@@ -1,0 +1,14 @@
+name: Dev integration
+
+on:
+    push:
+        branches: [ dev ]
+    pull_request:
+        branches: [ dev ]
+    
+jobs:
+    frontend-run:
+        uses: ./.github/workflows/frontend.yml
+
+    backend-run:
+        uses: ./.github/workflows/backend.yml

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Property } from '../models/property.model';
 
 @Injectable({ providedIn: 'root' })
 export class PropertyService {
@@ -8,8 +9,8 @@ export class PropertyService {
 
   constructor(private http: HttpClient) {}
 
-  createProperty(data: any): Observable<any> {
+  createProperty(data: Property): Observable<Property> {
     console.log('POST', this.apiUrl, 'Payload:', data);
-    return this.http.post(this.apiUrl, data); 
+    return this.http.post<Property>(this.apiUrl, data); 
   }
 }
