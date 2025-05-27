@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FileUploadEvent } from 'primeng/fileupload';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-quotation',
@@ -80,7 +81,7 @@ export class QuotationComponent {
     amount: ''
   };
   previewUrl: string | null = null;
-  constructor(private messageService: MessageService) {}
+  constructor(private messageService: MessageService, private apiservice: ApiService) {}
 
     onUpload(event: FileUploadEvent) {
   const file = event.files?.[0];
@@ -100,7 +101,33 @@ export class QuotationComponent {
 }
 
   submitQuotation() {
-    console.log('Quotation submitted:', this.quotation);
-    alert('Quotation submitted successfully!');
-  }
+    
+
+    this.apiservice.getAllContractors().subscribe((response) => {
+    const nameToFind = this.quotation.contractorName.toLowerCase();
+    let found = false;
+
+    for (const contractor of response) {
+      console.log(contractor?.name);
+      if (
+        contractor?.name &&
+        contractor.name.toLowerCase() === nameToFind
+      ) {
+        console.log("Matching Contractor ID:", contractor.contractorId);
+        found = true;
+        this.apiservice.addQuote(101, contractor.contractorId, 10 ,new Date("2025-05-27"), "Mainteneance").subscribe((response2) => {
+          console.log(response2);
+        });
+        console.log();
+        alert('Quotation submitted:' + this.quotation);
+      }
+    }
+
+    if (!found) {
+      alert("No contractor found with the name:"+ nameToFind);
+    }
+  });
+
+}
+
 }
