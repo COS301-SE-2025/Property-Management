@@ -116,6 +116,17 @@ export class ContractorRegisterComponent {
         this.passwordVisible = !this.passwordVisible;
     }
 
+   private generateApiKey(seed: string): string {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0; // Convert to 32bit integer
+  }
+  const randomPart = Math.random().toString(36).substring(2, 10);
+  return `key_${Math.abs(hash).toString(36)}_${randomPart}`;
+}
+
    async register(): Promise<void> {
     if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
       this.emptyField = true;
@@ -128,9 +139,9 @@ export class ContractorRegisterComponent {
 
     try {
 
-      const result = await this.authService.register(this.email, this.password, this.email);
-
-      const apikey = result?.userSub || result?.user?.getUsername() || '';
+      //const result = await this.authService.register(this.email, this.password, this.email);
+      
+      const apikey = this.generateApiKey(this.email + Date.now()); //result?.userSub || result?.user?.getUsername() || '';
 
       await this.apiService.addContractor(this.companyName, this.email, this.contactNumber, apikey,false).toPromise();
 
