@@ -25,7 +25,7 @@ class QuoteControllerTest {
     lateinit var mockMvc: MockMvc
 
     @MockBean
-    lateinit var QuoteService: QuoteService
+    lateinit var quoteService: QuoteService
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
