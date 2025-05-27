@@ -10,5 +10,5 @@ data class BuildingCreateRequest(
     val propertyValue: Double?,
     val primaryContractors: List<Int>?,
     val latestInspectionDate: LocalDate?,
-    val propertyImage: String?, 
+    val propertyImage: String?,
 )

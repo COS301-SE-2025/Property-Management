@@ -16,5 +16,7 @@ class BuildingController(private val service: BuildingService) {
     fun getAll(): List<Building> = service.getAll()
 
     @PostMapping
-    fun create(@RequestBody request: BuildingCreateRequest): Building = service.create(request)
+    fun create(
+        @RequestBody request: BuildingCreateRequest,
+    ): Building = service.create(request)
 }

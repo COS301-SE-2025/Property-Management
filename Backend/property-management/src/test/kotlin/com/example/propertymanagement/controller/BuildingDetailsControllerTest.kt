@@ -4,7 +4,6 @@ import com.example.propertymanagement.dto.MaintenanceTaskDto
 import com.example.propertymanagement.service.BuildingDetailsService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
 import org.mockito.kotlin.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -14,12 +13,13 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(BuildingDetailsController::class)
 @ContextConfiguration(classes = [com.example.propertymanagement.PropertyManagemnetApplication::class])
 class BuildingDetailsControllerTest {
-
     @Autowired
     lateinit var mockMvc: MockMvc
 
@@ -31,24 +31,26 @@ class BuildingDetailsControllerTest {
 
     @Test
     fun `should return building details for valid buildingId`() {
-        val response = BuildingDetailsResponse(
-            name = "Building A",
-            address = "123 Main St",
-            totalBudget = 1000000.00,
-            maintenanceBudget = 500000.00,
-            inventoryBudget = 500000.00,
-            inventorySpent = 50250.00,
-            maintenanceSpent = 50000.00,
-            maintenanceTasks = listOf(
-                MaintenanceTaskDto(
-                    title = "Fix Roof",
-                    description = "Repair the roof",
-                    status = "IN_PROGRESS",
-                    approved = true,
-                    proofImages = listOf()
-                )
+        val response =
+            BuildingDetailsResponse(
+                name = "Building A",
+                address = "123 Main St",
+                totalBudget = 1000000.00,
+                maintenanceBudget = 500000.00,
+                inventoryBudget = 500000.00,
+                inventorySpent = 50250.00,
+                maintenanceSpent = 50000.00,
+                maintenanceTasks =
+                    listOf(
+                        MaintenanceTaskDto(
+                            title = "Fix Roof",
+                            description = "Repair the roof",
+                            status = "IN_PROGRESS",
+                            approved = true,
+                            proofImages = listOf(),
+                        ),
+                    ),
             )
-        )
         given(buildingDetailsService.getBuildingDetails(1L)).willReturn(response)
 
         mockMvc.perform(get("/api/building/1/details"))
@@ -86,10 +88,9 @@ class BuildingDetailsControllerTest {
             .andExpect(status().isNotFound)
     }
 
-    @Test   
+    @Test
     fun `should return 405 for unsupported HTTP method`() {
         mockMvc.perform(post("/api/building/1/details").contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isMethodNotAllowed)
     }
-    
 }
