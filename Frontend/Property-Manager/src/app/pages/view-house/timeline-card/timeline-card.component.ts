@@ -17,9 +17,14 @@ import { CommonModule } from '@angular/common';
             {{ time.description }}
         </ng-template>
         <ng-template #marker let-time>
-          <div [class]="time.done ? 'bg-yellow-300': 'bg-gray-300'" class="flex items-center justify-center w-3 h-3 rounded-full shadow-md">
-            <i [class]="time.done ? 'pi pi-check text-gray-200' : 'pi pi-clock text-gray-200'"></i>
-          </div>
+          <div class="flex items-center justify-center w-6 h-6 rounded-full shadow-md bg-white-200">
+          <ng-container *ngIf="time.done; else pending">
+            <img src="assets/icons/task_done.svg" alt="Done" class="w-5 h-5" />
+            </ng-container>
+            <ng-template #pending>
+              <i class="pi pi-clock text-gray-400"></i>
+            </ng-template>
+        </div>
         </ng-template>
       </p-timeline>
     </p-card>

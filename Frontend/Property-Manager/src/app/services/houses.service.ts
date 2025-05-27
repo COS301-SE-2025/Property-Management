@@ -34,11 +34,11 @@ export class HousesService {
 
   removeFromHouses(id : number)
   {
-    this.houses.set(this.houses().filter((h) => h.id !== id));
+    this.houses.set(this.houses().filter((h) => h.buildingId !== id));
   }
 
   getHouseById(id: number): House | undefined{
-    return this.houses().find(house => house.id === id);
+    return this.houses().find(house => house.buildingId === id);
   }
 
   private sortTimeline()
@@ -59,14 +59,10 @@ export class HousesService {
 
     this.apiService.getBuildings().subscribe({
       next: (houses) => {
-        this.houses.set(houses.map((house: any) => {
-          return {
-            id: house.buildingId,
-            name: house.name,
-            address: house.address,
-            image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
-          }
-        }))
+        this.houses.set(houses.map((house) => ({
+          ...house,
+          image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
+        })));
       },
       error: (err) => {
         console.error("Error loading houses:", err); 
@@ -74,9 +70,19 @@ export class HousesService {
     })
   }
   async loadBudgetTimeline(houseId: number){
+
+    this.budgets.set([]);
+    this.timeline.set([]);
+
     this.apiService.getBuildingDetails(houseId).subscribe({
       next: (details) => {
+        console.log(details);
         
+        if(!details)
+        {
+          throw Error("No building details returned");
+        }
+
         const budget = [
           {
             category: 'Inventory',
@@ -91,22 +97,17 @@ export class HousesService {
         ];
 
         this.budgets.set(budget);
-        
-        let timeLineArr: Timeline[] = [];
 
-        for(let i = 0; i < details.maintenanceTasks.length; i++)
-        {
-          const timelineItem: Timeline = {
-            description: details.maintenanceTasks[i].description,
-            done: details.maintenanceTasks[i].status === 'DONE'? true : false,
-          }
-          timeLineArr.push(timelineItem);
-        }
+        const timeLineArr: Timeline[] = details.maintenanceTasks.map(task => ({
+          description: task.description,
+          done: task.status === 'DONE'
+        }));
 
         this.timeline.set(timeLineArr);
         this.sortTimeline();
       },
       error: (err) => {
+        console.error("Error loading budget and timeline", err)
       }
     })
   }
@@ -116,15 +117,8 @@ export class HousesService {
 
     this.apiService.getInventory().subscribe({
       next: (inventory) => {
-        inventory.filter((item: any) => {
-          return item.buildingId === houseId;
-        }).forEach((item: any) => {
-          this.inventory.set([...this.inventory(), {
-            description: item.name,
-            quantity: item.quantityInStock,
-          }]);
-        });
-
+       const filterInventory = inventory.filter(item => item.buildingId === houseId)
+       this.inventory.set(filterInventory)
       },
       error: (err) => {
         console.error("Error loading inventory:", err);

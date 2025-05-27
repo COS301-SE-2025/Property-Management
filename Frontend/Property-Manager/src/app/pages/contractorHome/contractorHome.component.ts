@@ -2,18 +2,17 @@ import { Component } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink} from '@angular/router';
+import { HeaderComponent } from "../../components/header/header.component";
 @Component({
     selector: 'app-contractor-home',
-    imports: [CardModule, ButtonModule,RouterLink],
+    imports: [CardModule, ButtonModule, RouterLink, HeaderComponent],
     standalone: true,
     template: `
   
+  <app-header/>
+  
     <div class="min-h-screen bg-white relative p-4">
   
-  <div class="absolute top-4 right-4 flex space-x-4">
-    <img src="assets/icons/tools.svg" alt="Image 1" class="w-8 h-8" />
-    <img src="assets/icons/user.svg" alt="Image 2" class="w-8 h-8" />
-  </div>
 
   <div class="p-4 text-center">
   <img src="assets/images/logo.png" alt="Centered Image" class="mx-auto w-32 h-auto" />
