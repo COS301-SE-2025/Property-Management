@@ -1,0 +1,6 @@
+
+klint
+*.sql
+config.env
+Frontend/Property-Manager/node_modules
+
