@@ -101,11 +101,10 @@ export class QuotationComponent {
 }
 
   submitQuotation() {
-    
-
     this.apiservice.getAllContractors().subscribe((response) => {
     const nameToFind = this.quotation.contractorName.toLowerCase();
     let found = false;
+    const cleaned = this.quotation.amount.replace(/[^0-9.-]+/g, "");
 
     for (const contractor of response) {
       console.log(contractor?.name);
@@ -115,11 +114,10 @@ export class QuotationComponent {
       ) {
         console.log("Matching Contractor ID:", contractor.contractorId);
         found = true;
-        this.apiservice.addQuote(101, contractor.contractorId, 10 ,new Date("2025-05-27"), "Mainteneance").subscribe((response2) => {
-          console.log(response2);
+        this.apiservice.addQuote(101, contractor.contractorId, Number(cleaned) ,new Date("2025-05-27"), "Mainteneance").subscribe((response2) => {
+            alert('Your Quote was sucessfuly sent, ID:' + response2.quote_id);
         });
         console.log();
-        alert('Quotation submitted:' + this.quotation);
         this.router.navigate(['/contractorHome'])
       }
     }
