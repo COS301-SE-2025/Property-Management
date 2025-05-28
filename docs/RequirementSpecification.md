@@ -196,7 +196,113 @@ The solution will adhere to security best practices and implement multi-tenancy 
 5.3.3 The system must implement secure authentication workflows including multi-factor authentication.
 
 ## 4. Service Contracts
+## 4.1 Owner Register
+**Service Contract Name:** ownerRegister
+**Parameters:** { name: string, email: string, password: string, phone: string}
 
+**Pre-conditions:**
+- The user must not be a registered user.
+- User information (name, email, password,phone) must be provided.
+
+**Post-conditions:**
+- A registered user is created.
+- The user is navigated to the Owner Home page.
+
+**Actors:**
+- Owner
+
+**Scenario:**
+The Owner accesses the registration page, enters their details, and submits the form and navigates the Owner to the Owner home page.
+
+## 4.2 Contractor Register
+**Service Contract Name:** contractorRegister
+**Parameters:** { name: string, email: string, string address, password: string, phone: string}
+
+**Pre-conditions:**
+- The user must not be a registered user.
+- User information (name, email, address,password,phone) must be provided.
+
+**Post-conditions:**
+- A registered user is created.
+- The user is navigated to the Comtractor Home page.
+
+**Actors:**
+- Contractor
+
+**Scenario:**
+The Contractor accesses the registration page, enters their details, and submits the form and navigates the Contractor to the Contractor home page.
+
+## 4.3 Login
+**Service Contract Name:** signin
+**Parameters:** { email: string, password: string }
+
+**Pre-conditions:**
+- The user must be a registered user.
+- A valid registered email address and password must be provided.
+
+**Post-conditions:**
+- The user is signed into the system and navigated to the main/landing page.
+
+**Actors:**
+- User
+
+**Scenario:**
+The user enters their email and password on the login page. The system verifies the credentials and either grants access, navigating the user to the main/landing page, or denies access and prompts them to try again.
+
+## 4.4 View Property
+**Service Contract Name:** viewProperty
+**Parameters:** { }
+
+**Pre-conditions:**
+- The Owner must be a registered Owner with a verified email and already logged in.
+- Owner must be on the Owner Home page and click property card.
+
+**Post-conditions:**
+- Can see inventory levels, the budget and the timeline of a property.
+
+**Actors:**
+- Owner
+
+**Scenario:**
+Owner clicks a property card and views a property.
+
+## 4.5 Add a Property
+**Service Contract Name:** addProperty
+**Parameters:** { name: string, address: string, city: string, suburb: string, province: string, type: string }
+
+**Pre-conditions:**
+- The Owner must be logged in and press add property button in the home page
+- Owner will then fill in form.
+
+**Post-conditions:**
+- Will create a new property on the Owner home page.
+
+**Actors:**
+- Owner
+
+**Scenario:**
+Owner logs in then clicks add property button he then fills in form and creates a new property.
+
+## 4.6 Create a quotation
+**Service Contract Name:** createQoutation
+**Parameters:** {name: string, proffesion: string, address: string, number: string, email: string, amount: int }
+
+**Pre-conditions:**
+- Contractor must be logged in and then click on a project.
+
+**Post-conditions:**
+- A quote is now created
+
+**Actors:**
+- Contractor
+
+**Scenario:**
+A contractor creates a new quote by clicking on a available project.
+
+ 
+
+<br />
+<br />
 
 ## 5. Domain Model
 
