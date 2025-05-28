@@ -66,6 +66,8 @@ export class VerifyEmailComponent {
     return this.authService.confirmRegister(this.username, this.verificationCode)
     .then(tokens => {
       console.log("Verified email");
+      console.log(tokens);
+  
       this.router.navigate(['/login']);
     })
     .catch(error => {
