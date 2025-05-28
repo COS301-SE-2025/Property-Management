@@ -63,7 +63,7 @@ Property Management simplifies the budgeting, scheduling and progress tracking o
 
 🔗 [System Requirements Document (SRS)](docs/RequirementSpecification.md) <br>
 🔗 [Coding Standards](docs/CodingStandards.md) <br>
-🔗 [Installation Manual](docs/UserManual.md) <br>
+🔗 [Installation Manual](docs/InstallationManual.md) <br>
 🔗 [Deployment Guide](docs/RequirementSpecification.md) <br>
 
 ##  Project Board
