@@ -4,6 +4,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 @Component({
@@ -109,7 +110,7 @@ export class ContractorRegisterComponent {
 
     constructor(
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService, private router: Router
   ) {}
 
     togglePassword() {
@@ -137,32 +138,33 @@ export class ContractorRegisterComponent {
     this.serverError = false;
     this.emptyField = false;
 
-    try {
+        console.log(this.email)
+        console.log(this.password)
 
-      const result = await this.authService.register(this.email, this.password, this.email);
-      
-      const apikey = result?.userSub || result?.user?.getUsername() || ''; //result?.userSub || result?.user?.getUsername() || '';this.generateApiKey(this.email + Date.now());
+        return this.authService.register(this.email, this.password, 'contractor')
+            .then(tokens => {
+                //TODO: Store tokens
+                console.log("Successfully logged in");
+                console.log(tokens);
 
-      await this.apiService.addContractor(this.companyName, this.email, this.contactNumber, apikey,false).toPromise();
+                this.router.navigate(['/verifyEmail'], {
+                    state: {
+                        username: tokens.user.getUsername()
+                    }
+                });
+            })
+            .catch(error => {
+                console.error("Login error: ", error);
 
-      console.log('Successfully registered');
-    } catch (error: unknown) {
-      console.error('Registration error: ', error);
-      if (
-        typeof error === 'object' &&
-        error !== null &&
-        ('status' in error || 'code' in error)
-      ) {
-        const err = error as { status?: number; code?: string };
-        if (err.status === 400 || err.code === 'NotAuthorizedException') {
-          this.userError = true;
-        } else {
-          this.serverError = true;
-        }
-      } else {
-        this.serverError = true;
-      }
-      throw error;
+                const status = error?.status || error?.__zone_symbol__status;
+                console.log(status);
+
+                if (status === 400 || error.code === "NotAuthorizedException") {
+                    this.userError = true;
+                }
+                else {
+                    this.serverError = true;
+                }
+            });
     }
-  }
 }
