@@ -135,7 +135,7 @@ export class ContractorRegisterComponent {
 
                 this.router.navigate(['/verifyEmail'], {
                     state: {
-                        email: this.email
+                        username: tokens.user.getUsername()
                     }
                 });
             })

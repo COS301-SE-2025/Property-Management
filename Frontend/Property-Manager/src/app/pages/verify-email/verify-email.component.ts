@@ -42,28 +42,33 @@ export class VerifyEmailComponent {
   constructor(private authService: AuthService, private router: Router) {
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras.state as {
-      email: string
+      username: string
     };
     
     if (state) {
-      this.email = state.email;
+      this.username = state.username;
     }
   }
 
   public verificationCode = '';
-  public email = '';
+  public username = '';
 
   sendCode()
   {
+    console.log(this.username);
+    console.log(this.verificationCode);
     if(!this.verificationCode)
     {
       return;
     }
 
-    return this.authService.confirmRegister(this.email, this.verificationCode)
+    return this.authService.confirmRegister(this.username, this.verificationCode)
     .then(tokens => {
       console.log("Verified email");
-      // this.router.navigate(['/login']);
-    }) 
+      this.router.navigate(['/login']);
+    })
+    .catch(error => {
+      console.log(error);
+    });
   }
 }
