@@ -110,6 +110,7 @@ export class RegisterOwnerComponent {
     try {
 
       const result = await this.authService.register(this.email, this.password, this.email);
+      console.log(result.user.getUsername());
 
       const apikey = result?.userSub || result?.user?.getUsername() || '';
 
@@ -119,7 +120,7 @@ export class RegisterOwnerComponent {
 
       this.router.navigate(['/verifyEmail'], {
           state: {
-              email: this.email
+              username: result.user.getUsername()
           }
       });
     } catch (error: unknown) {
