@@ -109,7 +109,7 @@ export class RegisterOwnerComponent {
 
     try {
 
-      const result = await this.authService.register(this.email, this.password, this.email);
+      const result = await this.authService.register(this.email, this.password, 'owner');
       console.log(result.user.getUsername());
 
       const apikey = result?.userSub || result?.user?.getUsername() || '';
