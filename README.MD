@@ -61,12 +61,10 @@ Property Management simplifies the budgeting, scheduling and progress tracking o
 
 ##  Documentation
 
-🔗 [Functional Requirements Document (SRS)](docs/RequirementSpecification.md) <br>
-🔗 [System Architecture Documentation](docs/architecture.md) <br>
-🔗 [API Documentation](docs/api-documentation.md) <br>
-🔗 [Database Schema](docs/database-schema.md) <br>
-🔗 [Deployment Guide](docs/deployment.md) <br>
-🔗 [User Manual](docs/user-manual.md)
+🔗 [System Requirements Document (SRS)](docs/RequirementSpecification.md) <br>
+🔗 [Coding Standards](docs/CodingStandards.md) <br>
+🔗 [Installation Manual](docs/UserManual.md) <br>
+🔗 [Deployment Guide](docs/RequirementSpecification.md) <br>
 
 ##  Project Board
 
@@ -305,7 +303,7 @@ We implement a robust GitFlow branching strategy ensuring code quality and colla
 
 ##  Quality Badges
 
-[![Build Status](https://github.com/COS301-SE-2025/Property-Management/workflows/CI/badge.svg)](https://github.com/COS301-SE-2025/Property-Management/actions)
+<!-- [![Build Status](https://github.com/COS301-SE-2025/Property-Management/workflows/CI/badge.svg)](https://github.com/COS301-SE-2025/Property-Management/actions) -->
 [![Coverage Status](https://coveralls.io/repos/github/COS301-SE-2025/Property-Management/badge.svg?branch=main)](https://coveralls.io/github/COS301-SE-2025/Property-Management?branch=main)
 [![Dependencies](https://img.shields.io/librariesio/github/COS301-SE-2025/Property-Management?style=flat-square)](https://libraries.io/github/COS301-SE-2025/Property-Management)
 [![GitHub Issues](https://img.shields.io/github/issues/COS301-SE-2025/Property-Management?style=flat-square)](https://github.com/COS301-SE-2025/Property-Management/issues)
