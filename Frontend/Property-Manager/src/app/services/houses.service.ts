@@ -100,7 +100,7 @@ export class HousesService {
 
         const timeLineArr: Timeline[] = details.maintenanceTasks.map(task => ({
           description: task.description,
-          done: task.status === 'DONE'
+          done: task.status === 'done'
         }));
 
         this.timeline.set(timeLineArr);
