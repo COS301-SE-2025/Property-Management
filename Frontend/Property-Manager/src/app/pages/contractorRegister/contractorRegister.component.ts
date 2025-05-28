@@ -4,6 +4,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-contractor-register',
@@ -106,7 +107,7 @@ export class ContractorRegisterComponent {
     public userError = false;
     public serverError = false;
 
-    constructor(private authService: AuthService) { }
+    constructor(private authService: AuthService, private router: Router) { }
 
     togglePassword() {
         this.passwordVisible = !this.passwordVisible;
@@ -131,6 +132,12 @@ export class ContractorRegisterComponent {
                 //TODO: Store tokens
                 console.log("Successfully logged in");
                 console.log(tokens);
+
+                this.router.navigate(['/verifyEmail'], {
+                    state: {
+                        email: this.email
+                    }
+                });
             })
             .catch(error => {
                 console.error("Login error: ", error);
