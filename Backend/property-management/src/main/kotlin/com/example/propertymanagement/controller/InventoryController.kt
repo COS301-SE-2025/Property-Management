@@ -17,42 +17,44 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/inventory")
-class InventoryController(private val service: InventoryService) {
+class InventoryController(
+    private val service: InventoryService,
+) {
     @GetMapping
     fun getAll(): List<InventoryItem> = service.getAll()
 
     @PostMapping
     fun addOrUpdate(
         @RequestBody request: InventoryItemRequest,
-    ): ResponseEntity<Any> {
-        return try {
+    ): ResponseEntity<Any> =
+        try {
             service.addOrUpdateItem(request)
             ResponseEntity.ok("Item processed successfully")
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(mapOf("error" to e.message))
         }
-    }
 
     @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Long,
-    ): ResponseEntity<Any> {
-        return try {
+    ): ResponseEntity<Any> =
+        try {
             val item = service.getById(id)
             ResponseEntity.ok(item)
         } catch (ex: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND)
+            ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(mapOf("error" to ex.message))
         }
-    }
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
         @RequestBody item: InventoryItem,
-    ): ResponseEntity<Any> {
-        return try {
+    ): ResponseEntity<Any> =
+        try {
             val updated = service.update(id, item)
             ResponseEntity.ok(updated)
         } catch (e: IllegalArgumentException) {
@@ -60,25 +62,23 @@ class InventoryController(private val service: InventoryService) {
         } catch (e: NoSuchElementException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to e.message))
         }
-    }
 
     @DeleteMapping("/{id}")
     fun delete(
         @PathVariable id: Long,
-    ): ResponseEntity<Any> {
-        return try {
+    ): ResponseEntity<Any> =
+        try {
             service.delete(id)
             ResponseEntity.noContent().build()
         } catch (e: NoSuchElementException) {
             ResponseEntity.status(404).body(mapOf("error" to e.message))
         }
-    }
 
     @PostMapping("/use")
     fun useInventoryItem(
         @RequestBody request: InventoryUsageRequest,
-    ): ResponseEntity<Any> {
-        return try {
+    ): ResponseEntity<Any> =
+        try {
             val updatedItem = service.useInventoryItem(request)
             ResponseEntity.ok(updatedItem)
         } catch (e: IllegalArgumentException) {
@@ -86,5 +86,4 @@ class InventoryController(private val service: InventoryService) {
         } catch (e: NoSuchElementException) {
             ResponseEntity.status(404).body(mapOf("error" to e.message))
         }
-    }
 }

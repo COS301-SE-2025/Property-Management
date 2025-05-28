@@ -15,22 +15,24 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/trustee")
-class TrusteeController(private val service: TrusteeService) {
+class TrusteeController(
+    private val service: TrusteeService,
+) {
     @GetMapping
     fun getAll(): List<Trustee> = service.getAll()
 
     @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Int,
-    ): ResponseEntity<Any> {
-        return try {
+    ): ResponseEntity<Any> =
+        try {
             val item = service.getById(id)
             ResponseEntity.ok(item)
         } catch (ex: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND)
+            ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(mapOf("error" to ex.message))
         }
-    }
 
     data class UserDto(
         val name: String,
@@ -42,9 +44,7 @@ class TrusteeController(private val service: TrusteeService) {
     @PostMapping
     fun createUser(
         @RequestBody userDto: UserDto,
-    ): Trustee {
-        return service.addUser(userDto.name, userDto.email, userDto.phone, userDto.apikey)
-    }
+    ): Trustee = service.addUser(userDto.name, userDto.email, userDto.phone, userDto.apikey)
 
     @PutMapping("/{id}")
     fun update(
