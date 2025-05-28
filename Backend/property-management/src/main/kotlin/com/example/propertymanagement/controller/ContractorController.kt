@@ -15,22 +15,24 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/contractor")
-class ContractorController(private val service: ContractorService) {
+class ContractorController(
+    private val service: ContractorService,
+) {
     @GetMapping()
     fun getAll(): List<Contractor> = service.getAll()
 
     @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Int,
-    ): ResponseEntity<Any> {
-        return try {
+    ): ResponseEntity<Any> =
+        try {
             val item = service.getById(id)
             ResponseEntity.ok(item)
         } catch (ex: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND)
+            ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(mapOf("error" to ex.message))
         }
-    }
 
     data class ContractorDto(
         val name: String,
@@ -43,9 +45,8 @@ class ContractorController(private val service: ContractorService) {
     @PostMapping
     fun createUser(
         @RequestBody ContractorDto: ContractorDto,
-    ): Contractor {
-        return service.addUser(ContractorDto.name, ContractorDto.email, ContractorDto.phone, ContractorDto.apikey, ContractorDto.banned)
-    }
+    ): Contractor =
+        service.addUser(ContractorDto.name, ContractorDto.email, ContractorDto.phone, ContractorDto.apikey, ContractorDto.banned)
 
     @PutMapping("/{id}")
     fun update(

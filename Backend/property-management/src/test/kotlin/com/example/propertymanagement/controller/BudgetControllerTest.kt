@@ -41,7 +41,8 @@ class BudgetControllerTest {
             )
         given(budgetService.getByBuildingId(1)).willReturn(budget)
 
-        mockMvc.perform(get("/api/budget/1"))
+        mockMvc
+            .perform(get("/api/budget/1"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.budgetId").value(1))
@@ -57,13 +58,15 @@ class BudgetControllerTest {
     fun `should return 404 when budget not found`() {
         given(budgetService.getByBuildingId(999)).willReturn(null)
 
-        mockMvc.perform(get("/api/budget/999"))
+        mockMvc
+            .perform(get("/api/budget/999"))
             .andExpect(status().isNotFound)
     }
 
     @Test
     fun `should return 400 for non-numeric buildingId`() {
-        mockMvc.perform(get("/api/budget/abc"))
+        mockMvc
+            .perform(get("/api/budget/abc"))
             .andExpect(status().isBadRequest)
     }
 }

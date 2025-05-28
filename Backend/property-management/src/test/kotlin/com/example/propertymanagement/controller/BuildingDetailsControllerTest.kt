@@ -53,7 +53,8 @@ class BuildingDetailsControllerTest {
             )
         given(buildingDetailsService.getBuildingDetails(1L)).willReturn(response)
 
-        mockMvc.perform(get("/api/building/1/details"))
+        mockMvc
+            .perform(get("/api/building/1/details"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.name").value("Building A"))
@@ -66,31 +67,36 @@ class BuildingDetailsControllerTest {
     fun `should return 404 when building details not found`() {
         given(buildingDetailsService.getBuildingDetails(999L)).willReturn(null)
 
-        mockMvc.perform(get("/api/building/999/details"))
+        mockMvc
+            .perform(get("/api/building/999/details"))
             .andExpect(status().isNotFound)
     }
 
     @Test
     fun `should return 400 when buildingId is non-numeric`() {
-        mockMvc.perform(get("/api/building/abc/details"))
+        mockMvc
+            .perform(get("/api/building/abc/details"))
             .andExpect(status().isBadRequest)
     }
 
     @Test
     fun `should return 404 when buildingId is negative`() {
-        mockMvc.perform(get("/api/building/-1/details"))
+        mockMvc
+            .perform(get("/api/building/-1/details"))
             .andExpect(status().isNotFound)
     }
 
     @Test
     fun `should return 404 when buildingId is zero`() {
-        mockMvc.perform(get("/api/building/0/details"))
+        mockMvc
+            .perform(get("/api/building/0/details"))
             .andExpect(status().isNotFound)
     }
 
     @Test
     fun `should return 405 for unsupported HTTP method`() {
-        mockMvc.perform(post("/api/building/1/details").contentType(MediaType.APPLICATION_JSON))
+        mockMvc
+            .perform(post("/api/building/1/details").contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isMethodNotAllowed)
     }
 }
