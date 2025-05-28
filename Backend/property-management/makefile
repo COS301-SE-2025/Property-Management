@@ -24,3 +24,8 @@ refresh:
 
 rebuild: clean refresh
 
+install-lint:
+	curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint
+
+lint:
+	./ktlint -F "src/**/*.kt"

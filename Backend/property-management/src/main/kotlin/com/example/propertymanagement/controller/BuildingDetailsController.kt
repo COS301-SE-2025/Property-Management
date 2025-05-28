@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/building")
 @Validated
-class BuildingDetailsController(private val service: BuildingDetailsService) {
+class BuildingDetailsController(
+    private val service: BuildingDetailsService,
+) {
     @GetMapping("/{buildingId}/details")
     fun getBuildingDetails(
         @PathVariable @Min(1) buildingId: Long,

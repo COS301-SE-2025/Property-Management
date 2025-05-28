@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException::class)
-    fun handleConstraintViolation(ex: ConstraintViolationException): ResponseEntity<String> {
-        return ResponseEntity("Invalid parameter: ${ex.message}", HttpStatus.BAD_REQUEST)
-    }
+    fun handleConstraintViolation(ex: ConstraintViolationException): ResponseEntity<String> =
+        ResponseEntity("Invalid parameter: ${ex.message}", HttpStatus.BAD_REQUEST)
 }
