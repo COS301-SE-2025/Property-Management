@@ -65,6 +65,8 @@ Property Management simplifies the budgeting, scheduling and progress tracking o
 🔗 [Coding Standards](docs/CodingStandards.md) <br>
 🔗 [Installation Manual](docs/InstallationManual.md) <br>
 🔗 [Deployment Guide](docs/RequirementSpecification.md) <br>
+🔗 [Presentation](https://www.canva.com/design/DAGolOVTNTE/soGa0R0ZWJJiebLWCDFrGA/edit) <br>
+
 
 ##  Project Board
 
