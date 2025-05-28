@@ -267,12 +267,9 @@ This pattern improves modularity, security, testability, and maintenance.
 8. Gradle version 4.4.1 or newer
 9. PostgreSQL version 17 or newer
 
-
-This project was created by: EpiUse-Labs
 ---
 
 ### Cloning Repository
-
 1. Open a terminal or command prompt.
 2. Clone the repository using the command:
    ```bash
@@ -285,11 +282,6 @@ This project was created by: EpiUse-Labs
 
 
 ## Running Backend
-To run the Front end, in your terminal run
-
-```bash
-cd Frontend/Property-Manager
-```
 ### Database Setup (PostgreSQL)
 
 Follow the steps below to create the `property_management` database.
