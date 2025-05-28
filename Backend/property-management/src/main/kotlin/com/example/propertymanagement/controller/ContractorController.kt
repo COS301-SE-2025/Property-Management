@@ -2,6 +2,7 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.service.ContractorService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -20,8 +21,16 @@ class ContractorController(private val service: ContractorService) {
 
     @GetMapping("/{id}")
     fun getById(
-        @PathVariable id: Long,
-    ): Contractor = service.getById(id)
+        @PathVariable id: Int,
+    ): ResponseEntity<Any> {
+        return try {
+            val item = service.getById(id)
+            ResponseEntity.ok(item)
+        } catch (ex: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(mapOf("error" to ex.message))
+        }
+    }
 
     data class ContractorDto(
         val name: String,
@@ -40,13 +49,13 @@ class ContractorController(private val service: ContractorService) {
 
     @PutMapping("/{id}")
     fun update(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
         @RequestBody item: Contractor,
     ): Contractor = service.update(id, item)
 
     @DeleteMapping("/{id}")
     fun delete(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
     ): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()
