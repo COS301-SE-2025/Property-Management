@@ -139,9 +139,9 @@ export class ContractorRegisterComponent {
 
     try {
 
-      //const result = await this.authService.register(this.email, this.password, this.email);
+      const result = await this.authService.register(this.email, this.password, this.email);
       
-      const apikey = this.generateApiKey(this.email + Date.now()); //result?.userSub || result?.user?.getUsername() || '';
+      const apikey = result?.userSub || result?.user?.getUsername() || ''; //result?.userSub || result?.user?.getUsername() || '';this.generateApiKey(this.email + Date.now());
 
       await this.apiService.addContractor(this.companyName, this.email, this.contactNumber, apikey,false).toPromise();
 
