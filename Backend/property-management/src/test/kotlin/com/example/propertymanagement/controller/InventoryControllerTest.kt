@@ -53,7 +53,8 @@ class InventoryControllerTest {
             )
         given(inventoryService.getAll()).willReturn(items)
 
-        mockMvc.perform(get("/api/inventory"))
+        mockMvc
+            .perform(get("/api/inventory"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
     }
@@ -70,7 +71,8 @@ class InventoryControllerTest {
             )
         given(inventoryService.getById(1)).willReturn(item)
 
-        mockMvc.perform(get("/api/inventory/1"))
+        mockMvc
+            .perform(get("/api/inventory/1"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.itemId").value(1))
@@ -81,7 +83,8 @@ class InventoryControllerTest {
     fun `should return 404 for non-existent inventory item`() {
         given(inventoryService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
 
-        mockMvc.perform(get("/api/inventory/999"))
+        mockMvc
+            .perform(get("/api/inventory/999"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 999"))
     }
@@ -98,12 +101,12 @@ class InventoryControllerTest {
             )
         given(inventoryService.update(1, updatedItem)).willReturn(updatedItem)
 
-        mockMvc.perform(
-            put("/api/inventory/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedItem)),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                put("/api/inventory/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(updatedItem)),
+            ).andExpect(status().isOk)
             .andExpect(jsonPath("$.itemId").value(1))
             .andExpect(jsonPath("$.name").value("Updated Item"))
             .andExpect(jsonPath("$.quantityInStock").value(150))
@@ -122,12 +125,12 @@ class InventoryControllerTest {
             )
         given(inventoryService.update(999, updatedItem)).willThrow(NoSuchElementException("Item not found: 999"))
 
-        mockMvc.perform(
-            put("/api/inventory/999")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedItem)),
-        )
-            .andExpect(status().isNotFound)
+        mockMvc
+            .perform(
+                put("/api/inventory/999")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(updatedItem)),
+            ).andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 999"))
     }
 
@@ -143,18 +146,19 @@ class InventoryControllerTest {
             )
         given(inventoryService.update(1, invalidItem)).willThrow(IllegalArgumentException("Quantity in stock cannot be negative"))
 
-        mockMvc.perform(
-            put("/api/inventory/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidItem)),
-        )
-            .andExpect(status().isBadRequest)
+        mockMvc
+            .perform(
+                put("/api/inventory/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(invalidItem)),
+            ).andExpect(status().isBadRequest)
             .andExpect(jsonPath("$.error").value("Quantity in stock cannot be negative"))
     }
 
     @Test
     fun `should delete inventory item`() {
-        mockMvc.perform(delete("/api/inventory/1"))
+        mockMvc
+            .perform(delete("/api/inventory/1"))
             .andExpect(status().isNoContent)
     }
 
@@ -162,7 +166,8 @@ class InventoryControllerTest {
     fun `should return 404 when deleting non-existent inventory item`() {
         given(inventoryService.delete(999)).willThrow(NoSuchElementException("Item with ID 999 not found"))
 
-        mockMvc.perform(delete("/api/inventory/999"))
+        mockMvc
+            .perform(delete("/api/inventory/999"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item with ID 999 not found"))
     }
@@ -179,12 +184,12 @@ class InventoryControllerTest {
 
         doNothing().`when`(inventoryService).addOrUpdateItem(request)
 
-        mockMvc.perform(
-            post("/api/inventory")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                post("/api/inventory")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isOk)
             .andExpect(content().string("Item processed successfully"))
     }
 
@@ -199,12 +204,12 @@ class InventoryControllerTest {
             )
         given(inventoryService.addOrUpdateItem(request)).willThrow(IllegalArgumentException("Quantity cannot be negative"))
 
-        mockMvc.perform(
-            post("/api/inventory")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)),
-        )
-            .andExpect(status().isBadRequest)
+        mockMvc
+            .perform(
+                post("/api/inventory")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isBadRequest)
             .andExpect(jsonPath("$.error").value("Quantity cannot be negative"))
     }
 
@@ -226,12 +231,12 @@ class InventoryControllerTest {
             )
         given(inventoryService.useInventoryItem(request)).willReturn(updatedItem)
 
-        mockMvc.perform(
-            post("/api/inventory/use")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                post("/api/inventory/use")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isOk)
             .andExpect(jsonPath("$.itemId").value(1))
             .andExpect(jsonPath("$.quantityInStock").value(90))
     }
@@ -246,12 +251,12 @@ class InventoryControllerTest {
             )
         given(inventoryService.useInventoryItem(request)).willThrow(IllegalArgumentException("Quantity must be greater than zero"))
 
-        mockMvc.perform(
-            post("/api/inventory/use")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)),
-        )
-            .andExpect(status().isBadRequest)
+        mockMvc
+            .perform(
+                post("/api/inventory/use")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isBadRequest)
             .andExpect(jsonPath("$.error").value("Quantity must be greater than zero"))
     }
 }

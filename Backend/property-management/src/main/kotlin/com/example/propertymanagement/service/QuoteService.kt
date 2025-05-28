@@ -7,7 +7,9 @@ import java.math.BigDecimal
 import java.util.Date
 
 @Service
-class QuoteService(private val repository: QuoteRepository) {
+class QuoteService(
+    private val repository: QuoteRepository,
+) {
     fun getAll(): List<Quote> = repository.findAll()
 
     fun getById(id: Int): Quote = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }

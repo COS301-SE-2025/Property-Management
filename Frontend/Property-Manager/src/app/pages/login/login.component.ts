@@ -95,6 +95,7 @@ export class LoginComponent {
       //TODO: Store tokens
       console.log("Successfully logged in")
       
+      
       if(tokens.givenName === 'owner')
       {
         this.router.navigate(['/home']);

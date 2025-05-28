@@ -17,22 +17,24 @@ import java.util.Date
 
 @RestController
 @RequestMapping("/api/quote")
-class QuoteController(private val service: QuoteService) {
+class QuoteController(
+    private val service: QuoteService,
+) {
     @GetMapping
     fun getAll(): List<Quote> = service.getAll()
 
     @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Int,
-    ): ResponseEntity<Any> {
-        return try {
+    ): ResponseEntity<Any> =
+        try {
             val item = service.getById(id)
             ResponseEntity.ok(item)
         } catch (ex: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND)
+            ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(mapOf("error" to ex.message))
         }
-    }
 
     data class QuoteDto(
         val task_id: Int,
@@ -45,9 +47,7 @@ class QuoteController(private val service: QuoteService) {
     @PostMapping
     fun createQuote(
         @RequestBody QuoteDto: QuoteDto,
-    ): Quote {
-        return service.addQuote(QuoteDto.task_id, QuoteDto.contractor_id, QuoteDto.amount, QuoteDto.submitted_on, QuoteDto.type)
-    }
+    ): Quote = service.addQuote(QuoteDto.task_id, QuoteDto.contractor_id, QuoteDto.amount, QuoteDto.submitted_on, QuoteDto.type)
 
     @PutMapping("/{id}")
     fun update(
