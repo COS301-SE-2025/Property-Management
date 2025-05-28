@@ -5,10 +5,12 @@ import com.example.propertymanagement.repository.ContractorRepository
 import org.springframework.stereotype.Service
 
 @Service
-class ContractorService(private val repository: ContractorRepository) {
+class ContractorService(
+    private val repository: ContractorRepository,
+) {
     fun getAll(): List<Contractor> = repository.findAll()
 
-    fun getById(id: Long): Contractor = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    fun getById(id: Int): Contractor = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Contractor): Contractor = repository.save(item)
 
@@ -24,7 +26,7 @@ class ContractorService(private val repository: ContractorRepository) {
     }
 
     fun update(
-        id: Long,
+        id: Int,
         newItem: Contractor,
     ): Contractor {
         val existing = getById(id)
@@ -39,5 +41,5 @@ class ContractorService(private val repository: ContractorRepository) {
         return repository.save(updated)
     }
 
-    fun delete(id: Long) = repository.deleteById(id)
+    fun delete(id: Int) = repository.deleteById(id)
 }

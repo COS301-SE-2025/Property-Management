@@ -5,7 +5,9 @@ import com.example.propertymanagement.repository.TrusteeRepository
 import org.springframework.stereotype.Service
 
 @Service
-class TrusteeService(private val repository: TrusteeRepository) {
+class TrusteeService(
+    private val repository: TrusteeRepository,
+) {
     fun getAll(): List<Trustee> = repository.findAll()
 
     fun getById(id: Int): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
