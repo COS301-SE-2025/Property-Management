@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ApiService } from '../../services/api.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -89,7 +90,8 @@ export class RegisterOwnerComponent {
 
   constructor(
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
   togglePassword() {
     this.passwordVisible = !this.passwordVisible;
@@ -114,6 +116,12 @@ export class RegisterOwnerComponent {
       await this.apiService.registerTrustee(this.email, this.email, this.contactNumber, apikey).toPromise();
 
       console.log('Successfully registered');
+
+      this.router.navigate(['/verifyEmail'], {
+          state: {
+              email: this.email
+          }
+      });
     } catch (error: unknown) {
       console.error('Registration error: ', error);
       if (

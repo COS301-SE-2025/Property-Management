@@ -8,6 +8,7 @@ import { CreatePropertyComponent } from './pages/create-property/create-property
 import { ContractorRegisterComponent } from './pages/contractorRegister/contractorRegister.component';
 import { ContractorHomeComponent } from './pages/contractorHome/contractorHome.component';
 import { QuotationComponent } from './pages/quotation/quotation.component';
+import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 
 
 export const routes: Routes = [
@@ -53,5 +54,10 @@ export const routes: Routes = [
      path: 'quotation',
      pathMatch: 'full',
     component: QuotationComponent
+},
+{
+  path: 'verifyEmail',
+  pathMatch: 'full',
+  component: VerifyEmailComponent
 }
 ];
