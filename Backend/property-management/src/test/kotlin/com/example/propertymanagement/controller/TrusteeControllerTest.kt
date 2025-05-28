@@ -40,7 +40,8 @@ class TrusteeControllerTest {
             )
         given(trusteeService.getById(4)).willReturn(response)
 
-        mockMvc.perform(get("/api/trustee/4"))
+        mockMvc
+            .perform(get("/api/trustee/4"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(4))
@@ -54,21 +55,24 @@ class TrusteeControllerTest {
     fun `should return 404 when trustee not found`() {
         given(trusteeService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
 
-        mockMvc.perform(get("/api/trustee/999"))
+        mockMvc
+            .perform(get("/api/trustee/999"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 999"))
     }
 
     @Test
     fun `should return 400 when trusteeId is non-numeric`() {
-        mockMvc.perform(get("/api/trustee/abc"))
+        mockMvc
+            .perform(get("/api/trustee/abc"))
             .andExpect(status().isBadRequest)
     }
 
     @Test
     fun `should return 404 when trusteeId is negative`() {
         given(trusteeService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
-        mockMvc.perform(get("/api/trustee/-1"))
+        mockMvc
+            .perform(get("/api/trustee/-1"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: -1"))
     }
@@ -76,14 +80,16 @@ class TrusteeControllerTest {
     @Test
     fun `should return 404 when trusteeId is zero`() {
         given(trusteeService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
-        mockMvc.perform(get("/api/trustee/0"))
+        mockMvc
+            .perform(get("/api/trustee/0"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 0"))
     }
 
     @Test
     fun `should return 405 for unsupported HTTP method`() {
-        mockMvc.perform(post("/api/trustee/1").contentType(MediaType.APPLICATION_JSON))
+        mockMvc
+            .perform(post("/api/trustee/1").contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isMethodNotAllowed)
     }
 }

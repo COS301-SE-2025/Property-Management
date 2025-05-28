@@ -118,6 +118,7 @@ export class QuotationComponent {
             alert('Your Quote was sucessfuly sent, ID:' + response2.quote_id);
         });
         console.log();
+        alert('Your Quote was sucessfuly sent');
         this.router.navigate(['/contractorHome'])
       }
     }

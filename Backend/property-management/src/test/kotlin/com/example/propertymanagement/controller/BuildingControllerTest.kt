@@ -38,7 +38,8 @@ class BuildingControllerTest {
             )
         given(buildingService.getAll()).willReturn(buildings)
 
-        mockMvc.perform(get("/api/buildings"))
+        mockMvc
+            .perform(get("/api/buildings"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
     }
@@ -59,12 +60,12 @@ class BuildingControllerTest {
         val building = Building(1, "Test", "Addr", "Type", null, null, null, null, null)
         given(buildingService.create(any())).willReturn(building)
 
-        mockMvc.perform(
-            post("/api/buildings")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                post("/api/buildings")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("Test"))
     }
 
@@ -72,23 +73,25 @@ class BuildingControllerTest {
     fun `should return empty list when no buildings exist`() {
         given(buildingService.getAll()).willReturn(emptyList())
 
-        mockMvc.perform(get("/api/buildings"))
+        mockMvc
+            .perform(get("/api/buildings"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(0))
     }
 
     @Test
     fun `should return 405 for unsupported HTTP method`() {
-        mockMvc.perform(put("/api/buildings"))
+        mockMvc
+            .perform(put("/api/buildings"))
             .andExpect(status().isMethodNotAllowed)
     }
 
     @Test
     fun `should return 400 when POST has no JSON body`() {
-        mockMvc.perform(
-            post("/api/buildings")
-                .contentType(MediaType.APPLICATION_JSON),
-        )
-            .andExpect(status().isBadRequest)
+        mockMvc
+            .perform(
+                post("/api/buildings")
+                    .contentType(MediaType.APPLICATION_JSON),
+            ).andExpect(status().isBadRequest)
     }
 }

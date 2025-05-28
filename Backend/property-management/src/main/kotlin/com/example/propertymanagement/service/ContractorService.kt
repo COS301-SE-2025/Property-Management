@@ -5,7 +5,9 @@ import com.example.propertymanagement.repository.ContractorRepository
 import org.springframework.stereotype.Service
 
 @Service
-class ContractorService(private val repository: ContractorRepository) {
+class ContractorService(
+    private val repository: ContractorRepository,
+) {
     fun getAll(): List<Contractor> = repository.findAll()
 
     fun getById(id: Int): Contractor = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }

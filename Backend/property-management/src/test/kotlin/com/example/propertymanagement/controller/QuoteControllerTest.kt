@@ -44,7 +44,8 @@ class QuoteControllerTest {
 
         given(quoteService.getById(10)).willReturn(response)
 
-        mockMvc.perform(get("/api/quote/10"))
+        mockMvc
+            .perform(get("/api/quote/10"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.quote_id").value(10))
@@ -59,21 +60,24 @@ class QuoteControllerTest {
     fun `should return 404 when quote not found`() {
         given(quoteService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
 
-        mockMvc.perform(get("/api/quote/999"))
+        mockMvc
+            .perform(get("/api/quote/999"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 999"))
     }
 
     @Test
     fun `should return 400 when QuoteId is non-numeric`() {
-        mockMvc.perform(get("/api/quote/abc"))
+        mockMvc
+            .perform(get("/api/quote/abc"))
             .andExpect(status().isBadRequest)
     }
 
     @Test
     fun `should return 404 when QuoteId is negative`() {
         given(quoteService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
-        mockMvc.perform(get("/api/quote/-1"))
+        mockMvc
+            .perform(get("/api/quote/-1"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: -1"))
     }
@@ -81,14 +85,16 @@ class QuoteControllerTest {
     @Test
     fun `should return 404 when QuoteId is zero`() {
         given(quoteService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
-        mockMvc.perform(get("/api/quote/0"))
+        mockMvc
+            .perform(get("/api/quote/0"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 0"))
     }
 
     @Test
     fun `should return 405 for unsupported HTTP method`() {
-        mockMvc.perform(post("/api/quote/1").contentType(MediaType.APPLICATION_JSON))
+        mockMvc
+            .perform(post("/api/quote/1").contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isMethodNotAllowed)
     }
 }

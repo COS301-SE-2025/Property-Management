@@ -41,7 +41,8 @@ class ContractorControllerTest {
             )
         given(contractorService.getById(3)).willReturn(response)
 
-        mockMvc.perform(get("/api/contractor/3"))
+        mockMvc
+            .perform(get("/api/contractor/3"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.contractorId").value(3))
@@ -56,21 +57,24 @@ class ContractorControllerTest {
     fun `should return 404 when contractor not found`() {
         given(contractorService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
 
-        mockMvc.perform(get("/api/contractor/999"))
+        mockMvc
+            .perform(get("/api/contractor/999"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 999"))
     }
 
     @Test
     fun `should return 400 when ContractorId is non-numeric`() {
-        mockMvc.perform(get("/api/contractor/abc"))
+        mockMvc
+            .perform(get("/api/contractor/abc"))
             .andExpect(status().isBadRequest)
     }
 
     @Test
     fun `should return 404 when ContractorId is negative`() {
         given(contractorService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
-        mockMvc.perform(get("/api/contractor/-1"))
+        mockMvc
+            .perform(get("/api/contractor/-1"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: -1"))
     }
@@ -78,14 +82,16 @@ class ContractorControllerTest {
     @Test
     fun `should return 404 when ContractorId is zero`() {
         given(contractorService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
-        mockMvc.perform(get("/api/contractor/0"))
+        mockMvc
+            .perform(get("/api/contractor/0"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.error").value("Item not found: 0"))
     }
 
     @Test
     fun `should return 405 for unsupported HTTP method`() {
-        mockMvc.perform(post("/api/contractor/1").contentType(MediaType.APPLICATION_JSON))
+        mockMvc
+            .perform(post("/api/contractor/1").contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isMethodNotAllowed)
     }
 }
