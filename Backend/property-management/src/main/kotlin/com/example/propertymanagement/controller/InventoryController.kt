@@ -26,10 +26,15 @@ class InventoryController(
     @PostMapping
     fun addOrUpdate(
         @RequestBody request: InventoryItemRequest,
-    ): ResponseEntity<String> {
-        service.addOrUpdateItem(request)
-        return ResponseEntity.ok("Item processed successfully")
-    }
+    ): ResponseEntity<Any> =
+        try {
+            service.addOrUpdateItem(request)
+            ResponseEntity.ok("Item processed successfully")
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(mapOf("error" to e.message))
+        }
 
     @GetMapping("/{id}")
     fun getById(
