@@ -6,7 +6,9 @@ import com.example.propertymanagement.repository.BuildingDetailsRepository
 import org.springframework.stereotype.Service
 
 @Service
-class BuildingDetailsService(private val repo: BuildingDetailsRepository) {
+class BuildingDetailsService(
+    private val repo: BuildingDetailsRepository,
+) {
     fun getBuildingDetails(buildingId: Long): BuildingDetailsResponse? {
         val buildingBudget = repo.findBuildingBudgetDetails(buildingId).firstOrNull() ?: return null
 

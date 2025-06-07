@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/budget")
-class BudgetController(private val service: BudgetService) {
+class BudgetController(
+    private val service: BudgetService,
+) {
     @GetMapping("/{buildingId}")
     fun getBudgetByBuildingId(
         @PathVariable buildingId: Int,
