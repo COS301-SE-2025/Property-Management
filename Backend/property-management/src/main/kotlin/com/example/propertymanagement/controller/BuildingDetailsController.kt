@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/building")
-class BuildingDetailsController(private val service: BuildingDetailsService) {
 @Validated
 class BuildingDetailsController(
     private val service: BuildingDetailsService,
 ) {
     @GetMapping("/{buildingId}/details")
-    fun getBuildingDetails(
-        @PathVariable buildingId: Long,
-    ): ResponseEntity<BuildingDetailsResponse> {
     fun getBuildingDetails(
         @PathVariable @Min(1) buildingId: Long,
     ): ResponseEntity<BuildingDetailsResponse> {
