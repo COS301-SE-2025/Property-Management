@@ -18,7 +18,7 @@ class AwsS3Config(
 ) {
 
     @Bean
-    fun s3Client(): S3Client {
+    fun s3Client(): S3Client{
         val credentials = AwsBasicCredentials.create(accessKeyId, secretAccessKey)
 
         val builder = S3Client.builder()
