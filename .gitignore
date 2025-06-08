@@ -1,4 +1,34 @@
+
+# === Kotlin Backend ===
+*.properties
+*.yml
+*.sql
+config.env
+.env
+.env.*
+
+# Build directories
+/build/
+.gradle/
+out/
 Backend/ktlint
 klint
-config.env
+
+# === Frontend (Angular/Node) ===
 Frontend/Property-Manager/node_modules
+Frontend/Property-Manager/dist
+Frontend/Property-Manager/.angular
+
+# === IDE and OS ===
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# === Logs and temp ===
+*.log
+*.tmp
+*.swp
+*~
+
