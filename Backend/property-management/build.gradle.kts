@@ -50,5 +50,11 @@ allOpen {
 }
 
 tasks.withType<Test> {
-	useJUnitPlatform()
+    useJUnitPlatform()
+    systemProperty("aws.accessKeyId", "test-access-key")
+    systemProperty("aws.secretAccessKey", "test-secret-key")
+    systemProperty("aws.region", "us-east-1")
+    systemProperty("aws.s3.endpoint", "")
+	systemProperty("aws.bucket-name", "test-bucket")
 }
+

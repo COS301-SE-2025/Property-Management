@@ -24,6 +24,9 @@ refresh:
 
 rebuild: clean refresh
 
+scan: 
+	$(GRADLEW) test --scan
+
 install-lint:
 	curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint
 
