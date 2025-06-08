@@ -1,2 +1,0 @@
-INSERT INTO building(name, address, complex_name, trustees) VALUES('My house', '133 Klip street', 'Montana gardens', ARRAY[4]); 
-INSERT INTO building(name, address, complex_name, trustees) VALUES('Rental property', '677 Boom street', 'Rose acres', ARRAY[4]);

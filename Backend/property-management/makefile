@@ -29,3 +29,15 @@ install-lint:
 
 lint:
 	./ktlint -F "src/**/*.kt"
+
+docker:
+	docker-compose up
+
+docker-build:
+	docker-compose build
+
+docker-flyway-info:
+	docker-compose run --rm flyway info
+
+docker-flyway-migrate:
+	docker-compose run --rm flyway migrate
