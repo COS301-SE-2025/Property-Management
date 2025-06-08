@@ -1,46 +1,46 @@
 package com.example.propertymanagement.controller
 
+import com.example.propertymanagement.dto.ImageMeta
+import com.example.propertymanagement.repository.ImageRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
-import software.amazon.awssdk.services.s3.S3Client
-import software.amazon.awssdk.services.s3.model.PutObjectRequest
-import software.amazon.awssdk.core.sync.RequestBody
-import java.util.UUID
-
-import com.example.propertymanagement.dto.ImageMeta
-import com.example.propertymanagement.repository.ImageRepository
-import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-
-
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
+import software.amazon.awssdk.core.sync.RequestBody
+import software.amazon.awssdk.services.s3.S3Client
+import org.springframework.web.bind.annotation.PathVariable
+import software.amazon.awssdk.services.s3.model.PutObjectRequest
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/images")
 class ImageController(
     val s3Client: S3Client,
-    val imageRepository: ImageRepository
+    val imageRepository: ImageRepository,
 ) {
-
     @Value("\${aws.bucket-name}")
     lateinit var bucketName: String
 
     @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun upload(@RequestParam file: MultipartFile): ResponseEntity<String> {
+    fun upload(
+        @RequestParam file: MultipartFile,
+    ): ResponseEntity<String> {
         val id = UUID.randomUUID().toString()
         val key = "uploads/$id-${file.originalFilename}"
 
         s3Client.putObject(
-            PutObjectRequest.builder()
+            PutObjectRequest
+                .builder()
                 .bucket(bucketName)
                 .key(key)
                 .contentType(file.contentType)
                 .build(),
-            RequestBody.fromBytes(file.bytes)
+            RequestBody.fromBytes(file.bytes),
         )
 
         val imageUrl = "https://$bucketName.s3.amazonaws.com/$key"
@@ -50,7 +50,9 @@ class ImageController(
     }
 
     @GetMapping("/{id}")
-    fun getImageUrl(@PathVariable id: String): ResponseEntity<String> {
+    fun getImageUrl(
+        @PathVariable id: String,
+    ): ResponseEntity<String> {
         val image = imageRepository.findById(id).orElseThrow()
         return ResponseEntity.ok(image.url)
     }
