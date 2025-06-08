@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg123
+      POSTGRES_DB: property_management
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  flyway:
+    image: flyway/flyway:11.9.0
+    container_name: flyway
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./Backend/property-management/migrations:/flyway/sql
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/property_management
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: pg123
+      FLYWAY_BASELINE_VERSION: "1"
+      FLYWAY_BASELINE_DESCRIPTION: "Initial database import"
+      
+    networks:
+      - app-network
+
+  backend:
+    build: ./Backend/property-management
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/property_management
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: pg123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+    depends_on:
+      - postgres
+      - flyway
+    networks:
+      - app-network
+
+  frontend:
+    build: ./Frontend/Property-Manager
+    container_name: frontend
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

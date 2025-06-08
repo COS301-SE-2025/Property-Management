@@ -34,7 +34,6 @@ dependencies {
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("software.amazon.awssdk:s3:2.21.0")
-
 }
 
 kotlin {
