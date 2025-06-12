@@ -3,6 +3,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ViewHouseComponent } from './pages/view-house/view-house.component';
 import { RegisterOwnerComponent } from './pages/register-owner/register-owner.component';
+import { RegisterBodyCorporateComponent } from './pages/register-body-corporate/register-body-corporate.component';
 import { CreatePropertyComponent } from './pages/create-property/create-property.component';
 
 import { ContractorRegisterComponent } from './pages/contractorRegister/contractorRegister.component';
@@ -59,5 +60,10 @@ export const routes: Routes = [
   path: 'verifyEmail',
   pathMatch: 'full',
   component: VerifyEmailComponent
+},
+{
+  path: 'register-body-corporate',
+  pathMatch: 'full',
+  component: RegisterBodyCorporateComponent
 }
 ];
