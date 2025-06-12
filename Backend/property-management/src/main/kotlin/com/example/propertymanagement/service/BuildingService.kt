@@ -17,10 +17,10 @@ class BuildingService(
     fun create(request: BuildingCreateRequest): Building {
         val building =
             Building(
+                buildingUuid = UUID.randomUUID(),
                 name = request.name,
                 address = request.address,
                 type = request.type,
-                trustees = request.trustees,
                 propertyValue = request.propertyValue,
                 primaryContractors = request.primaryContractors,
                 latestInspectionDate = request.latestInspectionDate,
@@ -29,7 +29,10 @@ class BuildingService(
         return repository.save(building)
     }
 
-    // fun getByTrusteeId(trusteeId: Int): List<Building> = repository.findByTrusteeId(trusteeId)
+     fun getByBuildingUuid(buildingUuid: UUID): Building {
+        return repository.findByBuildingUuid(buildingUuid)
+            ?: throw RestException(HttpStatus.NOT_FOUND, "Building not found: $buildingUuid")
+    }
 
     fun getByTrusteeUuid(trusteeUuid: UUID): List<Building> {
         val buildings = repository.findByTrusteeUuid(trusteeUuid)
