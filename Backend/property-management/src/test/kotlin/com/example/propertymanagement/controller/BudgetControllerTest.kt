@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
+import java.util.UUID
 
 @WebMvcTest(BudgetController::class)
 class BudgetControllerTest {
@@ -28,25 +29,34 @@ class BudgetControllerTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `should return budget for valid buildingId`() {
-        val budget =
-            Budget(
-                budgetId = 1,
-                buildingId = 1,
-                totalBudget = BigDecimal("1000000.00"),
-                maintenanceBudget = BigDecimal("500000.00"),
-                inventoryBudget = BigDecimal("500000.00"),
-                inventorySpent = BigDecimal("50250.00"),
-                maintenanceSpent = BigDecimal("50000.00"),
-            )
-        given(budgetService.getByBuildingId(1)).willReturn(budget)
+    fun `should return budget for valid buildingUuid`() {
+        val buildingUuid = UUID.randomUUID()
+        val budgetUuid = UUID.randomUUID()
+
+        val budget = Budget(
+            budgetId = 1,
+            budgetUuid = budgetUuid,
+            buildingId = null,
+            buildingUuid = buildingUuid,
+            year = 2025,
+            totalBudget = BigDecimal("1000000.00"),
+            maintenanceBudget = BigDecimal("500000.00"),
+            inventoryBudget = BigDecimal("500000.00"),
+            inventorySpent = BigDecimal("50250.00"),
+            maintenanceSpent = BigDecimal("50000.00"),
+            approvedBy = null,
+            approvalDate = null,
+            notes = null
+        )
+        given(budgetService.getByBuildingUuid(buildingUuid)).willReturn(budget)
 
         mockMvc
-            .perform(get("/api/budget/1"))
+            .perform(get("/api/budget/by-building/$buildingUuid"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.budgetId").value(1))
-            .andExpect(jsonPath("$.buildingId").value(1))
+            .andExpect(jsonPath("$.budgetUuid").value(budgetUuid.toString()))
+            .andExpect(jsonPath("$.buildingUuid").value(buildingUuid.toString()))
             .andExpect(jsonPath("$.totalBudget").value(1000000.00))
             .andExpect(jsonPath("$.maintenanceBudget").value(500000.00))
             .andExpect(jsonPath("$.inventoryBudget").value(500000.00))
@@ -55,18 +65,17 @@ class BudgetControllerTest {
     }
 
     @Test
-    fun `should return 404 when budget not found`() {
-        given(budgetService.getByBuildingId(999)).willReturn(null)
+    fun `should return 404 when budget not found for buildingUuid`() {
+        val buildingUuid = UUID.randomUUID()
+        given(budgetService.getByBuildingUuid(buildingUuid)).willReturn(null)
 
-        mockMvc
-            .perform(get("/api/budget/999"))
+        mockMvc.perform(get("/api/budget/by-building/$buildingUuid"))
             .andExpect(status().isNotFound)
     }
 
-    @Test
-    fun `should return 400 for non-numeric buildingId`() {
-        mockMvc
-            .perform(get("/api/budget/abc"))
+     @Test
+    fun `should return 400 for invalid UUID format`() {
+        mockMvc.perform(get("/api/budget/by-building/invalid-uuid"))
             .andExpect(status().isBadRequest)
     }
 }
