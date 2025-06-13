@@ -9,8 +9,8 @@ import java.util.UUID
 class BudgetService(
     private val repository: BudgetRepository,
 ) {
-    fun getByBuildingUuid(buildingUuidFk: UUID): Budget? {
-        return repository.findFirstByBuildingUuidFk(buildingUuidFk)
+    fun getByBuildingUuid(buildingUuid: UUID): Budget? {
+        return repository.findFirstByBuildingUuid(buildingUuid)
     }
 
     fun getByBudgetUuid(budgetUuid: UUID): Budget? {

@@ -6,6 +6,6 @@ import java.util.UUID
 
 
 interface BudgetRepository : JpaRepository<Budget, Int> {
-    fun findFirstByBuildingUuidFk(buildingUuidFk: UUID): Budget?
+    fun findFirstByBuildingUuid(buildingUuid: UUID): Budget?
     fun findByBudgetUuid(budgetUuid: UUID): Budget?
 }
