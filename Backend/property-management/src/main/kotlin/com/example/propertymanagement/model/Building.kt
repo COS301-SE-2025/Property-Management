@@ -21,8 +21,6 @@ data class Building(
     val name: String?,
     val address: String?,
     val type: String? = null,
-    @Column(columnDefinition = "integer[]")
-    val trustees: List<Int>? = null,
     @Column(name = "property_value")
     val propertyValue: Double? = null,
     @Column(name = "primary_contractors", columnDefinition = "integer[]")

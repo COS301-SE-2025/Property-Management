@@ -17,6 +17,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.mockito.ArgumentMatchers.any
+
+import java.util.UUID
 
 @WebMvcTest(BuildingController::class)
 class BuildingControllerTest {
@@ -31,12 +34,32 @@ class BuildingControllerTest {
 
     @Test
     fun `should return all buildings`() {
-        val buildings =
+         val buildings =
             listOf(
-                Building(1, "A", "Addr", "Type", null, null, null, null, null),
-                Building(2, "B", "Addr2", "Type2", null, null, null, null, null),
+                Building(
+                    buildingId = 1,
+                    buildingUuid = UUID.randomUUID(),
+                    name = "A",
+                    address = "Addr",
+                    type = "Type",
+                    propertyValue = 100000.0,
+                    primaryContractors = listOf(1, 2),
+                    latestInspectionDate = null,
+                    propertyImage = null
+                ),
+                Building(
+                    buildingId = 2,
+                    buildingUuid = UUID.randomUUID(),
+                    name = "B",
+                    address = "Addr2",
+                    type = "Type2",
+                    propertyValue = 200000.0,
+                    primaryContractors = listOf(3, 4),
+                    latestInspectionDate = null,
+                    propertyImage = null
+                ),
             )
-        given(buildingService.getAll()).willReturn(buildings)
+            given(buildingService.getAll()).willReturn(buildings)
 
         mockMvc
             .perform(get("/api/buildings"))
@@ -51,14 +74,23 @@ class BuildingControllerTest {
                 name = "Test",
                 address = "Addr",
                 type = "Type",
-                trustees = null,
-                propertyValue = null,
-                primaryContractors = null,
+                primaryContractors = listOf(1, 2),
+                propertyValue = 150000.0,
                 latestInspectionDate = null,
                 propertyImage = null,
             )
-        val building = Building(1, "Test", "Addr", "Type", null, null, null, null, null)
-        given(buildingService.create(any())).willReturn(building)
+        val building = Building(
+            buildingId = 1,
+            buildingUuid = UUID.randomUUID(),
+            name = "Test",
+            address = "Addr",
+            type = "Type",
+            propertyValue = 150000.0,
+            primaryContractors = listOf(1, 2),
+            latestInspectionDate = null,
+            propertyImage = null
+        )
+        given(buildingService.create(request)).willReturn(building)
 
         mockMvc
             .perform(

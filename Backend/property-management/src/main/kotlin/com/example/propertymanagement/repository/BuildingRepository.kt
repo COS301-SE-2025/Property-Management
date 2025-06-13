@@ -16,7 +16,7 @@ interface BuildingRepository : JpaRepository<Building, Int> {
     fun findByBuildingUuid(buildingUuid: UUID): Building?
     @Query("""
         Select b.* FROM building b
-        JOIN buildingtrustee bt ON b.building_uuid = bt.nuilding_uuid
+        JOIN buildingtrustee bt ON b.building_uuid = bt.building_uuid
         WHERE bt.trustee_uuid = :trusteeUuid
     """, nativeQuery = true)
     fun findByTrusteeUuid(trusteeUuid: UUID): List<Building>
