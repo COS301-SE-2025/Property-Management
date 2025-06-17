@@ -7,5 +7,6 @@ import java.util.UUID
 
 interface ContractorRepository : JpaRepository<Contractor, Int> {
     fun findByContractorUuid(uuid: UUID): Optional<Contractor>
+
     fun deleteByContractorUuid(uuid: UUID)
 }

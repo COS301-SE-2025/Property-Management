@@ -16,9 +16,8 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/inventory")
 class InventoryItemController(
-    private val inventoryItemService: InventoryItemService
+    private val inventoryItemService: InventoryItemService,
 ) {
-
     @GetMapping
     fun getAllInventoryItems(): List<InventoryItemResponseDto> {
         return inventoryItemService.getAllInventoryItems()
@@ -26,14 +25,14 @@ class InventoryItemController(
 
     @GetMapping("/building/{buildingUuid}")
     fun getInventoryItemsByBuilding(
-        @PathVariable buildingUuid: UUID
+        @PathVariable buildingUuid: UUID,
     ): List<InventoryItemResponseDto> {
         return inventoryItemService.getInventoryItemsByBuildingUuid(buildingUuid)
     }
 
     @GetMapping("/{itemUuid}")
     fun getInventoryItemByUuid(
-        @PathVariable itemUuid: UUID
+        @PathVariable itemUuid: UUID,
     ): InventoryItemResponseDto {
         return inventoryItemService.getInventoryItemByUuid(itemUuid)
     }
@@ -41,7 +40,7 @@ class InventoryItemController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createInventoryItem(
-        @RequestBody createDto: CreateInventoryItemDto
+        @RequestBody createDto: CreateInventoryItemDto,
     ): InventoryItemResponseDto {
         return inventoryItemService.createInventoryItem(createDto)
     }

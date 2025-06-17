@@ -1,12 +1,12 @@
 package com.example.propertymanagement.service
 
 import com.example.propertymanagement.dto.BuildingCreateRequest
+import com.example.propertymanagement.exception.RestException
 import com.example.propertymanagement.model.Building
 import com.example.propertymanagement.repository.BuildingRepository
-import org.springframework.stereotype.Service
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
 import java.util.UUID
-import com.example.propertymanagement.exception.RestException
 
 @Service
 class BuildingService(
@@ -29,14 +29,14 @@ class BuildingService(
         return repository.save(building)
     }
 
-     fun getByBuildingUuid(buildingUuid: UUID): Building {
+    fun getByBuildingUuid(buildingUuid: UUID): Building {
         return repository.findByBuildingUuid(buildingUuid)
             ?: throw RestException(HttpStatus.NOT_FOUND, "Building not found: $buildingUuid")
     }
 
     fun getByTrusteeUuid(trusteeUuid: UUID): List<Building> {
         val buildings = repository.findByTrusteeUuid(trusteeUuid)
-        if (buildings.isEmpty()){
+        if (buildings.isEmpty()) {
             throw RestException(HttpStatus.NOT_FOUND, "No buildings found for trustee: $trusteeUuid")
         }
         return buildings

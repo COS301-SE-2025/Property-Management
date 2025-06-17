@@ -2,7 +2,6 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.dto.BuildingCreateRequest
 import com.example.propertymanagement.model.Building
-import com.example.propertymanagement.service.BudgetService
 import com.example.propertymanagement.service.BuildingService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,7 +26,7 @@ class BuildingController(
 
     @GetMapping("/trustee/{trusteeUuid}")
     fun getByTrusteeUuid(
-        @PathVariable trusteeUuid: UUID
+        @PathVariable trusteeUuid: UUID,
     ): List<Building> = service.getByTrusteeUuid(trusteeUuid)
 
     // @GetMapping("/uuid/{buildingUuid}")

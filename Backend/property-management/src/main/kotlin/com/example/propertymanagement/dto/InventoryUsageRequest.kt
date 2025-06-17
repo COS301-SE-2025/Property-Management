@@ -4,5 +4,5 @@ import java.util.UUID
 data class InventoryUsageRequest(
     val name: String,
     val unit: Int,
-    val buildingUuid: UUID
+    val buildingUuid: UUID,
 )

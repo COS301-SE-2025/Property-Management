@@ -9,13 +9,16 @@ import java.util.UUID
 
 @Repository
 interface InventoryItemRepository : CrudRepository<InventoryItem, Int> {
-    
     @Query("SELECT i FROM InventoryItem i WHERE i.buildingUuidFk = :buildingUuid")
-    fun findByBuildingUuid(@Param("buildingUuid") buildingUuid: UUID): Iterable<InventoryItem>
-    
+    fun findByBuildingUuid(
+        @Param("buildingUuid") buildingUuid: UUID,
+    ): Iterable<InventoryItem>
+
     @Query("SELECT i FROM InventoryItem i WHERE i.itemUuid = :itemUuid")
-    fun findByItemUuid(@Param("itemUuid") itemUuid: UUID): InventoryItem?
-    
+    fun findByItemUuid(
+        @Param("itemUuid") itemUuid: UUID,
+    ): InventoryItem?
+
     @Query("SELECT i FROM InventoryItem i")
     override fun findAll(): Iterable<InventoryItem>
 }

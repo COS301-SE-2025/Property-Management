@@ -7,12 +7,12 @@ data class InventoryItemResponseDto(
     val name: String?,
     val unit: String?,
     val quantityInStock: Int?,
-    val buildingUuidFk: UUID
+    val buildingUuidFk: UUID,
 )
 
 data class CreateInventoryItemDto(
     val name: String,
     val unit: String,
     val quantity: Int,
-    val buildingUuid: UUID
+    val buildingUuid: UUID,
 )

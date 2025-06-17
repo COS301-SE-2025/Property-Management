@@ -14,14 +14,18 @@ import java.util.UUID
 class BudgetController(
     private val service: BudgetService,
 ) {
-   @GetMapping("/by-building/{buildingUuid}")
-    fun getBudgetByBuildingUuid(@PathVariable buildingUuid: UUID): ResponseEntity<Budget> {
+    @GetMapping("/by-building/{buildingUuid}")
+    fun getBudgetByBuildingUuid(
+        @PathVariable buildingUuid: UUID,
+    ): ResponseEntity<Budget> {
         val budget = service.getByBuildingUuid(buildingUuid)
         return if (budget != null) ResponseEntity.ok(budget) else ResponseEntity.notFound().build()
     }
 
     @GetMapping("/{budgetUuid}")
-    fun getBudgetByUuid(@PathVariable budgetUuid: UUID): ResponseEntity<Budget> {
+    fun getBudgetByUuid(
+        @PathVariable budgetUuid: UUID,
+    ): ResponseEntity<Budget> {
         val budget = service.getByBudgetUuid(budgetUuid)
         return if (budget != null) ResponseEntity.ok(budget) else ResponseEntity.notFound().build()
     }

@@ -33,21 +33,22 @@ class BudgetControllerTest {
         val buildingUuid = UUID.randomUUID()
         val budgetUuid = UUID.randomUUID()
 
-        val budget = Budget(
-            budgetId = 1,
-            budgetUuid = budgetUuid,
-            buildingId = null,
-            buildingUuid = buildingUuid,
-            year = 2025,
-            totalBudget = BigDecimal("1000000.00"),
-            maintenanceBudget = BigDecimal("500000.00"),
-            inventoryBudget = BigDecimal("500000.00"),
-            inventorySpent = BigDecimal("50250.00"),
-            maintenanceSpent = BigDecimal("50000.00"),
-            approvedBy = null,
-            approvalDate = null,
-            notes = null
-        )
+        val budget =
+            Budget(
+                budgetId = 1,
+                budgetUuid = budgetUuid,
+                buildingId = null,
+                buildingUuid = buildingUuid,
+                year = 2025,
+                totalBudget = BigDecimal("1000000.00"),
+                maintenanceBudget = BigDecimal("500000.00"),
+                inventoryBudget = BigDecimal("500000.00"),
+                inventorySpent = BigDecimal("50250.00"),
+                maintenanceSpent = BigDecimal("50000.00"),
+                approvedBy = null,
+                approvalDate = null,
+                notes = null,
+            )
         given(budgetService.getByBuildingUuid(buildingUuid)).willReturn(budget)
 
         mockMvc
@@ -73,7 +74,7 @@ class BudgetControllerTest {
             .andExpect(status().isNotFound)
     }
 
-     @Test
+    @Test
     fun `should return 400 for invalid UUID format`() {
         mockMvc.perform(get("/api/budget/by-building/invalid-uuid"))
             .andExpect(status().isBadRequest)

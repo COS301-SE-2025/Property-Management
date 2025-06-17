@@ -15,17 +15,21 @@ class ContractorService(
     fun getById(id: Int): Contractor = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun getByUuid(uuid: UUID): Contractor =
-    repository.findByContractorUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
+        repository.findByContractorUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
-    fun updateByUuid(uuid: UUID, newItem: Contractor): Contractor {
+    fun updateByUuid(
+        uuid: UUID,
+        newItem: Contractor,
+    ): Contractor {
         val existing = getByUuid(uuid)
-        val updated = existing.copy(
-            name = newItem.name,
-            email = newItem.email,
-            phone = newItem.phone,
-            apikey = newItem.apikey,
-            banned = newItem.banned,
-        )
+        val updated =
+            existing.copy(
+                name = newItem.name,
+                email = newItem.email,
+                phone = newItem.phone,
+                apikey = newItem.apikey,
+                banned = newItem.banned,
+            )
         return repository.save(updated)
     }
 

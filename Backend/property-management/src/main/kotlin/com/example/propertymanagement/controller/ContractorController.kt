@@ -24,14 +24,15 @@ class ContractorController(
     fun getAll(): List<Contractor> = service.getAll()
 
     @GetMapping("/{uuid}")
-    fun getByUuid(@PathVariable uuid: UUID): ResponseEntity<Any> =
+    fun getByUuid(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<Any> =
         try {
             val item = service.getByUuid(uuid)
             ResponseEntity.ok(item)
         } catch (ex: NoSuchElementException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to ex.message))
         }
-
 
     data class ContractorDto(
         val name: String,
@@ -48,11 +49,15 @@ class ContractorController(
         service.addUser(ContractorDto.name, ContractorDto.email, ContractorDto.phone, ContractorDto.apikey, ContractorDto.banned)
 
     @PutMapping("/{uuid}")
-    fun update(@PathVariable uuid: UUID, @RequestBody item: Contractor): Contractor =
-        service.updateByUuid(uuid, item)
+    fun update(
+        @PathVariable uuid: UUID,
+        @RequestBody item: Contractor,
+    ): Contractor = service.updateByUuid(uuid, item)
 
     @DeleteMapping("/{uuid}")
-    fun delete(@PathVariable uuid: UUID): ResponseEntity<Void> {
+    fun delete(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<Void> {
         service.deleteByUuid(uuid)
         return ResponseEntity.noContent().build()
     }

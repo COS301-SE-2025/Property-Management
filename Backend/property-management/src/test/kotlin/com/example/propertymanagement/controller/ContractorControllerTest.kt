@@ -58,7 +58,6 @@ class ContractorControllerTest {
             .andExpect(jsonPath("$.banned").value(false))
     }
 
-
     @Test
     fun `should return 404 when contractor not found`() {
         val unknownUuid = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
@@ -70,14 +69,12 @@ class ContractorControllerTest {
             .andExpect(jsonPath("$.error").value("Contractor not found: $unknownUuid"))
     }
 
-     @Test
+    @Test
     fun `should return 400 when contractorUuid is invalid format`() {
         mockMvc
             .perform(get("/api/contractor/invalid-uuid-format"))
             .andExpect(status().isBadRequest)
     }
-
-   
 
     @Test
     fun `should return 405 for unsupported HTTP method`() {

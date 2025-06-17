@@ -11,9 +11,8 @@ import java.util.UUID
 
 @Service
 class InventoryItemService(
-    private val inventoryItemRepository: InventoryItemRepository
+    private val inventoryItemRepository: InventoryItemRepository,
 ) {
-
     fun getAllInventoryItems(): List<InventoryItemResponseDto> {
         return inventoryItemRepository.findAll()
             .map { it.toResponseDto() }
@@ -25,19 +24,21 @@ class InventoryItemService(
     }
 
     fun getInventoryItemByUuid(itemUuid: UUID): InventoryItemResponseDto {
-        val item = inventoryItemRepository.findByItemUuid(itemUuid)
-            ?: throw RestException(HttpStatus.NOT_FOUND, "Inventory item with UUID $itemUuid not found")
+        val item =
+            inventoryItemRepository.findByItemUuid(itemUuid)
+                ?: throw RestException(HttpStatus.NOT_FOUND, "Inventory item with UUID $itemUuid not found")
         return item.toResponseDto()
     }
 
     fun createInventoryItem(createDto: CreateInventoryItemDto): InventoryItemResponseDto {
-        val inventoryItem = InventoryItem(
-            name = createDto.name,
-            unit = createDto.unit,
-            quantityInStock = createDto.quantity,
-            buildingUuidFk = createDto.buildingUuid
-        )
-        
+        val inventoryItem =
+            InventoryItem(
+                name = createDto.name,
+                unit = createDto.unit,
+                quantityInStock = createDto.quantity,
+                buildingUuidFk = createDto.buildingUuid,
+            )
+
         val savedItem = inventoryItemRepository.save(inventoryItem)
         return savedItem.toResponseDto()
     }
@@ -48,7 +49,7 @@ class InventoryItemService(
             name = this.name,
             unit = this.unit,
             quantityInStock = this.quantityInStock,
-            buildingUuidFk = this.buildingUuidFk
+            buildingUuidFk = this.buildingUuidFk,
         )
     }
 }
