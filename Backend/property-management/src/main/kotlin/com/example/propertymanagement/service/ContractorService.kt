@@ -3,6 +3,8 @@ package com.example.propertymanagement.service
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.repository.ContractorRepository
 import org.springframework.stereotype.Service
+import java.util.NoSuchElementException
+import java.util.UUID
 
 @Service
 class ContractorService(
@@ -11,6 +13,23 @@ class ContractorService(
     fun getAll(): List<Contractor> = repository.findAll()
 
     fun getById(id: Int): Contractor = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+
+    fun getByUuid(uuid: UUID): Contractor =
+    repository.findByContractorUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
+
+    fun updateByUuid(uuid: UUID, newItem: Contractor): Contractor {
+        val existing = getByUuid(uuid)
+        val updated = existing.copy(
+            name = newItem.name,
+            email = newItem.email,
+            phone = newItem.phone,
+            apikey = newItem.apikey,
+            banned = newItem.banned,
+        )
+        return repository.save(updated)
+    }
+
+    fun deleteByUuid(uuid: UUID) = repository.deleteByContractorUuid(uuid)
 
     fun add(item: Contractor): Contractor = repository.save(item)
 
