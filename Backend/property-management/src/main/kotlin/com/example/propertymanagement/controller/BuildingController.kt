@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/buildings")
@@ -23,8 +24,21 @@ class BuildingController(
         @RequestBody request: BuildingCreateRequest,
     ): Building = service.create(request)
 
-    @GetMapping("/trustee/{trusteeId}")
-    fun getByTrusteeId(
-        @PathVariable trusteeId: Int,
-    ): List<Building> = service.getByTrusteeId(trusteeId)
+    @GetMapping("/trustee/{trusteeUuid}")
+    fun getByTrusteeUuid(
+        @PathVariable trusteeUuid: UUID,
+    ): List<Building> = service.getByTrusteeUuid(trusteeUuid)
+
+    // @GetMapping("/uuid/{buildingUuid}")
+    // fun getByUuid(
+    //     @PathVariable buildingUuid: String,
+    // ): Building? = service.getByUuid(buildingUuid)
+
+    // @GetMapping("/trustee/{trusteeId}")
+    // fun getByTrusteeId(
+    //     @PathVariable trusteeId: Int,
+    // ): List<Building> = service.getByTrusteeId(trusteeId)
+
+    // @GetMapping("/{buildingId}")
+    // fun getBuildingById(@PathVariable buildingId: )
 }

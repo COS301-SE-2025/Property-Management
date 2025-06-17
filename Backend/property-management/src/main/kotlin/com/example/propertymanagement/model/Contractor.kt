@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.util.UUID
 
 @Entity
 @Table(name = "contractor")
@@ -14,6 +15,8 @@ data class Contractor(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contractor_id")
     val contractorId: Int = 0,
+    @Column(name = "contractor_uuid", unique = true, nullable = false)
+    val contractorUuid: UUID = UUID.randomUUID(),
     @Column(nullable = false)
     val name: String,
     @Column(nullable = false, unique = true)

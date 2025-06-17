@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDate
+import java.util.UUID
 
 @Entity
 @Table(name = "building")
@@ -15,11 +16,11 @@ data class Building(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "building_id")
     val buildingId: Int = 0,
+    @Column(name = "building_uuid", unique = true)
+    val buildingUuid: UUID = UUID.randomUUID(),
     val name: String?,
     val address: String?,
     val type: String? = null,
-    @Column(columnDefinition = "integer[]")
-    val trustees: List<Int>? = null,
     @Column(name = "property_value")
     val propertyValue: Double? = null,
     @Column(name = "primary_contractors", columnDefinition = "integer[]")
