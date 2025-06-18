@@ -1,16 +1,16 @@
 -- 0. Enable pgcrypto extension (for gen_random_uuid)
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- 1. USER TABLE: Add user_uuid
-ALTER TABLE "user"
-ADD COLUMN user_uuid UUID DEFAULT gen_random_uuid();
+-- -- 1. USER TABLE: Add user_uuid
+-- ALTER TABLE "user"
+-- ADD COLUMN user_uuid UUID DEFAULT gen_random_uuid();
 
-UPDATE "user" SET user_uuid = gen_random_uuid()
-WHERE user_uuid IS NULL;
+-- UPDATE "user" SET user_uuid = gen_random_uuid()
+-- WHERE user_uuid IS NULL;
 
-ALTER TABLE "user"
-ALTER COLUMN user_uuid SET NOT NULL,
-ADD CONSTRAINT user_user_uuid_unique UNIQUE (user_uuid);
+-- ALTER TABLE "user"
+-- ALTER COLUMN user_uuid SET NOT NULL,
+-- ADD CONSTRAINT user_user_uuid_unique UNIQUE (user_uuid);
 
 -- 5. PROJECTHISTORY TABLE: Add UUID & switch FK to task_uuid
 ALTER TABLE projecthistory
@@ -89,31 +89,31 @@ WHERE t.building_id = b.building_id;
 ALTER TABLE tenyearplan
 ADD CONSTRAINT tenyearplan_building_uuid_fkey FOREIGN KEY (building_uuid) REFERENCES building(building_uuid);
 
--- 8. TRUSTEE TABLE: Add UUID & switch FKs to building_uuid and user_uuid
-ALTER TABLE trustee
-ADD COLUMN trustee_uuid UUID DEFAULT gen_random_uuid();
+-- -- 8. TRUSTEE TABLE: Add UUID & switch FKs to building_uuid and user_uuid
+-- ALTER TABLE trustee
+-- ADD COLUMN trustee_uuid UUID DEFAULT gen_random_uuid();
 
-UPDATE trustee SET trustee_uuid = gen_random_uuid()
-WHERE trustee_uuid IS NULL;
+-- UPDATE trustee SET trustee_uuid = gen_random_uuid()
+-- WHERE trustee_uuid IS NULL;
 
-ALTER TABLE trustee
-ALTER COLUMN trustee_uuid SET NOT NULL,
-ADD CONSTRAINT trustee_trustee_uuid_unique UNIQUE (trustee_uuid);
-
-ALTER TABLE trustee
-ADD COLUMN building_uuid UUID,
-ADD COLUMN user_uuid UUID;
-
-UPDATE trustee t
-SET building_uuid = b.building_uuid
-FROM building b
-WHERE t.building_id = b.building_id;
-
-UPDATE trustee t
-SET user_uuid = u.user_uuid
-FROM "user" u
-WHERE t.user_id = u.user_id;
+-- ALTER TABLE trustee
+-- ALTER COLUMN trustee_uuid SET NOT NULL,
+-- ADD CONSTRAINT trustee_trustee_uuid_unique UNIQUE (trustee_uuid);
 
 ALTER TABLE trustee
-ADD CONSTRAINT trustee_building_uuid_fkey FOREIGN KEY (building_uuid) REFERENCES building(building_uuid),
-ADD CONSTRAINT trustee_user_uuid_fkey FOREIGN KEY (user_uuid) REFERENCES "user"(user_uuid);
+ADD COLUMN building_uuid UUID;
+-- ADD COLUMN user_uuid UUID;
+
+-- UPDATE trustee t
+-- SET building_uuid = b.building_uuid
+-- FROM building b
+-- WHERE t.building_id = b.building_id;
+
+-- UPDATE trustee t
+-- SET user_uuid = u.user_uuid
+-- FROM "user" u
+-- WHERE t.user_id = u.user_id;
+
+ALTER TABLE trustee
+ADD CONSTRAINT trustee_building_uuid_fkey FOREIGN KEY (building_uuid) REFERENCES building(building_uuid);
+-- ADD CONSTRAINT trustee_user_uuid_fkey FOREIGN KEY (user_uuid) REFERENCES "user"(user_uuid);

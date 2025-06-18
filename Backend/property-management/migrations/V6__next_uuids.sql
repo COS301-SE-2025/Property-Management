@@ -36,7 +36,7 @@ ALTER TABLE maintenancetask ADD CONSTRAINT task_uuid_unique UNIQUE (task_uuid);
 ALTER TABLE maintenancetask ALTER COLUMN task_uuid SET DEFAULT gen_random_uuid();
 
 -- 1. Add the UUID column
-ALTER TABLE inventoryusage ADD COLUMN usage_uuid UUID;
+-- ALTER TABLE inventoryusage ADD COLUMN usage_uuid UUID;
 
 -- 2. Generate UUIDs for existing rows
 UPDATE inventoryusage SET usage_uuid = gen_random_uuid();
