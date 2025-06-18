@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.util.NoSuchElementException
+import java.util.UUID
 
 @WebMvcTest(ContractorController::class)
 @ContextConfiguration(classes = [com.example.propertymanagement.PropertyManagemnetApplication::class])
@@ -28,24 +30,27 @@ class ContractorControllerTest {
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
+    private val sampleUuid = UUID.fromString("79443ab6-c270-4c93-8830-935d93ed858b")
+
     @Test
-    fun `should return contractor for valid ContractorId`() {
-        val response =
+    fun `should return contractor for valid contractorUuid`() {
+        val contractor =
             Contractor(
                 contractorId = 3,
+                contractorUuid = sampleUuid,
                 name = "Jack",
                 email = "jackfitnesss@gmail.com",
                 phone = "0123456789",
                 apikey = "d6q5d46qw54dq",
                 banned = false,
             )
-        given(contractorService.getById(3)).willReturn(response)
+        given(contractorService.getByUuid(sampleUuid)).willReturn(contractor)
 
         mockMvc
-            .perform(get("/api/contractor/3"))
+            .perform(get("/api/contractor/$sampleUuid"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.contractorId").value(3))
+            .andExpect(jsonPath("$.contractorUuid").value(sampleUuid.toString()))
             .andExpect(jsonPath("$.name").value("Jack"))
             .andExpect(jsonPath("$.email").value("jackfitnesss@gmail.com"))
             .andExpect(jsonPath("$.phone").value("0123456789"))
@@ -55,43 +60,26 @@ class ContractorControllerTest {
 
     @Test
     fun `should return 404 when contractor not found`() {
-        given(contractorService.getById(999)).willThrow(NoSuchElementException("Item not found: 999"))
+        val unknownUuid = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
+        given(contractorService.getByUuid(unknownUuid)).willThrow(NoSuchElementException("Contractor not found: $unknownUuid"))
 
         mockMvc
-            .perform(get("/api/contractor/999"))
+            .perform(get("/api/contractor/$unknownUuid"))
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.error").value("Item not found: 999"))
+            .andExpect(jsonPath("$.error").value("Contractor not found: $unknownUuid"))
     }
 
     @Test
-    fun `should return 400 when ContractorId is non-numeric`() {
+    fun `should return 400 when contractorUuid is invalid format`() {
         mockMvc
-            .perform(get("/api/contractor/abc"))
+            .perform(get("/api/contractor/invalid-uuid-format"))
             .andExpect(status().isBadRequest)
-    }
-
-    @Test
-    fun `should return 404 when ContractorId is negative`() {
-        given(contractorService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
-        mockMvc
-            .perform(get("/api/contractor/-1"))
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.error").value("Item not found: -1"))
-    }
-
-    @Test
-    fun `should return 404 when ContractorId is zero`() {
-        given(contractorService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
-        mockMvc
-            .perform(get("/api/contractor/0"))
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.error").value("Item not found: 0"))
     }
 
     @Test
     fun `should return 405 for unsupported HTTP method`() {
         mockMvc
-            .perform(post("/api/contractor/1").contentType(MediaType.APPLICATION_JSON))
+            .perform(post("/api/contractor/$sampleUuid").contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isMethodNotAllowed)
     }
 }
