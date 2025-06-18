@@ -7,23 +7,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-home',
   imports: [HeaderComponent, HouseCardComponent],
-  template: `
-    <app-header/>
-
-    <div class = "mt-4 ml-10">
-      <p class = "text-lg font-normal">Your properties</p>
-    </div>
-
-    <div class = "flex flex-wrap justify-center gap-8 p-8">
-      @for (house of houses(); track  house.buildingId)
-      {
-        <app-house-card [house]="house"/>
-      }
-      <button (click)="RouteToCreateProperty()" class = "cursor-pointer">
-        <img class= "w-16 h-16" src= "assets/icons/add_circle.svg" alt="">
-      </button>
-    </div>
-  `,
+  template: ``,
   styles: ``
 })
 export class HomeComponent implements OnInit{
