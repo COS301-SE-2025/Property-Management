@@ -46,7 +46,7 @@ class TrusteeController(
         @RequestBody userDto: UserDto,
     ): Trustee = service.addUser(userDto.name, userDto.email, userDto.phone, userDto.apikey)
 
-@PutMapping("/{uuid}")
+    @PutMapping("/{uuid}")
     fun update(
         @PathVariable uuid: UUID,
         @RequestBody item: Trustee,

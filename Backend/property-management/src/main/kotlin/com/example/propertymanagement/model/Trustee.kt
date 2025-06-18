@@ -24,5 +24,5 @@ data class Trustee(
     @Column(nullable = false)
     val phone: String,
     @Column(nullable = false, unique = true)
-    val apikey: String
+    val apikey: String,
 )

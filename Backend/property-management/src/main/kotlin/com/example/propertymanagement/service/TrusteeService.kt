@@ -29,7 +29,7 @@ class TrusteeService(
         return add(newUser)
     }
 
-     fun updateByUuid(
+    fun updateByUuid(
         uuid: UUID,
         newItem: Trustee,
     ): Trustee {
@@ -39,7 +39,7 @@ class TrusteeService(
                 name = newItem.name,
                 email = newItem.email,
                 phone = newItem.phone,
-                apikey = newItem.apikey
+                apikey = newItem.apikey,
             )
         return repository.save(updated)
     }
