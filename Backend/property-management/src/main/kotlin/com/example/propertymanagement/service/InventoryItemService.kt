@@ -45,38 +45,47 @@ class InventoryItemService(
         return savedItem.toResponseDto()
     }
 
-    fun updateInventoryItem(itemUuid: UUID, updateDto: UpdateInventoryItemDto): InventoryItemResponseDto {
+    fun updateInventoryItem(
+        itemUuid: UUID,
+        updateDto: UpdateInventoryItemDto,
+    ): InventoryItemResponseDto {
         val existingItem = findInventoryItemByUuid(itemUuid)
-        
-        val updatedItem = existingItem.copy(
-            name = updateDto.name ?: existingItem.name,
-            unit = updateDto.unit ?: existingItem.unit,
-            quantityInStock = updateDto.quantity ?: existingItem.quantityInStock
-        )
+
+        val updatedItem =
+            existingItem.copy(
+                name = updateDto.name ?: existingItem.name,
+                unit = updateDto.unit ?: existingItem.unit,
+                quantityInStock = updateDto.quantity ?: existingItem.quantityInStock,
+            )
 
         val savedItem = inventoryItemRepository.save(updatedItem)
         return savedItem.toResponseDto()
     }
 
-    fun updateQuantity(itemUuid: UUID, quantityUpdateDto: QuantityUpdateDto): InventoryItemResponseDto {
+    fun updateQuantity(
+        itemUuid: UUID,
+        quantityUpdateDto: QuantityUpdateDto,
+    ): InventoryItemResponseDto {
         val existingItem = findInventoryItemByUuid(itemUuid)
         val operation = QuantityUpdateDto.Operation.fromString(quantityUpdateDto.operation)
-        
+
         val currentQuantity = existingItem.quantityInStock ?: 0
-        val newQuantity = when (operation) {
-            QuantityUpdateDto.Operation.SET -> quantityUpdateDto.quantity
-            QuantityUpdateDto.Operation.ADD -> currentQuantity + quantityUpdateDto.quantity
-            QuantityUpdateDto.Operation.SUBTRACT -> {
-                val result = currentQuantity - quantityUpdateDto.quantity
-                if (result < 0) {
-                    throw RestException(
-                        HttpStatus.BAD_REQUEST, 
-                        "Cannot subtract ${quantityUpdateDto.quantity} from current stock of $currentQuantity. Result would be negative."
-                    )
+        val newQuantity =
+            when (operation) {
+                QuantityUpdateDto.Operation.SET -> quantityUpdateDto.quantity
+                QuantityUpdateDto.Operation.ADD -> currentQuantity + quantityUpdateDto.quantity
+                QuantityUpdateDto.Operation.SUBTRACT -> {
+                    val result = currentQuantity - quantityUpdateDto.quantity
+                    if (result < 0) {
+                        throw RestException(
+                            HttpStatus.BAD_REQUEST,
+                            "Cannot subtract ${quantityUpdateDto.quantity} from current stock of $currentQuantity." +
+                                "Result would be negative.",
+                        )
+                    }
+                    result
                 }
-                result
             }
-        }
 
         val updatedItem = existingItem.copy(quantityInStock = newQuantity)
         val savedItem = inventoryItemRepository.save(updatedItem)
