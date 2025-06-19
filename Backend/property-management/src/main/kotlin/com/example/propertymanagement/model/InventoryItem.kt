@@ -12,9 +12,8 @@ import java.util.UUID
 @Table(name = "inventoryitem")
 data class InventoryItem(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
-    val itemId: Int = 0,
+    @Column(name = "item_uuid", nullable = false, updatable = false, columnDefinition = "UUID")
+    val itemUuid: UUID = UUID.randomUUID(),
     @Column(name = "name")
     val name: String? = null,
     @Column(name = "unit")
@@ -23,8 +22,6 @@ data class InventoryItem(
     val quantityInStock: Int? = null,
     @Column(name = "building_id")
     val buildingId: Int? = null,
-    @Column(name = "item_uuid", nullable = false, unique = true)
-    val itemUuid: UUID = UUID.randomUUID(),
     @Column(name = "building_uuid_fk", nullable = false)
     val buildingUuidFk: UUID,
 )
