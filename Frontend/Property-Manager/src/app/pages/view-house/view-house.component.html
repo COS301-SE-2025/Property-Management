@@ -13,7 +13,7 @@
     </div>
 
     <!-- 3 cards -->
-    <div class = "grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"> 
+    <div [@floatUp] class = "grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"> 
         <app-inventory-card class="shadow-md" [inventory]="houseService.inventory()"/>
         <app-budget-card class="shadow-md" [budget]="houseService.budgets()"/>
         <app-timeline-card class="shadow-md" [timeline]="houseService.timeline()"/>

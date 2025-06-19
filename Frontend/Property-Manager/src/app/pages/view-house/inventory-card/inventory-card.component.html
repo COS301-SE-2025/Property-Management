@@ -1,11 +1,15 @@
 <div class = "flex flex-col items-center justify-center">
     <p-card class="text-center">
     <ng-template #title>Inventory</ng-template>
-    <p-table [value] = "inventory()" [tableStyle]="{ 'min-width': '22rem' }">
+    <p-table [value] = "inventory()" stripedRows [tableStyle]="{ 'min-width': '22rem' }">
         <ng-template #header>
         <tr>
-            <th>Description</th>
-            <th>Quantity</th>
+            <th pSortableColumn="name">
+                Description <p-sortIcon field="name"/>
+            </th>
+            <th pSortableColumn="quantityInStock">
+                Quantity <p-sortIcon field="quantityInStock"/>
+            </th>
         </tr>
         </ng-template>
         <ng-template #body let-inventory>

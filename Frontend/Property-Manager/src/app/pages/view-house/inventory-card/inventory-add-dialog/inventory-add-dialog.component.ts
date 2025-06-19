@@ -15,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class InventoryAddDialogComponent  implements OnInit{
 
   form!: FormGroup;
-  displayDialog: boolean = false;
+  displayDialog = false;
 
   public name = '';
   public price = 0;

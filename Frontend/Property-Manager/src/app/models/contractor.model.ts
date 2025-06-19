@@ -5,4 +5,5 @@ export interface Contractor{
     phone: string;
     apikey: string;
     banned: boolean;
+    images?: string[];
 }
