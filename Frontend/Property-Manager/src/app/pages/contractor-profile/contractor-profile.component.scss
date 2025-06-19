@@ -1,0 +1,68 @@
+.wrapper {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+  font-family: 'Arial', sans-serif;
+
+  .step-indicator {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+    span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #ccc;
+
+      &.active {
+        background-color: #fdd835;
+      }
+    }
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .upload-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+
+      button {
+        padding: 0.6rem 2rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+
+        &.next {
+          background: #fdd835;
+        }
+      }
+    }
+  }
+}
