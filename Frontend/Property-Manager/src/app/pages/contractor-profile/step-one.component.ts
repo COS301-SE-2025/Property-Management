@@ -18,20 +18,21 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
           <input type="text" formControlName="suburb" placeholder="Suburb" />
         </div>
         <input type="text" formControlName="postalCode" placeholder="Postal Code" />
-        <input type="text" formControlName="status" placeholder="Status" />
+        <div class="flex gap-4 items-end">
+  <input type="text" formControlName="status" placeholder="Status" class="flex-1" />
+  <button
+    type="button"
+    class="text-sm px-12 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow"
+    (click)="next.emit()"
+  >
+    Next
+  </button>
+</div>
 
-        <div class="upload-section">
-          <label for="profileImg">
-            <img src="assets/image-placeholder.png" alt="Profile image placeholder" />
-          </label>
-          <input id="profileImg" type="file" (change)="upload($event)" hidden />
-          <small>Upload Image</small>
-        </div>
-
-        <button class="next" (click)="next.emit()">Next</button>
       </form>
     </div>
-  `
+  `,
+  styleUrls: ['./step-one.component.scss']
 })
 export class StepOneComponent {
   @Output() next = new EventEmitter<void>();
