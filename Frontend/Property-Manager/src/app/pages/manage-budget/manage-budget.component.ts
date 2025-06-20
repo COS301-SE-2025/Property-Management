@@ -52,6 +52,6 @@ export class ManageBudgetComponent implements OnInit {
 
   showBudgetDialog()
   {
-
+    console.warn("Check that when a property is created it must have a budget")
   }
 }

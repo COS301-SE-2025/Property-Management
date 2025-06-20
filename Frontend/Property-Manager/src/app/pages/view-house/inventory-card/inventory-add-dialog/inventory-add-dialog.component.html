@@ -3,28 +3,28 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class = "flex items-center mb-8 gap-4 ml-30">
             <p-float-label>
-                <label class="font-bold w-50">Inventory item name</label>
-                <input class="border rounded" type="text" formControlName="name" required>
+                <input id="inventory-item" class="border rounded" type="text" formControlName="name" required>
+                <label for="inventory-item" class="font-bold w-50">Inventory item name</label>
             </p-float-label>
         </div>
         <div class = "flex items-center mb-8 gap-4 ml-30">
             <p-float-label>
-                <label class="font-bold w-50">Price for one</label>
-                <input class = "border rounded" type="number" formControlName = "price" required>
+                <input id="inventory-price" class = "border rounded" type="number" formControlName = "price" required>
+                <label for="inventory-price" class="font-bold w-50">Price for one</label>
             </p-float-label>
         </div>
         <div class = "flex items-center mb-4 gap-4 ml-30">
             <p-float-label>
-                <label class="font-bold w-50">Quantity bought</label>
-                <input class = "border rounded" type="number" formControlName="quantity" required>
+                <input id="inventory-quantity" class = "border rounded" type="number" formControlName="quantity" required>
+                <label for="inventory-quantity" class="font-bold w-50">Quantity bought</label>
             </p-float-label>    
         </div>
         <div class = "mb-4 gap-4 ml-30">
-            <label class="font-semibold block mb-2">Bought on</label>
-            <p-datepicker formControlName="boughtOn" [iconDisplay]="'input'" [showIcon]="true" size="small"/>
+            <label for="inventory-boughtOn" class="font-semibold block mb-2">Bought on</label>
+            <p-datepicker id="inventory-boughtOn" formControlName="boughtOn" [iconDisplay]="'input'" [showIcon]="true" size="small"/>
         </div>
         <div>
-            <label class = "font-semibold text-red-500 ml-35" *ngIf="addError">Error adding inventory item</label>
+            <p class = "font-semibold text-red-500 ml-35" *ngIf="addError">Error adding inventory item</p>
         </div>
         <div class = "flex justify-end mt-3">
             <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer" (click)="closeDialog()">Cancel</button>

@@ -3,26 +3,26 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mx-auto max-w-lg">
         <div class = "mb-6">
             <p-float-label class>
-                <label class="font-bold ml-25">Task name</label>
-                <input class="border rounded w-75 p-3 h-8" type="text" formControlName="name" required>
+                <input id="timeline-task" class="border rounded w-75 p-3 h-8" type="text" formControlName="name" required>
+                <label for="timeline-task" class="font-bold ml-25">Task name</label>
             </p-float-label>
         </div>
         <div class = "mt-8 mb-4 gap-4">
             <p-float-label>
-                <label class="font-bold ml-10">Task description</label>
-                <textarea class = "border rounded w-105 p-3 h-20" formControlName = "description" required></textarea>
+                <textarea id="timeline-description" class = "border rounded w-105 p-3 h-20" formControlName = "description" required></textarea>
+                <label for="timeline-description" class="font-bold ml-10">Task description</label>
             </p-float-label>
         </div>
         <div class = "mb-6">
-            <label class="font-semibold block mb-2">Assigned contractors:</label>
-            <p-multiselect class = "border rounded w-75" formControlName="contractorName"/>
+            <label for="contractors" class="font-semibold block mb-2">Assigned contractors:</label>
+            <p-multiselect id="contractors" class = "border rounded w-75" formControlName="contractorName"/>
         </div>
         <div class = "mb-6">
-            <label class="font-semibold block">Proposed due date</label>
-            <p-datepicker formControlName="date" styleClass="w-75 p-3 h-12" [iconDisplay]="'input'" [showIcon]="true" size="small"/>
+            <label for="timeline-dueDate" class="font-semibold block">Proposed due date</label>
+            <p-datepicker id="timeline-dueDate" formControlName="date" styleClass="w-75 p-3 h-12" [iconDisplay]="'input'" [showIcon]="true" size="small"/>
         </div>
         <div class="mb-6 text-center">
-            <label class = "font-semibold text-red-500" *ngIf="addError">Error adding new task</label>
+            <p class = "font-semibold text-red-500" *ngIf="addError">Error adding new task</p>
         </div>
         <div class = "flex justify-end mt-3">
             <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer" (click)="closeDialog()">Cancel</button>

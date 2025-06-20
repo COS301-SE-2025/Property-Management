@@ -52,14 +52,17 @@ export class EditBudgetDialogComponent extends DialogComponent implements OnInit
     }
   }
 
-  onSliderChange(event: any) {
-    this.form.patchValue({
-      updatedBudget: event.value
-    });
+  onSliderChange(event: { value?:number}) {
+
+    if(event.value !== undefined)
+    {
+      this.form.get('updatedBudget')?.setValue(event.value);
+    }
   }
 
-  onBudgetUpdate(event: any){
-    const value = parseFloat(event.target.value);
+  onBudgetUpdate(event: Event){
+    const input = event.target as HTMLInputElement;
+    const value = parseFloat(input.value);
     if(!isNaN(value))
     {
       this.updatedBudget = value;

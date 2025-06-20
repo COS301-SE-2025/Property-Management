@@ -1,9 +1,9 @@
 export interface BudgetGraph {
-    labels: Number[];
+    labels: number[];
     datasets: [
         {
             label?: string;
-            data: Number[];
+            data: number[];
             fill: boolean;
             borderColor: string;
             tension: number;
