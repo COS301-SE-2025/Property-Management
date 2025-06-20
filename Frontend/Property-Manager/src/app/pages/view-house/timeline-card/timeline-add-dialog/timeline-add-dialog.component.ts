@@ -30,6 +30,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     this.form = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
+      contractorName: ['', Validators.required],
       date: [''],
     });
  }
