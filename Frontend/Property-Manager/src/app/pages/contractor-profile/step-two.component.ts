@@ -47,15 +47,20 @@ import { Component, EventEmitter, Output } from '@angular/core';
   border: 2px solid #ccc;
   border-radius: 12px;
   background: #fff;
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  padding: 2.5rem 10.5rem 2rem 2.5rem;
   margin: 40px auto;
   box-sizing: border-box;
+  margin-top: -2rem;
+  margin-bottom: -2rem;
+  margin-left: 8rem;
+  width: 150%;
+
 }
 .input {
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-  width: 100%;
+  width: 150%;
   font-size: 14px;
   color: #333;
 }
@@ -72,7 +77,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
   cursor: pointer;
   transition: background 0.2s;
   background-color: #fff;
-  width: 100%;
+  width: 150%;
+  margin-left: 5rem;
 }
 .file-label:hover { background-color: #fef9c3; }
 .btn-yellow {
