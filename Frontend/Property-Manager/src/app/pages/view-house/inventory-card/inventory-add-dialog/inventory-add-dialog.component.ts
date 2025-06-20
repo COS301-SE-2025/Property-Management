@@ -5,6 +5,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DialogComponent } from '../../../../components/dialog/dialog.component';
 
 @Component({
   selector: 'app-inventory-add-dialog',
@@ -12,10 +13,9 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './inventory-add-dialog.component.html',
   styles: ``
 })
-export class InventoryAddDialogComponent  implements OnInit{
+export class InventoryAddDialogComponent extends DialogComponent implements OnInit{
 
   form!: FormGroup;
-  displayDialog = false;
 
   public name = '';
   public price = 0;
@@ -24,7 +24,7 @@ export class InventoryAddDialogComponent  implements OnInit{
   public addError = false;
 
 
-  constructor(private fb: FormBuilder){}
+  constructor(private fb: FormBuilder){ super() }
 
   ngOnInit(): void {
       this.form = this.fb.group({
@@ -35,12 +35,8 @@ export class InventoryAddDialogComponent  implements OnInit{
       });
   }
   
-  addInventoryItem(): void {
-    this.displayDialog = true;
-  }
-
-  closeDialog(): void {
-    this.displayDialog = false;
+  override closeDialog(): void {
+    super.closeDialog();
     this.form.reset();
   }
   onSubmit(): void{

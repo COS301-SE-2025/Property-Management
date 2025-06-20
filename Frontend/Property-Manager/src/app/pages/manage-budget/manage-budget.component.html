@@ -17,7 +17,7 @@
      </div>
      <div [@floatUp] class = "grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
         <app-inventory-budget-card [inventory]="budgetService.inventory()" [budget]="budgetService.overallBudget()"/>
-        <app-maintenance-card [maintenance]="budgetService.maintenanceBudget()" [budget]="budgetService.overallBudget()"/>
+        <app-maintenance-card [maintenance]="budgetService.maintenanceTasks()" [budget]="budgetService.overallBudget()"/>
      </div>
     </div>
 </div>

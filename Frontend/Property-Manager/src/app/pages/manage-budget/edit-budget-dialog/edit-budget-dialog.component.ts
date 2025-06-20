@@ -5,6 +5,7 @@ import { SliderModule } from 'primeng/slider';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { DialogComponent } from '../../../components/dialog/dialog.component';
 
 @Component({
   selector: 'app-edit-budget-dialog',
@@ -12,16 +13,15 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
   templateUrl: './edit-budget-dialog.component.html',
   styles: ``
 })
-export class EditBudgetDialogComponent implements OnInit{
+export class EditBudgetDialogComponent extends DialogComponent implements OnInit{
 
   form!: FormGroup;
-  displayDialog = false;
   updatedBudget = 0;
 
   public budgetType = input.required<string>();
   public oldBudgetAmount = input.required<number>();
 
-  constructor(private fb: FormBuilder){}
+  constructor(private fb: FormBuilder){ super()}
 
   ngOnInit(): void {
       this.form = this.fb.group({
@@ -30,16 +30,16 @@ export class EditBudgetDialogComponent implements OnInit{
       this.updatedBudget = this.oldBudgetAmount()
   }
 
-  editBudget(): void{
+  override openDialog(): void{
     this.form.patchValue({
       updatedBudget: this.oldBudgetAmount() 
     });
     this.updatedBudget = this.oldBudgetAmount();
-    this.displayDialog = true;
+    super.openDialog();
   }
 
-  closeDialog(): void{
-    this.displayDialog = false;
+  override closeDialog(): void{
+    super.closeDialog();
     this.form.reset();
   }
   onSubmit()

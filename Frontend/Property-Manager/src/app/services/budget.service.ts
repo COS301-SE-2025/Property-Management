@@ -3,8 +3,9 @@ import { ApiService } from './api.service';
 import { House } from '../models/house.model';
 import { BudgetGraph } from '../models/budgetGraph.model';
 import { Inventory } from '../models/inventory.model';
-import { MaintenanceBudget } from '../models/maintenanceBudget.model';
 import { Budget } from '../models/budget.model';
+import { MaintenanceTask } from '../models/maintenanceTask.model';
+import { Contractor } from '../models/contractor.model';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +70,7 @@ export class BudgetService {
     }
   ]);
 
-  maintenanceBudget = signal<MaintenanceBudget[]>([
+  maintenanceTasks = signal<MaintenanceTask[]>([
     {
       description: 'Fixed sink leak',
       cost: 1000,
@@ -81,7 +82,28 @@ export class BudgetService {
         apikey: 'abc123',
         banned: false,
       },
-      DoneOn: new Date('2025-06-11')
+      DoneOn: new Date('2025-06-11'),
+      status: "Done",
+      approved: true,
+      proofImages: ["assets/images/sinkMock1.jpg", "assets/images/sinkMock2.jpeg", "assets/images/sinkMock3.jpeg"],
+      inventoryItemsUsed:[
+        {
+          itemId: 4,
+          name: "Tap",
+          unit: "1",
+          quantityInStock: 1,
+          buildingId: 1,
+        },
+        {
+          itemId: 5,
+          name: "Silicon tube",
+          unit: "1",
+          quantityInStock: 1,
+          buildingId: 1,
+        }
+      ],
+      ReviewScore: 4,
+      ReviewDescription: "Very happy with the job",
     },
     {
       description: 'Fixed light bulb',
@@ -93,8 +115,10 @@ export class BudgetService {
         phone: '0987654321',
         apikey: 'xyz456',
         banned: false,
-      },
-      DoneOn: new Date('2024-05-28')
+      } as Contractor,
+      DoneOn: new Date('2024-05-28'),
+      status: "Done",
+      approved: true
     }
   ]);
 

@@ -6,6 +6,7 @@ import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DatePickerModule } from 'primeng/datepicker';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { DialogComponent } from '../../../../components/dialog/dialog.component';
 
 @Component({
   selector: 'app-timeline-add-dialog',
@@ -13,9 +14,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
   templateUrl: './timeline-add-dialog.component.html',
   styles: ``
 })
-export class TimelineAddDialogComponent implements OnInit{
+export class TimelineAddDialogComponent extends DialogComponent implements OnInit{
  form!: FormGroup;
- displayDialog= false;
 
  public name = '';
  public description = '';
@@ -24,7 +24,7 @@ export class TimelineAddDialogComponent implements OnInit{
  public contractors = [];
  public addError = false;
 
- constructor(private fb: FormBuilder){}
+ constructor(private fb: FormBuilder){ super() }
  
  ngOnInit(): void {
     this.form = this.fb.group({
@@ -34,11 +34,8 @@ export class TimelineAddDialogComponent implements OnInit{
     });
  }
 
- addTask(): void{
-  this.displayDialog = true;
- }
- closeDialog(): void{
-  this.displayDialog = false;
+ override closeDialog(): void{
+  super.closeDialog();
   this.form.reset();
   this.contractors = [];
  }

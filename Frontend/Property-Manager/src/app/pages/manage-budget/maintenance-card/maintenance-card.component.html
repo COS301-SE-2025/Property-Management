@@ -33,9 +33,9 @@
             </tr>
             </ng-template>
         </p-table>
-
+        <app-task-dialog #taskDialog/>
         <p class = "font-semibold pt-3">Total: R {{ getMaintenanceTotal() }}</p>
-        <button class = "cursor-pointer pt-6" (click)="editBudgetDialog.editBudget()">
+        <button class = "cursor-pointer pt-6" (click)="editBudgetDialog.openDialog()">
             <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
         </button>
         <app-edit-budget-dialog #editBudgetDialog [budgetType]="'maintainence'" [oldBudgetAmount]="budget()[1].budgetAmount"></app-edit-budget-dialog>
