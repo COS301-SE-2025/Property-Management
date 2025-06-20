@@ -10,7 +10,11 @@ import { ContractorRegisterComponent } from './pages/contractorRegister/contract
 import { ContractorHomeComponent } from './pages/contractorHome/contractorHome.component';
 import { QuotationComponent } from './pages/quotation/quotation.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
+<<<<<<< HEAD
 import { ManageBudgetComponent } from './pages/manage-budget/manage-budget.component';
+=======
+import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
+>>>>>>> origin/frontend
 
 
 export const routes: Routes = [
@@ -68,8 +72,14 @@ export const routes: Routes = [
   component: RegisterBodyCorporateComponent
 },
 {
+<<<<<<< HEAD
   path: 'manageBudget/:houseId',
   pathMatch: 'full',
   component: ManageBudgetComponent
+=======
+  path: 'registerHub',
+  pathMatch: 'full',
+  component: RegisterHubComponent
+>>>>>>> origin/frontend
 }
 ];

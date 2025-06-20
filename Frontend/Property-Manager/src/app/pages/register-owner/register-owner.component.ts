@@ -68,7 +68,7 @@ import { Router } from '@angular/router';
 
           <div class="text-center text-sm space-y-2">
             <a class="block" href="">Forgot password?</a>
-            <a class="font-semibold" href="/contractorRegister">Register as Contractor?</a>
+            <a class="font-semibold" href="/registerHub">Create Account?</a>
             <br>
             <a class="font-bold" href="/login">Login?</a>
           </div>

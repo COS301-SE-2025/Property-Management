@@ -85,7 +85,7 @@ import { ApiService } from '../../services/api.service';
 
             <div class = "text-center text-sm space-y-2">
               <a class = "block" href="">Forgot password?</a>
-              <a class = "font-semibold" href="/register-owner">Register as Owner?</a>
+              <a class = "font-semibold" href="/registerHub">Create Account?</a>
               <br>
               <a class = "font-bold" href="/login">Login?</a>
             </div>

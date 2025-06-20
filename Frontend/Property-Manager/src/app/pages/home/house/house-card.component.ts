@@ -7,7 +7,11 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-house-card',
   imports: [CardModule],
+<<<<<<< HEAD
   templateUrl: './house-card.component.html',
+=======
+  template: ``,
+>>>>>>> origin/frontend
   styles: ``
 })
 export class HouseCardComponent {
