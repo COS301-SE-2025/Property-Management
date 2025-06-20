@@ -1,0 +1,28 @@
+<div class = "flex flex-col items-center justify-center">
+    <p-card class="text-center">
+    <ng-template #title>Inventory</ng-template>
+    <p-table [value] = "inventory()" stripedRows [tableStyle]="{ 'min-width': '22rem' }">
+        <ng-template #header>
+        <tr>
+            <th pSortableColumn="name">
+                Description <p-sortIcon field="name"/>
+            </th>
+            <th pSortableColumn="quantityInStock">
+                Quantity <p-sortIcon field="quantityInStock"/>
+            </th>
+        </tr>
+        </ng-template>
+        <ng-template #body let-inventory>
+        <tr>
+            <td>{{ inventory.name }}</td>
+            <td>{{ inventory.quantityInStock }}</td>
+        </tr>
+        </ng-template>
+    </p-table>
+
+    </p-card>
+    <div class = "mt-4">
+        <button class = "cursor-pointer" (click)="inventoryAddDialog.openDialog()"><img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory"></button>
+        <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog>
+    </div>
+</div>

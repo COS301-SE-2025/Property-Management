@@ -10,6 +10,7 @@ import { ContractorRegisterComponent } from './pages/contractorRegister/contract
 import { ContractorHomeComponent } from './pages/contractorHome/contractorHome.component';
 import { QuotationComponent } from './pages/quotation/quotation.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
+import { ManageBudgetComponent } from './pages/manage-budget/manage-budget.component';
 import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
 
 
@@ -66,6 +67,11 @@ export const routes: Routes = [
   path: 'register-body-corporate',
   pathMatch: 'full',
   component: RegisterBodyCorporateComponent
+},
+{
+  path: 'manageBudget/:houseId',
+  pathMatch: 'full',
+  component: ManageBudgetComponent
 },
 {
   path: 'registerHub',
