@@ -12,6 +12,8 @@ import { QuotationComponent } from './pages/quotation/quotation.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 import { ManageBudgetComponent } from './pages/manage-budget/manage-budget.component';
 import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
+import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
+
 
 
 export const routes: Routes = [
@@ -77,5 +79,9 @@ export const routes: Routes = [
   path: 'registerHub',
   pathMatch: 'full',
   component: RegisterHubComponent
+},
+{
+    path: 'contractor-profile',
+    component: ContractorProfileComponent
 }
 ];
