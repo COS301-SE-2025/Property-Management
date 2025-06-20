@@ -35,6 +35,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
   justify-content: center;
   align-items: flex-start;
   min-height: 60vh;
+  margin-top: -2rem;
+  margin-bottom: -2rem;
+  margin-left: 8rem;
+  width: 150%;
 }
 .profile-card {
   background: #fff;

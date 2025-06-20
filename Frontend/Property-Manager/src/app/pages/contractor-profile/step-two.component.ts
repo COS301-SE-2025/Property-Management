@@ -47,13 +47,13 @@ import { Component, EventEmitter, Output } from '@angular/core';
   border: 2px solid #ccc;
   border-radius: 12px;
   background: #fff;
-  padding: 2.5rem 10.5rem 2rem 2.5rem;
+  padding: 2.5rem 12.5rem 2rem 2.5rem;
   margin: 40px auto;
   box-sizing: border-box;
   margin-top: -2rem;
   margin-bottom: -2rem;
-  margin-left: 8rem;
-  width: 150%;
+  margin-left: 6rem;
+  width: 170%;
 
 }
 .input {
@@ -61,8 +61,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
   border: 1px solid #ccc;
   border-radius: 8px;
   width: 150%;
-  font-size: 14px;
-  color: #333;
+  font-size: 1rem;
+  color: #888;
+  font-weight: 500;
 }
 .input::placeholder { color: #888; }
 .file-label {
@@ -72,15 +73,16 @@ import { Component, EventEmitter, Output } from '@angular/core';
   padding: 0.75rem 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-  font-size: 14px;
-  color: #444;
+  font-size: 1rem;
+  color: #888;
+  font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
-  background-color: #fff;
+  background: #fff;
   width: 150%;
-  margin-left: 5rem;
+  margin-left: 7rem;
 }
-.file-label:hover { background-color: #fef9c3; }
+.file-label:hover { background-color:rgba(216, 216, 216, 0.63); }
 .btn-yellow {
   padding: 0.5rem 2rem;
   border-radius: 6px;

@@ -20,8 +20,10 @@
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      font-size: 14px;
       width: 100%;
+      font-size: 1rem;
+      color: #888;
+      font-weight: 500;
     }
 
     .row {
@@ -68,15 +70,19 @@
 
     .next {
       align-self: flex-end;
-      padding: 10px 20px;
+      padding: 0.5rem 2rem;
       background-color: #ffd74b;
       border: none;
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      transition: background 0.2s;
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
       margin-top: 1rem;
+      margin-left: 5rem;
       &:hover {
-        background-color: #ffcd00;
+        background-color: #facc15;
       }
     }
   }
