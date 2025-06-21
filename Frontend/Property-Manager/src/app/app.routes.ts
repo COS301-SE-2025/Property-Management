@@ -12,6 +12,7 @@ import { QuotationComponent } from './pages/quotation/quotation.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 import { ManageBudgetComponent } from './pages/manage-budget/manage-budget.component';
 import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
+import { BcHomeComponent } from './pages/bc-home/bc-home.component';
 
 
 export const routes: Routes = [
@@ -77,5 +78,10 @@ export const routes: Routes = [
   path: 'registerHub',
   pathMatch: 'full',
   component: RegisterHubComponent
+},
+{
+  path: 'bodyCoporate',
+  pathMatch: 'full',
+  component: BcHomeComponent
 }
 ];

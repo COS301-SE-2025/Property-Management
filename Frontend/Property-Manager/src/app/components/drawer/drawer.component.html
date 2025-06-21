@@ -1,0 +1,35 @@
+<p-drawer [(visible)]="displayDrawer" styleClass="bg-yellow-500">
+    <ng-template #headless>
+        <div class="flex items-center justify-between px-6 pt-4 shrink-0 bg-white-500">
+            <img src="assets/images/logo.png" alt="Logo" class="w-40 h-40">
+            <span class="text-xl">Property Manager</span>
+            <span class="inline-flex gap-2">
+                <img src="assets/icons/cancel.svg" alt="close drawer" class="w-12 h-12">
+            </span>
+        </div>
+        <div class="flex flex-col h-full bg-yellow-300">
+            <div>
+                <ul class="list-none p-3 pt-5">
+                    <li class="mb-7">
+                        <a class="flex items-center space-x-2 cursor-pointer">
+                            <img src="assets/icons/analytics.svg" alt="analytics" class="w-8 h-8">
+                            <span class="text-xl text-white">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="mb-7">
+                        <a class="flex items-center space-x-2 cursor-pointer">
+                            <img src="assets/icons/home.svg" alt="home" class="w-8 h-8">
+                            <span class="text-xl text-white">Properties</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="flex items-center space-x-2 cursor-pointer">
+                            <img src="assets/icons/person_apron.svg" alt="analytics" class="w-8 h-8">
+                            <span class="text-xl text-white">Contractors</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </ng-template>
+</p-drawer>
