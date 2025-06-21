@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.util.UUID
 
 @Entity
 @Table(name = "trustee")
@@ -18,4 +19,6 @@ data class Trustee(
     val email: String,
     val phone: String,
     val apikey: String,
+    @Column(name = "trustee_uuid")
+    val uuid: UUID = UUID.randomUUID()
 )

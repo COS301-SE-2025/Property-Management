@@ -26,7 +26,7 @@ class QuoteController(
     @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Int,
-    ): ResponseEntity<Any> =
+    ): ResponseEntity<Quote> =
         try {
             val item = service.getById(id)
             ResponseEntity.ok(item)

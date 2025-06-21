@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/trustee")
@@ -21,18 +22,13 @@ class TrusteeController(
     @GetMapping
     fun getAll(): List<Trustee> = service.getAll()
 
-    @GetMapping("/{id}")
-    fun getById(
-        @PathVariable id: Int,
-    ): ResponseEntity<Any> =
-        try {
-            val item = service.getById(id)
-            ResponseEntity.ok(item)
-        } catch (ex: NoSuchElementException) {
-            ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(mapOf("error" to ex.message))
-        }
+    @GetMapping("/{uuid}")
+    fun getByUuid(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<Trustee> {
+        val trustee = service.getByUuid(uuid)
+        return if (trustee != null) ResponseEntity.ok(trustee) else ResponseEntity.notFound().build()
+    }
 
     data class UserDto(
         val name: String,
@@ -46,17 +42,17 @@ class TrusteeController(
         @RequestBody userDto: UserDto,
     ): Trustee = service.addUser(userDto.name, userDto.email, userDto.phone, userDto.apikey)
 
-    @PutMapping("/{id}")
+    @PutMapping("/{uuid}")
     fun update(
-        @PathVariable id: Int,
+        @PathVariable uuid: UUID,
         @RequestBody item: Trustee,
-    ): Trustee = service.update(id, item)
+    ): Trustee = service.updateByUuid(uuid, item)
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{uuid}")
     fun delete(
-        @PathVariable id: Int,
+        @PathVariable uuid: UUID,
     ): ResponseEntity<Void> {
-        service.delete(id)
+        service.deleteByUuid(uuid)
         return ResponseEntity.noContent().build()
     }
 }

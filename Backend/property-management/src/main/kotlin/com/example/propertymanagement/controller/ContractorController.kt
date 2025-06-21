@@ -26,7 +26,7 @@ class ContractorController(
     @GetMapping("/{uuid}")
     fun getByUuid(
         @PathVariable uuid: UUID,
-    ): ResponseEntity<Any> =
+    ): ResponseEntity<Contractor> =
         try {
             val item = service.getByUuid(uuid)
             ResponseEntity.ok(item)

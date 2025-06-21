@@ -3,6 +3,8 @@ package com.example.propertymanagement.service
 import com.example.propertymanagement.model.Trustee
 import com.example.propertymanagement.repository.TrusteeRepository
 import org.springframework.stereotype.Service
+import java.util.NoSuchElementException
+import java.util.UUID
 
 @Service
 class TrusteeService(
@@ -10,9 +12,13 @@ class TrusteeService(
 ) {
     fun getAll(): List<Trustee> = repository.findAll()
 
-    fun getById(id: Int): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    //fun getById(id: UUID): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Trustee): Trustee = repository.save(item)
+
+    fun getByUuid(uuid: UUID): Trustee =
+    repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Trustee not found: $uuid") }
+
 
     fun addUser(
         name: String,
@@ -24,20 +30,38 @@ class TrusteeService(
         return add(newUser)
     }
 
-    fun update(
-        id: Int,
+    fun updateByUuid(
+        uuid: UUID,
         newItem: Trustee,
     ): Trustee {
-        val existing = getById(id)
+        val existing = getByUuid(uuid)
         val updated =
             existing.copy(
                 name = newItem.name,
                 email = newItem.email,
                 phone = newItem.phone,
-                apikey = newItem.apikey,
+                apikey = newItem.apikey
             )
         return repository.save(updated)
     }
+
+    fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
+
+
+    // fun update(
+    //     id: Int,
+    //     newItem: Trustee,
+    // ): Trustee {
+    //     val existing = getById(id)
+    //     val updated =
+    //         existing.copy(
+    //             name = newItem.name,
+    //             email = newItem.email,
+    //             phone = newItem.phone,
+    //             apikey = newItem.apikey,
+    //         )
+    //     return repository.save(updated)
+    // }
 
     fun delete(id: Int) = repository.deleteById(id)
 }
