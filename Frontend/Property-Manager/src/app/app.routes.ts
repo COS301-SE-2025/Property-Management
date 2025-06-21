@@ -13,6 +13,7 @@ import { VerifyEmailComponent } from './pages/verify-email/verify-email.componen
 import { ManageBudgetComponent } from './pages/manage-budget/manage-budget.component';
 import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
 import { BcHomeComponent } from './pages/bc-home/bc-home.component';
+import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.component';
 
 
 export const routes: Routes = [
@@ -83,5 +84,10 @@ export const routes: Routes = [
   path: 'bodyCoporate',
   pathMatch: 'full',
   component: BcHomeComponent
+},
+{
+  path: 'bodyCoporate/contractors',
+  pathMatch: 'full',
+  component: BcContractorsComponent
 }
 ];

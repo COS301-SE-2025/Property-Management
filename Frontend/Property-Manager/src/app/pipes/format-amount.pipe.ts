@@ -15,6 +15,10 @@ export class FormatAmountPipe implements PipeTransform {
     {
        return `${amountString.slice(0,3)} ${amountString.slice(3)}`;
     }
+    else if(amountString.length >= 7)
+    {
+      return `${amountString.slice(0,1)} ${amountString.slice(1, 4)} ${amountString.slice(4)}`;
+    }
     return amountString; 
   }
 }
