@@ -16,8 +16,7 @@ class TrusteeService(
 
     fun add(item: Trustee): Trustee = repository.save(item)
 
-    fun getByUuid(uuid: UUID): Trustee =
-    repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Trustee not found: $uuid") }
+    fun getByUuid(uuid: UUID): Trustee = repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Trustee not found: $uuid") }
 
 
     fun addUser(

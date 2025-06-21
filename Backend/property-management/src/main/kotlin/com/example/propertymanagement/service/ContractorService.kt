@@ -12,10 +12,7 @@ class ContractorService(
 ) {
     fun getAll(): List<Contractor> = repository.findAll()
 
-    fun getById(id: Int): Contractor = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
-
-    fun getByUuid(uuid: UUID): Contractor =
-        repository.findByContractorUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
+    fun getByUuid(uuid: UUID): Contractor =repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
     fun updateByUuid(
         uuid: UUID,
@@ -33,7 +30,7 @@ class ContractorService(
         return repository.save(updated)
     }
 
-    fun deleteByUuid(uuid: UUID) = repository.deleteByContractorUuid(uuid)
+    fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
 
     fun add(item: Contractor): Contractor = repository.save(item)
 
@@ -48,21 +45,4 @@ class ContractorService(
         return add(newUser)
     }
 
-    fun update(
-        id: Int,
-        newItem: Contractor,
-    ): Contractor {
-        val existing = getById(id)
-        val updated =
-            existing.copy(
-                name = newItem.name,
-                email = newItem.email,
-                phone = newItem.phone,
-                apikey = newItem.apikey,
-                banned = newItem.banned,
-            )
-        return repository.save(updated)
-    }
-
-    fun delete(id: Int) = repository.deleteById(id)
 }

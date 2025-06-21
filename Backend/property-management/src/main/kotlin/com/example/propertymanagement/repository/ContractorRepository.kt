@@ -6,7 +6,7 @@ import java.util.Optional
 import java.util.UUID
 
 interface ContractorRepository : JpaRepository<Contractor, Int> {
-    fun findByContractorUuid(uuid: UUID): Optional<Contractor>
+    fun findByUuid(uuid: UUID): Optional<Contractor>
 
-    fun deleteByContractorUuid(uuid: UUID)
+    fun deleteByUuid(uuid: UUID)
 }

@@ -22,17 +22,17 @@ class ContractorController(
 ) {
     @GetMapping()
     fun getAll(): List<Contractor> = service.getAll()
-
+    
     @GetMapping("/{uuid}")
-    fun getByUuid(
-        @PathVariable uuid: UUID,
-    ): ResponseEntity<Contractor> =
-        try {
-            val item = service.getByUuid(uuid)
-            ResponseEntity.ok(item)
-        } catch (ex: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to ex.message))
+    fun getByUuid(@PathVariable uuid: UUID): ResponseEntity<Contractor> {
+        return try {
+            val contractor = service.getByUuid(uuid)
+            ResponseEntity.ok(contractor)
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
         }
+    }
+
 
     data class ContractorDto(
         val name: String,

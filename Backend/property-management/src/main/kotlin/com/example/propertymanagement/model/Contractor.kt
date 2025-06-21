@@ -14,9 +14,9 @@ data class Contractor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contractor_id")
-    val contractorId: Int = 0,
+    val contractorId: Int? = null,
     @Column(name = "contractor_uuid", unique = true, nullable = false)
-    val contractorUuid: UUID = UUID.randomUUID(),
+    val uuid: UUID = UUID.randomUUID(),
     @Column(nullable = false)
     val name: String,
     @Column(nullable = false, unique = true)
