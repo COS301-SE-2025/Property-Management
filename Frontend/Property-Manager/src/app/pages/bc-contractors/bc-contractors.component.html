@@ -3,3 +3,17 @@
     <button class = "mt-4 ml-2 cursor-pointer" (click)="openDrawer.openDrawer()"><img src="assets/icons/sideDrawer_button.svg" alt="Open drawer" class="w-9 h-9"></button>
     <app-drawer #openDrawer/>
 </div>
+
+<div class = "mt-4 ml-10">
+    <p class = "text-xl font-normal">Your trusted contractors</p>
+</div>
+
+<div class="flex flex-wrap justify-center gap-8 p-8">
+    @for (contractor of contractors; track contractor.contractorId) 
+    {
+        <app-contractor-card [contractor]="contractor"/>
+    }
+    <button (click)="AddNewContractor()" class = "cursor-pointer">
+    <img class= "w-16 h-16" src= "assets/icons/add_circle.svg" alt="">
+    </button>
+</div>

@@ -14,6 +14,7 @@ import { ManageBudgetComponent } from './pages/manage-budget/manage-budget.compo
 import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
 import { BcHomeComponent } from './pages/bc-home/bc-home.component';
 import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.component';
+import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
 
 
 export const routes: Routes = [
@@ -89,5 +90,10 @@ export const routes: Routes = [
   path: 'bodyCoporate/contractors',
   pathMatch: 'full',
   component: BcContractorsComponent
+},
+{
+  path: 'contractorDetails/:contractorId',
+  pathMatch: 'full',
+  component: ContractorDetailsComponent
 }
 ];
