@@ -16,6 +16,8 @@ import { BcHomeComponent } from './pages/bc-home/bc-home.component';
 import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.component';
 import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
+import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
+
 
 
 export const routes: Routes = [
@@ -101,5 +103,9 @@ export const routes: Routes = [
   path: 'bodyCoporate/publicContractors',
   pathMatch: 'full',
   component: PublicContractorsComponent
+},
+{
+    path: 'contractor-profile',
+    component: ContractorProfileComponent
 }
 ];
