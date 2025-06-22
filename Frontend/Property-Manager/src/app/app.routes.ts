@@ -13,6 +13,7 @@ import { VerifyEmailComponent } from './pages/verify-email/verify-email.componen
 import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
   {
@@ -84,5 +85,11 @@ export const routes: Routes = [
   path: 'help',
   pathMatch: 'full',
   component: HelpComponent
+}
+,
+{
+  path: 'reset-password',
+  pathMatch: 'full',
+  component: ResetPasswordComponent
 }
 ];

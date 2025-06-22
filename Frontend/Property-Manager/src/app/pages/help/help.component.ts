@@ -5,7 +5,7 @@ import { RouterLink} from '@angular/router';
 import { HeaderComponent } from "../../components/header/header.component";
 import { DividerModule } from 'primeng/divider';
 @Component({
-    selector: 'app-landingpage',
+    selector: 'app-help-page',
     imports: [CardModule, ButtonModule, RouterLink, HeaderComponent, DividerModule],
     standalone: true,
     templateUrl: `./help.component.html`,
