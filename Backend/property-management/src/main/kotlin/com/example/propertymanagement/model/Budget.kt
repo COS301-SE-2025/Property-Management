@@ -14,31 +14,36 @@ import java.util.UUID
 @Table(name = "budget")
 data class Budget(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "budget_id")
-    val budgetId: Int = 0,
-    @Column(name = "budget_uuid", unique = true)
+    @Column(name = "budget_uuid")
     val budgetUuid: UUID = UUID.randomUUID(),
-    @Column(name = "building_id")
-    val buildingId: Int? = null,
-    @Column(name = "building_uuid_fk")
-    val buildingUuid: UUID,
+    
     @Column(name = "year")
-    val year: Int? = null,
-    @Column(name = "total_budget")
-    val totalBudget: BigDecimal? = null,
-    @Column(name = "maintenance_budget")
-    val maintenanceBudget: BigDecimal? = null,
-    @Column(name = "inventory_budget")
-    val inventoryBudget: BigDecimal? = null,
-    @Column(name = "inventory_spent")
-    val inventorySpent: BigDecimal? = null,
-    @Column(name = "maintenance_spent")
-    val maintenanceSpent: BigDecimal? = null,
+    val year: Int?,
+    
+    @Column(name = "total_budget", precision = 12, scale = 2)
+    val totalBudget: BigDecimal?,
+    
+    @Column(name = "maintenance_budget", precision = 12, scale = 2)
+    val maintenanceBudget: BigDecimal?,
+    
+    @Column(name = "inventory_budget", precision = 12, scale = 2)
+    val inventoryBudget: BigDecimal?,
+    
     @Column(name = "approved_by")
-    val approvedBy: Int? = null,
+    val approvedBy: Int?,
+    
     @Column(name = "approval_date")
-    val approvalDate: LocalDate? = null,
+    val approvalDate: LocalDate?,
+    
     @Column(name = "notes")
-    val notes: String? = null,
+    val notes: String?,
+    
+    @Column(name = "inventory_spent", precision = 10, scale = 2)
+    val inventorySpent: BigDecimal = BigDecimal.ZERO,
+    
+    @Column(name = "maintenance_spent", precision = 10, scale = 2)
+    val maintenanceSpent: BigDecimal = BigDecimal.ZERO,
+    
+    @Column(name = "building_uuid_fk")
+    val buildingUuid: UUID?
 )
