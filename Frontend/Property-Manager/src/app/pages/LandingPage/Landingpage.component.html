@@ -1,13 +1,69 @@
-<app-header/>
-  
-    <div class="mt-6 h-64 relative rounded-lg overflow-hidden shadow-lg">
-  
-  <!-- Blurred background image that fills the entire div -->
-  <div class="absolute inset-0 bg-[url('/assets/images/background.jpg')] bg-cover bg-center filter blur-md scale-110"></div>
-  
-  <!-- Foreground content stays sharp -->
-  <div class="relative z-10 h-full w-full flex items-center justify-center text-white text-xl font-semibold">
-    Welcome to the contractor portal!
-  </div>
+<app-header></app-header>
 
+<div class="min-h-screen flex flex-col">
+  <div class="flex-grow relative overflow-hidden">
+
+    <!-- Background -->
+    <div class="absolute inset-0 bg-[url('/assets/images/background.jpg')] bg-cover bg-center filter blur-sm scale-110"></div>
+
+    <!-- Foreground Content -->
+    <div class="relative z-10 h-full w-full px-12 py-25 flex items-center justify-between text-white">
+
+      <!-- Left Side: Buttons -->
+      <div class="flex flex-col gap-12 text-xl">
+  
+  <a
+    class="backdrop-blur-sm bg-white/30 text-black font-semibold px-8 py-2 rounded-lg shadow-md hover:bg-white/40 transition text-center"
+    [routerLink]="['/register-body-corporate']">
+    Register as Body Corporate
+  </a>
+
+  <a
+    class="backdrop-blur-sm bg-white/30 text-black font-semibold px-8 py-2 rounded-lg shadow-md hover:bg-white/40 transition text-center"
+    [routerLink]="['/register-owner']">
+    Register as Owner
+  </a>
+
+  <a
+    class="backdrop-blur-sm bg-white/30 text-black font-semibold px-8 py-2 rounded-lg shadow-md hover:bg-white/40 transition text-center"
+    [routerLink]="['/contractorRegister']">
+    Register as Contractor
+  </a>
+
+  <a
+    class="backdrop-blur-sm bg-yellow-300/70 text-black font-semibold px-8 py-2 rounded-lg shadow-md hover:bg-yellow-300 transition text-center"
+    [routerLink]="['/login']">
+    Login
+  </a>
+
+</div>
+
+
+      <!-- Center: Description -->
+      <div class="max-w-xl text-center text-white/90 font-light leading-relaxed text-xl ">
+        <p>
+          Property Management system, a comprehensive solution designed to streamline maintenance operations for
+          property managers and corporate bodies. The system addresses critical challenges in contractor management,
+          inventory control, and maintenance planning to enhance operational efficiency and financial oversight.
+        </p>
+      </div>
+
+      <!-- Right Side: Icons -->
+      <div class="flex flex-col gap-12 text-white text-xl items-center">
+        <div class="flex flex-col items-center">
+          <img src="/assets/icons/suitcase.svg" class="h-15 mb-1" />
+          <span>Contractor Sourcing and Management</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <img src="/assets/icons/tools.svg" class="h-15 mb-1" />
+          <span>Inventory Management</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <img src="/assets/icons/qoute.svg" class="h-15 mb-1" />
+          <span>Quote Management</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
