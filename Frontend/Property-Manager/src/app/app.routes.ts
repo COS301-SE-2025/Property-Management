@@ -12,6 +12,7 @@ import { QuotationComponent } from './pages/quotation/quotation.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
+import { HelpComponent } from './pages/help/help.component';
 
 export const routes: Routes = [
   {
@@ -78,5 +79,10 @@ export const routes: Routes = [
   pathMatch: 'full',
   component: LandingPageComponent
 }
-
+,
+{
+  path: 'help',
+  pathMatch: 'full',
+  component: HelpComponent
+}
 ];
