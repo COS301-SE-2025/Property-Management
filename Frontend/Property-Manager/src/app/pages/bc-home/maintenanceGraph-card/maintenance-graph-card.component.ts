@@ -5,9 +5,9 @@ import { BodyCoporateService } from '../../../services/body-coporate.service';
 import { Graph } from '../../../models/graph.model';
 
 @Component({
-  selector: 'app-maintenanceGraph-card',
+  selector: 'app-maintenance-graph-card',
   imports: [CardModule, ChartModule],
-  templateUrl: './maintenanceGraph-card.component.html',
+  templateUrl: './maintenance-graph-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

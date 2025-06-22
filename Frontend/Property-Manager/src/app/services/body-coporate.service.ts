@@ -11,8 +11,6 @@ import { ContractorDetails } from '../models/contractorDetails.model';
 })
 export class BodyCoporateService {
 
-  constructor() { }
-
   //Mock data
   pendingTasks = signal<MaintenanceTask[]>([
     {

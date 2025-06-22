@@ -5,15 +5,12 @@
 </div>
 
 <div class = "mt-4 ml-10">
-    <p class = "text-xl font-normal">Your trusted contractors</p>
+    <p class = "text-xl font-normal">Public Contractors ready for work</p>
 </div>
 
 <div class="flex flex-wrap justify-center gap-8 p-8">
-    @for (contractor of contractors; track contractor.contractorId) 
+    @for (contractor of publicContractors; track contractor.contractorId) 
     {
         <app-contractor-card [contractor]="contractor"/>
     }
-    <button (click)="AddNewContractor()" class = "cursor-pointer">
-        <img class= "w-16 h-16" src= "assets/icons/add_circle.svg" alt="">
-    </button>
 </div>

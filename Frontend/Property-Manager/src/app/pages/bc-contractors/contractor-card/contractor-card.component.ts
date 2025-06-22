@@ -19,6 +19,9 @@ export class ContractorCardComponent {
 
   viewContractorDetails(contractorId: number)
   {
-    this.router.navigate(['contractorDetails', contractorId]);
+    const currentPath = this.router.url;
+    const source = currentPath.includes('publicContractors') ? 'public' : 'trusted';
+
+    this.router.navigate(['contractorDetails', contractorId, source])
   }
 }
