@@ -8,5 +8,5 @@ data class ImageMeta(
     @Id
     val id: String,
     val filename: String,
-    val url: String
+    val url: String,
 )
