@@ -52,8 +52,9 @@ export class StepOneComponent {
     });
   }
 
-  upload(event: any) {
-    const file = event.target.files[0];
+  upload(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files[0];
     if (file) {
       console.log('Profile image:', file.name);
     }

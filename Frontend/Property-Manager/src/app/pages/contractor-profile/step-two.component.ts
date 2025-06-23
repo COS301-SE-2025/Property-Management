@@ -10,27 +10,27 @@ import { Component, EventEmitter, Output } from '@angular/core';
         <input type="text" placeholder="Registration / License Number" class="input" />
         <input type="text" placeholder="Contractor ID" class="input" />
         <div>
-          <label class="font-semibold block mb-1">Description & Skills</label>
-          <textarea rows="4" placeholder="Enter a brief description of your area of expertise" class="input resize-none"></textarea>
+          <label for="descriptionSkills" class="font-semibold block mb-1">Description & Skills</label>
+          <textarea id="descriptionSkills" rows="4" placeholder="Enter a brief description of your area of expertise" class="input resize-none"></textarea>
         </div>
         <div>
-          <label class="font-semibold block mb-1">Services</label>
-          <textarea rows="4" placeholder="Enter primary services and secondary services (if any)" class="input resize-none"></textarea>
+          <label for="service" class="font-semibold block mb-1">Services</label>
+          <textarea id="service" rows="4" placeholder="Enter primary services and secondary services (if any)" class="input resize-none"></textarea>
         </div>
       </div>
       <div class="flex flex-col gap-4">
         <label for="certs" class="file-label">
-          <img src="https://img.icons8.com/ios/50/document--v1.png" class="w-5 h-5 mr-2 opacity-70" />
+          <img src="https://img.icons8.com/ios/50/document--v1.png" alt="document upload" class="w-5 h-5 mr-2 opacity-70" />
           Attach Certifications
         </label>
         <input id="certs" type="file" hidden />
         <label for="licenses" class="file-label">
-          <img src="https://img.icons8.com/ios/50/document--v1.png" class="w-5 h-5 mr-2 opacity-70" />
+          <img src="https://img.icons8.com/ios/50/document--v1.png" alt="document upload" class="w-5 h-5 mr-2 opacity-70" />
           Attach Licences
         </label>
         <input id="licenses" type="file" hidden />
         <label for="ids" class="file-label">
-          <img src="https://img.icons8.com/ios/50/document--v1.png" class="w-5 h-5 mr-2 opacity-70" />
+          <img src="https://img.icons8.com/ios/50/document--v1.png" alt="document upload" class="w-5 h-5 mr-2 opacity-70" />
           Attach ID
         </label>
         <input id="ids" type="file" hidden />

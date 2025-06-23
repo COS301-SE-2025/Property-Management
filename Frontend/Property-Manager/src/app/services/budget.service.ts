@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { ApiService } from './api.service';
 import { House } from '../models/house.model';
-import { BudgetGraph } from '../models/budgetGraph.model';
+import { Graph } from '../models/graph.model';
 import { Inventory } from '../models/inventory.model';
 import { Budget } from '../models/budget.model';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
@@ -28,7 +28,7 @@ export class BudgetService {
     image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
   });
 
-  budgetGraph = signal<BudgetGraph>({
+  budgetGraph = signal<Graph>({
     labels: [2022, 2023, 2024, 2025],
     datasets: [
       {
@@ -73,6 +73,7 @@ export class BudgetService {
   maintenanceTasks = signal<MaintenanceTask[]>([
     {
       description: 'Fixed sink leak',
+      UnitNo: "1",
       cost: 1000,
       DoneBy: {
         contractorId: 1,
@@ -83,6 +84,7 @@ export class BudgetService {
         banned: false,
       },
       DoneOn: new Date('2025-06-11'),
+      DueDate: new Date('2025-06-11'),
       status: "Done",
       approved: true,
       proofImages: ["assets/images/sinkMock1.jpg", "assets/images/sinkMock2.jpeg", "assets/images/sinkMock3.jpeg"],
@@ -104,9 +106,11 @@ export class BudgetService {
       ],
       ReviewScore: 4,
       ReviewDescription: "Very happy with the job",
+      numOfAssignedContractors: 2
     },
     {
       description: 'Fixed light bulb',
+      UnitNo: "2",
       cost: 200,
       DoneBy: {
         contractorId: 2,
@@ -117,8 +121,10 @@ export class BudgetService {
         banned: false,
       } as Contractor,
       DoneOn: new Date('2024-05-28'),
+      DueDate: new Date('2024-05-28'),
       status: "Done",
-      approved: true
+      approved: true,
+      numOfAssignedContractors: 4
     }
   ]);
 

@@ -12,6 +12,10 @@ import { QuotationComponent } from './pages/quotation/quotation.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 import { ManageBudgetComponent } from './pages/manage-budget/manage-budget.component';
 import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
+import { BcHomeComponent } from './pages/bc-home/bc-home.component';
+import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.component';
+import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
+import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
 
 
@@ -79,6 +83,26 @@ export const routes: Routes = [
   path: 'registerHub',
   pathMatch: 'full',
   component: RegisterHubComponent
+},
+{
+  path: 'bodyCoporate',
+  pathMatch: 'full',
+  component: BcHomeComponent
+},
+{
+  path: 'bodyCoporate/contractors',
+  pathMatch: 'full',
+  component: BcContractorsComponent
+},
+{
+  path: 'contractorDetails/:contractorId/:source',
+  pathMatch: 'full',
+  component: ContractorDetailsComponent
+},
+{
+  path: 'bodyCoporate/publicContractors',
+  pathMatch: 'full',
+  component: PublicContractorsComponent
 },
 {
     path: 'contractor-profile',
