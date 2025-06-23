@@ -10,14 +10,14 @@ import { Component, EventEmitter, Output } from '@angular/core';
         <textarea class="profile-textarea" placeholder="Provide a brief description of past projects"></textarea>
         <div class="profile-upload-group">
           <label for="projDocs" class="profile-upload-label">
-            <img src="https://img.icons8.com/ios/50/copy.png" class="profile-upload-icon" />
+            <img src="https://img.icons8.com/ios/50/copy.png" alt="file upload" class="profile-upload-icon" />
             Attach Project Records
           </label>
           <input type="file" hidden id="projDocs" />
         </div>
         <div class="profile-upload-group">
           <label for="projImgs" class="profile-upload-label">
-            <img src="https://img.icons8.com/ios/50/image.png" class="profile-upload-icon" />
+            <img src="https://img.icons8.com/ios/50/image.png" alt = "file upload" class="profile-upload-icon" />
             Attach Project Images
           </label>
           <input type="file" hidden id="projImgs" />
