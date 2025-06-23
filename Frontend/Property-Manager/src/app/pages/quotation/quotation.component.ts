@@ -11,6 +11,8 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { HeaderComponent } from "../../components/header/header.component";
 
+import { DatePicker } from 'primeng/datepicker';
+
 @Component({
   selector: 'app-quotation',
   standalone: true,
@@ -22,7 +24,8 @@ import { HeaderComponent } from "../../components/header/header.component";
     CommonModule,
     ToastModule,
     HeaderComponent,
-    FileUpload
+    FileUpload,
+    DatePicker
   ],
   providers: [MessageService],
   templateUrl: `./quotation.component.html`,

@@ -11,8 +11,19 @@
   <!-- Form Card -->
   <div class="border  border-gray-300 rounded-lg p-6 font-semibold font-lato w-full max-w-md mx-auto shadow-sm">
     <div class="grid grid-cols-2 gap-4 mb-4">
-      <input type="date" [(ngModel)]="IssueDate" pInputText placeholder="Issue Date" class="w-full rounded-lg bg-gray-100 text-gray-700" />
-      <input type="date" [(ngModel)]="expirationDate" pInputText placeholder="Expiration Date" class="w-full rounded-lg bg-gray-100 text-gray-700" />
+      <p-datepicker
+  [(ngModel)]="IssueDate"
+  dateFormat="yy-mm-dd"
+  placeholder="Issue Date"
+  class="w-full rounded-lg bg-gray-100 text-gray-700"
+/>
+
+<p-datepicker
+  [(ngModel)]="expirationDate"
+  dateFormat="yy-mm-dd"
+  placeholder="Expiration Date"
+  class="w-full rounded-lg bg-gray-100 text-gray-700"
+/>
       <input type="text" [(ngModel)]="quoteNo" pInputText placeholder="Quote No." class="w-full rounded-lg bg-gray-100 text-gray-700" />
       <input type="number" [(ngModel)]="totalAmount" pInputText placeholder="Total amount" class="w-full rounded-lg bg-gray-100 text-gray-700" />
     </div>
