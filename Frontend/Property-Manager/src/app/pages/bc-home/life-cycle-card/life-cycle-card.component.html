@@ -1,7 +1,7 @@
-<div class="flex flex-col items-center justify-center">
+<div class="flex flex-col items-center justify-center shadow-md">
     <div>
         <span class="text-2xl font-semibold ml-82">Life-cycle cost analysis</span>
-        <p-table [value]="costs()" stripedRows [tableStyle]="{ 'min-width': '30rem'}">
+        <p-table [value]="costs()" [tableStyle]="{ 'min-width': '30rem'}">
             <ng-template #header>
                 <tr>
                     <th pSortableColumn="type">

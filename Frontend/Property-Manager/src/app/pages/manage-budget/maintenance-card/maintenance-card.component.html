@@ -1,4 +1,4 @@
-<div class = "flex flex-col items-center justify-center">
+<div class = "flex flex-col items-center justify-center shadow-md mb-5">
     <p-card class="text-center">
         <ng-template #title>Maintenance Budget</ng-template>
         <div class="flex items-center justify-center gap-2">
@@ -6,8 +6,8 @@
             <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ budget()[0].budgetAmount | formatAmount}}</p>
         </div>
 
-        <p class="pb-2 pt-8 pr-67">Maintenance expenditure</p>
-        <p-table [value]="maintenance()" stripedRows selectionMode="single" (onRowSelect)="showMaintenanceDetailsDialog($event.data)" [tableStyle]="{ 'min-width': '22rem' }">
+        <p class="pb-2 pt-8 pr-85">Maintenance expenditure</p>
+        <p-table [value]="maintenance()" selectionMode="single" (onRowSelect)="showMaintenanceDetailsDialog($event.data)" [tableStyle]="{ 'min-width': '22rem' }">
             <ng-template #header>
             <tr>
                 <th pSortableColumn="description">

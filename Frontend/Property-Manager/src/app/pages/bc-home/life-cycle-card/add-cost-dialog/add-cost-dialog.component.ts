@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { CommonModule } from '@angular/common';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-cost-dialog',
-  imports: [DialogModule, FloatLabelModule, CommonModule, ReactiveFormsModule],
+  imports: [DialogModule, CommonModule, ReactiveFormsModule],
   templateUrl: './add-cost-dialog.component.html',
   styles: ``
 })

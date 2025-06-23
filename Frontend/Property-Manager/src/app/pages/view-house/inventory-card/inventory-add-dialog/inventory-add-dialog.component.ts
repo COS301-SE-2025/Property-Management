@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -9,7 +8,7 @@ import { DialogComponent } from '../../../../components/dialog/dialog.component'
 
 @Component({
   selector: 'app-inventory-add-dialog',
-  imports: [DialogModule, FloatLabelModule, CommonModule, ReactiveFormsModule, DatePickerModule],
+  imports: [DialogModule, CommonModule, ReactiveFormsModule, DatePickerModule],
   templateUrl: './inventory-add-dialog.component.html',
   styles: ``
 })
@@ -43,6 +42,7 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     //TODO: Implement the logic to add an inventory item
     if(this.form.valid){
       console.log("Inventory item added");
+      this.form.reset();
       this.closeDialog();
     }
   }
