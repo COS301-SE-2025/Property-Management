@@ -3,6 +3,7 @@ package com.example.propertymanagement.exception
 import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -16,4 +17,8 @@ class GlobalExceptionHandler {
     fun handleApiException(ex: RestException): ResponseEntity<String> {
         return ResponseEntity.status(ex.statusCode).body(ex.reason ?: "An error occurred")
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<String> =
+        ResponseEntity("Validation error: ${ex.bindingResult.fieldErrors.map { it.defaultMessage }}", HttpStatus.BAD_REQUEST)
 }
