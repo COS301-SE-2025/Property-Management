@@ -1,34 +1,35 @@
-<div class="min-h-screen bg-white relative p-4">
-     
+<app-header></app-header>
 
-      <!-- Quotation Form -->
-      <div class="border rounded-lg p-6 flex flex-col md:flex-row justify-between gap-4 shadow-sm">
-        <!-- Left Side Inputs -->
-        <div class="flex flex-col space-y-4 flex-1">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input pInputText placeholder="Contractor name" [(ngModel)]="quotation.contractorName" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Address" [(ngModel)]="quotation.address" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Profession" [(ngModel)]="quotation.profession" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Email" [(ngModel)]="quotation.email" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Phone Number" [(ngModel)]="quotation.phone" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Quotation Amount" [(ngModel)]="quotation.amount" class="p-inputtext-sm w-full bg-white text-black" />
-          </div>
-        </div>
 
-        <!-- Right Side Image Upload -->
-        <div class="flex flex-col items-center justify-center gap-2 flex-shrink-0 w-full md:w-72">
-          <div class="border w-full h-40 bg-gray-50 flex items-center justify-center rounded">
-            <img src="assets/icons/image.svg" alt="Placeholder" class="w-10 h-10" *ngIf="!previewUrl" />
-            <img [src]="previewUrl" *ngIf="previewUrl" class="w-full h-full object-contain rounded" alt="Uploaded image" />
-          </div>
-          <button 
-            pButton 
-            type="button" 
-            class="p-button mt-4 bg-yellow-400 text-black font-semibold shadow-md"
-            (click)="submitQuotation()"
-          > 
-            Create Quotation
-          </button>
-        </div>
-      </div>
+<div class="min-h-screen bg-white p-8">
+  <!-- Title -->
+  <div class="ml-8 mb-10">
+    <h2 class="text-3xl font-semibold font-lato text-black">Create Quotation</h2>
+    <div class="w-65 h-1 bg-yellow-300 mt-2"></div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="border  border-gray-300 rounded-lg p-6 font-semibold font-lato w-full max-w-md mx-auto shadow-sm">
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <input type="date" [(ngModel)]="IssueDate" pInputText placeholder="Issue Date" class="w-full rounded-lg bg-gray-100 text-gray-700" />
+      <input type="date" [(ngModel)]="expirationDate" pInputText placeholder="Expiration Date" class="w-full rounded-lg bg-gray-100 text-gray-700" />
+      <input type="text" [(ngModel)]="quoteNo" pInputText placeholder="Quote No." class="w-full rounded-lg bg-gray-100 text-gray-700" />
+      <input type="number" [(ngModel)]="totalAmount" pInputText placeholder="Total amount" class="w-full rounded-lg bg-gray-100 text-gray-700" />
     </div>
+
+    <!-- File Upload -->
+    <div class="card flex flex-col gap-6 mb-5 items-center justify-center">
+    <p-toast />
+    <p-fileupload #fu mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept=".pdf,image/*" maxFileSize="1000000" (onUpload)="onUpload($event)"  styleClass="custom-upload-button"/>
+    <p-button label="Upload" (onClick)="fu.upload()" severity="secondary" />
+</div>
+
+    <!-- Submit Button -->
+    <button
+    
+      label="Create Quotation"
+      class="bg-yellow-300 text-black font-semibold text-lg px-16 py-3 ml-25 rounded shadow hover:bg-yellow-400 transition text-sm"
+
+    > Create Quote</button>
+  </div>
+</div>

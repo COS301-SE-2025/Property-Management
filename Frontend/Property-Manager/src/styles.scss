@@ -11,3 +11,12 @@
 ::ng-deep .p-drawer {
   background-color: #facc15 !important; 
 }
+
+.custom-upload-button .p-button {
+  background-color: white !important;
+  color: black !important;
+  font-weight: 600;
+  border-radius: 0.5rem;
+   border: 1px solid black !important;
+
+}
