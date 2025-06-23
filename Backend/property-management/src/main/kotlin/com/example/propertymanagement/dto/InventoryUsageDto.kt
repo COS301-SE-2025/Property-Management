@@ -1,10 +1,7 @@
 package com.example.propertymanagement.dto
 
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.PositiveOrZero
-import java.util.UUID
 import java.sql.Date
+import java.util.UUID
 
 data class CreateInventoryUsageRequest(
     val itemUuid: UUID,
@@ -25,11 +22,11 @@ data class InventoryUsageResponse(
     val taskUuid: UUID,
     val usedByContractorUuid: UUID,
     val quantityUsed: Int,
-    val trusteeApproved: Boolean ,
+    val trusteeApproved: Boolean,
     val approvalDate: Date?,
 )
 
 data class ApprovalRequest(
     val trusteeApproved: Boolean,
-    val approvalDate: Date = Date(System.currentTimeMillis())
+    val approvalDate: Date = Date(System.currentTimeMillis()),
 )
