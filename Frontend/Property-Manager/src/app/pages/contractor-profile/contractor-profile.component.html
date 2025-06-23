@@ -9,7 +9,14 @@
     <span class="w-4 h-4 rounded-full" [ngClass]="{ 'bg-yellow-400': step === 2, 'bg-gray-300': step !== 2 }"></span>
     <span class="w-4 h-4 rounded-full" [ngClass]="{ 'bg-yellow-400': step === 3, 'bg-gray-300': step !== 3 }"></span>
   </div>
-  <div class="border rounded-lg p-12 shadow-sm bg-white max-w-6xl mx-auto">
+
+  <div
+    [ngClass]="{
+      'border rounded-lg p-12 shadow-sm bg-white max-w-6xl mx-auto': true,
+      'border-black': step === 1,
+      'border-gray-200': step !== 1
+    }"
+  >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
         <ng-container [ngSwitch]="step">
@@ -32,5 +39,3 @@
         </button>
       </div>
     </div>
-  </div>
-</div>
