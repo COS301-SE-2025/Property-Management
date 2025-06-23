@@ -1,9 +1,8 @@
 package com.example.propertymanagement.dto
 
-import java.util.UUID
 import java.math.BigDecimal
 import java.time.LocalDate
-
+import java.util.UUID
 
 data class BudgetCreateDto(
     val year: Int?,
@@ -13,7 +12,7 @@ data class BudgetCreateDto(
     val approvedBy: Int?,
     val approvalDate: LocalDate?,
     val notes: String?,
-    val buildingUuid: UUID?
+    val buildingUuid: UUID?,
 )
 
 data class BudgetUpdateDto(
@@ -26,7 +25,7 @@ data class BudgetUpdateDto(
     val notes: String?,
     val inventorySpent: BigDecimal?,
     val maintenanceSpent: BigDecimal?,
-    val buildingUuid: UUID?
+    val buildingUuid: UUID?,
 )
 
 data class BudgetResponseDto(
@@ -40,5 +39,5 @@ data class BudgetResponseDto(
     val notes: String?,
     val inventorySpent: BigDecimal,
     val maintenanceSpent: BigDecimal,
-    val buildingUuid: UUID?
+    val buildingUuid: UUID?,
 )
