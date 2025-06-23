@@ -27,7 +27,7 @@ export class CreatePropertyComponent {
       city: [''],
       province: [''],
       type: [''],
-      advancedSettings: [''],
+      bodyCorporate: [''],
       image: [null],
     });
   }
