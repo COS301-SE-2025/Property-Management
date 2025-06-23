@@ -1,7 +1,7 @@
-<div class="flex flex-col items-center justify-center h-full">
+<div class="flex flex-col items-center justify-center h-full shadow-md">
     <div class="h-full w-full overflow-auto">
         <span class="text-2xl font-semibold ml-90">Pending tasks</span>
-        <p-table [value]="tasks()" stripedRows [tableStyle]="{ 'min-width': '57rem'}">
+        <p-table [value]="tasks()" [tableStyle]="{ 'min-width': '57rem'}">
             <ng-template #header>
                 <tr>
                     <th pSortableColumn="UnitNo">
