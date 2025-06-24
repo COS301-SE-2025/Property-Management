@@ -1,0 +1,46 @@
+<app-header></app-header>
+
+
+<div class="min-h-screen bg-white p-8">
+  <!-- Title -->
+  <div class="ml-8 mb-10">
+    <h2 class="text-3xl font-semibold font-lato text-black">Create Quotation</h2>
+    <div class="w-65 h-1 bg-yellow-300 mt-2"></div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="border  border-gray-300 rounded-lg p-6 font-semibold font-lato w-full max-w-md mx-auto shadow-sm">
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <p-datepicker
+  [(ngModel)]="IssueDate"
+  dateFormat="yy-mm-dd"
+  placeholder="Issue Date"
+  class="w-full rounded-lg bg-gray-100 text-gray-700"
+/>
+
+<p-datepicker
+  [(ngModel)]="expirationDate"
+  dateFormat="yy-mm-dd"
+  placeholder="Expiration Date"
+  class="w-full rounded-lg bg-gray-100 text-gray-700"
+/>
+      <input type="text" [(ngModel)]="quoteNo" pInputText placeholder="Quote No." class="w-full rounded-lg bg-gray-100 text-gray-700" />
+      <input type="number" [(ngModel)]="totalAmount" pInputText placeholder="Total amount" class="w-full rounded-lg bg-gray-100 text-gray-700" />
+    </div>
+
+    <!-- File Upload -->
+    <div class="card flex flex-col gap-6 mb-5 items-center justify-center">
+    <p-toast />
+    <p-fileupload #fu mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept=".pdf,image/*" maxFileSize="1000000" (onUpload)="onUpload($event)"  styleClass="custom-upload-button"/>
+    <p-button label="Upload" (onClick)="fu.upload()" severity="secondary" />
+</div>
+
+    <!-- Submit Button -->
+    <button
+    
+      label="Create Quotation"
+      class="bg-yellow-300 text-black font-semibold text-lg px-16 py-3 ml-25 rounded shadow hover:bg-yellow-400 transition text-sm"
+
+    > Create Quote</button>
+  </div>
+</div>

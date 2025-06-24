@@ -18,7 +18,9 @@ import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-de
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
 
-
+import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
+import { HelpComponent } from './pages/help/help.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
   {
@@ -82,7 +84,7 @@ export const routes: Routes = [
 {
   path: 'registerHub',
   pathMatch: 'full',
-  component: RegisterHubComponent
+  component: RegisterHubComponent 
 },
 {
   path: 'bodyCoporate',
@@ -107,5 +109,41 @@ export const routes: Routes = [
 {
     path: 'contractor-profile',
     component: ContractorProfileComponent
+}
+,
+{
+  path: 'landingPage',
+  pathMatch: 'full',
+  component: LandingPageComponent
+}
+,
+{
+  path: 'help',
+  pathMatch: 'full',
+  component: HelpComponent
+}
+,
+{
+  path: 'reset-password',
+  pathMatch: 'full',
+  component: ResetPasswordComponent
+}
+,
+{
+  path: 'landingPage',
+  pathMatch: 'full',
+  component: LandingPageComponent
+}
+,
+{
+  path: 'help',
+  pathMatch: 'full',
+  component: HelpComponent
+}
+,
+{
+  path: 'reset-password',
+  pathMatch: 'full',
+  component: ResetPasswordComponent
 }
 ];
