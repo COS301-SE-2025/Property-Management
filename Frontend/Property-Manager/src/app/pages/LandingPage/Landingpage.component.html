@@ -1,4 +1,45 @@
-<app-header></app-header>
+<div class = " flex w-full flex-col">
+      <!-- Name -->
+      <div class = "flex flex-row  items-center px-4 py-2"> 
+        <img src= "assets/images/logo.png" class="w-16 h-12 ml-8 " alt="logo">
+        <p class = "font-medium font-lato text-xl ">Property Manager</p>
+
+        <div class = "flex flex-row items-center ml-auto">
+          <div class = "relative">
+
+            <a [routerLink]="['/login']" >
+            <button class = "cursor-pointer w-24 h-8 mr-3 rounded-xl mb-2 font-lato text-md hover:bg-gray-200"> 
+              Login
+            </button>
+            </a>
+            <button class = "cursor-pointer w-24 h-8 mr-3 bg-yellow-300 rounded-xl mb-2 font-lato text-md hover:bg-yellow-400" (click)="dropDown()"> 
+              Register
+            </button>
+
+            <div *ngIf="dropDownOpen" class= "absolute right-1 top-14 bg-white  border border-yellow-300 rounded-xl shadow-xl w-40 font-lato l-25 z-50 overflow-hidden">
+              <a [routerLink]="['/register-body-corporate']" >
+              <button (click)="signOut()" class= "block text-gray-700 font-lato w-full text-left px-3 py-1 hover:bg-gray-200/50 cursor-pointer">
+                Register as Body Corporate
+              </button>
+              </a> 
+              <a [routerLink]="['/register-owner']" >
+              <button (click)="signOut()" class= "block text-gray-700 font-lato w-full text-left px-3 py-1 hover:bg-gray-200/50 cursor-pointer">
+                Register as Owner
+              </button>
+              </a> 
+              <a [routerLink]="['/contractorRegister']" >
+              <button (click)="signOut()" class= "block text-gray-700 font-lato w-full text-left px-3 py-1 hover:bg-gray-200/50 cursor-pointer">
+                Register as Contractor
+              </button>
+              </a>            
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- bar -->
+      <div class = "propertyYellow-bg h-4 w-full"></div>
+    </div>
 
 <div class="min-h-screen flex flex-col">
   <div class="flex-grow relative overflow-hidden">
@@ -10,32 +51,14 @@
     <div class="relative z-10 h-full w-full px-12 py-25 flex items-center justify-between text-white">
 
       <!-- Left Side: Buttons -->
-      <div class="flex flex-col gap-12 text-xl">
-  
-  <a
-    class="backdrop-blur-sm bg-white/30 text-black font-semibold px-8 py-2 rounded-lg shadow-md hover:bg-white/40 transition text-center"
-    [routerLink]="['/register-body-corporate']">
-    Register as Body Corporate
-  </a>
+      <div class="flex flex-col gap-12 text-xl mb-20 relative h-64 w-80 ">
 
-  <a
-    class="backdrop-blur-sm bg-white/30 text-black font-semibold px-8 py-2 rounded-lg shadow-md hover:bg-white/40 transition text-center"
-    [routerLink]="['/register-owner']">
-    Register as Owner
-  </a>
+  <img src="/assets/images/pic2.png" class="absolute top-0 left-0 w-80 h-60  z-10 rounded shadow-lg" />
 
-  <a
-    class="backdrop-blur-sm bg-white/30 text-black font-semibold px-8 py-2 rounded-lg shadow-md hover:bg-white/40 transition text-center"
-    [routerLink]="['/contractorRegister']">
-    Register as Contractor
-  </a>
+  <img src="/assets/images/pic.png" class="absolute top-30 left-10 w-80 h-60 z-20 rounded shadow-xl" />
 
-  <a
-    class="backdrop-blur-sm bg-yellow-300/70 text-black font-semibold px-8 py-2 rounded-lg shadow-md hover:bg-yellow-300 transition text-center"
-    [routerLink]="['/login']">
-    Login
-  </a>
 
+  <!-- <img src="/assets/image3.jpg" class="absolute top-20 left-20 w-40 h-40 z-30 rounded shadow-2xl" /> -->
 </div>
 
 
