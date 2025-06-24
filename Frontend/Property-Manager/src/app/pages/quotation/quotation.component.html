@@ -1,15 +1,15 @@
 <app-header></app-header>
 
 
-<div class="min-h-screen bg-white p-8">
+<div class="min-h-screen bg-white p-8"  [@fadeInStagger]>
   <!-- Title -->
-  <div class="ml-8 mb-10">
+  <div class="ml-8 mb-10 animate-item">
     <h2 class="text-3xl font-semibold font-lato text-black">Create Quotation</h2>
     <div class="w-65 h-1 bg-yellow-300 mt-2"></div>
   </div>
 
   <!-- Form Card -->
-  <div class="border  border-gray-300 rounded-lg p-6 font-semibold font-lato w-full max-w-md mx-auto shadow-sm">
+  <div class="border  border-gray-300 rounded-lg p-6 font-semibold font-lato w-full max-w-md mx-auto shadow-sm animate-item">
     <div class="grid grid-cols-2 gap-4 mb-4">
       <p-datepicker
   [(ngModel)]="IssueDate"

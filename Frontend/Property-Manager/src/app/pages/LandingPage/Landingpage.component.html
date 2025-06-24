@@ -40,30 +40,24 @@
       <!-- bar -->
       <div class = "propertyYellow-bg h-4 w-full"></div>
     </div>
-
-<div class="min-h-screen flex flex-col">
+<!-- Animated Container -->
+<div class="min-h-screen flex flex-col" [@fadeInStagger]>
   <div class="flex-grow relative overflow-hidden">
-
+    
     <!-- Background -->
     <div class="absolute inset-0 bg-[url('/assets/images/background.jpg')] bg-cover bg-center filter blur-sm scale-110"></div>
 
     <!-- Foreground Content -->
     <div class="relative z-10 h-full w-full px-12 py-25 flex items-center justify-between text-white">
-
-      <!-- Left Side: Buttons -->
-      <div class="flex flex-col gap-12 text-xl mb-20 relative h-64 w-80 ">
-
-  <img src="/assets/images/pic2.png" alt="pic2" class="absolute top-0 left-0 w-80 h-60  z-10 rounded shadow-lg" />
-
-  <img src="/assets/images/pic.png" alt="pic" class="absolute top-30 left-10 w-80 h-60 z-20 rounded shadow-xl" />
-
-
-  <!-- <img src="/assets/image3.jpg" class="absolute top-20 left-20 w-40 h-40 z-30 rounded shadow-2xl" /> -->
-</div>
-
+      
+      <!-- Left Side: Overlapping Images -->
+      <div class="flex flex-col gap-12 text-xl mb-20 relative h-64 w-80 animate-item">
+        <img src="/assets/images/pic2.png" alt="pic2" class="absolute top-0 left-0 w-80 h-60 z-10 rounded shadow-lg" />
+        <img src="/assets/images/pic.png" alt="pic" class="absolute top-30 left-10 w-80 h-60 z-20 rounded shadow-xl" />
+      </div>
 
       <!-- Center: Description -->
-      <div class="max-w-xl text-center text-white/90 font-light leading-relaxed text-xl ">
+      <div class="max-w-xl text-center text-white/90 font-light leading-relaxed text-xl animate-item">
         <p>
           Property Management system, a comprehensive solution designed to streamline maintenance operations for
           property managers and corporate bodies. The system addresses critical challenges in contractor management,
@@ -73,15 +67,15 @@
 
       <!-- Right Side: Icons -->
       <div class="flex flex-col gap-12 text-white text-xl items-center">
-        <div class="flex flex-col items-center">
-          <img src="/assets/icons/suitcase.svg"  alt="Contractor Sourcing and Management" class="h-15 mb-1" />
+        <div class="flex flex-col items-center animate-item">
+          <img src="/assets/icons/suitcase.svg" alt="Contractor Sourcing and Management" class="h-15 mb-1" />
           <span>Contractor Sourcing and Management</span>
         </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center animate-item">
           <img src="/assets/icons/tools.svg" alt="Inventory Management" class="h-15 mb-1" />
           <span>Inventory Management</span>
         </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center animate-item">
           <img src="/assets/icons/qoute.svg" alt="Quote Management" class="h-15 mb-1" />
           <span>Quote Management</span>
         </div>
