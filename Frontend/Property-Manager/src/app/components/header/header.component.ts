@@ -11,18 +11,38 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
 
-  public dropDownOpen = false;
+  public dropDownProfileOpen = false;
+  public dropDownSettingsOpen = false;
+  public isDarkMode = false;
 
-  constructor(private authService: AuthService, private router: Router){}
+  constructor(private authService: AuthService, private router: Router){
+    const saved = localStorage.getItem('darkMode');
+    if(saved !== null)
+    {
+      this.isDarkMode = saved === 'true';
+    }
+    else
+    {
+      this.isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      console.log(this.isDarkMode);
+    }
+    this.applyDarkMode();
+  }
 
-  dropDown()
+  dropDownProfile()
   {
-    this.dropDownOpen = !this.dropDownOpen;
+    this.dropDownSettingsOpen = false;
+    this.dropDownProfileOpen = !this.dropDownProfileOpen;
+  }
+  dropDownSettings()
+  {
+    this.dropDownProfileOpen = false;
+    this.dropDownSettingsOpen = !this.dropDownSettingsOpen;
   }
 
   signOut()
   {
-    this.dropDownOpen = false;
+    this.dropDownProfileOpen = false;
     if(this.authService.logout())
     {
       this.router.navigate(['/login']);
@@ -31,5 +51,26 @@ export class HeaderComponent {
     {
       console.error("couldnt log out");
     } 
+  }
+
+  toggleDarkMode()
+  {
+    this.isDarkMode = !this.isDarkMode;
+    this.applyDarkMode();
+
+    localStorage.setItem('darkMode', this.isDarkMode.toString());
+  }
+  private applyDarkMode()
+  {
+    console.log("Applying dark mode:", this.isDarkMode);
+    const root = document.documentElement;
+    if(this.isDarkMode)
+    {
+      root.classList.add('dark-theme');
+    }
+    else
+    {
+      root.classList.remove('dark-theme');
+    }
   }
 }

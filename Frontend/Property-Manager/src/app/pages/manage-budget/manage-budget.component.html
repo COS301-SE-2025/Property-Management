@@ -1,0 +1,23 @@
+<app-header/>
+
+<div class= "flex flex-col items-center pt-10">
+    
+    <div *ngIf = "findHouse" class = "pb-200">
+    <p *ngIf = "findHouse" class = "text-yellow-500 font-semibold">Could not budget for house. Please try again</p>
+    </div>
+
+    <div class="px-4 space-y-8">
+    <div class = "w-full mx-auto">
+        <p class = "text-center text-xl font-bold mt-4">Budget for {{ house?.name }}</p>
+    </div>
+
+    <!-- 3 cards -->
+     <div class= "pl-60 pb-10">
+         <app-graph-card [budgetGraphData]="budgetService.budgetGraph()"/>
+     </div>
+     <div [@floatUp] class = "grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+        <app-inventory-budget-card [inventory]="budgetService.inventory()" [budget]="budgetService.overallBudget()"/>
+        <app-maintenance-card [maintenance]="budgetService.maintenanceTasks()" [budget]="budgetService.overallBudget()"/>
+     </div>
+    </div>
+</div>

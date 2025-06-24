@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ViewHouseComponent } from './view-house.component';
 import { HousesService } from '../../services/houses.service';
 import { House } from '../../models/house.model';
@@ -87,7 +87,8 @@ describe('ViewHouseComponent', () => {
       declarations:[],
       providers: [
         { provide: HousesService, useValue: mockHouseService},
-        { provide: ActivatedRoute, useValue: mockActivatedRoute}
+        { provide: ActivatedRoute, useValue: mockActivatedRoute},
+        provideNoopAnimations()
       ]
     })
     .compileComponents();

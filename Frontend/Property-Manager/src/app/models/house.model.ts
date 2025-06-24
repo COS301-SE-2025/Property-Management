@@ -3,4 +3,5 @@ export interface House{
     name: string;
     address: string;
     image: string;
+    hasBudget?: boolean;
 }

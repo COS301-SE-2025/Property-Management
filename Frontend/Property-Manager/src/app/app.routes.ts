@@ -10,7 +10,14 @@ import { ContractorRegisterComponent } from './pages/contractorRegister/contract
 import { ContractorHomeComponent } from './pages/contractorHome/contractorHome.component';
 import { QuotationComponent } from './pages/quotation/quotation.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
+import { ManageBudgetComponent } from './pages/manage-budget/manage-budget.component';
 import { RegisterHubComponent } from './pages/register-hub/register-hub.component';
+import { BcHomeComponent } from './pages/bc-home/bc-home.component';
+import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.component';
+import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
+import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
+import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
+
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
@@ -70,9 +77,56 @@ export const routes: Routes = [
   component: RegisterBodyCorporateComponent
 },
 {
+  path: 'manageBudget/:houseId',
+  pathMatch: 'full',
+  component: ManageBudgetComponent
+},
+{
   path: 'registerHub',
   pathMatch: 'full',
-  component: RegisterHubComponent
+  component: RegisterHubComponent 
+},
+{
+  path: 'bodyCoporate',
+  pathMatch: 'full',
+  component: BcHomeComponent
+},
+{
+  path: 'bodyCoporate/contractors',
+  pathMatch: 'full',
+  component: BcContractorsComponent
+},
+{
+  path: 'contractorDetails/:contractorId/:source',
+  pathMatch: 'full',
+  component: ContractorDetailsComponent
+},
+{
+  path: 'bodyCoporate/publicContractors',
+  pathMatch: 'full',
+  component: PublicContractorsComponent
+},
+{
+    path: 'contractor-profile',
+    component: ContractorProfileComponent
+}
+,
+{
+  path: 'landingPage',
+  pathMatch: 'full',
+  component: LandingPageComponent
+}
+,
+{
+  path: 'help',
+  pathMatch: 'full',
+  component: HelpComponent
+}
+,
+{
+  path: 'reset-password',
+  pathMatch: 'full',
+  component: ResetPasswordComponent
 }
 ,
 {

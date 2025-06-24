@@ -1,4 +1,5 @@
 import { Component, inject, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { HousesService } from '../../../services/houses.service';
 import { House } from '../../../models/house.model';
@@ -6,8 +7,8 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-house-card',
-  imports: [CardModule],
-  template: ``,
+  imports: [CardModule, CommonModule],
+  templateUrl: './house-card.component.html',
   styles: ``
 })
 export class HouseCardComponent {
