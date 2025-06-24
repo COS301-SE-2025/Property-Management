@@ -20,6 +20,16 @@ ALTER TABLE inventoryitem ADD COLUMN IF NOT EXISTS item_uuid UUID DEFAULT uuid_g
 UPDATE inventoryitem SET item_uuid = uuid_generate_v4() WHERE item_uuid IS NULL;
 ALTER TABLE inventoryitem ALTER COLUMN item_uuid SET NOT NULL;
 
+-- Ensure unique index on item_uuid
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes WHERE tablename = 'inventoryitem' AND indexname = 'inventoryitem_item_uuid_unique'
+    ) THEN
+        CREATE UNIQUE INDEX inventoryitem_item_uuid_unique ON public.inventoryitem (item_uuid);
+    END IF;
+END$$;
+
 -- 1.3 Drop old constraints and columns
 ALTER TABLE inventoryitem DROP CONSTRAINT IF EXISTS inventoryitem_building_id_fkey;
 ALTER TABLE inventoryitem DROP CONSTRAINT IF EXISTS inventoryitem_pkey;
@@ -208,6 +218,15 @@ ALTER TABLE inventoryusage
   ADD CONSTRAINT inventoryusage_task_uuid_fkey
   FOREIGN KEY (task_uuid) REFERENCES maintenancetask(task_uuid);
 
+-- Ensure unique index on usage_uuid
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes WHERE tablename = 'inventoryusage' AND indexname = 'usage_uuid_unique'
+    ) THEN
+        CREATE UNIQUE INDEX usage_uuid_unique ON public.inventoryusage (usage_uuid);
+    END IF;
+END$$;
 -- =====================================================
 -- 6. OTHER TABLES - Final migrations
 -- =====================================================
