@@ -18,8 +18,6 @@ data class InventoryItem(
     val unit: String? = null,
     @Column(name = "quantity_in_stock")
     val quantityInStock: Int? = null,
-    @Column(name = "building_id")
-    val buildingId: Int? = null,
     @Column(name = "building_uuid_fk", nullable = false)
     val buildingUuidFk: UUID,
 )
