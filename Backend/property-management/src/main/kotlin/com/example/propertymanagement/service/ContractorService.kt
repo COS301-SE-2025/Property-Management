@@ -12,7 +12,8 @@ class ContractorService(
 ) {
     fun getAll(): List<Contractor> = repository.findAll()
 
-    fun getByUuid(uuid: UUID): Contractor =repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
+    fun getByUuid(uuid: UUID): Contractor =
+        repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
     fun updateByUuid(
         uuid: UUID,
@@ -44,5 +45,4 @@ class ContractorService(
         val newUser = Contractor(name = name, email = email, phone = phone, apikey = apikey, banned = banned)
         return add(newUser)
     }
-
 }

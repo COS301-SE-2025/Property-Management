@@ -2,7 +2,6 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.service.ContractorService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,9 +21,11 @@ class ContractorController(
 ) {
     @GetMapping()
     fun getAll(): List<Contractor> = service.getAll()
-    
+
     @GetMapping("/{uuid}")
-    fun getByUuid(@PathVariable uuid: UUID): ResponseEntity<Contractor> {
+    fun getByUuid(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<Contractor> {
         return try {
             val contractor = service.getByUuid(uuid)
             ResponseEntity.ok(contractor)
@@ -32,7 +33,6 @@ class ContractorController(
             ResponseEntity.notFound().build()
         }
     }
-
 
     data class ContractorDto(
         val name: String,

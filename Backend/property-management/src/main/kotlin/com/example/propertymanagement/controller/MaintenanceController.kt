@@ -2,7 +2,6 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Maintenance
 import com.example.propertymanagement.service.MaintenanceService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,9 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
-import java.math.BigDecimal
 import java.util.Date
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/maintenance")
@@ -40,13 +38,14 @@ class MaintenanceController(
         var created_by: Int,
         var img: String,
         var approved: Boolean,
-        var building_id: Int
+        var building_id: Int,
     )
 
     @PostMapping
     fun createUser(
         @RequestBody info: info,
-    ): Maintenance = service.add(info.title, info.des, info.status, info.scheduled_date, info.created_by, info.img, info.approved, info.building_id)
+    ): Maintenance =
+        service.add(info.title, info.des, info.status, info.scheduled_date, info.created_by, info.img, info.approved, info.building_id)
 
     @PutMapping("/{uuid}")
     fun update(
