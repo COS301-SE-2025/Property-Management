@@ -65,5 +65,4 @@ class TrusteeService(
 
     fun getByEmail(email: String): Trustee =
         repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
-
 }

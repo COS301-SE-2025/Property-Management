@@ -70,42 +70,48 @@ class TrusteeController(
 @RequestMapping("/api/auth/trustee")
 class TrusteeAuthController(
     private val trusteeService: TrusteeService,
-    private val cognitoService: CognitoService
+    private val cognitoService: CognitoService,
 ) {
-
     @PostMapping("/register")
-    fun register(@RequestBody request: RegisterRequest): ResponseEntity<Map<String, String>> {
+    fun register(
+        @RequestBody request: RegisterRequest,
+    ): ResponseEntity<Map<String, String>> {
         val username = request.email.substringBefore("@") + System.currentTimeMillis()
-        val cognitoUserSub = cognitoService.signUp(
-            username,
-            request.password,
-            mapOf(
-                "email" to request.email,
-                "given_name" to "owner"
+        val cognitoUserSub =
+            cognitoService.signUp(
+                username,
+                request.password,
+                mapOf(
+                    "email" to request.email,
+                    "given_name" to "owner",
+                ),
             )
-        )
         trusteeService.addUser(
             name = username,
             email = request.email,
             phone = request.contactNumber,
-            apikey = cognitoUserSub
+            apikey = cognitoUserSub,
         )
         return ResponseEntity.ok(
             mapOf(
                 "message" to "Registration successful, please verify your email.",
-                "username" to username
-            )
+                "username" to username,
+            ),
         )
     }
 
     @PostMapping("/confirm")
-    fun confirm(@RequestBody request: ConfirmRegistrationRequest): ResponseEntity<String> {
+    fun confirm(
+        @RequestBody request: ConfirmRegistrationRequest,
+    ): ResponseEntity<String> {
         cognitoService.confirmRegistration(request.username, request.code)
         return ResponseEntity.ok("Account confirmed.")
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
+    fun login(
+        @RequestBody request: LoginRequest,
+    ): ResponseEntity<LoginResponse> {
         val tokens = cognitoService.login(request.email, request.password)
         val trustee = trusteeService.getByEmail(request.email)
 
@@ -115,8 +121,8 @@ class TrusteeAuthController(
                 accessToken = tokens.accessToken,
                 refreshToken = tokens.refreshToken,
                 userType = "trustee",
-                userId = trustee.trusteeUuid.toString()
-            )
+                userId = trustee.trusteeUuid.toString(),
+            ),
         )
     }
 

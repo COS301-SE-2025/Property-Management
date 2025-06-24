@@ -11,5 +11,4 @@ interface TrusteeRepository : JpaRepository<Trustee, Int> {
     fun deleteByTrusteeUuid(uuid: UUID)
 
     fun findByEmail(email: String): Optional<Trustee>
-
 }
