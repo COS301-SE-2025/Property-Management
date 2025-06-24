@@ -1,7 +1,8 @@
 package com.example.propertymanagement.dto
+import java.util.UUID
 
 data class InventoryUsageRequest(
-    val id: Int,
     val name: String,
     val unit: Int,
+    val buildingUuid: UUID,
 )

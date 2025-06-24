@@ -58,18 +58,6 @@ what is returned:
     }
 ]
 
-Get budget information of certain building :
-GET http://localhost:8080/api/budget/1     ( the "1" is the building ID)
-WHat is returned:
-{
-    "budgetId": 1,
-    "buildingId": 1,
-    "totalBudget": 1000000.00,
-    "maintenanceBudget": 500000.00,
-    "inventoryBudget": 500000.00,
-    "inventorySpent": 50250.00,
-    "maintenanceSpent": 50000.00
-}
 
 This is for the View Property page :
 http://localhost:8080/api/building/1/details  ( "1" is the building ID) ( this returns usefull info on that building including budget information and maintenance tasks)

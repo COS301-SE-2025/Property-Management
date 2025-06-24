@@ -14,13 +14,16 @@ class AwsS3Config(
     @Value("\${aws.accessKeyId}") private val accessKeyId: String,
     @Value("\${aws.secretAccessKey}") private val secretAccessKey: String,
     @Value("\${aws.region}") private val region: String,
-    @Value("\${aws.s3.endpoint:}") private val endpoint: String, // optional: useful for localstack or dev
+    @Value("\${aws.s3.endpoint:}") private val endpoint: String,
 ) {
     @Bean
     fun s3Client(): S3Client {
         val credentials = AwsBasicCredentials.create(accessKeyId, secretAccessKey)
-
-        val builder = S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(credentials)).region(Region.of(region))
+        val builder =
+            S3Client
+                .builder()
+                .credentialsProvider(StaticCredentialsProvider.create(credentials))
+                .region(Region.of(region))
 
         if (endpoint.isNotEmpty()) {
             builder.endpointOverride(URI.create(endpoint))

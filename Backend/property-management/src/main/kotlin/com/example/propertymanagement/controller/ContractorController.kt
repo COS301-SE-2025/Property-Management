@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.NoSuchElementException
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/contractor")
@@ -20,19 +22,17 @@ class ContractorController(
 ) {
     @GetMapping()
     fun getAll(): List<Contractor> = service.getAll()
-
-    @GetMapping("/{id}")
-    fun getById(
-        @PathVariable id: Int,
-    ): ResponseEntity<Any> =
-        try {
-            val item = service.getById(id)
-            ResponseEntity.ok(item)
-        } catch (ex: NoSuchElementException) {
-            ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(mapOf("error" to ex.message))
+    
+    @GetMapping("/{uuid}")
+    fun getByUuid(@PathVariable uuid: UUID): ResponseEntity<Contractor> {
+        return try {
+            val contractor = service.getByUuid(uuid)
+            ResponseEntity.ok(contractor)
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
         }
+    }
+
 
     data class ContractorDto(
         val name: String,
@@ -48,17 +48,17 @@ class ContractorController(
     ): Contractor =
         service.addUser(ContractorDto.name, ContractorDto.email, ContractorDto.phone, ContractorDto.apikey, ContractorDto.banned)
 
-    @PutMapping("/{id}")
+    @PutMapping("/{uuid}")
     fun update(
-        @PathVariable id: Int,
+        @PathVariable uuid: UUID,
         @RequestBody item: Contractor,
-    ): Contractor = service.update(id, item)
+    ): Contractor = service.updateByUuid(uuid, item)
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{uuid}")
     fun delete(
-        @PathVariable id: Int,
+        @PathVariable uuid: UUID,
     ): ResponseEntity<Void> {
-        service.delete(id)
+        service.deleteByUuid(uuid)
         return ResponseEntity.noContent().build()
     }
 }

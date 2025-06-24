@@ -5,6 +5,8 @@ import com.example.propertymanagement.repository.QuoteRepository
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.util.Date
+import java.util.NoSuchElementException
+import java.util.UUID
 
 @Service
 class QuoteService(
@@ -12,7 +14,9 @@ class QuoteService(
 ) {
     fun getAll(): List<Quote> = repository.findAll()
 
-    fun getById(id: Int): Quote = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    fun getById(uuid: UUID): Quote =
+        repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
+
 
     fun add(item: Quote): Quote = repository.save(item)
 
@@ -28,10 +32,10 @@ class QuoteService(
     }
 
     fun update(
-        id: Int,
+        uuid: UUID,
         newItem: Quote,
     ): Quote {
-        val existing = getById(id)
+        val existing = getById(uuid)
         val updated =
             existing.copy(
                 task_id = newItem.task_id,
@@ -43,5 +47,5 @@ class QuoteService(
         return repository.save(updated)
     }
 
-    fun delete(id: Int) = repository.deleteById(id)
+    fun delete(uuid: UUID) = repository.deleteByUuid(uuid)
 }
