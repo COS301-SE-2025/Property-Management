@@ -7,12 +7,14 @@ import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
-import { ApiService } from '../../services/api.service';
-import { Router } from '@angular/router';
+
 import { HeaderComponent } from "../../components/header/header.component";
 
 import { DatePicker } from 'primeng/datepicker';
 
+interface FileUploadEvent {
+  files: File[];
+}
 @Component({
   selector: 'app-quotation',
   standalone: true,
@@ -39,7 +41,7 @@ export class QuotationComponent {
 
   constructor(private messageService: MessageService) {}
 
-  onUpload(event: any) {
+  onUpload(event: FileUploadEvent) {
     console.log('Uploaded files:', event.files);
     this.messageService.add({ 
       severity: 'info', 
