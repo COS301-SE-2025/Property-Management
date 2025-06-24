@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 
 plugins {
@@ -26,7 +27,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("jakarta.validation:jakarta.validation-api:3.0.2") // <-- Add this line
+	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -37,9 +38,10 @@ dependencies {
 }
 
 kotlin {
-	jvmToolchain(21) 
+	jvmToolchain(21)
 	compilerOptions {
 		freeCompilerArgs.addAll("-Xjsr305=strict")
+		jvmTarget.set(JvmTarget.JVM_21)
 	}
 }
 
@@ -51,4 +53,9 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	systemProperty("aws.accessKeyId", "test-access-key")
+	systemProperty("aws.secretAccessKey", "test-secret-key")
+	systemProperty("aws.region", "us-east-1")
+	systemProperty("aws.s3.endpoint", "")
+	systemProperty("aws.bucket-name", "test-bucket")
 }
