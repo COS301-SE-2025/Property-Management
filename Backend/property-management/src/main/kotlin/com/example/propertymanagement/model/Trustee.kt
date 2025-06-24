@@ -25,4 +25,6 @@ data class Trustee(
     val phone: String,
     @Column(nullable = false, unique = true)
     val apikey: String,
+    @Column(name = "trustee_uuid")
+    val uuid: UUID = UUID.randomUUID()
 )

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.NoSuchElementException
 import java.util.UUID
 
 @RestController
@@ -31,13 +30,10 @@ class TrusteeController(
     @GetMapping("/{uuid}")
     fun getByUuid(
         @PathVariable uuid: UUID,
-    ): ResponseEntity<Any> =
-        try {
-            val item = service.getByUuid(uuid)
-            ResponseEntity.ok(item)
-        } catch (ex: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to ex.message))
-        }
+    ): ResponseEntity<Trustee> {
+        val trustee = service.getByUuid(uuid)
+        return if (trustee != null) ResponseEntity.ok(trustee) else ResponseEntity.notFound().build()
+    }
 
     data class UserDto(
         val name: String,

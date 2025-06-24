@@ -12,7 +12,7 @@ class TrusteeService(
 ) {
     fun getAll(): List<Trustee> = repository.findAll()
 
-    fun getById(id: Int): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    //fun getById(id: UUID): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Trustee): Trustee = repository.save(item)
 
@@ -48,18 +48,34 @@ class TrusteeService(
         id: Int,
         newItem: Trustee,
     ): Trustee {
-        val existing = getById(id)
+        val existing = getByUuid(uuid)
         val updated =
             existing.copy(
                 name = newItem.name,
                 email = newItem.email,
                 phone = newItem.phone,
-                apikey = newItem.apikey,
+                apikey = newItem.apikey
             )
         return repository.save(updated)
     }
 
-    fun deleteByUuid(uuid: UUID) = repository.deleteByTrusteeUuid(uuid)
+    fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
+
+
+    // fun update(
+    //     id: Int,
+    //     newItem: Trustee,
+    // ): Trustee {
+    //     val existing = getById(id)
+    //     val updated =
+    //         existing.copy(
+    //             name = newItem.name,
+    //             email = newItem.email,
+    //             phone = newItem.phone,
+    //             apikey = newItem.apikey,
+    //         )
+    //     return repository.save(updated)
+    // }
 
     fun delete(id: Int) = repository.deleteById(id)
 
