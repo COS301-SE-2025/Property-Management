@@ -8,7 +8,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.util.Date
-import java.util.UUID
 
 @Entity
 @Table(name = "quote")
@@ -27,6 +26,4 @@ data class Quote(
     val submitted_on: Date,
     @Column(name = "type", nullable = false)
     val type: String,
-    @Column(name = "quote_uuid")
-    val uuid: UUID = UUID.randomUUID(),
 )

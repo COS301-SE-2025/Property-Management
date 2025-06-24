@@ -2,6 +2,7 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.service.ContractorService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,14 +26,13 @@ class ContractorController(
     @GetMapping("/{uuid}")
     fun getByUuid(
         @PathVariable uuid: UUID,
-    ): ResponseEntity<Contractor> {
-        return try {
-            val contractor = service.getByUuid(uuid)
-            ResponseEntity.ok(contractor)
-        } catch (e: NoSuchElementException) {
-            ResponseEntity.notFound().build()
+    ): ResponseEntity<Any> =
+        try {
+            val item = service.getByUuid(uuid)
+            ResponseEntity.ok(item)
+        } catch (ex: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to ex.message))
         }
-    }
 
     data class ContractorDto(
         val name: String,
