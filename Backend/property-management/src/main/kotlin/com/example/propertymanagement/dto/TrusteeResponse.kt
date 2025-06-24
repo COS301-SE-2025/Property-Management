@@ -7,3 +7,4 @@ data class TrusteeResponse(
     val phone: String,
     val apikey: String,
 )
+

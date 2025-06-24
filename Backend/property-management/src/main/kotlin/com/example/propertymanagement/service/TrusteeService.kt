@@ -62,4 +62,8 @@ class TrusteeService(
     fun deleteByUuid(uuid: UUID) = repository.deleteByTrusteeUuid(uuid)
 
     fun delete(id: Int) = repository.deleteById(id)
+
+    fun getByEmail(email: String): Trustee =
+        repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
+
 }

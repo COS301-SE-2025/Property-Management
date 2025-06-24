@@ -9,4 +9,7 @@ interface TrusteeRepository : JpaRepository<Trustee, Int> {
     fun findByTrusteeUuid(uuid: UUID): Optional<Trustee>
 
     fun deleteByTrusteeUuid(uuid: UUID)
+
+    fun findByEmail(email: String): Optional<Trustee>
+
 }
