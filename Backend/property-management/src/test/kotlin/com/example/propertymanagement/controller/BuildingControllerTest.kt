@@ -5,13 +5,10 @@ import com.example.propertymanagement.dto.BuildingCreateDto
 import com.example.propertymanagement.dto.BuildingResponseDto
 import com.example.propertymanagement.dto.BuildingUpdateDto
 import com.example.propertymanagement.service.BuildingService
-import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
-import org.mockito.Mockito.verify
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -22,19 +19,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.view
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import java.time.LocalDate
 import java.util.UUID
 
-
 @WebMvcTest(controllers = [BuildingController::class])
-class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
-
+class BuildingControllerTest(
+    @Autowired val mockMvc: MockMvc,
+) {
     @MockBean
     lateinit var buildingService: BuildingService
 
@@ -57,7 +50,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                 trusteeUuid = trusteeUuid,
                 propertyImageId = "test-image-id",
                 area = 120.0,
-                coporateUuid = null
+                coporateUuid = null,
             )
 
         val responseDto =
@@ -72,7 +65,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                 propertyImage = "test-image.jpg",
                 trusteeUuid = trusteeUuid,
                 area = 120.0,
-                coporateUuid = null
+                coporateUuid = null,
             )
 
         `when`(buildingService.createBuilding(any())).thenReturn(responseDto)
@@ -108,7 +101,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                     propertyImage = "building1.jpg",
                     trusteeUuid = trusteeUuid,
                     area = 120.0,
-                    coporateUuid = null
+                    coporateUuid = null,
                 ),
                 BuildingResponseDto(
                     buildingUuid = UUID.randomUUID(),
@@ -121,7 +114,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                     propertyImage = "building2.jpg",
                     trusteeUuid = trusteeUuid,
                     area = 150.0,
-                    coporateUuid = UUID.randomUUID()
+                    coporateUuid = UUID.randomUUID(),
                 ),
             )
 
@@ -163,7 +156,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                 propertyImage = "test-building.jpg",
                 trusteeUuid = trusteeUuid,
                 area = 120.0,
-                coporateUuid = null
+                coporateUuid = null,
             )
 
         `when`(buildingService.getBuildingByUuid(testUuid)).thenReturn(responseDto)
@@ -207,7 +200,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                 propertyImage = "test-image.jpg",
                 trusteeUuid = trusteeUuid,
                 area = 120.0,
-                coporateUuid = null
+                coporateUuid = null,
             )
 
         `when`(buildingService.updateBuilding(testUuid, updateDto)).thenReturn(responseDto)
@@ -285,7 +278,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                     propertyImage = "trustee1.jpg",
                     trusteeUuid = trusteeUuid,
                     area = 120.0,
-                    coporateUuid = null
+                    coporateUuid = null,
                 ),
                 BuildingResponseDto(
                     buildingUuid = UUID.randomUUID(),
@@ -298,7 +291,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                     propertyImage = "trustee2.jpg",
                     trusteeUuid = trusteeUuid,
                     area = 150.0,
-                    coporateUuid = UUID.randomUUID()
+                    coporateUuid = UUID.randomUUID(),
                 ),
             )
         val trusteeDto =
@@ -334,7 +327,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                     propertyImage = "search1.jpg",
                     trusteeUuid = trusteeUuid,
                     area = 120.0,
-                    coporateUuid = null
+                    coporateUuid = null,
                 ),
                 BuildingResponseDto(
                     buildingUuid = UUID.randomUUID(),
@@ -347,7 +340,7 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
                     propertyImage = "search2.jpg",
                     trusteeUuid = trusteeUuid,
                     area = 150.0,
-                    coporateUuid = UUID.randomUUID()
+                    coporateUuid = UUID.randomUUID(),
                 ),
             )
 
@@ -383,34 +376,35 @@ class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
     @Test
     fun `getBuildingsByType should return 200 OK with buildings of specified type`() {
         val buildingType = "Residential"
-        val buildings = listOf(
-            BuildingResponseDto(
-                buildingUuid = UUID.randomUUID(),
-                name = "Building1",
-                address = "Addr1",
-                type = buildingType,
-                propertyValue = 100000.0,
-                primaryContractors = arrayOf(1, 2),
-                latestInspectionDate = LocalDate.now(),
-                propertyImage = "img1.jpg",
-                area = 120.0,
-                trusteeUuid = UUID.randomUUID(),
-                coporateUuid = null
-            ),
-            BuildingResponseDto(
-                buildingUuid = UUID.randomUUID(),
-                name = "Building2",
-                address = "Addr2",
-                type = buildingType,
-                propertyValue = 200000.0,
-                primaryContractors = arrayOf(3, 4),
-                latestInspectionDate = LocalDate.now(),
-                propertyImage = "img2.jpg",
-                area = 150.0,
-                trusteeUuid = UUID.randomUUID(),
-                coporateUuid = UUID.randomUUID()
+        val buildings =
+            listOf(
+                BuildingResponseDto(
+                    buildingUuid = UUID.randomUUID(),
+                    name = "Building1",
+                    address = "Addr1",
+                    type = buildingType,
+                    propertyValue = 100000.0,
+                    primaryContractors = arrayOf(1, 2),
+                    latestInspectionDate = LocalDate.now(),
+                    propertyImage = "img1.jpg",
+                    area = 120.0,
+                    trusteeUuid = UUID.randomUUID(),
+                    coporateUuid = null,
+                ),
+                BuildingResponseDto(
+                    buildingUuid = UUID.randomUUID(),
+                    name = "Building2",
+                    address = "Addr2",
+                    type = buildingType,
+                    propertyValue = 200000.0,
+                    primaryContractors = arrayOf(3, 4),
+                    latestInspectionDate = LocalDate.now(),
+                    propertyImage = "img2.jpg",
+                    area = 150.0,
+                    trusteeUuid = UUID.randomUUID(),
+                    coporateUuid = UUID.randomUUID(),
+                ),
             )
-        )
         `when`(buildingService.getBuildingsByType(buildingType)).thenReturn(buildings)
 
         mockMvc

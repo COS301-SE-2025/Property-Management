@@ -3,12 +3,12 @@ package com.example.propertymanagement.exception
 import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
-import org.springframework.http.converter.HttpMessageNotReadableException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -24,7 +24,7 @@ class GlobalExceptionHandler {
     fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<Map<String, String>> =
         ResponseEntity(
             mapOf("error" to "Validation error: ${ex.bindingResult.fieldErrors.map { it.defaultMessage }}"),
-            HttpStatus.BAD_REQUEST
+            HttpStatus.BAD_REQUEST,
         )
 
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
@@ -41,6 +41,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception): ResponseEntity<Map<String, String>> =
-        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(mapOf("error" to (ex.message ?: "An unexpected error occurred")))
 }
