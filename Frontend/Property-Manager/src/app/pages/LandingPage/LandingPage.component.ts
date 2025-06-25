@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { Router} from '@angular/router';
-import { HeaderComponent } from "../../components/header/header.component";
 import { CommonModule } from '@angular/common';
 import { RouterLink} from '@angular/router';
 import {
@@ -17,7 +16,7 @@ import {
 
 @Component({
     selector: 'app-landing-page',
-    imports: [ ButtonModule, HeaderComponent, CommonModule, RouterLink ],
+    imports: [ ButtonModule, CommonModule, RouterLink ],
     standalone: true,
     templateUrl: `./Landingpage.component.html`,
     styles: ``,
