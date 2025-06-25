@@ -22,6 +22,7 @@ export class CreatePropertyComponent {
   constructor(private fb: FormBuilder, private propertyService: PropertyService, private router: Router) {
     this.form = this.fb.group({
       name: ['', Validators.required],
+      area: ['', [Validators.required, Validators.min(0)]],
       address: ['', Validators.required],
       suburb: [''],
       city: [''],
