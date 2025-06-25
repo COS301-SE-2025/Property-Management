@@ -7,14 +7,7 @@ import { Budget } from '../models/budget.model';
 import { Contractor } from '../models/contractor.model';
 import { Quote } from '../models/quote.model';
 import { BuildingDetails } from '../models/buildingDetails.model';
-
-export interface Trustee {
-  trustee_id?: number;
-  name: string;
-  email: string;
-  phone: string;
-  apikey: string;
-}
+import { Trustee } from '../models/trustee.model';
 
 @Injectable({
   providedIn: 'root'
