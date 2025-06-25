@@ -21,13 +21,20 @@ class QuoteService(
     fun add(item: Quote): Quote = repository.save(item)
 
     fun addQuote(
-        task_id: Int,
-        contractor_id: Int,
-        amount: BigDecimal,
+        t_uuid: UUID,
+        c_uuid: UUID,
         submitted_on: Date,
-        type: String,
+        status: String,
+        amount: BigDecimal,
+        doc: String
     ): Quote {
-        val newQuote = Quote(task_id = task_id, contractor_id = contractor_id, submitted_on = submitted_on, type = type, amount = amount)
+        val newQuote = Quote(
+            t_uuid = t_uuid, 
+            c_uuid = c_uuid, 
+            submitted_on = submitted_on, 
+            status = status, 
+            amount = amount, 
+            doc = doc)
         return add(newQuote)
     }
 
@@ -38,11 +45,12 @@ class QuoteService(
         val existing = getById(uuid)
         val updated =
             existing.copy(
-                task_id = newItem.task_id,
-                contractor_id = newItem.contractor_id,
+                t_uuid = newItem.t_uuid,
+                c_uuid = newItem.c_uuid,
                 amount = newItem.amount,
                 submitted_on = newItem.submitted_on,
-                type = newItem.type,
+                status = newItem.status,
+                doc = newItem.doc,
             )
         return repository.save(updated)
     }

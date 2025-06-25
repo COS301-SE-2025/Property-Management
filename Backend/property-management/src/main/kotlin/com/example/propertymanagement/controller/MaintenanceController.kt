@@ -25,28 +25,25 @@ class MaintenanceController(
     fun getAll(): List<Maintenance> = service.getAll()
 
     @GetMapping("/{uuid}")
-    fun getByUuid(
-        @PathVariable uuid: UUID,
-    ): ResponseEntity<Maintenance> {
-        val maintenance = service.getByUuid(uuid)
-        return if (maintenance != null) ResponseEntity.ok(maintenance) else ResponseEntity.notFound().build()
-    }
+    fun getByUuid(@PathVariable uuid: UUID): ResponseEntity<Maintenance> =
+        ResponseEntity.ok(service.getByUuid(uuid))
 
     data class info(
-        var title: String,
-        var des: String,
-        var status: String,
-        var scheduled_date: Date,
-        var created_by: Int,
-        var img: String,
-        var approved: Boolean,
-        var building_id: Int
+        val title: String,
+        val des: String,
+        val status: String,
+        val scheduled_date: Date,
+        val approved: Boolean,
+        val b_uuid: UUID,
+        val cb_uuid: UUID,
+        val img: UUID,
+        val t_uuid: UUID,  
     )
 
     @PostMapping
     fun createUser(
         @RequestBody info: info,
-    ): Maintenance = service.add(info.title, info.des, info.status, info.scheduled_date, info.created_by, info.img, info.approved, info.building_id)
+    ): Maintenance = service.add(info.title, info.des, info.status, info.scheduled_date, info.approved, info.b_uuid, info.cb_uuid, info.img, info.t_uuid)
 
     @PutMapping("/{uuid}")
     fun update(

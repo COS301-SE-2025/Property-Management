@@ -34,17 +34,24 @@ class QuoteController(
     }
 
     data class QuoteDto(
-        val task_id: Int,
-        val contractor_id: Int,
         val amount: BigDecimal,
         val submitted_on: Date,
-        val type: String,
+        val status: String,
+        val t_uuid: UUID,
+        val c_uuid: UUID,
+        val doc: String
     )
 
     @PostMapping
     fun createQuote(
-        @RequestBody QuoteDto: QuoteDto,
-    ): Quote = service.addQuote(QuoteDto.task_id, QuoteDto.contractor_id, QuoteDto.amount, QuoteDto.submitted_on, QuoteDto.type)
+        @RequestBody quoteDto: QuoteDto,
+    ): Quote = service.addQuote(
+        quoteDto.t_uuid,
+        quoteDto.c_uuid, 
+        quoteDto.submitted_on, 
+        quoteDto.status, 
+        quoteDto.amount, 
+        quoteDto.doc)
 
     @PutMapping("/{uuid}")
     fun update(

@@ -15,8 +15,6 @@ import java.util.UUID
 data class Budget(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "budget_id")
-    val budgetId: Int = 0,
     @Column(name = "budget_uuid", unique = true)
     val budgetUuid: UUID = UUID.randomUUID(),
     @Column(name = "building_id")

@@ -13,8 +13,6 @@ import java.util.UUID
 data class Contractor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "contractor_id")
-    val contractorId: Int? = null,
     @Column(name = "contractor_uuid", unique = true, nullable = false)
     val uuid: UUID = UUID.randomUUID(),
     @Column(nullable = false)

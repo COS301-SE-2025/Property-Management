@@ -13,8 +13,6 @@ import java.util.UUID
 data class Trustee(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "trustee_id")
-    val id: Int? = null,
     val name: String,
     val email: String,
     val phone: String,

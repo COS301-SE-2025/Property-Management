@@ -36,7 +36,6 @@ class TrusteeControllerTest {
     fun `should return trustee for valid trusteeId`() {
         val response =
             Trustee(
-                id = 4,
                 uuid = sampleUuid,
                 name = "Sean",
                 email = "seanM03@gmail.com",

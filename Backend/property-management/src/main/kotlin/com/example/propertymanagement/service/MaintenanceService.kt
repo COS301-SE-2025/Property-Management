@@ -23,12 +23,13 @@ class MaintenanceService(
         des: String,
         status: String,
         scheduled_date: Date,
-        created_by: Int,
-        img: String,
         approved: Boolean,
-        building_id: Int
+        b_uuid: UUID,
+        cb_uuid: UUID,
+        img: UUID,
+        t_uuid: UUID,        
     ): Maintenance {
-        val newUser = Maintenance(title = title, des = des, status = status, scheduled_date = scheduled_date, img = img, approved = approved, building_id = building_id)
+        val newUser = Maintenance(title = title, des = des, status = status, scheduled_date = scheduled_date, approved = approved, b_uuid = b_uuid, cb_uuid = cb_uuid, img = img, t_uuid = t_uuid)
         return add(newUser)
     }
 
@@ -43,10 +44,11 @@ class MaintenanceService(
                 des = newItem.des,
                 status = newItem.status,
                 scheduled_date = newItem.scheduled_date,
-                created_by = newItem.created_by,
-                img = newItem.img,
                 approved = newItem.approved,
-                building_id = newItem.building_id
+                b_uuid = newItem.b_uuid,
+                cb_uuid = newItem.cb_uuid,
+                img = newItem.img,
+                t_uuid = newItem.t_uuid
             )
         return repository.save(updated)
     }
