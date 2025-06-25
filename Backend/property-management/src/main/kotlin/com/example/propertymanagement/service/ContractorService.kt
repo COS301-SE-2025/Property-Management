@@ -22,11 +22,18 @@ class ContractorService(
         val existing = getByUuid(uuid)
         val updated =
             existing.copy(
-                name = newItem.name,
-                email = newItem.email,
-                phone = newItem.phone,
-                apikey = newItem.apikey,
-                status = newItem.status,
+                name = newItem.name, 
+                contact_info = newItem.contact_info, 
+                status = newItem.status, 
+                apikey = newItem.apikey, 
+                email = newItem.email, 
+                phone = newItem.phone, 
+                address = newItem.address,
+                city = newItem.city,
+                postal_code = newItem.postal_code,
+                reg_number = newItem.reg_number,
+                description = newItem.description,
+                services = newItem.services
             )
         return repository.save(updated)
     }
@@ -37,12 +44,30 @@ class ContractorService(
 
     fun addUser(
         name: String,
+        contact_info: String,
+        status: Boolean,
+        apikey: String,
         email: String,
         phone: String,
-        apikey: String,
-        status: Boolean,
+        address: String,
+        city: String,
+        postal_code: String,
+        reg_number: String,
+        description: String,
+        services: String,
     ): Contractor {
-        val newUser = Contractor(name = name, email = email, phone = phone, apikey = apikey, status = status)
+        val newUser = Contractor(name = name, 
+        contact_info = contact_info, 
+        status = status, 
+        apikey = apikey, 
+        email = email, 
+        phone = phone, 
+        address = address,
+        city = city,
+        postal_code = postal_code,
+        reg_number = reg_number,
+        description = description,
+        services = services)
         return add(newUser)
     }
 }

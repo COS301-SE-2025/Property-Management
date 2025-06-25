@@ -12,17 +12,19 @@ import java.util.UUID
 @Table(name = "contractor")
 data class Contractor(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "contractor_uuid", unique = true, nullable = false)
-    val uuid: UUID = UUID.randomUUID(),
-    @Column(nullable = false)
+    val uuid: UUID? = null,
     val name: String,
-    @Column(nullable = false, unique = true)
-    val email: String,
-    @Column(nullable = false)
-    val phone: String,
-    @Column(nullable = false, unique = true)
-    val apikey: String,
-    @Column(nullable = false)
+    val contact_info: String,
     val status: Boolean,
+    val apikey: String,
+    val email: String,
+    val phone: String,
+    val address: String,
+    val city: String,
+    val postal_code: String,
+    val reg_number: String,
+    val description: String,
+    val services: String,
 )

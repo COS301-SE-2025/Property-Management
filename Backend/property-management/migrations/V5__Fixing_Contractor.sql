@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS public.contractor DROP COLUMN IF EXISTS tools_provided;

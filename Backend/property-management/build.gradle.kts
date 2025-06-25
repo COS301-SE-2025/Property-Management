@@ -36,6 +36,7 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("software.amazon.awssdk:s3:2.21.0")
 	implementation("software.amazon.awssdk:cognitoidentityprovider:2.21.0") 
+	implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
 }
 
 kotlin {
