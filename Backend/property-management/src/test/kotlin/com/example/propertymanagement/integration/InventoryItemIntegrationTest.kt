@@ -5,6 +5,7 @@ import com.example.propertymanagement.dto.InventoryItemResponseDto
 import com.example.propertymanagement.dto.UpdateInventoryItemDto
 import com.example.propertymanagement.dto.QuantityUpdateDto
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +21,9 @@ import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.containers.PostgreSQLContainer
 import java.util.UUID
+import com.example.propertymanagement.dto.BuildingCreateDto
+import com.example.propertymanagement.dto.BuildingResponseDto
+import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("integration")
@@ -51,22 +55,26 @@ class InventoryItemIntegrationTest {
 
     // Helper: create a building and return its UUID (reuse your building test helper if available)
     fun createBuildingAndGetUuid(): UUID {
+        val dto = BuildingCreateDto(
+            name = "InventoryTestBuilding",
+            address = "123 Test Lane",
+            type = "Warehouse",
+            propertyValue = 100000.0,
+            primaryContractors = arrayOf(1),
+            latestInspectionDate = LocalDate.of(2024, 1, 1),
+            area = 1000.0,
+            trusteeUuid = UUID.randomUUID(),
+            coporateUuid = null,
+            propertyImageId = null
+        )
         val buildingResponse = restTemplate.postForEntity(
             "http://localhost:$port/api/buildings",
-            mapOf(
-                "name" to "InventoryTestBuilding",
-                "address" to "123 Test Lane",
-                "type" to "Warehouse",
-                "propertyValue" to 100000.0,
-                "primaryContractors" to arrayOf(1),
-                "latestInspectionDate" to "2024-01-01",
-                "complexName" to "Inventory Complex",
-                "trusteeUuid" to UUID.randomUUID(),
-                "propertyImageId" to null
-            ),
-            Map::class.java
+            dto,
+            BuildingResponseDto::class.java
         )
-        return UUID.fromString(buildingResponse.body!!["buildingUuid"].toString())
+        val buildingUuid = buildingResponse.body?.buildingUuid
+        assertNotNull(buildingUuid)
+        return buildingUuid!!
     }
 
     @Test
