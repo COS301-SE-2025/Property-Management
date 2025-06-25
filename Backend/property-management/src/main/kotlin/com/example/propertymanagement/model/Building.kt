@@ -27,8 +27,10 @@ data class Building(
     val latestInspectionDate: LocalDate? = null,
     @Column(name = "property_image")
     val propertyImage: String? = null,
-    @Column(name = "complex_name")
-    val complexName: String? = null,
     @Column(name = "trustee_uuid")
     val trusteeUuid: UUID? = null,
+    @Column(name = "area")
+    val area: Double,
+    @Column(name = "coporate_uuid")
+    val coporateUuid: UUID? = null,
 )

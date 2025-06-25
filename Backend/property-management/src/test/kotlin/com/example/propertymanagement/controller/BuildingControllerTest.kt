@@ -5,11 +5,13 @@ import com.example.propertymanagement.dto.BuildingCreateDto
 import com.example.propertymanagement.dto.BuildingResponseDto
 import com.example.propertymanagement.dto.BuildingUpdateDto
 import com.example.propertymanagement.service.BuildingService
-import com.fasterxml.jackson.databind.ObjectMapper
+import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -19,21 +21,25 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delet
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.view
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import java.time.LocalDate
 import java.util.UUID
 
-@WebMvcTest(BuildingController::class)
-class BuildingControllerTest {
-    @Autowired
-    private lateinit var mockMvc: MockMvc
+
+@WebMvcTest(controllers = [BuildingController::class])
+class BuildingControllerTest(@Autowired val mockMvc: MockMvc) {
 
     @MockBean
-    private lateinit var buildingService: BuildingService
+    lateinit var buildingService: BuildingService
 
     @Autowired
-    private lateinit var objectMapper: ObjectMapper
+    lateinit var objectMapper: com.fasterxml.jackson.databind.ObjectMapper
 
     private val testUuid = UUID.randomUUID()
     private val trusteeUuid = UUID.randomUUID()
@@ -48,9 +54,10 @@ class BuildingControllerTest {
                 propertyValue = 1000000.0,
                 primaryContractors = arrayOf(1, 2, 3),
                 latestInspectionDate = LocalDate.of(2024, 1, 15),
-                complexName = "Test Complex",
                 trusteeUuid = trusteeUuid,
                 propertyImageId = "test-image-id",
+                area = 120.0,
+                coporateUuid = null
             )
 
         val responseDto =
@@ -63,8 +70,9 @@ class BuildingControllerTest {
                 primaryContractors = arrayOf(1, 2, 3),
                 latestInspectionDate = LocalDate.of(2024, 1, 15),
                 propertyImage = "test-image.jpg",
-                complexName = "Test Complex",
                 trusteeUuid = trusteeUuid,
+                area = 120.0,
+                coporateUuid = null
             )
 
         `when`(buildingService.createBuilding(any())).thenReturn(responseDto)
@@ -80,7 +88,6 @@ class BuildingControllerTest {
             .andExpect(jsonPath("$.address").value("123 Test St"))
             .andExpect(jsonPath("$.type").value("Residential"))
             .andExpect(jsonPath("$.propertyValue").value(1000000.0))
-            .andExpect(jsonPath("$.complexName").value("Test Complex"))
             .andExpect(jsonPath("$.trusteeUuid").value(trusteeUuid.toString()))
 
         verify(buildingService).createBuilding(any())
@@ -99,8 +106,9 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(1, 2),
                     latestInspectionDate = LocalDate.of(2024, 1, 10),
                     propertyImage = "building1.jpg",
-                    complexName = "Test Complex 1",
                     trusteeUuid = trusteeUuid,
+                    area = 120.0,
+                    coporateUuid = null
                 ),
                 BuildingResponseDto(
                     buildingUuid = UUID.randomUUID(),
@@ -111,8 +119,9 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(3, 4),
                     latestInspectionDate = LocalDate.of(2024, 2, 15),
                     propertyImage = "building2.jpg",
-                    complexName = "Test Complex 2",
                     trusteeUuid = trusteeUuid,
+                    area = 150.0,
+                    coporateUuid = UUID.randomUUID()
                 ),
             )
 
@@ -152,8 +161,9 @@ class BuildingControllerTest {
                 primaryContractors = arrayOf(1, 3),
                 latestInspectionDate = LocalDate.of(2024, 1, 20),
                 propertyImage = "test-building.jpg",
-                complexName = "Main Complex",
                 trusteeUuid = trusteeUuid,
+                area = 120.0,
+                coporateUuid = null
             )
 
         `when`(buildingService.getBuildingByUuid(testUuid)).thenReturn(responseDto)
@@ -195,8 +205,9 @@ class BuildingControllerTest {
                 primaryContractors = arrayOf(1, 2, 3),
                 latestInspectionDate = LocalDate.of(2024, 1, 15),
                 propertyImage = "test-image.jpg",
-                complexName = "Test Complex",
                 trusteeUuid = trusteeUuid,
+                area = 120.0,
+                coporateUuid = null
             )
 
         `when`(buildingService.updateBuilding(testUuid, updateDto)).thenReturn(responseDto)
@@ -223,7 +234,6 @@ class BuildingControllerTest {
                 primaryContractors = null,
                 latestInspectionDate = null,
                 propertyImageId = null,
-                complexName = null,
                 trusteeUuid = null,
             )
         `when`(buildingService.updateBuilding(testUuid, updateDto)).thenReturn(null)
@@ -273,8 +283,9 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(7, 8),
                     latestInspectionDate = LocalDate.of(2024, 2, 1),
                     propertyImage = "trustee1.jpg",
-                    complexName = "Trustee Complex 1",
                     trusteeUuid = trusteeUuid,
+                    area = 120.0,
+                    coporateUuid = null
                 ),
                 BuildingResponseDto(
                     buildingUuid = UUID.randomUUID(),
@@ -285,8 +296,9 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(9, 10),
                     latestInspectionDate = LocalDate.of(2024, 2, 10),
                     propertyImage = "trustee2.jpg",
-                    complexName = "Trustee Complex 2",
                     trusteeUuid = trusteeUuid,
+                    area = 150.0,
+                    coporateUuid = UUID.randomUUID()
                 ),
             )
         val trusteeDto =
@@ -320,8 +332,9 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(11, 12),
                     latestInspectionDate = LocalDate.of(2024, 1, 25),
                     propertyImage = "search1.jpg",
-                    complexName = "Search Complex 1",
                     trusteeUuid = trusteeUuid,
+                    area = 120.0,
+                    coporateUuid = null
                 ),
                 BuildingResponseDto(
                     buildingUuid = UUID.randomUUID(),
@@ -332,8 +345,9 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(13, 14),
                     latestInspectionDate = LocalDate.of(2024, 1, 30),
                     propertyImage = "search2.jpg",
-                    complexName = "Search Complex 2",
                     trusteeUuid = trusteeUuid,
+                    area = 150.0,
+                    coporateUuid = UUID.randomUUID()
                 ),
             )
 
@@ -369,34 +383,34 @@ class BuildingControllerTest {
     @Test
     fun `getBuildingsByType should return 200 OK with buildings of specified type`() {
         val buildingType = "Residential"
-        val buildings =
-            listOf(
-                BuildingResponseDto(
-                    buildingUuid = testUuid,
-                    name = "Residential Building 1",
-                    address = "333 Residential St",
-                    type = buildingType,
-                    propertyValue = 650000.0,
-                    primaryContractors = arrayOf(15, 16),
-                    latestInspectionDate = LocalDate.of(2024, 2, 5),
-                    propertyImage = "residential1.jpg",
-                    complexName = "Residential Complex 1",
-                    trusteeUuid = trusteeUuid,
-                ),
-                BuildingResponseDto(
-                    buildingUuid = UUID.randomUUID(),
-                    name = "Residential Building 2",
-                    address = "444 Residential Ave",
-                    type = buildingType,
-                    propertyValue = 850000.0,
-                    primaryContractors = arrayOf(17, 18),
-                    latestInspectionDate = LocalDate.of(2024, 2, 12),
-                    propertyImage = "residential2.jpg",
-                    complexName = "Residential Complex 2",
-                    trusteeUuid = trusteeUuid,
-                ),
+        val buildings = listOf(
+            BuildingResponseDto(
+                buildingUuid = UUID.randomUUID(),
+                name = "Building1",
+                address = "Addr1",
+                type = buildingType,
+                propertyValue = 100000.0,
+                primaryContractors = arrayOf(1, 2),
+                latestInspectionDate = LocalDate.now(),
+                propertyImage = "img1.jpg",
+                area = 120.0,
+                trusteeUuid = UUID.randomUUID(),
+                coporateUuid = null
+            ),
+            BuildingResponseDto(
+                buildingUuid = UUID.randomUUID(),
+                name = "Building2",
+                address = "Addr2",
+                type = buildingType,
+                propertyValue = 200000.0,
+                primaryContractors = arrayOf(3, 4),
+                latestInspectionDate = LocalDate.now(),
+                propertyImage = "img2.jpg",
+                area = 150.0,
+                trusteeUuid = UUID.randomUUID(),
+                coporateUuid = UUID.randomUUID()
             )
-
+        )
         `when`(buildingService.getBuildingsByType(buildingType)).thenReturn(buildings)
 
         mockMvc
@@ -404,7 +418,9 @@ class BuildingControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
             .andExpect(jsonPath("$[0].type").value(buildingType))
+            .andExpect(jsonPath("$[0].area").value(120.0))
             .andExpect(jsonPath("$[1].type").value(buildingType))
+            .andExpect(jsonPath("$[1].area").value(150.0))
 
         verify(buildingService).getBuildingsByType(buildingType)
     }

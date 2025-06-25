@@ -32,8 +32,9 @@ class BuildingService(
                 primaryContractors = dto.primaryContractors,
                 latestInspectionDate = dto.latestInspectionDate,
                 propertyImage = propertyImageUrl,
-                complexName = dto.complexName,
                 trusteeUuid = dto.trusteeUuid,
+                area = dto.area!!,
+                coporateUuid = dto.coporateUuid,
             )
 
         val savedBuilding = buildingRepository.save(building)
@@ -64,8 +65,9 @@ class BuildingService(
                 primaryContractors = dto.primaryContractors ?: existingBuilding.primaryContractors,
                 latestInspectionDate = dto.latestInspectionDate ?: existingBuilding.latestInspectionDate,
                 propertyImage = propertyImageUrl,
-                complexName = dto.complexName ?: existingBuilding.complexName,
+                area = dto.area ?: existingBuilding.area,
                 trusteeUuid = dto.trusteeUuid ?: existingBuilding.trusteeUuid,
+                coporateUuid = dto.coporateUuid ?: existingBuilding.coporateUuid,
             )
 
         val savedBuilding = buildingRepository.save(updatedBuilding)
@@ -111,8 +113,9 @@ class BuildingService(
             primaryContractors = building.primaryContractors,
             latestInspectionDate = building.latestInspectionDate,
             propertyImage = building.propertyImage,
-            complexName = building.complexName,
+            area = building.area,
             buildingUuid = building.buildingUuid,
             trusteeUuid = building.trusteeUuid,
+            coporateUuid = building.coporateUuid,
         )
 }

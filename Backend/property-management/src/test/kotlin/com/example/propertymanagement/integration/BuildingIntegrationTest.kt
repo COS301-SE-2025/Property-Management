@@ -50,7 +50,13 @@ class BuildingIntegrationTest {
     @Autowired
     lateinit var restTemplate: TestRestTemplate
 
-    fun createBuilding(name: String = "TestBuilding", type: String = "Apartment", trusteeUuid: UUID = UUID.randomUUID()): BuildingResponseDto {
+    fun createBuilding(
+        name: String = "TestBuilding",
+        type: String = "Apartment",
+        trusteeUuid: UUID = UUID.randomUUID(),
+        area: Double = 100.0,
+        coporateUuid: UUID? = null
+    ): BuildingResponseDto {
         val createRequest = BuildingCreateDto(
             name = name,
             address = "123 Test Lane",
@@ -58,8 +64,9 @@ class BuildingIntegrationTest {
             propertyValue = 1000000.0,
             primaryContractors = arrayOf(1, 2),
             latestInspectionDate = LocalDate.now(),
-            complexName = "Test Complex",
+            area = area,
             trusteeUuid = trusteeUuid,
+            coporateUuid = coporateUuid,
             propertyImageId = null
         )
         val postResponse = restTemplate.postForEntity(
@@ -73,8 +80,9 @@ class BuildingIntegrationTest {
 
     @Test
     fun `should create building`() {
-        val created = createBuilding(name = "CreateTestBuilding")
+        val created = createBuilding(name = "CreateTestBuilding", area = 120.5)
         assertEquals("CreateTestBuilding", created.name)
+        assertEquals(120.5, created.area)
     }
 
     @Test
@@ -97,13 +105,15 @@ class BuildingIntegrationTest {
         )
         assertEquals(200, getByIdResponse.statusCode.value())
         assertEquals(created.buildingUuid, getByIdResponse.body!!.buildingUuid)
+        assertEquals(created.area, getByIdResponse.body!!.area)
     }
 
     @Test
     fun `should update building`() {
-        val created = createBuilding(name = "UpdateTestBuilding")
+        val created = createBuilding(name = "UpdateTestBuilding", area = 100.0)
         val updateRequest = BuildingUpdateDto(
-            name = "UpdatedName"
+            name = "UpdatedName",
+            area = 150.0
         )
         val updateEntity = HttpEntity(updateRequest)
         val updateResponse = restTemplate.exchange(
@@ -114,6 +124,7 @@ class BuildingIntegrationTest {
         )
         assertEquals(200, updateResponse.statusCode.value())
         assertEquals("UpdatedName", updateResponse.body!!.name)
+        assertEquals(150.0, updateResponse.body!!.area)
     }
 
     @Test
