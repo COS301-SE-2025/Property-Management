@@ -69,12 +69,12 @@ class BuildingControllerTest {
 
         `when`(buildingService.createBuilding(any())).thenReturn(responseDto)
 
-        mockMvc.perform(
-            post("/api/buildings")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createDto)),
-        )
-            .andExpect(status().isCreated)
+        mockMvc
+            .perform(
+                post("/api/buildings")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(createDto)),
+            ).andExpect(status().isCreated)
             .andExpect(jsonPath("$.buildingUuid").value(testUuid.toString()))
             .andExpect(jsonPath("$.name").value("Test Building"))
             .andExpect(jsonPath("$.address").value("123 Test St"))
@@ -118,7 +118,8 @@ class BuildingControllerTest {
 
         `when`(buildingService.getAllBuildings()).thenReturn(buildings)
 
-        mockMvc.perform(get("/api/buildings"))
+        mockMvc
+            .perform(get("/api/buildings"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
             .andExpect(jsonPath("$[0].name").value("Building 1"))
@@ -131,7 +132,8 @@ class BuildingControllerTest {
     fun `getAllBuildings should return 200 OK with empty list when no buildings exist`() {
         `when`(buildingService.getAllBuildings()).thenReturn(emptyList())
 
-        mockMvc.perform(get("/api/buildings"))
+        mockMvc
+            .perform(get("/api/buildings"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(0))
 
@@ -156,7 +158,8 @@ class BuildingControllerTest {
 
         `when`(buildingService.getBuildingByUuid(testUuid)).thenReturn(responseDto)
 
-        mockMvc.perform(get("/api/buildings/{uuid}", testUuid))
+        mockMvc
+            .perform(get("/api/buildings/{uuid}", testUuid))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.buildingUuid").value(testUuid.toString()))
             .andExpect(jsonPath("$.name").value("Test Building"))
@@ -168,7 +171,8 @@ class BuildingControllerTest {
     fun `getBuildingByUuid should return 404 NOT FOUND when building does not exist`() {
         `when`(buildingService.getBuildingByUuid(testUuid)).thenReturn(null)
 
-        mockMvc.perform(get("/api/buildings/{uuid}", testUuid))
+        mockMvc
+            .perform(get("/api/buildings/{uuid}", testUuid))
             .andExpect(status().isNotFound)
 
         verify(buildingService).getBuildingByUuid(testUuid)
@@ -197,11 +201,12 @@ class BuildingControllerTest {
 
         `when`(buildingService.updateBuilding(testUuid, updateDto)).thenReturn(responseDto)
 
-        mockMvc.perform(
-            put("/api/buildings/{uuid}", testUuid)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateDto)),
-        ).andExpect(status().isOk)
+        mockMvc
+            .perform(
+                put("/api/buildings/{uuid}", testUuid)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(updateDto)),
+            ).andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("Updated Building"))
 
         verify(buildingService).updateBuilding(testUuid, updateDto)
@@ -223,12 +228,12 @@ class BuildingControllerTest {
             )
         `when`(buildingService.updateBuilding(testUuid, updateDto)).thenReturn(null)
 
-        mockMvc.perform(
-            put("/api/buildings/{uuid}", testUuid)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateDto)),
-        )
-            .andExpect(status().isNotFound)
+        mockMvc
+            .perform(
+                put("/api/buildings/{uuid}", testUuid)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(updateDto)),
+            ).andExpect(status().isNotFound)
 
         verify(buildingService).updateBuilding(testUuid, updateDto)
     }
@@ -237,7 +242,8 @@ class BuildingControllerTest {
     fun `deleteBuilding should return 204 NO CONTENT when building is deleted successfully`() {
         `when`(buildingService.deleteBuilding(testUuid)).thenReturn(true)
 
-        mockMvc.perform(delete("/api/buildings/{uuid}", testUuid))
+        mockMvc
+            .perform(delete("/api/buildings/{uuid}", testUuid))
             .andExpect(status().isNoContent)
 
         verify(buildingService).deleteBuilding(testUuid)
@@ -247,7 +253,8 @@ class BuildingControllerTest {
     fun `deleteBuilding should return 404 NOT FOUND when building does not exist`() {
         `when`(buildingService.deleteBuilding(testUuid)).thenReturn(false)
 
-        mockMvc.perform(delete("/api/buildings/{uuid}", testUuid))
+        mockMvc
+            .perform(delete("/api/buildings/{uuid}", testUuid))
             .andExpect(status().isNotFound)
 
         verify(buildingService).deleteBuilding(testUuid)
@@ -290,7 +297,8 @@ class BuildingControllerTest {
 
         `when`(buildingService.getBuildingsByTrustee(trusteeUuid)).thenReturn(trusteeDto)
 
-        mockMvc.perform(get("/api/buildings/trustee/{trusteeUuid}", trusteeUuid))
+        mockMvc
+            .perform(get("/api/buildings/trustee/{trusteeUuid}", trusteeUuid))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.trusteeUuid").value(trusteeUuid.toString()))
             .andExpect(jsonPath("$.buildings.length()").value(2))
@@ -331,11 +339,11 @@ class BuildingControllerTest {
 
         `when`(buildingService.searchBuildingsByName(searchName)).thenReturn(buildings)
 
-        mockMvc.perform(
-            get("/api/buildings/search")
-                .param("name", searchName),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                get("/api/buildings/search")
+                    .param("name", searchName),
+            ).andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
             .andExpect(jsonPath("$[0].name").value("Test Building 1"))
             .andExpect(jsonPath("$[1].name").value("Test Building 2"))
@@ -348,11 +356,11 @@ class BuildingControllerTest {
         val searchName = "NonExistent"
         `when`(buildingService.searchBuildingsByName(searchName)).thenReturn(emptyList())
 
-        mockMvc.perform(
-            get("/api/buildings/search")
-                .param("name", searchName),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                get("/api/buildings/search")
+                    .param("name", searchName),
+            ).andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(0))
 
         verify(buildingService).searchBuildingsByName(searchName)
@@ -391,7 +399,8 @@ class BuildingControllerTest {
 
         `when`(buildingService.getBuildingsByType(buildingType)).thenReturn(buildings)
 
-        mockMvc.perform(get("/api/buildings/type/{type}", buildingType))
+        mockMvc
+            .perform(get("/api/buildings/type/{type}", buildingType))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
             .andExpect(jsonPath("$[0].type").value(buildingType))
@@ -405,7 +414,8 @@ class BuildingControllerTest {
         val buildingType = "Industrial"
         `when`(buildingService.getBuildingsByType(buildingType)).thenReturn(emptyList())
 
-        mockMvc.perform(get("/api/buildings/type/{type}", buildingType))
+        mockMvc
+            .perform(get("/api/buildings/type/{type}", buildingType))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(0))
 
@@ -414,10 +424,11 @@ class BuildingControllerTest {
 
     @Test
     fun `updateBuilding should return 400 BAD REQUEST when request body is invalid`() {
-        mockMvc.perform(
-            put("/api/buildings/{uuid}", testUuid)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{ invalid json }"),
-        ).andExpect(status().isBadRequest)
+        mockMvc
+            .perform(
+                put("/api/buildings/{uuid}", testUuid)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{ invalid json }"),
+            ).andExpect(status().isBadRequest)
     }
 }

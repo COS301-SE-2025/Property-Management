@@ -40,13 +40,9 @@ class BuildingService(
         return mapToResponseDto(savedBuilding)
     }
 
-    fun getAllBuildings(): List<BuildingResponseDto> {
-        return buildingRepository.findAll().map { mapToResponseDto(it) }
-    }
+    fun getAllBuildings(): List<BuildingResponseDto> = buildingRepository.findAll().map { mapToResponseDto(it) }
 
-    fun getBuildingByUuid(uuid: UUID): BuildingResponseDto? {
-        return buildingRepository.findById(uuid).orElse(null)?.let { mapToResponseDto(it) }
-    }
+    fun getBuildingByUuid(uuid: UUID): BuildingResponseDto? = buildingRepository.findById(uuid).orElse(null)?.let { mapToResponseDto(it) }
 
     fun updateBuilding(
         uuid: UUID,
@@ -76,18 +72,18 @@ class BuildingService(
         return mapToResponseDto(savedBuilding)
     }
 
-    fun deleteBuilding(uuid: UUID): Boolean {
-        return if (buildingRepository.existsById(uuid)) {
+    fun deleteBuilding(uuid: UUID): Boolean =
+        if (buildingRepository.existsById(uuid)) {
             buildingRepository.deleteById(uuid)
             true
         } else {
             false
         }
-    }
 
     fun getBuildingsByTrustee(trusteeUuid: UUID): BuildingByTrusteeDto {
         val buildings =
-            buildingRepository.findByTrusteeUuid(trusteeUuid)
+            buildingRepository
+                .findByTrusteeUuid(trusteeUuid)
                 .map { mapToResponseDto(it) }
 
         return BuildingByTrusteeDto(
@@ -96,18 +92,18 @@ class BuildingService(
         )
     }
 
-    fun searchBuildingsByName(name: String): List<BuildingResponseDto> {
-        return buildingRepository.findBuildingsByNameContaining(name)
+    fun searchBuildingsByName(name: String): List<BuildingResponseDto> =
+        buildingRepository
+            .findBuildingsByNameContaining(name)
             .map { mapToResponseDto(it) }
-    }
 
-    fun getBuildingsByType(type: String): List<BuildingResponseDto> {
-        return buildingRepository.findBuildingsByType(type)
+    fun getBuildingsByType(type: String): List<BuildingResponseDto> =
+        buildingRepository
+            .findBuildingsByType(type)
             .map { mapToResponseDto(it) }
-    }
 
-    private fun mapToResponseDto(building: Building): BuildingResponseDto {
-        return BuildingResponseDto(
+    private fun mapToResponseDto(building: Building): BuildingResponseDto =
+        BuildingResponseDto(
             name = building.name,
             address = building.address,
             type = building.type,
@@ -119,5 +115,4 @@ class BuildingService(
             buildingUuid = building.buildingUuid,
             trusteeUuid = building.trusteeUuid,
         )
-    }
 }

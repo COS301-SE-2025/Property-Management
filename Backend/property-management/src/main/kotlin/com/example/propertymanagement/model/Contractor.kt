@@ -24,5 +24,5 @@ data class Contractor(
     @Column(nullable = false, unique = true)
     val apikey: String,
     @Column(nullable = false)
-    val banned: Boolean,
+    val status: Boolean,
 )

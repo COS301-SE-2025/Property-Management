@@ -12,12 +12,11 @@ class TrusteeService(
 ) {
     fun getAll(): List<Trustee> = repository.findAll()
 
-    //fun getById(id: UUID): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    // fun getById(id: UUID): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Trustee): Trustee = repository.save(item)
 
     fun getByUuid(uuid: UUID): Trustee = repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Trustee not found: $uuid") }
-
 
     fun addUser(
         name: String,
@@ -44,37 +43,9 @@ class TrusteeService(
         return repository.save(updated)
     }
 
-    fun updateByUuid(
-        uuid: UUID,
-        newItem: Trustee,
-    ): Trustee {
-        val existing = getByUuid(uuid)
-        val updated =
-            existing.copy(
-                name = newItem.name,
-                email = newItem.email,
-                phone = newItem.phone,
-                apikey = newItem.apikey
-            )
-        return repository.save(updated)
-    }
-
-    fun updateByUuid(
-        uuid: UUID,
-        newItem: Trustee,
-    ): Trustee {
-        val existing = getByUuid(uuid)
-        val updated =
-            existing.copy(
-                name = newItem.name,
-                email = newItem.email,
-                phone = newItem.phone,
-                apikey = newItem.apikey
-            )
-        return repository.save(updated)
-    }
-
     fun delete(id: Int) = repository.deleteById(id)
+
+    fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
 
     fun getByEmail(email: String): Trustee =
         repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }

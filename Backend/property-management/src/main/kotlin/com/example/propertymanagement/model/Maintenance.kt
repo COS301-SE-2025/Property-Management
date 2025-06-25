@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import java.math.BigDecimal
 import java.util.Date
 import java.util.UUID
 
@@ -19,7 +18,7 @@ data class Maintenance(
     @Column(name = "description")
     val des: String,
     val status: String,
-    val scheduled_date: Date,
+    var scheduled_date: java.sql.Date? = null,
     val approved: Boolean,
     @Column(name = "task_uuid")
     val uuid: UUID = UUID.randomUUID(),

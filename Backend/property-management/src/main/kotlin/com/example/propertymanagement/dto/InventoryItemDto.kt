@@ -45,13 +45,12 @@ data class QuantityUpdateDto(
         ;
 
         companion object {
-            fun fromString(value: String): Operation {
-                return try {
+            fun fromString(value: String): Operation =
+                try {
                     valueOf(value.uppercase())
                 } catch (e: IllegalArgumentException) {
                     throw IllegalArgumentException("Invalid operation: $value. Valid operations: SET, ADD, SUBTRACT")
                 }
-            }
         }
     }
 }

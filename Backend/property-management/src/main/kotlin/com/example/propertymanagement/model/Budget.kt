@@ -12,8 +12,6 @@ import java.util.UUID
 @Table(name = "budget")
 data class Budget(
     @Id
-    @Column(name = "budget_uuid")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "budget_uuid", unique = true)
     val budgetUuid: UUID = UUID.randomUUID(),
     @Column(name = "year")
@@ -24,8 +22,6 @@ data class Budget(
     val maintenanceBudget: BigDecimal?,
     @Column(name = "inventory_budget", precision = 12, scale = 2)
     val inventoryBudget: BigDecimal?,
-    @Column(name = "approved_by")
-    val approvedBy: Int?,
     @Column(name = "approval_date")
     val approvalDate: LocalDate?,
     @Column(name = "notes")

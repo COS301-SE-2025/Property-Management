@@ -23,7 +23,6 @@ class BudgetService(
                 totalBudget = createDto.totalBudget,
                 maintenanceBudget = createDto.maintenanceBudget,
                 inventoryBudget = createDto.inventoryBudget,
-                approvedBy = createDto.approvedBy,
                 approvalDate = createDto.approvalDate,
                 notes = createDto.notes,
                 buildingUuid = createDto.buildingUuid,
@@ -35,7 +34,8 @@ class BudgetService(
 
     fun getBudgetByUuid(budgetUuid: UUID): BudgetResponseDto {
         val budget =
-            budgetRepository.findById(budgetUuid)
+            budgetRepository
+                .findById(budgetUuid)
                 .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Budget not found with UUID: $budgetUuid") }
         return mapToResponseDto(budget)
     }
@@ -55,7 +55,8 @@ class BudgetService(
         updateDto: BudgetUpdateDto,
     ): BudgetResponseDto {
         val existingBudget =
-            budgetRepository.findById(budgetUuid)
+            budgetRepository
+                .findById(budgetUuid)
                 .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Budget not found with UUID: $budgetUuid") }
 
         val updatedBudget =
@@ -64,7 +65,6 @@ class BudgetService(
                 totalBudget = updateDto.totalBudget ?: existingBudget.totalBudget,
                 maintenanceBudget = updateDto.maintenanceBudget ?: existingBudget.maintenanceBudget,
                 inventoryBudget = updateDto.inventoryBudget ?: existingBudget.inventoryBudget,
-                approvedBy = updateDto.approvedBy ?: existingBudget.approvedBy,
                 approvalDate = updateDto.approvalDate ?: existingBudget.approvalDate,
                 notes = updateDto.notes ?: existingBudget.notes,
                 inventorySpent = updateDto.inventorySpent ?: existingBudget.inventorySpent,
@@ -96,19 +96,17 @@ class BudgetService(
         return budget?.let { mapToResponseDto(it) }
     }
 
-    private fun mapToResponseDto(budget: Budget): BudgetResponseDto {
-        return BudgetResponseDto(
+    private fun mapToResponseDto(budget: Budget): BudgetResponseDto =
+        BudgetResponseDto(
             budgetUuid = budget.budgetUuid,
             year = budget.year,
             totalBudget = budget.totalBudget,
             maintenanceBudget = budget.maintenanceBudget,
             inventoryBudget = budget.inventoryBudget,
-            approvedBy = budget.approvedBy,
             approvalDate = budget.approvalDate,
             notes = budget.notes,
             inventorySpent = budget.inventorySpent,
             maintenanceSpent = budget.maintenanceSpent,
             buildingUuid = budget.buildingUuid,
         )
-    }
 }

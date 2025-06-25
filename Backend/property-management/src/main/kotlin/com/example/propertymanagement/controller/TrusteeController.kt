@@ -7,7 +7,6 @@ import com.example.propertymanagement.dto.RegisterRequest
 import com.example.propertymanagement.model.Trustee
 import com.example.propertymanagement.service.CognitoService
 import com.example.propertymanagement.service.TrusteeService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.NoSuchElementException
 import java.util.UUID
 
 @RestController
@@ -28,18 +26,13 @@ class TrusteeController(
     @GetMapping
     fun getAll(): List<Trustee> = service.getAll()
 
-    @GetMapping("/{id}")
-    fun getById(
-        @PathVariable id: Int,
-    ): ResponseEntity<Any> =
-        try {
-            val item = service.getById(id)
-            ResponseEntity.ok(item)
-        } catch (ex: NoSuchElementException) {
-            ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(mapOf("error" to ex.message))
-        }
+    @GetMapping("/{uuid}")
+    fun getByUuid(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<Trustee> {
+        val trustee = service.getByUuid(uuid)
+        return if (trustee != null) ResponseEntity.ok(trustee) else ResponseEntity.notFound().build()
+    }
 
     data class UserDto(
         val name: String,
@@ -123,12 +116,10 @@ class TrusteeAuthController(
                 accessToken = tokens.accessToken,
                 refreshToken = tokens.refreshToken,
                 userType = "trustee",
-                userId = trustee.trusteeUuid.toString(),
+                userId = trustee.uuid.toString(),
             ),
         )
     }
 
-    private fun generateApiKey(): String {
-        return UUID.randomUUID().toString().replace("-", "")
-    }
+    private fun generateApiKey(): String = UUID.randomUUID().toString().replace("-", "")
 }

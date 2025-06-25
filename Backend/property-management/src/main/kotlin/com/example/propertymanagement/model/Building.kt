@@ -11,7 +11,6 @@ import java.util.UUID
 @Table(name = "building")
 data class Building(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "building_uuid", unique = true)
     val buildingUuid: UUID = UUID.randomUUID(),
     @Column(name = "name")

@@ -23,7 +23,7 @@ class ImageController(
     val s3Client: S3Client,
     val imageRepository: ImageRepository,
 ) {
-    @Value("\${aws.bucket-name:contractor-pdfs-certifications}")
+    @Value("\${aws.bucket-name:defualt-bucket}")
     lateinit var bucketName: String
 
     @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -38,7 +38,7 @@ class ImageController(
                 .builder()
                 .bucket(bucketName)
                 .key(key)
-                .contentType("application/pdf")
+                .contentType(file.contentType ?: "application/octet-stream")
                 .build(),
             RequestBody.fromBytes(file.bytes),
         )

@@ -15,15 +15,15 @@ import java.util.UUID
 class InventoryItemService(
     private val inventoryItemRepository: InventoryItemRepository,
 ) {
-    fun getAllInventoryItems(): List<InventoryItemResponseDto> {
-        return inventoryItemRepository.findAll()
+    fun getAllInventoryItems(): List<InventoryItemResponseDto> =
+        inventoryItemRepository
+            .findAll()
             .map { it.toResponseDto() }
-    }
 
-    fun getInventoryItemsByBuildingUuid(buildingUuid: UUID): List<InventoryItemResponseDto> {
-        return inventoryItemRepository.findByBuildingUuid(buildingUuid)
+    fun getInventoryItemsByBuildingUuid(buildingUuid: UUID): List<InventoryItemResponseDto> =
+        inventoryItemRepository
+            .findByBuildingUuid(buildingUuid)
             .map { it.toResponseDto() }
-    }
 
     fun getInventoryItemByUuid(itemUuid: UUID): InventoryItemResponseDto {
         val item =
@@ -97,18 +97,16 @@ class InventoryItemService(
         inventoryItemRepository.delete(existingItem)
     }
 
-    private fun findInventoryItemByUuid(itemUuid: UUID): InventoryItem {
-        return inventoryItemRepository.findByItemUuid(itemUuid)
+    private fun findInventoryItemByUuid(itemUuid: UUID): InventoryItem =
+        inventoryItemRepository.findByItemUuid(itemUuid)
             ?: throw RestException(HttpStatus.NOT_FOUND, "Inventory item with UUID $itemUuid not found")
-    }
 
-    private fun InventoryItem.toResponseDto(): InventoryItemResponseDto {
-        return InventoryItemResponseDto(
+    private fun InventoryItem.toResponseDto(): InventoryItemResponseDto =
+        InventoryItemResponseDto(
             itemUuid = this.itemUuid,
             name = this.name,
             unit = this.unit,
             quantityInStock = this.quantityInStock,
             buildingUuidFk = this.buildingUuidFk,
         )
-    }
 }

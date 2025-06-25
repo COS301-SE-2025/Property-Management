@@ -14,9 +14,7 @@ class QuoteService(
 ) {
     fun getAll(): List<Quote> = repository.findAll()
 
-    fun getById(uuid: UUID): Quote =
-        repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
-
+    fun getById(uuid: UUID): Quote = repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
     fun add(item: Quote): Quote = repository.save(item)
 
@@ -26,15 +24,17 @@ class QuoteService(
         submitted_on: Date,
         status: String,
         amount: BigDecimal,
-        doc: String
+        doc: String,
     ): Quote {
-        val newQuote = Quote(
-            t_uuid = t_uuid, 
-            c_uuid = c_uuid, 
-            submitted_on = submitted_on, 
-            status = status, 
-            amount = amount, 
-            doc = doc)
+        val newQuote =
+            Quote(
+                t_uuid = t_uuid,
+                c_uuid = c_uuid,
+                submitted_on = submitted_on,
+                status = status,
+                amount = amount,
+                doc = doc,
+            )
         return add(newQuote)
     }
 

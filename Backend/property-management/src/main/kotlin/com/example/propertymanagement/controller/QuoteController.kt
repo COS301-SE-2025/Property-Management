@@ -2,7 +2,6 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.service.QuoteService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
 import java.util.Date
-import java.util.NoSuchElementException
 import java.util.UUID
 
 @RestController
@@ -39,19 +37,21 @@ class QuoteController(
         val status: String,
         val t_uuid: UUID,
         val c_uuid: UUID,
-        val doc: String
+        val doc: String,
     )
 
     @PostMapping
     fun createQuote(
         @RequestBody quoteDto: QuoteDto,
-    ): Quote = service.addQuote(
-        quoteDto.t_uuid,
-        quoteDto.c_uuid, 
-        quoteDto.submitted_on, 
-        quoteDto.status, 
-        quoteDto.amount, 
-        quoteDto.doc)
+    ): Quote =
+        service.addQuote(
+            quoteDto.t_uuid,
+            quoteDto.c_uuid,
+            quoteDto.submitted_on,
+            quoteDto.status,
+            quoteDto.amount,
+            quoteDto.doc,
+        )
 
     @PutMapping("/{uuid}")
     fun update(
