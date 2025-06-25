@@ -48,7 +48,7 @@ class BuildingControllerTest {
                 propertyValue = 1000000.0,
                 primaryContractors = arrayOf(1, 2, 3),
                 latestInspectionDate = LocalDate.of(2024, 1, 15),
-                complexName = "Test Complex",
+                // complexName = "Test Complex",
                 trusteeUuid = trusteeUuid,
                 propertyImageId = "test-image-id",
             )
@@ -63,7 +63,7 @@ class BuildingControllerTest {
                 primaryContractors = arrayOf(1, 2, 3),
                 latestInspectionDate = LocalDate.of(2024, 1, 15),
                 propertyImage = "test-image.jpg",
-                complexName = "Test Complex",
+                // complexName = "Test Complex",
                 trusteeUuid = trusteeUuid,
             )
 
@@ -80,7 +80,7 @@ class BuildingControllerTest {
             .andExpect(jsonPath("$.address").value("123 Test St"))
             .andExpect(jsonPath("$.type").value("Residential"))
             .andExpect(jsonPath("$.propertyValue").value(1000000.0))
-            .andExpect(jsonPath("$.complexName").value("Test Complex"))
+            // .andExpect(jsonPath("$.complexName").value("Test Complex"))
             .andExpect(jsonPath("$.trusteeUuid").value(trusteeUuid.toString()))
 
         verify(buildingService).createBuilding(any())
@@ -99,7 +99,7 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(1, 2),
                     latestInspectionDate = LocalDate.of(2024, 1, 10),
                     propertyImage = "building1.jpg",
-                    complexName = "Test Complex 1",
+                    // complexName = "Test Complex 1",
                     trusteeUuid = trusteeUuid,
                 ),
                 BuildingResponseDto(
@@ -111,7 +111,7 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(3, 4),
                     latestInspectionDate = LocalDate.of(2024, 2, 15),
                     propertyImage = "building2.jpg",
-                    complexName = "Test Complex 2",
+                    // complexName = "Test Complex 2",
                     trusteeUuid = trusteeUuid,
                 ),
             )
@@ -150,7 +150,7 @@ class BuildingControllerTest {
                 primaryContractors = arrayOf(1, 3),
                 latestInspectionDate = LocalDate.of(2024, 1, 20),
                 propertyImage = "test-building.jpg",
-                complexName = "Main Complex",
+                // complexName = "Main Complex",
                 trusteeUuid = trusteeUuid,
             )
 
@@ -191,7 +191,7 @@ class BuildingControllerTest {
                 primaryContractors = arrayOf(1, 2, 3),
                 latestInspectionDate = LocalDate.of(2024, 1, 15),
                 propertyImage = "test-image.jpg",
-                complexName = "Test Complex",
+                // complexName = "Test Complex",
                 trusteeUuid = trusteeUuid,
             )
 
@@ -218,7 +218,7 @@ class BuildingControllerTest {
                 primaryContractors = null,
                 latestInspectionDate = null,
                 propertyImageId = null,
-                complexName = null,
+                // complexName = null,
                 trusteeUuid = null,
             )
         `when`(buildingService.updateBuilding(testUuid, updateDto)).thenReturn(null)
@@ -266,7 +266,7 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(7, 8),
                     latestInspectionDate = LocalDate.of(2024, 2, 1),
                     propertyImage = "trustee1.jpg",
-                    complexName = "Trustee Complex 1",
+                    // complexName = "Trustee Complex 1",
                     trusteeUuid = trusteeUuid,
                 ),
                 BuildingResponseDto(
@@ -278,7 +278,7 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(9, 10),
                     latestInspectionDate = LocalDate.of(2024, 2, 10),
                     propertyImage = "trustee2.jpg",
-                    complexName = "Trustee Complex 2",
+                    // complexName = "Trustee Complex 2",
                     trusteeUuid = trusteeUuid,
                 ),
             )
@@ -312,7 +312,7 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(11, 12),
                     latestInspectionDate = LocalDate.of(2024, 1, 25),
                     propertyImage = "search1.jpg",
-                    complexName = "Search Complex 1",
+                    // complexName = "Search Complex 1",
                     trusteeUuid = trusteeUuid,
                 ),
                 BuildingResponseDto(
@@ -324,7 +324,7 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(13, 14),
                     latestInspectionDate = LocalDate.of(2024, 1, 30),
                     propertyImage = "search2.jpg",
-                    complexName = "Search Complex 2",
+                    // complexName = "Search Complex 2",
                     trusteeUuid = trusteeUuid,
                 ),
             )
@@ -372,7 +372,7 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(15, 16),
                     latestInspectionDate = LocalDate.of(2024, 2, 5),
                     propertyImage = "residential1.jpg",
-                    complexName = "Residential Complex 1",
+                    // complexName = "Residential Complex 1",
                     trusteeUuid = trusteeUuid,
                 ),
                 BuildingResponseDto(
@@ -384,7 +384,7 @@ class BuildingControllerTest {
                     primaryContractors = arrayOf(17, 18),
                     latestInspectionDate = LocalDate.of(2024, 2, 12),
                     propertyImage = "residential2.jpg",
-                    complexName = "Residential Complex 2",
+                    // complexName = "Residential Complex 2",
                     trusteeUuid = trusteeUuid,
                 ),
             )

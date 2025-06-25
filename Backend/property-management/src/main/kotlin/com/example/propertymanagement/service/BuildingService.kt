@@ -32,7 +32,7 @@ class BuildingService(
                 primaryContractors = dto.primaryContractors,
                 latestInspectionDate = dto.latestInspectionDate,
                 propertyImage = propertyImageUrl,
-                complexName = dto.complexName,
+                // complexName = dto.complexName,
                 trusteeUuid = dto.trusteeUuid,
             )
 
@@ -68,7 +68,7 @@ class BuildingService(
                 primaryContractors = dto.primaryContractors ?: existingBuilding.primaryContractors,
                 latestInspectionDate = dto.latestInspectionDate ?: existingBuilding.latestInspectionDate,
                 propertyImage = propertyImageUrl,
-                complexName = dto.complexName ?: existingBuilding.complexName,
+                // complexName = dto.complexName ?: existingBuilding.complexName,
                 trusteeUuid = dto.trusteeUuid ?: existingBuilding.trusteeUuid,
             )
 
@@ -115,7 +115,7 @@ class BuildingService(
             primaryContractors = building.primaryContractors,
             latestInspectionDate = building.latestInspectionDate,
             propertyImage = building.propertyImage,
-            complexName = building.complexName,
+            // complexName = building.complexName,
             buildingUuid = building.buildingUuid,
             trusteeUuid = building.trusteeUuid,
         )

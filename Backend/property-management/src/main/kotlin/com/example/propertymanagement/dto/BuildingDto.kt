@@ -13,7 +13,7 @@ data class BuildingCreateDto(
     @field:NotNull @field:Positive val propertyValue: Double?,
     @field:NotNull val primaryContractors: Array<Int>?,
     @field:NotNull val latestInspectionDate: LocalDate?,
-    @field:NotBlank val complexName: String?,
+    // @field:NotBlank val complexName: String?,
     @field:NotNull val trusteeUuid: UUID?,
     val propertyImageId: String? = null,
 )
@@ -25,7 +25,7 @@ data class BuildingUpdateDto(
     val propertyValue: Double? = null,
     val primaryContractors: Array<Int>? = null,
     val latestInspectionDate: LocalDate? = null,
-    val complexName: String? = null,
+    // val complexName: String? = null,
     val trusteeUuid: UUID? = null,
     val propertyImageId: String? = null,
 )
@@ -38,7 +38,7 @@ data class BuildingResponseDto(
     val primaryContractors: Array<Int>?,
     val latestInspectionDate: LocalDate?,
     val propertyImage: String?,
-    val complexName: String?,
+    // val complexName: String?,
     val buildingUuid: UUID,
     val trusteeUuid: UUID?,
 )
