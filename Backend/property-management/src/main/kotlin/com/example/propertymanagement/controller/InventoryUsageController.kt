@@ -33,14 +33,13 @@ class InventoryUsageController(
     @PostMapping
     fun createInventoryUsage(
         @RequestBody request: CreateInventoryUsageRequest,
-    ): ResponseEntity<InventoryUsageResponse> {
-        return try {
+    ): ResponseEntity<InventoryUsageResponse> =
+        try {
             val response = inventoryUsageService.createInventoryUsage(request)
             ResponseEntity.status(HttpStatus.CREATED).body(response)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
-    }
 
     @GetMapping
     fun getAllInventoryUsage(
@@ -48,8 +47,8 @@ class InventoryUsageController(
         @RequestParam(defaultValue = "10") size: Int,
         @RequestParam(defaultValue = "usageUuid") sortBy: String,
         @RequestParam(defaultValue = "asc") sortDir: String,
-    ): ResponseEntity<Page<InventoryUsageResponse>> {
-        return try {
+    ): ResponseEntity<Page<InventoryUsageResponse>> =
+        try {
             val sort =
                 if (sortDir.equals("desc", ignoreCase = true)) {
                     Sort.by(sortBy).descending()
@@ -62,13 +61,12 @@ class InventoryUsageController(
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
 
     @GetMapping("/{usageUuid}")
     fun getInventoryUsageById(
         @PathVariable usageUuid: UUID,
-    ): ResponseEntity<InventoryUsageResponse> {
-        return try {
+    ): ResponseEntity<InventoryUsageResponse> =
+        try {
             val response = inventoryUsageService.getInventoryUsageById(usageUuid)
             ResponseEntity.ok(response)
         } catch (e: IllegalArgumentException) {
@@ -76,14 +74,13 @@ class InventoryUsageController(
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
 
     @PutMapping("/{usageUuid}")
     fun updateInventoryUsage(
         @PathVariable usageUuid: UUID,
         @RequestBody request: UpdateInventoryUsageRequest,
-    ): ResponseEntity<InventoryUsageResponse> {
-        return try {
+    ): ResponseEntity<InventoryUsageResponse> =
+        try {
             val response = inventoryUsageService.updateInventoryUsage(usageUuid, request)
             ResponseEntity.ok(response)
         } catch (e: IllegalArgumentException) {
@@ -91,35 +88,36 @@ class InventoryUsageController(
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
-    }
 
     @DeleteMapping("/{usageUuid}")
     fun deleteInventoryUsage(
         @PathVariable usageUuid: UUID,
-    ): ResponseEntity<Map<String, String>> {
-        return try {
+    ): ResponseEntity<Map<String, String>> =
+        try {
             val success = inventoryUsageService.deleteInventoryUsage(usageUuid)
             if (success) {
                 ResponseEntity.ok(mapOf<String, String>("message" to "Inventory usage deleted successfully"))
             } else {
-                ResponseEntity.status(HttpStatus.NOT_FOUND)
+                ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
                     .body(mapOf<String, String>("error" to "Failed to delete inventory usage"))
             }
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND)
+            ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(mapOf<String, String>("error" to (e.message ?: "Inventory usage not found")))
         } catch (e: Exception) {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(mapOf<String, String>("error" to "Internal server error"))
         }
-    }
 
     @PatchMapping("/{usageUuid}/approval")
     fun approveInventoryUsage(
         @PathVariable usageUuid: UUID,
         @RequestBody approvalRequest: ApprovalRequest,
-    ): ResponseEntity<InventoryUsageResponse> {
-        return try {
+    ): ResponseEntity<InventoryUsageResponse> =
+        try {
             val response = inventoryUsageService.approveInventoryUsage(usageUuid, approvalRequest)
             ResponseEntity.ok(response)
         } catch (e: IllegalArgumentException) {
@@ -127,85 +125,77 @@ class InventoryUsageController(
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
-    }
 
     @GetMapping("/by-item/{itemUuid}")
     fun getUsageByItemUuid(
         @PathVariable itemUuid: UUID,
-    ): ResponseEntity<List<InventoryUsageResponse>> {
-        return try {
+    ): ResponseEntity<List<InventoryUsageResponse>> =
+        try {
             val response = inventoryUsageService.getUsageByItemUuid(itemUuid)
             ResponseEntity.ok(response)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
 
     @GetMapping("/by-task/{taskUuid}")
     fun getUsageByTaskUuid(
         @PathVariable taskUuid: UUID,
-    ): ResponseEntity<List<InventoryUsageResponse>> {
-        return try {
+    ): ResponseEntity<List<InventoryUsageResponse>> =
+        try {
             val response = inventoryUsageService.getUsageByTaskUuid(taskUuid)
             ResponseEntity.ok(response)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
 
     @GetMapping("/by-contractor/{contractorUuid}")
     fun getUsageByContractorUuid(
         @PathVariable contractorUuid: UUID,
-    ): ResponseEntity<List<InventoryUsageResponse>> {
-        return try {
+    ): ResponseEntity<List<InventoryUsageResponse>> =
+        try {
             val response = inventoryUsageService.getUsageByContractorUuid(contractorUuid)
             ResponseEntity.ok(response)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
 
     @GetMapping("/approved")
-    fun getApprovedUsage(): ResponseEntity<List<InventoryUsageResponse>> {
-        return try {
+    fun getApprovedUsage(): ResponseEntity<List<InventoryUsageResponse>> =
+        try {
             val response = inventoryUsageService.getApprovedUsage()
             ResponseEntity.ok(response)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
 
     @GetMapping("/pending-approval")
-    fun getPendingApprovalUsage(): ResponseEntity<List<InventoryUsageResponse>> {
-        return try {
+    fun getPendingApprovalUsage(): ResponseEntity<List<InventoryUsageResponse>> =
+        try {
             val response = inventoryUsageService.getPendingApprovalUsage()
             ResponseEntity.ok(response)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
 
     @GetMapping("/total-quantity/item/{itemUuid}")
     fun getTotalQuantityUsedForItem(
         @PathVariable itemUuid: UUID,
-    ): ResponseEntity<Map<String, Int>> {
-        return try {
+    ): ResponseEntity<Map<String, Int>> =
+        try {
             val totalQuantity = inventoryUsageService.getTotalQuantityUsedForItem(itemUuid)
             ResponseEntity.ok(mapOf("totalQuantityUsed" to totalQuantity))
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
 
     @GetMapping("/total-quantity/contractor/{contractorUuid}")
     fun getTotalQuantityUsedByContractor(
         @PathVariable contractorUuid: UUID,
-    ): ResponseEntity<Map<String, Int>> {
-        return try {
+    ): ResponseEntity<Map<String, Int>> =
+        try {
             val totalQuantity = inventoryUsageService.getTotalQuantityUsedByContractor(contractorUuid)
             ResponseEntity.ok(mapOf("totalQuantityUsed" to totalQuantity))
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
 }

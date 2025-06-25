@@ -56,13 +56,14 @@ class InventoryUsageControllerTest {
         val request = CreateInventoryUsageRequest(itemUuid, taskUuid, contractorUuid, 5)
         whenever(inventoryUsageService.createInventoryUsage(any())).thenReturn(sampleResponse())
 
-        mockMvc.post("/api/inventory-usage") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(request)
-        }.andExpect {
-            status { isCreated() }
-            jsonPath("$.usageUuid") { value(usageUuid.toString()) }
-        }
+        mockMvc
+            .post("/api/inventory-usage") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(request)
+            }.andExpect {
+                status { isCreated() }
+                jsonPath("$.usageUuid") { value(usageUuid.toString()) }
+            }
     }
 
     @Test
@@ -70,7 +71,8 @@ class InventoryUsageControllerTest {
         val page = PageImpl(listOf(sampleResponse()))
         whenever(inventoryUsageService.getAllInventoryUsage(any())).thenReturn(page)
 
-        mockMvc.get("/api/inventory-usage?page=0&size=10&sortBy=usageUuid&sortDir=asc")
+        mockMvc
+            .get("/api/inventory-usage?page=0&size=10&sortBy=usageUuid&sortDir=asc")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.content.size()") { value(1) }
@@ -81,7 +83,8 @@ class InventoryUsageControllerTest {
     fun `getInventoryUsageById returns 200 when found`() {
         whenever(inventoryUsageService.getInventoryUsageById(usageUuid)).thenReturn(sampleResponse())
 
-        mockMvc.get("/api/inventory-usage/$usageUuid")
+        mockMvc
+            .get("/api/inventory-usage/$usageUuid")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.usageUuid") { value(usageUuid.toString()) }
@@ -93,20 +96,22 @@ class InventoryUsageControllerTest {
         val update = UpdateInventoryUsageRequest(quantityUsed = 10, trusteeApproved = true, approvalDate = Date(System.currentTimeMillis()))
         whenever(inventoryUsageService.updateInventoryUsage(eq(usageUuid), any())).thenReturn(sampleResponse())
 
-        mockMvc.put("/api/inventory-usage/$usageUuid") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(update)
-        }.andExpect {
-            status { isOk() }
-            jsonPath("$.usageUuid") { value(usageUuid.toString()) }
-        }
+        mockMvc
+            .put("/api/inventory-usage/$usageUuid") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(update)
+            }.andExpect {
+                status { isOk() }
+                jsonPath("$.usageUuid") { value(usageUuid.toString()) }
+            }
     }
 
     @Test
     fun `deleteInventoryUsage returns 200 when successful`() {
         whenever(inventoryUsageService.deleteInventoryUsage(usageUuid)).thenReturn(true)
 
-        mockMvc.delete("/api/inventory-usage/$usageUuid")
+        mockMvc
+            .delete("/api/inventory-usage/$usageUuid")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.message") { value("Inventory usage deleted successfully") }
@@ -118,20 +123,22 @@ class InventoryUsageControllerTest {
         val approval = ApprovalRequest(trusteeApproved = true)
         whenever(inventoryUsageService.approveInventoryUsage(eq(usageUuid), any())).thenReturn(sampleResponse())
 
-        mockMvc.patch("/api/inventory-usage/$usageUuid/approval") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(approval)
-        }.andExpect {
-            status { isOk() }
-            jsonPath("$.usageUuid") { value(usageUuid.toString()) }
-        }
+        mockMvc
+            .patch("/api/inventory-usage/$usageUuid/approval") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(approval)
+            }.andExpect {
+                status { isOk() }
+                jsonPath("$.usageUuid") { value(usageUuid.toString()) }
+            }
     }
 
     @Test
     fun `getUsageByItemUuid returns 200 with list`() {
         whenever(inventoryUsageService.getUsageByItemUuid(itemUuid)).thenReturn(listOf(sampleResponse()))
 
-        mockMvc.get("/api/inventory-usage/by-item/$itemUuid")
+        mockMvc
+            .get("/api/inventory-usage/by-item/$itemUuid")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.size()") { value(1) }
@@ -142,7 +149,8 @@ class InventoryUsageControllerTest {
     fun `getUsageByTaskUuid returns 200 with list`() {
         whenever(inventoryUsageService.getUsageByTaskUuid(taskUuid)).thenReturn(listOf(sampleResponse()))
 
-        mockMvc.get("/api/inventory-usage/by-task/$taskUuid")
+        mockMvc
+            .get("/api/inventory-usage/by-task/$taskUuid")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.size()") { value(1) }
@@ -153,7 +161,8 @@ class InventoryUsageControllerTest {
     fun `getUsageByContractorUuid returns 200 with list`() {
         whenever(inventoryUsageService.getUsageByContractorUuid(contractorUuid)).thenReturn(listOf(sampleResponse()))
 
-        mockMvc.get("/api/inventory-usage/by-contractor/$contractorUuid")
+        mockMvc
+            .get("/api/inventory-usage/by-contractor/$contractorUuid")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.size()") { value(1) }
@@ -164,7 +173,8 @@ class InventoryUsageControllerTest {
     fun `getApprovedUsage returns 200 with list`() {
         whenever(inventoryUsageService.getApprovedUsage()).thenReturn(listOf(sampleResponse()))
 
-        mockMvc.get("/api/inventory-usage/approved")
+        mockMvc
+            .get("/api/inventory-usage/approved")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.size()") { value(1) }
@@ -175,7 +185,8 @@ class InventoryUsageControllerTest {
     fun `getPendingApprovalUsage returns 200 with list`() {
         whenever(inventoryUsageService.getPendingApprovalUsage()).thenReturn(listOf(sampleResponse()))
 
-        mockMvc.get("/api/inventory-usage/pending-approval")
+        mockMvc
+            .get("/api/inventory-usage/pending-approval")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.size()") { value(1) }
@@ -186,7 +197,8 @@ class InventoryUsageControllerTest {
     fun `getTotalQuantityUsedForItem returns 200 with total`() {
         whenever(inventoryUsageService.getTotalQuantityUsedForItem(itemUuid)).thenReturn(100)
 
-        mockMvc.get("/api/inventory-usage/total-quantity/item/$itemUuid")
+        mockMvc
+            .get("/api/inventory-usage/total-quantity/item/$itemUuid")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.totalQuantityUsed") { value(100) }
@@ -197,7 +209,8 @@ class InventoryUsageControllerTest {
     fun `getTotalQuantityUsedByContractor returns 200 with total`() {
         whenever(inventoryUsageService.getTotalQuantityUsedByContractor(contractorUuid)).thenReturn(50)
 
-        mockMvc.get("/api/inventory-usage/total-quantity/contractor/$contractorUuid")
+        mockMvc
+            .get("/api/inventory-usage/total-quantity/contractor/$contractorUuid")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.totalQuantityUsed") { value(50) }

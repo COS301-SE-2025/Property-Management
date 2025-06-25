@@ -28,14 +28,15 @@ class InventoryUsageService(
         return mapToResponse(savedUsage)
     }
 
-    fun getAllInventoryUsage(pageable: Pageable): Page<InventoryUsageResponse> {
-        return inventoryUsageRepository.findAll(pageable)
+    fun getAllInventoryUsage(pageable: Pageable): Page<InventoryUsageResponse> =
+        inventoryUsageRepository
+            .findAll(pageable)
             .map { mapToResponse(it) }
-    }
 
     fun getInventoryUsageById(usageUuid: UUID): InventoryUsageResponse {
         val inventoryUsage =
-            inventoryUsageRepository.findById(usageUuid)
+            inventoryUsageRepository
+                .findById(usageUuid)
                 .orElseThrow { IllegalArgumentException("Inventory usage not found with ID: $usageUuid") }
         return mapToResponse(inventoryUsage)
     }
@@ -45,7 +46,8 @@ class InventoryUsageService(
         request: UpdateInventoryUsageRequest,
     ): InventoryUsageResponse {
         val existingUsage =
-            inventoryUsageRepository.findById(usageUuid)
+            inventoryUsageRepository
+                .findById(usageUuid)
                 .orElseThrow { IllegalArgumentException("Inventory usage not found with ID: $usageUuid") }
 
         val updatedUsage =
@@ -59,8 +61,8 @@ class InventoryUsageService(
         return mapToResponse(savedUsage)
     }
 
-    fun deleteInventoryUsage(usageUuid: UUID): Boolean {
-        return try {
+    fun deleteInventoryUsage(usageUuid: UUID): Boolean =
+        try {
             if (!inventoryUsageRepository.existsById(usageUuid)) {
                 throw IllegalArgumentException("Inventory usage not found with ID: $usageUuid")
             }
@@ -69,14 +71,14 @@ class InventoryUsageService(
         } catch (e: Exception) {
             false
         }
-    }
 
     fun approveInventoryUsage(
         usageUuid: UUID,
         approvalRequest: ApprovalRequest,
     ): InventoryUsageResponse {
         val existingUsage =
-            inventoryUsageRepository.findById(usageUuid)
+            inventoryUsageRepository
+                .findById(usageUuid)
                 .orElseThrow { IllegalArgumentException("Inventory usage not found with ID: $usageUuid") }
 
         val updatedUsage =
@@ -89,41 +91,38 @@ class InventoryUsageService(
         return mapToResponse(savedUsage)
     }
 
-    fun getUsageByItemUuid(itemUuid: UUID): List<InventoryUsageResponse> {
-        return inventoryUsageRepository.findByItemUuid(itemUuid)
+    fun getUsageByItemUuid(itemUuid: UUID): List<InventoryUsageResponse> =
+        inventoryUsageRepository
+            .findByItemUuid(itemUuid)
             .map { mapToResponse(it) }
-    }
 
-    fun getUsageByTaskUuid(taskUuid: UUID): List<InventoryUsageResponse> {
-        return inventoryUsageRepository.findByTaskUuid(taskUuid)
+    fun getUsageByTaskUuid(taskUuid: UUID): List<InventoryUsageResponse> =
+        inventoryUsageRepository
+            .findByTaskUuid(taskUuid)
             .map { mapToResponse(it) }
-    }
 
-    fun getUsageByContractorUuid(contractorUuid: UUID): List<InventoryUsageResponse> {
-        return inventoryUsageRepository.findByUsedByContractorUuid(contractorUuid)
+    fun getUsageByContractorUuid(contractorUuid: UUID): List<InventoryUsageResponse> =
+        inventoryUsageRepository
+            .findByUsedByContractorUuid(contractorUuid)
             .map { mapToResponse(it) }
-    }
 
-    fun getApprovedUsage(): List<InventoryUsageResponse> {
-        return inventoryUsageRepository.findByTrusteeApprovedTrue()
+    fun getApprovedUsage(): List<InventoryUsageResponse> =
+        inventoryUsageRepository
+            .findByTrusteeApprovedTrue()
             .map { mapToResponse(it) }
-    }
 
-    fun getPendingApprovalUsage(): List<InventoryUsageResponse> {
-        return inventoryUsageRepository.findByTrusteeApprovedFalse()
+    fun getPendingApprovalUsage(): List<InventoryUsageResponse> =
+        inventoryUsageRepository
+            .findByTrusteeApprovedFalse()
             .map { mapToResponse(it) }
-    }
 
-    fun getTotalQuantityUsedForItem(itemUuid: UUID): Int {
-        return inventoryUsageRepository.getTotalQuantityUsedForItem(itemUuid)
-    }
+    fun getTotalQuantityUsedForItem(itemUuid: UUID): Int = inventoryUsageRepository.getTotalQuantityUsedForItem(itemUuid)
 
-    fun getTotalQuantityUsedByContractor(contractorUuid: UUID): Int {
-        return inventoryUsageRepository.getTotalQuantityUsedByContractor(contractorUuid)
-    }
+    fun getTotalQuantityUsedByContractor(contractorUuid: UUID): Int =
+        inventoryUsageRepository.getTotalQuantityUsedByContractor(contractorUuid)
 
-    private fun mapToResponse(inventoryUsage: InventoryUsage): InventoryUsageResponse {
-        return InventoryUsageResponse(
+    private fun mapToResponse(inventoryUsage: InventoryUsage): InventoryUsageResponse =
+        InventoryUsageResponse(
             usageUuid = inventoryUsage.usageUuid,
             itemUuid = inventoryUsage.itemUuid,
             taskUuid = inventoryUsage.taskUuid,
@@ -132,5 +131,4 @@ class InventoryUsageService(
             trusteeApproved = inventoryUsage.trusteeApproved,
             approvalDate = inventoryUsage.approvalDate,
         )
-    }
 }

@@ -2,7 +2,6 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.service.QuoteService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
 import java.util.Date
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/quote")
@@ -23,43 +23,47 @@ class QuoteController(
     @GetMapping
     fun getAll(): List<Quote> = service.getAll()
 
-    @GetMapping("/{id}")
+    @GetMapping("/{uuid}")
     fun getById(
-        @PathVariable id: Int,
-    ): ResponseEntity<Any> =
-        try {
-            val item = service.getById(id)
-            ResponseEntity.ok(item)
-        } catch (ex: NoSuchElementException) {
-            ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(mapOf("error" to ex.message))
-        }
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<Quote> {
+        val quote = service.getById(uuid)
+        return if (quote != null) ResponseEntity.ok(quote) else ResponseEntity.notFound().build()
+    }
 
     data class QuoteDto(
-        val task_id: Int,
-        val contractor_id: Int,
         val amount: BigDecimal,
         val submitted_on: Date,
-        val type: String,
+        val status: String,
+        val t_uuid: UUID,
+        val c_uuid: UUID,
+        val doc: String,
     )
 
     @PostMapping
     fun createQuote(
-        @RequestBody QuoteDto: QuoteDto,
-    ): Quote = service.addQuote(QuoteDto.task_id, QuoteDto.contractor_id, QuoteDto.amount, QuoteDto.submitted_on, QuoteDto.type)
+        @RequestBody quoteDto: QuoteDto,
+    ): Quote =
+        service.addQuote(
+            quoteDto.t_uuid,
+            quoteDto.c_uuid,
+            quoteDto.submitted_on,
+            quoteDto.status,
+            quoteDto.amount,
+            quoteDto.doc,
+        )
 
-    @PutMapping("/{id}")
+    @PutMapping("/{uuid}")
     fun update(
-        @PathVariable id: Int,
+        @PathVariable uuid: UUID,
         @RequestBody item: Quote,
-    ): Quote = service.update(id, item)
+    ): Quote = service.update(uuid, item)
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{uuid}")
     fun delete(
-        @PathVariable id: Int,
+        @PathVariable uuid: UUID,
     ): ResponseEntity<Void> {
-        service.delete(id)
+        service.delete(uuid)
         return ResponseEntity.noContent().build()
     }
 }

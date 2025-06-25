@@ -25,47 +25,35 @@ class InventoryItemController(
     private val inventoryItemService: InventoryItemService,
 ) {
     @GetMapping
-    fun getAllInventoryItems(): List<InventoryItemResponseDto> {
-        return inventoryItemService.getAllInventoryItems()
-    }
+    fun getAllInventoryItems(): List<InventoryItemResponseDto> = inventoryItemService.getAllInventoryItems()
 
     @GetMapping("/building/{buildingUuid}")
     fun getInventoryItemsByBuilding(
         @PathVariable buildingUuid: UUID,
-    ): List<InventoryItemResponseDto> {
-        return inventoryItemService.getInventoryItemsByBuildingUuid(buildingUuid)
-    }
+    ): List<InventoryItemResponseDto> = inventoryItemService.getInventoryItemsByBuildingUuid(buildingUuid)
 
     @GetMapping("/{itemUuid}")
     fun getInventoryItemByUuid(
         @PathVariable itemUuid: UUID,
-    ): InventoryItemResponseDto {
-        return inventoryItemService.getInventoryItemByUuid(itemUuid)
-    }
+    ): InventoryItemResponseDto = inventoryItemService.getInventoryItemByUuid(itemUuid)
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createInventoryItem(
         @RequestBody createDto: CreateInventoryItemDto,
-    ): InventoryItemResponseDto {
-        return inventoryItemService.createInventoryItem(createDto)
-    }
+    ): InventoryItemResponseDto = inventoryItemService.createInventoryItem(createDto)
 
     @PutMapping("/{itemUuid}")
     fun updateInventoryItem(
         @PathVariable itemUuid: UUID,
         @Valid @RequestBody updateDto: UpdateInventoryItemDto,
-    ): InventoryItemResponseDto {
-        return inventoryItemService.updateInventoryItem(itemUuid, updateDto)
-    }
+    ): InventoryItemResponseDto = inventoryItemService.updateInventoryItem(itemUuid, updateDto)
 
     @PatchMapping("/{itemUuid}/quantity")
     fun updateQuantity(
         @PathVariable itemUuid: UUID,
         @Valid @RequestBody quantityUpdateDto: QuantityUpdateDto,
-    ): InventoryItemResponseDto {
-        return inventoryItemService.updateQuantity(itemUuid, quantityUpdateDto)
-    }
+    ): InventoryItemResponseDto = inventoryItemService.updateQuantity(itemUuid, quantityUpdateDto)
 
     @DeleteMapping("/{itemUuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
