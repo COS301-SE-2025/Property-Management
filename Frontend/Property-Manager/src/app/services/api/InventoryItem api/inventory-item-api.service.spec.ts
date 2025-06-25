@@ -390,9 +390,6 @@ describe('InventoryItemApiService', () => {
       service.getInventoryItemsById('1').subscribe({
         next: (response) => {
           expect(response).toBeDefined();
-          // Depending on your error handling, you might want to:
-          // 1. Expect the service to transform malformed data
-          // 2. Expect an error to be thrown
         },
         error: (err) => {
           expect(err).toBeDefined();
