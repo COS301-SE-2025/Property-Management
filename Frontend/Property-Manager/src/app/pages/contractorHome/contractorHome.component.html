@@ -1,23 +1,23 @@
 <app-header/>
 
-    <div class="min-h-screen flex    bg-white relative p-4">
+    <div class="min-h-screen flex    bg-white relative p-4"[@fadeInStagger] [ngStyle]="{'background-color': 'var(--bg-color)', 'color': 'var(--text-color)'}">
 
-<div class="ml-25 mb-12 mt-6">
-    <h2 class="text-3xl font-semibold font-lato text-black">Available projects</h2>
+<div class="ml-25 mb-12 mt-6 animate-item">
+    <h2 class="text-3xl font-semibold font-lato text-black" [ngStyle]="{'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)'}">Available projects</h2>
     <div class="w-60 h-1 bg-yellow-300 mt-2"></div>
   </div>
 
   
 
 
-<div class="flex flex-wrap gap-8 pl-8 pt-30 justify-center ">
+<div class="flex flex-wrap gap-8 pl-8 pt-30 justify-center animate-item">
 <a [routerLink]="['/quotation']" class="block">
   <p-card [style]="{ height: '16rem', width: '13rem', overflow: 'hidden', backgroundColor: 'white' }">
     <ng-template #header>
       <img alt="Card" class="w-full h-40" src="assets/images/house1.jpg" />
     </ng-template>
     <ng-template #title>
-      <span class="text-black">Propect A</span>
+      <span class="text-black">Project A</span>
     </ng-template>
     <ng-template #subtitle>
       <span class="text-black">Fix burst pipe</span>
