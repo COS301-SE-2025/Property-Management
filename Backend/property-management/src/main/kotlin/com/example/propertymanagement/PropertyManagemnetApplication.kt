@@ -3,7 +3,7 @@ package com.example.propertymanagement
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@ActiveProfiles("test") 
+@ActiveProfiles("test")
 @SpringBootApplication
 class PropertyManagemnetApplication
 
