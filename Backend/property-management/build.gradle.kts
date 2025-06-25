@@ -33,6 +33,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+	testImplementation("org.testcontainers:junit-jupiter:1.19.7")
+    testImplementation("org.testcontainers:postgresql:1.19.7")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("software.amazon.awssdk:s3:2.21.0")
 	implementation("software.amazon.awssdk:cognitoidentityprovider:2.21.0") 
