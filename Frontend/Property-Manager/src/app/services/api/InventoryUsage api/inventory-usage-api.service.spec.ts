@@ -418,7 +418,7 @@ describe('InventoryUsageApiService', () => {
       httpClientSpy.post.and.returnValue(of({} as InventoryUsage));
 
       // Test with null itemUuid
-      service.createInventoryUsage(null as any, 'task1', 'contractor1', 5).subscribe({
+      service.createInventoryUsage(null as unknown as string, 'task1', 'contractor1', 5).subscribe({
         next: (response) => {
           expect(response).toBeDefined();
         },
@@ -426,7 +426,7 @@ describe('InventoryUsageApiService', () => {
       });
 
       // Test with undefined quantity
-      service.createInventoryUsage('item1', 'task1', 'contractor1', undefined as any).subscribe({
+      service.createInventoryUsage('item1', 'task1', 'contractor1', undefined as unknown as number).subscribe({
         next: (response) => {
           expect(response).toBeDefined();
         },
@@ -440,7 +440,7 @@ describe('InventoryUsageApiService', () => {
         itemUuid: 'item1',
       };
 
-      httpClientSpy.get.and.returnValue(of(malformedResponse as any));
+      httpClientSpy.get.and.returnValue(of(malformedResponse as unknown));
 
       service.getInventoryUsageById('1').subscribe({
         next: (response) => {

@@ -286,10 +286,6 @@ describe('InventoryItemApiService', () => {
         quantity: 5, 
         buildingUuid: 'bldg1' 
       };
-      const expectedBody = {
-        quantity: 5,
-        operation: 'subtract'
-      };
 
       httpClientSpy.patch.and.returnValue(of(updatedItem));
 
@@ -366,7 +362,7 @@ describe('InventoryItemApiService', () => {
       httpClientSpy.post.and.returnValue(of({} as Inventory));
 
       // Test with null name
-      service.addInventoryItem(null as any, 'pcs', 10, 'bldg1').subscribe({
+      service.addInventoryItem(null as unknown as string, 'pcs', 10, 'bldg1').subscribe({
         next: (response) => {
           expect(response).toBeDefined();
         },
@@ -374,7 +370,7 @@ describe('InventoryItemApiService', () => {
       });
 
       // Test with undefined buildingUuid
-      service.addInventoryItem('Chair', 'pcs', 10, undefined as any).subscribe({
+      service.addInventoryItem('Chair', 'pcs', 10, undefined as unknown as string).subscribe({
         next: (response) => {
           expect(response).toBeDefined();
         },
@@ -389,7 +385,7 @@ describe('InventoryItemApiService', () => {
         // Missing required fields
       };
 
-      httpClientSpy.get.and.returnValue(of(malformedResponse as any));
+      httpClientSpy.get.and.returnValue(of(malformedResponse as unknown));
 
       service.getInventoryItemsById('1').subscribe({
         next: (response) => {

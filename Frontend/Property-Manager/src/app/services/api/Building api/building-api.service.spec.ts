@@ -407,7 +407,7 @@ describe('BuildingApiService', () => {
 
       // Test with null name
       service.createBuilding(
-        null as any,
+        null as unknown as string,
         '123 St',
         'Commercial',
         1000000,
@@ -431,7 +431,7 @@ describe('BuildingApiService', () => {
         [1],
         '2023-01-01',
         'img1',
-        undefined as any
+        undefined as unknown as string
       ).subscribe({
         next: (response) => {
           expect(response).toBeDefined();
@@ -447,7 +447,7 @@ describe('BuildingApiService', () => {
         // Missing required fields
       };
 
-      httpClientSpy.get.and.returnValue(of(malformedResponse as any));
+      httpClientSpy.get.and.returnValue(of(malformedResponse as unknown));
 
       service.getBuildingById('1').subscribe({
         next: (response) => {

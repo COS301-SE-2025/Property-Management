@@ -257,10 +257,6 @@ describe('InventoryItemApiService Integration Tests', () => {
         quantity: 5, 
         buildingUuid: 'bldg1' 
       };
-      const expectedBody = {
-        quantity: 5,
-        operation: 'subtract'
-      };
 
       service.updateInventoryItemQuantity(
         { ...updatedItem, quantity: 10 }, 
