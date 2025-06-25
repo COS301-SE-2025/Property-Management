@@ -6,9 +6,9 @@ import java.util.Optional
 import java.util.UUID
 
 interface TrusteeRepository : JpaRepository<Trustee, Int> {
-    fun findByTrusteeUuid(uuid: UUID): Optional<Trustee>
+    fun findByUuid(uuid: UUID): Optional<Trustee>
 
-    fun deleteByTrusteeUuid(uuid: UUID)
+    fun deleteByUuid(uuid: UUID)
 
     fun findByEmail(email: String): Optional<Trustee>
 }

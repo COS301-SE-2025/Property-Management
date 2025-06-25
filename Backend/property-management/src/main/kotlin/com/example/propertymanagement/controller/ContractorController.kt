@@ -2,7 +2,6 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.service.ContractorService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,12 +25,12 @@ class ContractorController(
     @GetMapping("/{uuid}")
     fun getByUuid(
         @PathVariable uuid: UUID,
-    ): ResponseEntity<Any> =
+    ): ResponseEntity<Contractor> =
         try {
-            val item = service.getByUuid(uuid)
-            ResponseEntity.ok(item)
-        } catch (ex: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to ex.message))
+            val contractor = service.getByUuid(uuid)
+            ResponseEntity.ok(contractor)
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
         }
 
     data class ContractorDto(
@@ -39,14 +38,14 @@ class ContractorController(
         val email: String,
         val phone: String,
         val apikey: String,
-        val banned: Boolean,
+        val status: Boolean,
     )
 
     @PostMapping
     fun createUser(
         @RequestBody ContractorDto: ContractorDto,
     ): Contractor =
-        service.addUser(ContractorDto.name, ContractorDto.email, ContractorDto.phone, ContractorDto.apikey, ContractorDto.banned)
+        service.addUser(ContractorDto.name, ContractorDto.email, ContractorDto.phone, ContractorDto.apikey, ContractorDto.status)
 
     @PutMapping("/{uuid}")
     fun update(

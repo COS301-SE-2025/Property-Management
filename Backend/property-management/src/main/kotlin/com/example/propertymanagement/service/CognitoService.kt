@@ -21,14 +21,14 @@ class CognitoService(
     @Value("\${aws.cognito.clientId}") private val clientId: String,
 ) {
     private val cognitoClient =
-        CognitoIdentityProviderClient.builder()
+        CognitoIdentityProviderClient
+            .builder()
             .region(Region.of(region))
             .credentialsProvider(
                 StaticCredentialsProvider.create(
                     AwsBasicCredentials.create(accessKeyId, secretAccessKey),
                 ),
-            )
-            .build()
+            ).build()
 
     fun signUp(
         username: String,
@@ -37,11 +37,16 @@ class CognitoService(
     ): String {
         val attributeList =
             attributes.map { (key, value) ->
-                AttributeType.builder().name(key).value(value).build()
+                AttributeType
+                    .builder()
+                    .name(key)
+                    .value(value)
+                    .build()
             }
 
         val request =
-            SignUpRequest.builder()
+            SignUpRequest
+                .builder()
                 .clientId(clientId)
                 .username(username)
                 .password(password)
@@ -57,7 +62,8 @@ class CognitoService(
         code: String,
     ) {
         val request =
-            ConfirmSignUpRequest.builder()
+            ConfirmSignUpRequest
+                .builder()
                 .clientId(clientId)
                 .username(username)
                 .confirmationCode(code)
@@ -71,7 +77,8 @@ class CognitoService(
         password: String,
     ): AuthTokens {
         val authRequest =
-            AdminInitiateAuthRequest.builder()
+            AdminInitiateAuthRequest
+                .builder()
                 .userPoolId(userPoolId)
                 .clientId(clientId)
                 .authFlow(AuthFlowType.ADMIN_NO_SRP_AUTH)

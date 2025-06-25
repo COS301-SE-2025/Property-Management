@@ -14,9 +14,8 @@ class GlobalExceptionHandler {
         ResponseEntity("Invalid parameter: ${ex.message}", HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(RestException::class)
-    fun handleApiException(ex: RestException): ResponseEntity<String> {
-        return ResponseEntity.status(ex.statusCode).body(ex.reason ?: "An error occurred")
-    }
+    fun handleApiException(ex: RestException): ResponseEntity<String> =
+        ResponseEntity.status(ex.statusCode).body(ex.reason ?: "An error occurred")
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<String> =

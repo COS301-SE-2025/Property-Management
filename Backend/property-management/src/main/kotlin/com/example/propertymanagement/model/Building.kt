@@ -11,7 +11,7 @@ import java.util.UUID
 @Table(name = "building")
 data class Building(
     @Id
-    @Column(name = "building_uuid")
+    @Column(name = "building_uuid", unique = true)
     val buildingUuid: UUID = UUID.randomUUID(),
     @Column(name = "name")
     val name: String? = null,

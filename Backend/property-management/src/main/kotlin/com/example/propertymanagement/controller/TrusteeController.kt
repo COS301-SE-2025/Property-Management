@@ -7,7 +7,6 @@ import com.example.propertymanagement.dto.RegisterRequest
 import com.example.propertymanagement.model.Trustee
 import com.example.propertymanagement.service.CognitoService
 import com.example.propertymanagement.service.TrusteeService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -31,13 +30,10 @@ class TrusteeController(
     @GetMapping("/{uuid}")
     fun getByUuid(
         @PathVariable uuid: UUID,
-    ): ResponseEntity<Any> =
-        try {
-            val item = service.getByUuid(uuid)
-            ResponseEntity.ok(item)
-        } catch (ex: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to ex.message))
-        }
+    ): ResponseEntity<Trustee> {
+        val trustee = service.getByUuid(uuid)
+        return if (trustee != null) ResponseEntity.ok(trustee) else ResponseEntity.notFound().build()
+    }
 
     data class UserDto(
         val name: String,
@@ -121,12 +117,10 @@ class TrusteeAuthController(
                 accessToken = tokens.accessToken,
                 refreshToken = tokens.refreshToken,
                 userType = "trustee",
-                userId = trustee.trusteeUuid.toString(),
+                userId = trustee.uuid.toString(),
             ),
         )
     }
 
-    private fun generateApiKey(): String {
-        return UUID.randomUUID().toString().replace("-", "")
-    }
+    private fun generateApiKey(): String = UUID.randomUUID().toString().replace("-", "")
 }

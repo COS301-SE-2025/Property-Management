@@ -49,7 +49,8 @@ class InventoryItemControllerTest {
     fun `getAllInventoryItems returns 200 with list`() {
         whenever(inventoryItemService.getAllInventoryItems()).thenReturn(listOf(sampleResponseDto()))
 
-        mockMvc.get("/api/inventory")
+        mockMvc
+            .get("/api/inventory")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.size()") { value(1) }
@@ -61,7 +62,8 @@ class InventoryItemControllerTest {
     fun `getInventoryItemsByBuilding returns 200 with list`() {
         whenever(inventoryItemService.getInventoryItemsByBuildingUuid(buildingUuid)).thenReturn(listOf(sampleResponseDto()))
 
-        mockMvc.get("/api/inventory/building/$buildingUuid")
+        mockMvc
+            .get("/api/inventory/building/$buildingUuid")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.size()") { value(1) }
@@ -73,7 +75,8 @@ class InventoryItemControllerTest {
     fun `getInventoryItemByUuid returns 200 with item`() {
         whenever(inventoryItemService.getInventoryItemByUuid(itemUuid)).thenReturn(sampleResponseDto())
 
-        mockMvc.get("/api/inventory/$itemUuid")
+        mockMvc
+            .get("/api/inventory/$itemUuid")
             .andExpect {
                 status { isOk() }
                 jsonPath("$.itemUuid") { value(itemUuid.toString()) }
@@ -92,13 +95,14 @@ class InventoryItemControllerTest {
 
         whenever(inventoryItemService.createInventoryItem(any())).thenReturn(sampleResponseDto())
 
-        mockMvc.post("/api/inventory") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(createDto)
-        }.andExpect {
-            status { isCreated() }
-            jsonPath("$.itemUuid") { value(itemUuid.toString()) }
-        }
+        mockMvc
+            .post("/api/inventory") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(createDto)
+            }.andExpect {
+                status { isCreated() }
+                jsonPath("$.itemUuid") { value(itemUuid.toString()) }
+            }
     }
 
     @Test
@@ -112,13 +116,14 @@ class InventoryItemControllerTest {
 
         whenever(inventoryItemService.updateInventoryItem(eq(itemUuid), any())).thenReturn(sampleResponseDto())
 
-        mockMvc.put("/api/inventory/$itemUuid") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(updateDto)
-        }.andExpect {
-            status { isOk() }
-            jsonPath("$.itemUuid") { value(itemUuid.toString()) }
-        }
+        mockMvc
+            .put("/api/inventory/$itemUuid") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(updateDto)
+            }.andExpect {
+                status { isOk() }
+                jsonPath("$.itemUuid") { value(itemUuid.toString()) }
+            }
     }
 
     @Test
@@ -131,18 +136,20 @@ class InventoryItemControllerTest {
 
         whenever(inventoryItemService.updateQuantity(eq(itemUuid), any())).thenReturn(sampleResponseDto())
 
-        mockMvc.patch("/api/inventory/$itemUuid/quantity") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(quantityDto)
-        }.andExpect {
-            status { isOk() }
-            jsonPath("$.itemUuid") { value(itemUuid.toString()) }
-        }
+        mockMvc
+            .patch("/api/inventory/$itemUuid/quantity") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(quantityDto)
+            }.andExpect {
+                status { isOk() }
+                jsonPath("$.itemUuid") { value(itemUuid.toString()) }
+            }
     }
 
     @Test
     fun `deleteInventoryItem returns 204`() {
-        mockMvc.delete("/api/inventory/$itemUuid")
+        mockMvc
+            .delete("/api/inventory/$itemUuid")
             .andExpect {
                 status { isNoContent() }
             }
