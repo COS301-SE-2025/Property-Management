@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
     </div>
 
     <div class = "flex flex-wrap justify-center gap-8 p-8">
-      @for (house of houses(); track  house.buildingId)
+      @for (house of houses(); track  house.buildingUuid)
       {
         <app-house-card [house]="house"/>
       }

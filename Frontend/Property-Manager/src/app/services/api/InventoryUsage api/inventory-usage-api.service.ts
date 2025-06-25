@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { InventoryUsage } from '../../models/inventoryUsage.model';
+import { InventoryUsage } from '../../../models/inventoryUsage.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +14,9 @@ export class InventoryUsageApiService {
   createInventoryUsage(itemId: string, taskId: string, contractorId: string, quantityUsed: number): Observable<InventoryUsage>
   {
     const newInventoryUsage = {
-      itemId: itemId,
-      taskId: taskId,
-      usedByContractorUuid: contractorId,
+      itemUuid: itemId,
+      taskUuid: taskId,
+      contractorUuid: contractorId,
       quantityUsed: quantityUsed
     };
 
@@ -38,7 +38,7 @@ export class InventoryUsageApiService {
     const updatedInventory = {
       quantityUsed: inventoryUsage.quantityUsed,
       trusteeApproved: inventoryUsage.trusteeApproval,
-      approvalDate: inventoryUsage.approvedDate?.toDateString()
+      approvalDate: inventoryUsage.approvedDate
     };
     return this.http.put<InventoryUsage>(`${this.url}/inventory-usage/${usageId}`, updatedInventory);
   }
@@ -52,7 +52,7 @@ export class InventoryUsageApiService {
   {
     const updateStatus = {
       trusteeApproved: inventoryUsage.trusteeApproval,
-      approvalDate: inventoryUsage.approvedDate?.toDateString()
+      approvalDate: inventoryUsage.approvedDate
     }
 
     return this.http.patch<InventoryUsage>(`${this.url}/inventory-usage/${usageId}/approval`, updateStatus);

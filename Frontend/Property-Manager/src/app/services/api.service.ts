@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Inventory } from '../models/inventory.model';
-import { Building } from '../models/building.model';
 import { Budget } from '../models/budget.model';
 import { Contractor } from '../models/contractor.model';
 import { Quote } from '../models/quote.model';
 import { BuildingDetails } from '../models/buildingDetails.model';
 import { Trustee } from '../models/trustee.model';
+import { House } from '../models/house.model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,17 +33,17 @@ export class ApiService {
     return this.http.post<Inventory>(`${this.url}/inventory`, item);
   }
 
-  getBuildings(): Observable<Building[]>
+  getBuildings(): Observable<House[]>
   {
-    return this.http.get<Building[]>(`${this.url}/buildings`);
+    return this.http.get<House[]>(`${this.url}/buildings`);
   }
 
-  getBudgets(id: number): Observable<Budget[]>
+  getBudgets(id: string): Observable<Budget[]>
   {
     return this.http.get<Budget[]>(`${this.url}/budgets/${id}`);
   }
 
-  getBuildingDetails(id: number): Observable<BuildingDetails>
+  getBuildingDetails(id: string): Observable<BuildingDetails>
   {
     return this.http.get<BuildingDetails>(`${this.url}/building/${id}/details`);
   }
@@ -64,7 +64,7 @@ export class ApiService {
     return this.http.get<Trustee[]>(`${this.url}/trustee`);
   }
 
-  getTrusteesById(id: number): Observable<Trustee>
+  getTrusteesById(id: string): Observable<Trustee>
   {
     return this.http.get<Trustee>(`${this.url}/trustee/${id}`);
   }
@@ -106,7 +106,7 @@ export class ApiService {
   {
     return this.http.get<Contractor[]>(`${this.url}/contractor`);
   }
-  getContractorById(id: number): Observable<Contractor>
+  getContractorById(id: string): Observable<Contractor>
   {
     return this.http.get<Contractor>(`${this.url}/contractor/${id}`);
   }
@@ -128,7 +128,7 @@ export class ApiService {
     return this.http.post<Quote>(`${this.url}/quote`, quote);
   }
 
-  getQuoteById(id: number): Observable<Quote>
+  getQuoteById(id: string): Observable<Quote>
   {
     return this.http.get<Quote>(`${this.url}/quote/${id}`);
   }  

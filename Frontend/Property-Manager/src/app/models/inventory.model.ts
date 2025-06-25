@@ -1,7 +1,7 @@
 export interface Inventory {
-    itemId: number;
+    itemUuid: string;
     name: string;
     unit: string;
-    quantityInStock: number;
-    buildingId: number;
+    quantity: number;
+    buildingUuid: string;
 }

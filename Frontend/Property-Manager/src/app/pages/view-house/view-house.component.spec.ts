@@ -49,7 +49,7 @@ describe('ViewHouseComponent', () => {
   };
 
   const mockHouse: House = {
-    buildingId: 1,
+    buildingUuid: '1',
     name: 'Property A',
     address: '111 Example str, Menlyn, Pretoria',
     image: "assets/images/houseDemo3.jpg",
@@ -103,7 +103,7 @@ describe('ViewHouseComponent', () => {
 
    it('should initialize with house data when route param exists', () => {
     expect(mockActivatedRoute.snapshot.paramMap.get).toHaveBeenCalledWith('houseId');
-    expect(mockHouseService.getHouseById).toHaveBeenCalledWith(1);
+    expect(mockHouseService.getHouseById).toHaveBeenCalledWith('1');
     expect(component.house).toEqual(mockHouse);
     expect(component.findHouse).toBeFalse();
   });

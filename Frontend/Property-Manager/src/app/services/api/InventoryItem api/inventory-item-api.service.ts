@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Inventory } from '../../models/inventory.model';
+import { Inventory } from '../../../models/inventory.model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,10 +44,10 @@ export class InventoryItemApiService {
     const item = {
       name: inventoryItem.name,
       unit: inventoryItem.unit,
-      quantity: inventoryItem.quantityInStock
+      quantity: inventoryItem.quantity
     }
 
-    return this.http.put<Inventory>(`${this.url}/inventory/${inventoryItem.itemId}`, item);
+    return this.http.put<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`, item);
   }
 
   updateInventoryItemQuantity(inventoryItem: Inventory, differenceQuantity: number, operation: string): Observable<Inventory>
@@ -57,11 +57,11 @@ export class InventoryItemApiService {
       operation: operation
     }
 
-    return this.http.patch<Inventory>(`${this.url}/inventory/${inventoryItem.itemId}/quantity`, quantityUpdate);
+    return this.http.patch<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}/quantity`, quantityUpdate);
   }
 
   deleteInventoryItem(inventoryItem: Inventory): Observable<Inventory>
   {
-    return this.http.delete<Inventory>(`${this.url}/inventory/${inventoryItem.itemId}`);
+    return this.http.delete<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`);
   }
 }

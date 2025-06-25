@@ -95,6 +95,6 @@ jobs:
             run: npm ci
             working-directory: Frontend/Property-Manager
 
-          - name: Run unit tests
+          - name: Run unit and integration tests
             run: npm run test -- --watch=false --browsers=ChromeHeadlessCI
             working-directory: Frontend/Property-Manager

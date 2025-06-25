@@ -32,13 +32,13 @@ export class HousesService {
     this.timeline.set([...this.timeline(), timeLine]);
   }
 
-  removeFromHouses(id : number)
+  removeFromHouses(id : string)
   {
-    this.houses.set(this.houses().filter((h) => h.buildingId !== id));
+    this.houses.set(this.houses().filter((h) => h.buildingUuid !== id));
   }
 
-  getHouseById(id: number): House | undefined{
-    return this.houses().find(house => house.buildingId === id);
+  getHouseById(id: string): House | undefined{
+    return this.houses().find(house => house.buildingUuid === id);
   }
 
   private sortTimeline()
@@ -59,17 +59,19 @@ export class HousesService {
 
     this.apiService.getBuildings().subscribe({
       next: (houses) => {
-        this.houses.set(houses.map((house) => ({
-          ...house,
-          image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
-        })));
+        this.houses.set(
+          houses.map((house) => ({
+            ...house,
+            image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
+          }))
+        );
       },
       error: (err) => {
         console.error("Error loading houses:", err); 
       }
     })
   }
-  async loadBudgetTimeline(houseId: number){
+  async loadBudgetTimeline(houseId: string){
 
     this.budgets.set([]);
     this.timeline.set([]);
@@ -98,7 +100,7 @@ export class HousesService {
 
         this.budgets.set(budget);
 
-        const timeLineArr: Timeline[] = details.maintenanceTasks.map(task => ({
+        const timeLineArr: Timeline[] = (details.maintenanceTasks ?? []).map(task => ({
           description: task.description,
           done: task.status === 'done'
         }));
@@ -111,13 +113,13 @@ export class HousesService {
       }
     })
   }
-  async loadInventory(houseId: number)
+  async loadInventory(houseId: string)
   {
     this.inventory.set([]); 
 
     this.apiService.getInventory().subscribe({
       next: (inventory) => {
-       const filterInventory = inventory.filter(item => item.buildingId === houseId)
+       const filterInventory = inventory.filter(item => item.buildingUuid === houseId)
        this.inventory.set(filterInventory)
       },
       error: (err) => {

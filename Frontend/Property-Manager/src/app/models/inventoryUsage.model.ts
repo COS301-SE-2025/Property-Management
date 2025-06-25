@@ -1,9 +1,9 @@
 export interface InventoryUsage{
-    usageId: string;
-    itemId: string;
-    taskId: string;
-    contractorId: string;
+    usageUuid: string;
+    itemUuid: string;
+    taskUuid: string;
+    contractorUuid: string;
     quantityUsed: number;
     trusteeApproval: boolean;
-    approvedDate?: Date;
+    approvedDate: Date;
 }

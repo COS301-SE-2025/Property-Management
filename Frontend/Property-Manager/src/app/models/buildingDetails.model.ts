@@ -1,14 +1,13 @@
 export interface BuildingDetails{
-    budgetId: string;
-    name: string;
-    address: string;
+    budgetUuid: string;
+    buildingUuid: string;
     totalBudget: number;
     maintenanceBudget: number;
     inventoryBudget: number;
-    inventorySpent: number;
-    maintenanceSpent: number;
-    updatedOn: Date
-    maintenanceTasks: {
+    inventorySpent?: number;
+    maintenanceSpent?: number;
+    approvalDate: Date
+    maintenanceTasks?: {
         title: string;
         description: string;
         status: string;
