@@ -39,28 +39,43 @@ class TrusteeService(
                 name = newItem.name,
                 email = newItem.email,
                 phone = newItem.phone,
+                apikey = newItem.apikey,
+            )
+        return repository.save(updated)
+    }
+
+    fun updateByUuid(
+        uuid: UUID,
+        newItem: Trustee,
+    ): Trustee {
+        val existing = getByUuid(uuid)
+        val updated =
+            existing.copy(
+                name = newItem.name,
+                email = newItem.email,
+                phone = newItem.phone,
                 apikey = newItem.apikey
             )
         return repository.save(updated)
     }
 
-    fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
-
-
-    // fun update(
-    //     id: Int,
-    //     newItem: Trustee,
-    // ): Trustee {
-    //     val existing = getById(id)
-    //     val updated =
-    //         existing.copy(
-    //             name = newItem.name,
-    //             email = newItem.email,
-    //             phone = newItem.phone,
-    //             apikey = newItem.apikey,
-    //         )
-    //     return repository.save(updated)
-    // }
+    fun updateByUuid(
+        uuid: UUID,
+        newItem: Trustee,
+    ): Trustee {
+        val existing = getByUuid(uuid)
+        val updated =
+            existing.copy(
+                name = newItem.name,
+                email = newItem.email,
+                phone = newItem.phone,
+                apikey = newItem.apikey
+            )
+        return repository.save(updated)
+    }
 
     fun delete(id: Int) = repository.deleteById(id)
+
+    fun getByEmail(email: String): Trustee =
+        repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
 }
