@@ -1270,154 +1270,6 @@ _All fields are optional; only include the ones you want to update._
 - `204 No Content` if deleted  
 - `404 Not Found` if not found
 
----
-
-# Quote Endpoints
-
-## Create a Quote
-**POST** `/api/quote`
-
-**Request Body Fields:**
-- `task_id` (**required**): ID of the task (for Maintenance quotes)
-- `contractor_id` (**required**): ID of the contractor (for Maintenance quotes)
-- `amount` (**required**): Quote amount (decimal)
-- `submitted_on` (**required**): Submission timestamp (ISO 8601 format)
-- `type` (**required**): Type of quote - "Maintenance" or "Inventory"
-
-**Prerequisites:**
-1. For Maintenance quotes: Both `task_id` and `contractor_id` must exist
-2. For Inventory quotes: `task_id` and `contractor_id` will be null
-
-**Request Example (Maintenance Quote):**
-```json
-{
-  "task_id": "101",
-  "contractor_id": "3",
-  "amount": "150.00",
-  "submitted_on": "2025-05-25T11:12:47.858+00:00",
-  "type": "Maintenance"
-}
-```
-
-**Request Example (Inventory Quote):**
-```json
-{
-  "task_id": null,
-  "contractor_id": null,
-  "amount": "250.00",
-  "submitted_on": "2025-05-25T11:12:47.858+00:00",
-  "type": "Inventory"
-}
-```
-
-**Response Example (201 Created):**
-```json
-{
-  "quote_id": 4,
-  "task_id": 101,
-  "contractor_id": 3,
-  "amount": 150.00,
-  "submitted_on": "2025-05-25T11:12:47.858+00:00",
-  "type": "Maintenance"
-}
-```
-
----
-
-## Get All Quotes
-**GET** `/api/quote`
-
-**Response Example:**
-```json
-[
-  {
-    "quote_id": 4,
-    "task_id": 101,
-    "contractor_id": 3,
-    "amount": 100.00,
-    "submitted_on": "2025-05-25T11:12:47.858+00:00",
-    "type": "Maintenance"
-  },
-  {
-    "quote_id": 5,
-    "task_id": null,
-    "contractor_id": null,
-    "amount": 250.00,
-    "submitted_on": "2025-05-25T12:30:15.123+00:00",
-    "type": "Inventory"
-  }
-]
-```
-
----
-
-## Get Quote by UUID
-**GET** `/api/quote/{uuid}`
-
-- **Path Variable:**  
-  - `uuid` (**required**): UUID of the quote
-
-**Response Example:**
-```json
-{
-  "quote_id": 4,
-  "task_id": 101,
-  "contractor_id": 3,
-  "amount": 100.00,
-  "submitted_on": "2025-05-25T11:12:47.858+00:00",
-  "type": "Inventory"
-}
-```
-
----
-
-## Update Quote
-**PUT** `/api/quote/{uuid}`
-
-- **Path Variable:**  
-  - `uuid` (**required**): UUID of the quote
-
-**Request Body Fields:**  
-_All fields are optional; only include the ones you want to update._
-- `task_id` (string, optional)
-- `contractor_id` (string, optional)
-- `amount` (decimal, optional)
-- `submitted_on` (timestamp, optional)
-- `type` (string, optional)
-
-**Request Example:**
-```json
-{
-  "amount": "175.00",
-  "type": "Maintenance"
-}
-```
-
-**Response Example:**
-```json
-{
-  "quote_id": 4,
-  "task_id": 101,
-  "contractor_id": 3,
-  "amount": 175.00,
-  "submitted_on": "2025-05-25T11:12:47.858+00:00",
-  "type": "Maintenance"
-}
-```
-
----
-
-## Delete Quote
-**DELETE** `/api/quote/{uuid}`
-
-- **Path Variable:**  
-  - `uuid` (**required**): UUID of the quote
-
-**Response:**  
-- `204 No Content` if deleted  
-- `404 Not Found` if not found
-
----
 
 # Image Upload Endpoints
 
@@ -1672,3 +1524,121 @@ _All fields are optional; only include the ones you want to update._
 - `b_uuid`: Must reference an existing building UUID
 - `img`: Must reference an existing image UUID from the images table
 - `t_uuid`: Must reference an existing trustee UUID who created the maintenance task
+
+# Quote Endpoints
+
+## Create a Quote
+**POST** `/api/quote`
+
+**Request Body Fields:**
+- `t_uuid` (**required**): UUID of the maintenance task (string/UUID)
+- `c_uuid` (**required**): UUID of the contractor (string/UUID)
+- `submitted_on` (**required**): Submission timestamp (string, ISO 8601 format)
+- `status` (**required**): Current status of the quote (string)
+- `amount` (**required**): Quote amount (decimal)
+- `doc` (**required**): Document/notes related to the quote (string)
+
+**Request Body Example:**
+```json
+{
+  "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "submitted_on": "2025-06-26T10:00:00.000+02:00",
+  "status": "Started",
+  "amount": 1000,
+  "doc": "jhihiduhidhwqidhqwudh"
+}
+```
+
+**Response Example (201 Created):**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "submitted_on": "2025-06-26T08:00:00.000+00:00",
+  "status": "Started",
+  "amount": 1000.00,
+  "doc": "jhihiduhidhwqidhqwudh"
+}
+```
+
+---
+
+## Get All Quotes
+**GET** `/api/quote`
+
+**Description:** Returns all quotes in the system.
+
+**Response Example:**
+```json
+[
+  {
+    "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+    "amount": 1000.00,
+    "doc": "jhihiduhidhwqidhqwudh",
+    "submitted_on": "2025-06-26T08:00:00.000+00:00",
+    "status": "Started",
+    "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+    "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28"
+  }
+]
+```
+
+---
+
+## Get Quote by UUID
+**GET** `/api/quote/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the quote
+
+**Description:** Returns a specific quote by its UUID.
+
+**Response Example:**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "amount": 1000.00,
+  "doc": "jhihiduhidhwqidhqwudh",
+  "submitted_on": "2025-06-26T08:00:00.000+00:00",
+  "status": "Started",
+  "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28"
+}
+```
+
+---
+
+## Delete Quote
+**DELETE** `/api/quote/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the quote
+
+**Description:** Deletes a specific quote.
+
+**Response:**  
+- `204 No Content` if deleted  
+- `404 Not Found` if not found
+
+---
+
+### Quote Field Requirements Summary
+
+| Field        | Create | Type           | Notes                                    |
+|--------------|--------|----------------|------------------------------------------|
+| t_uuid       | req    | String/UUID    | Maintenance task UUID (required)         |
+| c_uuid       | req    | String/UUID    | Contractor UUID (required)               |
+| submitted_on | req    | String         | ISO 8601 timestamp format               |
+| status       | req    | String         | Current status of the quote              |
+| amount       | req    | Decimal        | Quote amount                             |
+| doc          | req    | String         | Document/notes related to the quote      |
+
+- **req** = required
+
+**Required Field Notes:**
+- `t_uuid`: Must reference an existing maintenance task UUID
+- `c_uuid`: Must reference an existing contractor UUID
+- `submitted_on`: Must be in ISO 8601 format (e.g., "2025-06-26T10:00:00.000+02:00")
+
