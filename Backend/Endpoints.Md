@@ -274,3 +274,23 @@ Body: {
 ## To delete
 Method: DELETE
 Link: http://localhost:8080/api/quote/{uuid} (where {uuid} is the uuid of the quote)
+
+
+# Image uploading
+## To upload
+Method: POST
+Link: http://localhost:8080/api/images/upload 
+Content-Type: multipart/form-data
+Description: Uploads a single image file to S3 and returns a unique image key (usually a UUID).
+Returns: {
+    "imageKey": "a3f07d2b-2a31-4c9e-bf9e-6f2eaa2c1234"
+}
+to be used elsewhere where needed
+
+## To retrieve the image
+Method: get
+Link: http://localhost:8080/api/images//presigned/{uuid}
+Description: Returns a link to where the image can be viewed
+Returns: a link
+
+
