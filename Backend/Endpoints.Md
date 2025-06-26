@@ -114,9 +114,9 @@ return[
     }
 ]
 
-## To get a specific id
+## To get a specific uuid
 Method: GET
-Link: http://localhost:8080/api/trustee/{id} (where {id} is the id of the trustee)
+Link: http://localhost:8080/api/trustee/{uuid} (where {uuid} is the uuid of the trustee)
 Return:{
     "trustee_id": 4,
     "name": "Sean",
@@ -130,7 +130,7 @@ Method: PUT
 Link: http://localhost:8080/api/trustee
 Body: 
     Body: {
-        "trustee_id" : "[id]",
+        "trustee_id" : "[uuid]",
         "[Item to change, like name, phone ect]" : "[new item]"
 }
 
@@ -139,58 +139,82 @@ Method: DELETE
 Link: http://localhost:8080/api/trustee
 Body: 
     Body: {
-        "trustee_id" : "[id]"
+        "trustee_id" : "[uuid]"
 }
 
 # Contractor Endpoints:
 ## To add:
 Method: POST 
 Link: http://localhost:8080/api/contractor
-Body: {
-    "name" : "[name]",
-    "email" : "[email]",
-    "phone" : "[phone]",
-    "apikey" : "[apikey]",
-    "banned" : [ban status, boolean]
-}
+Body Example: {
+        "name": "Karabelo",
+        "contact_info": "Test",
+        "status": false,
+        "apikey": "0210323-2313-123",
+        "email": "karabelotaole04@gmail.com",
+        "phone": "013456789",
+        "address": "Tes street",
+        "city": "Pretoria",
+        "postal_code": "0419",
+        "reg_number": "23123123131",
+        "description": "Good pipe layer",
+        "services": "Pipe laying"
+    }
 
 ## To get all in table
 Method: GET
 Link: http://localhost:8080/api/contractor
 Return:[
     {
-        "contractorId": 3,
-        "name": "Jack",
-        "email": "jackfitnesss@gmail.com",
-        "phone": "0123456789",
-        "apikey": "d6q5d46qw54dq",
-        "banned": false
+        "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+        "name": "Karabelo",
+        "contact_info": "Test",
+        "status": false,
+        "apikey": "0210323-2313-123",
+        "email": "karabelotaole04@gmail.com",
+        "phone": "013456789",
+        "address": "Tes street",
+        "city": "Pretoria",
+        "postal_code": "0419",
+        "reg_number": "23123123131",
+        "description": "Good pipe layer",
+        "services": "Pipe laying"
     }
 ]
 
-## To get a specific id
+## To get a specific uuid
 Method: GET
-Link: http://localhost:8080/api/contractor/{id} (where {id} is the id of the contractor)
+Link: http://localhost:8080/api/contractor/{uuid} (where {uuid} is the uuid of the contractor)
 Return:{
-        "contractorId": 3,
-        "name": "Jack",
-        "email": "jackfitnesss@gmail.com",
-        "phone": "0123456789",
-        "apikey": "d6q5d46qw54dq",
-        "banned": false
-    }
+    "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "name": "Karabelo",
+    "contact_info": "Test",
+    "status": false,
+    "apikey": "0210323-2313-123",
+    "email": "karabelotaole04@gmail.com",
+    "phone": "013456789",
+    "address": "Tes street",
+    "city": "Pretoria",
+    "postal_code": "0419",
+    "reg_number": "23123123131",
+    "description": "Good pipe layer",
+    "services": "Pipe laying"
+}
 
-## To update 
+## To update the stuff you want
 Method: PUT
 Link: http://localhost:8080/api/contractor
 Body:{
-    "contractor_id" : "[id]",
-    "[Item to change, like name, phone ect]" : "[new item]"
+  "contact_info": "Test Contact – Available via phone and email",
+  "status": true,
+  "apikey": "0210323-2313-123",
+  "email": "karabelo.moeketsi@example.com",
+  "phone": "01232313 - New Updated"
 }
 
 ## To delete
 Method: DELETE
-Link: http://localhost:8080/api/contractor/{id} (where {id} is the id of the contractor)
+Link: http://localhost:8080/api/contractor/{uuid} (where {uuid} is the uuid of the contractor)
 
 
 # Quote Endpoints
@@ -228,9 +252,9 @@ Return:[
     }
 ]
 
-## To get a specific id
+## To get a specific uuid
 Method: GET
-Link: http://localhost:8080/api/quote/{id} (where {id} is the id of the quote)
+Link: http://localhost:8080/api/quote/{uuid} (where {uuid} is the uuid of the quote)
 Return:{
     "quote_id": 4,
     "task_id": 101,
@@ -242,11 +266,11 @@ Return:{
 
 ## To update 
 Method: PUT
-Link: http://localhost:8080/api/quote/{id} (where {id} is the id of the quote)
+Link: http://localhost:8080/api/quote/{uuid} (where {uuid} is the uuid of the quote)
 Body: {
     "[Item to change]" : "[new item]"
 }
 
 ## To delete
 Method: DELETE
-Link: http://localhost:8080/api/quote/{id} (where {id} is the id of the quote)
+Link: http://localhost:8080/api/quote/{uuid} (where {uuid} is the uuid of the quote)

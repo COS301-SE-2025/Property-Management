@@ -1,5 +1,6 @@
 package com.example.propertymanagement.service
 
+import org.springframework.transaction.annotation.Transactional
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.repository.ContractorRepository
 import org.springframework.stereotype.Service
@@ -15,29 +16,31 @@ class ContractorService(
     fun getByUuid(uuid: UUID): Contractor =
         repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
-    fun updateByUuid(
-        uuid: UUID,
-        newItem: Contractor,
-    ): Contractor {
-        val existing = getByUuid(uuid)
-        val updated =
-            existing.copy(
-                name = newItem.name, 
-                contact_info = newItem.contact_info, 
-                status = newItem.status, 
-                apikey = newItem.apikey, 
-                email = newItem.email, 
-                phone = newItem.phone, 
-                address = newItem.address,
-                city = newItem.city,
-                postal_code = newItem.postal_code,
-                reg_number = newItem.reg_number,
-                description = newItem.description,
-                services = newItem.services
-            )
-        return repository.save(updated)
-    }
+fun updateByUuid(
+    uuid: UUID,
+    update: Contractor
+): Contractor {
+    val existing = getByUuid(uuid)
 
+    val updated = existing.copy(
+        name = update.name ?: existing.name,
+        contact_info = update.contact_info ?: existing.contact_info,
+        status = update.status ?: existing.status,
+        apikey = update.apikey ?: existing.apikey,
+        email = update.email ?: existing.email,
+        phone = update.phone ?: existing.phone,
+        address = update.address ?: existing.address,
+        city = update.city ?: existing.city,
+        postal_code = update.postal_code ?: existing.postal_code,
+        reg_number = update.reg_number ?: existing.reg_number,
+        description = update.description ?: existing.description,
+        services = update.services ?: existing.services
+    )
+
+    return repository.save(updated)
+}
+
+    @Transactional
     fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
 
     fun add(item: Contractor): Contractor = repository.save(item)
