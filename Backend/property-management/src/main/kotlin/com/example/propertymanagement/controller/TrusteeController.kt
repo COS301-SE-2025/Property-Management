@@ -22,6 +22,8 @@ import java.util.UUID
 @RequestMapping("/api/trustee")
 class TrusteeController(
     private val service: TrusteeService,
+    private val trusteeService: TrusteeService,
+    private val cognitoService: CognitoService,
 ) {
     @GetMapping
     fun getAll(): List<Trustee> = service.getAll()
@@ -59,15 +61,10 @@ class TrusteeController(
         service.deleteByUuid(uuid)
         return ResponseEntity.noContent().build()
     }
-}
 
-@RestController
-@RequestMapping("/api/auth/trustee")
-class TrusteeAuthController(
-    private val trusteeService: TrusteeService,
-    private val cognitoService: CognitoService,
-) {
-    @PostMapping("/register")
+    // Auth stuff
+
+    @PostMapping("/auth/register")
     fun register(
         @RequestBody request: RegisterRequest,
     ): ResponseEntity<Map<String, String>> {
@@ -95,7 +92,7 @@ class TrusteeAuthController(
         )
     }
 
-    @PostMapping("/confirm")
+    @PostMapping("/auth/confirm")
     fun confirm(
         @RequestBody request: ConfirmRegistrationRequest,
     ): ResponseEntity<String> {
@@ -103,7 +100,7 @@ class TrusteeAuthController(
         return ResponseEntity.ok("Account confirmed.")
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     fun login(
         @RequestBody request: LoginRequest,
     ): ResponseEntity<LoginResponse> {
@@ -121,5 +118,6 @@ class TrusteeAuthController(
         )
     }
 
+    // Optional: API key generator utility
     private fun generateApiKey(): String = UUID.randomUUID().toString().replace("-", "")
 }
