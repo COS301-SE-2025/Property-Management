@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
-import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import java.time.Duration
 import java.util.UUID
 
@@ -54,20 +54,25 @@ class ImageController(
         return ResponseEntity.ok(id)
     }
 
-
     @GetMapping("/presigned/{id}")
-    fun getPresignedUrl(@PathVariable id: String): ResponseEntity<String> {
+    fun getPresignedUrl(
+        @PathVariable id: String,
+    ): ResponseEntity<String> {
         val image = imageRepository.findById(id).orElseThrow()
 
-        val getObjectRequest = GetObjectRequest.builder()
-            .bucket(bucketName)
-            .key(extractKeyFromUrl(image.url))
-            .build()
+        val getObjectRequest =
+            GetObjectRequest
+                .builder()
+                .bucket(bucketName)
+                .key(extractKeyFromUrl(image.url))
+                .build()
 
-        val presignRequest = GetObjectPresignRequest.builder()
-            .getObjectRequest(getObjectRequest)
-            .signatureDuration(Duration.ofMinutes(10)) // valid for 10 minutes
-            .build()
+        val presignRequest =
+            GetObjectPresignRequest
+                .builder()
+                .getObjectRequest(getObjectRequest)
+                .signatureDuration(Duration.ofMinutes(10)) // valid for 10 minutes
+                .build()
 
         val presignedRequest = s3Presigner.presignGetObject(presignRequest)
         val presignedUrl = presignedRequest.url().toString()

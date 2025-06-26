@@ -52,18 +52,20 @@ class ContractorController(
     fun createUser(
         @RequestBody contractor: ContractorDto,
     ): Contractor =
-        service.addUser(contractor.name, 
-        contractor.contact_info, 
-        contractor.status,
-        contractor.apikey,
-        contractor.email,
-        contractor.phone,
-        contractor.address,
-        contractor.city,
-        contractor.postal_code,
-        contractor.reg_number,
-        contractor.description,
-        contractor.services)
+        service.addUser(
+            contractor.name,
+            contractor.contact_info,
+            contractor.status,
+            contractor.apikey,
+            contractor.email,
+            contractor.phone,
+            contractor.address,
+            contractor.city,
+            contractor.postal_code,
+            contractor.reg_number,
+            contractor.description,
+            contractor.services,
+        )
 
     @PutMapping("/{uuid}")
     fun update(

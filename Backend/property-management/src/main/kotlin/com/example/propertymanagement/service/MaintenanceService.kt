@@ -61,10 +61,9 @@ class MaintenanceService(
             )
         return repository.save(updated)
     }
-    
+
     @Transactional
     fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
-
 
     fun delete(id: Int) = repository.deleteById(id)
 }
