@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-verify-email',
   imports: [FloatLabelModule, CommonModule, FormsModule],
-  template: ``,
+  templateUrl: `./verify-email.component.html`,
   styles: ``
 })
 export class VerifyEmailComponent {

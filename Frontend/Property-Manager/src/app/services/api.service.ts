@@ -139,4 +139,12 @@ export class ApiService {
   {
     return this.http.get<Quote>(`${this.url}/quote/${id}`);
   }  
+
+  getMaintenanceTasks(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}/maintenance`);
+  }
+
+  getPresignedImageUrl(uuid: string): Observable<{ url: string }> {
+    return this.http.get<{ url: string }>(`${this.url}/images/presigned/${uuid}`);
+  }
 }
