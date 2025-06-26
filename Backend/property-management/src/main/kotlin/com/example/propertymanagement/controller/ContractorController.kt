@@ -1,6 +1,11 @@
 package com.example.propertymanagement.controller
 
+import com.example.propertymanagement.dto.ConfirmRegistrationRequest
+import com.example.propertymanagement.dto.LoginRequest
+import com.example.propertymanagement.dto.LoginResponse
+import com.example.propertymanagement.dto.RegisterRequest
 import com.example.propertymanagement.model.Contractor
+import com.example.propertymanagement.service.CognitoService
 import com.example.propertymanagement.service.ContractorService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -18,6 +23,8 @@ import java.util.UUID
 @RequestMapping("/api/contractor")
 class ContractorController(
     private val service: ContractorService,
+    private val contractorService: ContractorService,
+    private val cognitoService: CognitoService,
 ) {
     @GetMapping()
     fun getAll(): List<Contractor> = service.getAll()
@@ -35,17 +42,37 @@ class ContractorController(
 
     data class ContractorDto(
         val name: String,
+        val contact_info: String,
+        val status: Boolean,
+        val apikey: String,
         val email: String,
         val phone: String,
-        val apikey: String,
-        val status: Boolean,
+        val address: String,
+        val city: String,
+        val postal_code: String,
+        val reg_number: String,
+        val description: String,
+        val services: String,
     )
 
     @PostMapping
     fun createUser(
-        @RequestBody ContractorDto: ContractorDto,
+        @RequestBody contractor: ContractorDto,
     ): Contractor =
-        service.addUser(ContractorDto.name, ContractorDto.email, ContractorDto.phone, ContractorDto.apikey, ContractorDto.status)
+        service.addUser(
+            contractor.name,
+            contractor.contact_info,
+            contractor.status,
+            contractor.apikey,
+            contractor.email,
+            contractor.phone,
+            contractor.address,
+            contractor.city,
+            contractor.postal_code,
+            contractor.reg_number,
+            contractor.description,
+            contractor.services,
+        )
 
     @PutMapping("/{uuid}")
     fun update(
@@ -60,4 +87,71 @@ class ContractorController(
         service.deleteByUuid(uuid)
         return ResponseEntity.noContent().build()
     }
+
+    // Auth stuff
+
+    @PostMapping("/auth/register")
+    fun register(
+        @RequestBody request: RegisterRequest,
+    ): ResponseEntity<Map<String, String>> {
+        val username = request.email.substringBefore("@") + System.currentTimeMillis()
+        val cognitoUserSub =
+            cognitoService.signUp(
+                username,
+                request.password,
+                mapOf(
+                    "email" to request.email,
+                    "given_name" to "owner",
+                ),
+            )
+        contractorService.addUser(
+            name = username,
+            contact_info = "N/A",
+            status = false,
+            apikey = cognitoUserSub,
+            email = request.email,
+            phone = request.contactNumber,
+            address = "N/A",
+            city = "N/A",
+            postal_code = "0000",
+            reg_number = "N/A",
+            description = "N/A",
+            services = "N/A",
+        )
+        return ResponseEntity.ok(
+            mapOf(
+                "message" to "Registration successful, please verify your email.",
+                "username" to username,
+            ),
+        )
+    }
+
+    @PostMapping("/auth/confirm")
+    fun confirm(
+        @RequestBody request: ConfirmRegistrationRequest,
+    ): ResponseEntity<String> {
+        cognitoService.confirmRegistration(request.username, request.code)
+        return ResponseEntity.ok("Account confirmed.")
+    }
+
+    @PostMapping("/auth/login")
+    fun login(
+        @RequestBody request: LoginRequest,
+    ): ResponseEntity<LoginResponse> {
+        val tokens = cognitoService.login(request.email, request.password)
+        val contractor = contractorService.getByEmail(request.email)
+
+        return ResponseEntity.ok(
+            LoginResponse(
+                idToken = tokens.idToken,
+                accessToken = tokens.accessToken,
+                refreshToken = tokens.refreshToken,
+                userType = "contractor",
+                userId = contractor.uuid.toString(),
+            ),
+        )
+    }
+
+    // Optional: API key generator utility
+    private fun generateApiKey(): String = UUID.randomUUID().toString().replace("-", "")
 }

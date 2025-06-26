@@ -3,7 +3,6 @@ package com.example.propertymanagement.model
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.util.UUID
@@ -12,17 +11,19 @@ import java.util.UUID
 @Table(name = "contractor")
 data class Contractor(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "contractor_uuid", unique = true, nullable = false)
-    val uuid: UUID = UUID.randomUUID(),
-    @Column(nullable = false)
-    val name: String,
-    @Column(nullable = false, unique = true)
-    val email: String,
-    @Column(nullable = false)
-    val phone: String,
-    @Column(nullable = false, unique = true)
-    val apikey: String,
-    @Column(nullable = false)
-    val status: Boolean,
+    val uuid: UUID? = null,
+    val name: String? = null,
+    val contact_info: String? = null,
+    val status: Boolean? = null,
+    val apikey: String? = null,
+    val email: String? = null,
+    val phone: String? = null,
+    val address: String? = null,
+    val city: String? = null,
+    val postal_code: String? = null,
+    val reg_number: String? = null,
+    val description: String? = null,
+    val services: String? = null,
 )

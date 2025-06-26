@@ -1128,5 +1128,717 @@ _All fields are optional; only include the ones you want to update._
 
 ---
 
+# Contractor Endpoints
+
+## Create a Contractor
+**POST** `/api/contractor`
+
+**Request Body Example:**
+```json
+{
+  "name": "Karabelo",
+  "contact_info": "Test",
+  "status": false,
+  "apikey": "0210323-2313-123",
+  "email": "karabelotaole04@gmail.com",
+  "phone": "013456789",
+  "address": "Tes street",
+  "city": "Pretoria",
+  "postal_code": "0419",
+  "reg_number": "23123123131",
+  "description": "Good pipe layer",
+  "services": "Pipe laying"
+}
+```
+
+**Response Example (201 Created):**
+```json
+{
+  "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "name": "Karabelo",
+  "contact_info": "Test",
+  "status": false,
+  "apikey": "0210323-2313-123",
+  "email": "karabelotaole04@gmail.com",
+  "phone": "013456789",
+  "address": "Tes street",
+  "city": "Pretoria",
+  "postal_code": "0419",
+  "reg_number": "23123123131",
+  "description": "Good pipe layer",
+  "services": "Pipe laying"
+}
+```
+
+---
+
+## Get All Contractors
+**GET** `/api/contractor`
+
+**Response Example:**
+```json
+[
+  {
+    "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "name": "Karabelo",
+    "contact_info": "Test",
+    "status": false,
+    "apikey": "0210323-2313-123",
+    "email": "karabelotaole04@gmail.com",
+    "phone": "013456789",
+    "address": "Tes street",
+    "city": "Pretoria",
+    "postal_code": "0419",
+    "reg_number": "23123123131",
+    "description": "Good pipe layer",
+    "services": "Pipe laying"
+  }
+]
+```
+
+---
+
+## Get Contractor by UUID
+**GET** `/api/contractor/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the contractor
+
+**Response Example:**
+```json
+{
+  "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "name": "Karabelo",
+  "contact_info": "Test",
+  "status": false,
+  "apikey": "0210323-2313-123",
+  "email": "karabelotaole04@gmail.com",
+  "phone": "013456789",
+  "address": "Tes street",
+  "city": "Pretoria",
+  "postal_code": "0419",
+  "reg_number": "23123123131",
+  "description": "Good pipe layer",
+  "services": "Pipe laying"
+}
+
+# Contractor Authentication Endpoints
+
+## Register a Contractor
+**POST** `/api/contractor/auth/register`
+
+**Request Body Example:**
+```json
+{
+  "email": "bagoki1587@asimarif.com",
+  "password": "Test@1234",
+  "contactNumber": "0672687235"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "message": "Registration successful, please verify your email.",
+  "username": "bagoki15871750943941252"
+}
+```
+
+> **Note:** Store the username for the next step (email confirmation).
+
+---
+
+## Confirm Email
+**POST** `/api/contractor/auth/confirm`
+
+**Request Body Example:**
+```json
+{
+  "username": "bagoki15871750941249379",
+  "code": "621074"
+}
+```
+
+**Response Example:**
+```json
+{
+  "message": "Account confirmed."
+}
+```
+
+---
+
+## Login
+**POST** `/api/contractor/auth/login`
+
+**Request Body Example:**
+```json
+{
+  "email": "bagoki1587@asimarif.com",
+  "password": "Test@1234"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "idToken": "[some long token]",
+  "accessToken": "[some long token]",
+  "refreshToken": "[some long token]",
+  "userType": "contractor",
+  "userId": "5b029df7-1e95-439e-89d9-bb2bdc4a3766"
+}
+```
+
+---
+
+## Update Contractor
+**PUT** `/api/contractor`
+
+**Request Body Example:**
+```json
+{
+  "contact_info": "Test Contact – Available via phone and email",
+  "status": true,
+  "apikey": "0210323-2313-123",
+  "email": "karabelo.moeketsi@example.com",
+  "phone": "01232313 - New Updated"
+}
+```
+
+**Response Example:**
+```json
+{
+  "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "name": "Karabelo",
+  "contact_info": "Test Contact – Available via phone and email",
+  "status": true,
+  "apikey": "0210323-2313-123",
+  "email": "karabelo.moeketsi@example.com",
+  "phone": "01232313 - New Updated",
+  "address": "Tes street",
+  "city": "Pretoria",
+  "postal_code": "0419",
+  "reg_number": "23123123131",
+  "description": "Good pipe layer",
+  "services": "Pipe laying"
+}
+```
+
+---
+
+## Delete Contractor
+**DELETE** `/api/contractor/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the contractor
+
+**Response:**  
+- `204 No Content` if deleted  
+- `404 Not Found` if not found
 
 
+
+# Image Upload Endpoints
+
+## Upload Image
+**POST** `/api/images/upload`
+
+**Content-Type:** `multipart/form-data`
+
+**Description:** Uploads a single image file to S3 and returns a unique image key (usually a UUID).
+
+**Request Example:**
+```
+Content-Type: multipart/form-data
+[File upload field with image data]
+```
+
+**Response Example (201 Created):**
+```json
+{
+  "imageKey": "a3f07d2b-2a31-4c9e-bf9e-6f2eaa2c1234"
+}
+```
+
+**Usage Notes:**
+- The returned `imageKey` can be used in other endpoints where image references are needed
+- Supported image formats: JPEG, PNG, GIF, WebP
+- Maximum file size: 10MB
+
+---
+
+## Get Image URL
+**GET** `/api/images/presigned/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the image (imageKey from upload)
+
+**Description:** Returns a presigned URL that can be used to view the image directly.
+
+**Response Example:**
+```json
+{
+  "url": "https://s3.amazonaws.com/bucket-name/images/a3f07d2b-2a31-4c9e-bf9e-6f2eaa2c1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=..."
+}
+```
+
+**Usage Notes:**
+- The returned URL is temporary and will expire after a set time period
+- Use this URL to display images in your application
+- The URL can be used directly in `<img>` tags or API responses
+
+---
+
+### Quote Field Requirements Summary
+
+| Field         | Create | Update | Type      | Notes                           |
+|---------------|--------|--------|-----------|--------------------------------|
+| task_id       | req*   | opt    | String    | Required for Maintenance quotes |
+| contractor_id | req*   | opt    | String    | Required for Maintenance quotes |
+| amount        | req    | opt    | Decimal   | Quote amount                   |
+| submitted_on  | req    | opt    | Timestamp | ISO 8601 format               |
+| type          | req    | opt    | String    | "Maintenance" or "Inventory"   |
+
+- **req** = required, **opt** = optional, **req*** = required for Maintenance quotes only
+
+### Contractor Field Requirements Summary
+
+| Field        | Create | Update | Type    | Notes                    |
+|--------------|--------|--------|---------|--------------------------|
+| name         | req    | opt    | String  | Contractor name          |
+| contact_info | req    | opt    | String  | Contact information      |
+| status       | req    | opt    | Boolean | Active/inactive status   |
+| apikey       | req    | opt    | String  | API key for contractor   |
+| email        | req    | opt    | String  | Email address            |
+| phone        | req    | opt    | String  | Phone number             |
+| address      | req    | opt    | String  | Physical address         |
+| city         | req    | opt    | String  | City                     |
+| postal_code  | req    | opt    | String  | Postal code              |
+| reg_number   | req    | opt    | String  | Registration number      |
+| description  | req    | opt    | String  | Contractor description   |
+| services     | req    | opt    | String  | Services offered         |
+
+- **req** = required, **opt** = optional
+
+# Maintenance Task Endpoints
+
+## Create Maintenance Task
+**POST** `/api/maintenance`
+
+**Request Body Fields:**
+- `title` (**required**): Title of the maintenance task (string)
+- `des` (**required**): Description of the maintenance task (string)
+- `status` (**required**): Current status of the task (string)
+- `scheduled_date` (**required**): Scheduled date for the task (string, format: "YYYY-MM-DD")
+- `approved` (**required**): Approval status (boolean)
+- `b_uuid` (**required**): UUID of the building (string/UUID)
+- `img` (**required**): UUID of the image from images table (string/UUID)
+- `t_uuid` (**required**): UUID of the trustee who created the task (string/UUID)
+
+**Request Body Example:**
+```json
+{
+  "title": "Yes b yes",
+  "des": "djewoijdwoei",
+  "status": "cascsac",
+  "scheduled_date": "2025-06-18",
+  "approved": false,
+  "b_uuid": "67b2a69a-7823-474f-ad68-64aee3c94cc4",
+  "img": "80666f00-37a0-4749-9631-dc6befda031c",
+  "t_uuid": "c375bc26-d60f-403a-a62c-7c888296da6d"
+}
+```
+
+**Response Example (201 Created):**
+```json
+{
+  "uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "title": "Yes b yes",
+  "des": "djewoijdwoei",
+  "status": "cascsac",
+  "scheduled_date": "2025-06-18",
+  "approved": false,
+  "b_uuid": "67b2a69a-7823-474f-ad68-64aee3c94cc4",
+  "img": "80666f00-37a0-4749-9631-dc6befda031c",
+  "t_uuid": "c375bc26-d60f-403a-a62c-7c888296da6d"
+}
+```
+
+---
+
+## Get All Maintenance Tasks
+**GET** `/api/maintenance`
+
+**Description:** Returns all maintenance tasks in the system.
+
+**Response Example:**
+```json
+[
+  {
+    "uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+    "title": "Yes b yes",
+    "des": "djewoijdwoei",
+    "status": "cascsac",
+    "scheduled_date": "2025-06-18",
+    "approved": false,
+    "b_uuid": "67b2a69a-7823-474f-ad68-64aee3c94cc4",
+    "img": "80666f00-37a0-4749-9631-dc6befda031c",
+    "t_uuid": "c375bc26-d60f-403a-a62c-7c888296da6d"
+  }
+]
+```
+
+---
+
+## Get Maintenance Task by UUID
+**GET** `/api/maintenance/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the maintenance task
+
+**Description:** Returns a specific maintenance task by its UUID.
+
+**Response Example:**
+```json
+{
+  "uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "title": "Yes b yes",
+  "des": "djewoijdwoei",
+  "status": "cascsac",
+  "scheduled_date": "2025-06-18",
+  "approved": false,
+  "b_uuid": "67b2a69a-7823-474f-ad68-64aee3c94cc4",
+  "img": "80666f00-37a0-4749-9631-dc6befda031c",
+  "t_uuid": "c375bc26-d60f-403a-a62c-7c888296da6d"
+}
+```
+
+---
+
+## Update Maintenance Task
+**PUT** `/api/maintenance/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the maintenance task
+
+**Request Body Fields:**  
+_All fields are optional; only include the ones you want to update._
+- `title` (string, optional)
+- `des` (string, optional)
+- `status` (string, optional)
+- `scheduled_date` (string, optional, format: "YYYY-MM-DD")
+- `approved` (boolean, optional)
+- `b_uuid` (string/UUID, optional)
+- `img` (string/UUID, optional)
+- `t_uuid` (string/UUID, optional)
+
+**Request Example:**
+```json
+{
+  "title": "Updated Task Title",
+  "status": "In Progress",
+  "approved": true
+}
+```
+
+**Response Example:**
+```json
+{
+  "uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "title": "Updated Task Title",
+  "des": "djewoijdwoei",
+  "status": "In Progress",
+  "scheduled_date": "2025-06-18",
+  "approved": true,
+  "b_uuid": "67b2a69a-7823-474f-ad68-64aee3c94cc4",
+  "img": "80666f00-37a0-4749-9631-dc6befda031c",
+  "t_uuid": "c375bc26-d60f-403a-a62c-7c888296da6d"
+}
+```
+
+---
+
+## Delete Maintenance Task
+**DELETE** `/api/maintenance/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the maintenance task
+
+**Description:** Deletes a specific maintenance task.
+
+**Response:**  
+- `204 No Content` if deleted  
+- `404 Not Found` if not found
+
+---
+
+### Maintenance Task Field Requirements Summary
+
+| Field          | Create | Update | Type        | Notes                                    |
+|----------------|--------|--------|-------------|------------------------------------------|
+| title          | req    | opt    | String      | Title of the maintenance task            |
+| des            | req    | opt    | String      | Description of the maintenance task      |
+| status         | req    | opt    | String      | Current status of the task               |
+| scheduled_date | req    | opt    | String      | Scheduled date (format: "YYYY-MM-DD")    |
+| approved       | req    | opt    | Boolean     | Approval status                          |
+| b_uuid         | req    | opt    | String/UUID | Building UUID (required)                 |
+| img            | req    | opt    | String/UUID | Image UUID from images table (required) |
+| t_uuid         | req    | opt    | String/UUID | Trustee UUID who created task (required)|
+
+- **req** = required, **opt** = optional
+
+**Required Field Notes:**
+- `b_uuid`: Must reference an existing building UUID
+- `img`: Must reference an existing image UUID from the images table
+- `t_uuid`: Must reference an existing trustee UUID who created the maintenance task
+
+# Quote Endpoints
+
+## Create a Quote
+**POST** `/api/quote`
+
+**Request Body Fields:**
+- `t_uuid` (**required**): UUID of the maintenance task (string/UUID)
+- `c_uuid` (**required**): UUID of the contractor (string/UUID)
+- `submitted_on` (**required**): Submission timestamp (string, ISO 8601 format)
+- `status` (**required**): Current status of the quote (string)
+- `amount` (**required**): Quote amount (decimal)
+- `doc` (**required**): Document/notes related to the quote (string)
+
+**Request Body Example:**
+```json
+{
+  "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "submitted_on": "2025-06-26T10:00:00.000+02:00",
+  "status": "Started",
+  "amount": 1000,
+  "doc": "jhihiduhidhwqidhqwudh"
+}
+```
+
+**Response Example (201 Created):**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "submitted_on": "2025-06-26T08:00:00.000+00:00",
+  "status": "Started",
+  "amount": 1000.00,
+  "doc": "jhihiduhidhwqidhqwudh"
+}
+```
+
+---
+
+## Get All Quotes
+**GET** `/api/quote`
+
+**Description:** Returns all quotes in the system.
+
+**Response Example:**
+```json
+[
+  {
+    "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+    "amount": 1000.00,
+    "doc": "jhihiduhidhwqidhqwudh",
+    "submitted_on": "2025-06-26T08:00:00.000+00:00",
+    "status": "Started",
+    "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+    "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28"
+  }
+]
+```
+
+---
+
+## Get Quote by UUID
+**GET** `/api/quote/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the quote
+
+**Description:** Returns a specific quote by its UUID.
+
+**Response Example:**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "amount": 1000.00,
+  "doc": "jhihiduhidhwqidhqwudh",
+  "submitted_on": "2025-06-26T08:00:00.000+00:00",
+  "status": "Started",
+  "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28"
+}
+```
+
+---
+
+## Delete Quote
+**DELETE** `/api/quote/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the quote
+
+**Description:** Deletes a specific quote.
+
+**Response:**  
+- `204 No Content` if deleted  
+- `404 Not Found` if not found
+
+---
+
+### Quote Field Requirements Summary
+
+| Field        | Create | Type           | Notes                                    |
+|--------------|--------|----------------|------------------------------------------|
+| t_uuid       | req    | String/UUID    | Maintenance task UUID (required)         |
+| c_uuid       | req    | String/UUID    | Contractor UUID (required)               |
+| submitted_on | req    | String         | ISO 8601 timestamp format               |
+| status       | req    | String         | Current status of the quote              |
+| amount       | req    | Decimal        | Quote amount                             |
+| doc          | req    | String         | Document/notes related to the quote      |
+
+- **req** = required
+
+**Required Field Notes:**
+- `t_uuid`: Must reference an existing maintenance task UUID
+- `c_uuid`: Must reference an existing contractor UUID
+- `submitted_on`: Must be in ISO 8601 format (e.g., "2025-06-26T10:00:00.000+02:00")
+
+# Trustee Endpoints
+
+## Create a Trustee
+**POST** `/api/trustee`
+
+**Request Body Example:**
+```json
+{
+  "name": "Karabelo",
+  "apikey": "0210323-2313-123",
+  "email": "karabelotaole04@gmail.com",
+  "phone": "013456789",
+}
+```
+
+**Response Example (201 Created):**
+```json
+{
+  "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "name": "Karabelo",
+  "apikey": "0210323-2313-123",
+  "email": "karabelotaole04@gmail.com",
+  "phone": "013456789",
+}
+```
+
+---
+
+## Get All Trustees
+**GET** `/api/trustee`
+
+**Response Example:**
+```json
+[
+  {
+    "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "name": "Karabelo",
+    "apikey": "0210323-2313-123",
+    "email": "karabelotaole04@gmail.com",
+    "phone": "013456789",
+  }
+]
+```
+
+---
+
+## Get Trustee by UUID
+**GET** `/api/trustee/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the trustee
+
+**Response Example:**
+```json
+{
+  "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "name": "Karabelo",
+  "apikey": "0210323-2313-123",
+  "email": "karabelotaole04@gmail.com",
+  "phone": "013456789",
+}
+```
+
+---
+
+# Trustee Authentication Endpoints
+
+## Register a Trustee
+**POST** `/api/trustee/auth/register`
+
+**Request Body Example:**
+```json
+{
+  "email": "bagoki1587@asimarif.com",
+  "password": "Test@1234",
+  "contactNumber": "0672687235"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "message": "Registration successful, please verify your email.",
+  "username": "bagoki15871750943941252"
+}
+```
+
+> **Note:** Store the username for the next step (email confirmation).
+
+---
+
+## Confirm Email
+**POST** `/api/trustee/auth/confirm`
+
+**Request Body Example:**
+```json
+{
+  "username": "bagoki15871750941249379",
+  "code": "621074"
+}
+```
+
+**Response Example:**
+```json
+{
+  "message": "Account confirmed."
+}
+```
+
+---
+
+## Login
+**POST** `/api/trustee/auth/login`
+
+**Request Body Example:**
+```json
+{
+  "email": "bagoki1587@asimarif.com",
+  "password": "Test@1234"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "idToken": "[some long token]",
+  "accessToken": "[some long token]",
+  "refreshToken": "[some long token]",
+  "userType": "trustee",
+  "userId": "5b029df7-1e95-439e-89d9-bb2bdc4a3766"
+}
+```
