@@ -36,6 +36,7 @@ class MaintenanceController(
         val b_uuid: UUID,
         val img: UUID,
         val t_uuid: UUID,
+        val c_uuid: UUID,
     )
 
     @PostMapping
@@ -51,6 +52,7 @@ class MaintenanceController(
             info.b_uuid,
             info.img,
             info.t_uuid,
+            info.c_uuid,
         )
 
     @PutMapping("/{uuid}")
