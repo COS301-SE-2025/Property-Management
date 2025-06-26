@@ -44,4 +44,8 @@ class GlobalExceptionHandler {
         ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(mapOf("error" to (ex.message ?: "An unexpected error occurred")))
+
+    @ExceptionHandler(NoSuchElementException::class)
+    fun handleNotFound(ex: NoSuchElementException): ResponseEntity<Map<String, String>> =
+        ResponseEntity(mapOf("error" to (ex.message ?: "Not found")), HttpStatus.NOT_FOUND)
 }

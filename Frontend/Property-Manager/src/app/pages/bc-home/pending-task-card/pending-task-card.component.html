@@ -1,7 +1,7 @@
 <div class="flex flex-col items-center justify-center h-full shadow-md">
     <div class="h-full w-full overflow-auto">
         <span class="text-2xl font-semibold ml-90">Pending tasks</span>
-        <p-table [value]="tasks()" [tableStyle]="{ 'min-width': '57rem'}">
+        <p-table [value]="tasks()" [tableStyle]="{ 'min-width': '40rem'}">
             <ng-template #header>
                 <tr>
                     <th pSortableColumn="UnitNo">
@@ -13,9 +13,6 @@
                     <th pSortableColumn="DueDate">
                         Due Date <p-sortIcon field="DueDate"/>
                     </th>
-                    <th pSortableColumn="numOfAssignedContractors">
-                        No. of assigned contractors<p-sortIcon field="numOfAssignedContractors"/>
-                    </th>
                 </tr>
             </ng-template>
             <ng-template #body let-task >
@@ -23,7 +20,6 @@
                 <td>{{ task.UnitNo }}</td>
                 <td>{{ task.description }}</td>
                 <td>{{ task.DueDate | formatDate }}</td>
-                <td>{{ task.numOfAssignedContractors }}</td>
             </tr>
             </ng-template>
         </p-table>

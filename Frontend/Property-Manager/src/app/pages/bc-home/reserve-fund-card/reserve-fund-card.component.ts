@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { BodyCoporateService } from '../../../services/body-coporate.service';
-import { BuildingContribution } from '../../../models/buildingContribution.model';
 import { FormatAmountPipe } from "../../../pipes/format-amount.pipe";
+import { ReserveFund } from '../../../models/reserveFund.model';
 
 @Component({
   selector: 'app-reserve-fund-card',
@@ -15,5 +15,5 @@ import { FormatAmountPipe } from "../../../pipes/format-amount.pipe";
 export class ReserveFundCardComponent {
 
   bodyCoporateService = inject(BodyCoporateService);
-  schedule = input.required<BuildingContribution[]>();
+  schedule = input.required<ReserveFund[]>();
 }

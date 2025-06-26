@@ -8,4 +8,6 @@ export interface Property{
     primaryContractors: number[] | null;
     latestInspectionDate: string;
     propertyImage: string | null;
+    area?: number;
+    coporateUuid?: string;
 }

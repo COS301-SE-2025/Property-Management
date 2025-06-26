@@ -4,7 +4,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 
 
@@ -89,7 +88,6 @@ export class RegisterOwnerComponent {
   public serverError = false;
 
   constructor(
-    private apiService: ApiService,
     private authService: AuthService,
     private router: Router
   ) {}

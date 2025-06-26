@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { HeaderComponent } from "../../components/header/header.component";
 import { DrawerComponent } from '../../components/drawer/drawer.component';
@@ -28,8 +28,21 @@ import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenan
     ])
   ]
 })
-export class BcHomeComponent {
+export class BcHomeComponent implements OnInit{
 
   constructor(public bodyCoporateService: BodyCoporateService){}
+
+  async ngOnInit() {
+      try{
+        await Promise.all([
+          this.bodyCoporateService.loadFundContribution(),
+          this.bodyCoporateService.loadPendingTasks()
+        ]);
+      }
+      catch(error)
+      {
+        console.log("Error loading data:", error);
+      }
+  }
 
 }

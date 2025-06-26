@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { BudgetService } from '../../../services/budget.service';
+// import { BudgetService } from '../../../services/budget.service';
 import { Graph } from '../../../models/graph.model';
 import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
@@ -14,7 +14,7 @@ import { ChangeDetectionStrategy } from '@angular/core';
 })
 export class GraphCardComponent {
 
-  budgetService = inject(BudgetService);
+  // budgetService = inject(BudgetService);
   budgetGraphData = input.required<Graph>();
   displayDialog = true;
 
