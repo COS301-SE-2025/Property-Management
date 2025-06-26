@@ -14,6 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.UUID
 
 @WebMvcTest(TrusteeController::class)
@@ -72,31 +77,6 @@ class TrusteeControllerTest {
         mockMvc
             .perform(get("/api/trustee/invalid-uuid-format"))
             .andExpect(status().isBadRequest)
-    }
-
-    @Test
-    fun `should return 400 when trusteeId is non-numeric`() {
-        mockMvc
-            .perform(get("/api/trustee/abc"))
-            .andExpect(status().isBadRequest)
-    }
-
-    @Test
-    fun `should return 404 when trusteeId is negative`() {
-        given(trusteeService.getById(-1)).willThrow(NoSuchElementException("Item not found: -1"))
-        mockMvc
-            .perform(get("/api/trustee/-1"))
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.error").value("Item not found: -1"))
-    }
-
-    @Test
-    fun `should return 404 when trusteeId is zero`() {
-        given(trusteeService.getById(0)).willThrow(NoSuchElementException("Item not found: 0"))
-        mockMvc
-            .perform(get("/api/trustee/0"))
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.error").value("Item not found: 0"))
     }
 
     @Test

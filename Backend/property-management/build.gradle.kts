@@ -43,6 +43,9 @@ dependencies {
 	testImplementation("com.h2database:h2")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("io.micrometer:micrometer-registry-prometheus")
+	testImplementation("org.mockito:mockito-core:4.+")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:4.+")
+
 }
 
 kotlin {
