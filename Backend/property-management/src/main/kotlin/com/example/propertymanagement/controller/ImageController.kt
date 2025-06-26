@@ -23,7 +23,7 @@ class ImageController(
     val s3Client: S3Client,
     val imageRepository: ImageRepository,
 ) {
-    @Value("\${aws.bucket-name}")
+    @Value("\${aws.bucket-name:default-bucket}")
     lateinit var bucketName: String
 
     @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])

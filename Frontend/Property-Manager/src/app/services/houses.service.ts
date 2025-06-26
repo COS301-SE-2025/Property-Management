@@ -83,16 +83,16 @@ export class HousesService {
           throw Error("No building details returned");
         }
 
-        const budget = [
+        const budget: Budget[] = [
           {
-            category: 'Inventory',
-            budgetAmount: details.inventoryBudget,
-            budgetSpent: details.inventorySpent
+            category: "inventory",
+            budgetAmount: details.inventoryBudget.budgetAmount,
+            budgetSpent: details.inventoryBudget.budgetSpent
           },
           {
-            category: 'Maintenance',
-            budgetAmount: details.maintenanceBudget,
-            budgetSpent: details.maintenanceSpent
+            category: "maintenance",
+            budgetAmount: details.maintenanceBudget.budgetAmount,
+            budgetSpent: details.maintenanceBudget.budgetSpent
           }
         ];
 

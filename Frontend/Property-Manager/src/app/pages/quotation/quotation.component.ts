@@ -6,10 +6,24 @@ import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { FileUploadEvent } from 'primeng/fileupload';
-import { ApiService } from '../../services/api.service';
-import { Router } from '@angular/router';
+import { FileUpload } from 'primeng/fileupload';
 
+import { HeaderComponent } from "../../components/header/header.component";
+
+import { DatePicker } from 'primeng/datepicker';
+import {
+  trigger,
+  transition,
+  style,
+  animate,
+  query,
+  stagger
+} from '@angular/animations';
+
+
+interface FileUploadEvent {
+  files: File[];
+}
 @Component({
   selector: 'app-quotation',
   standalone: true,
@@ -19,115 +33,41 @@ import { Router } from '@angular/router';
     ButtonModule,
     CardModule,
     CommonModule,
-    ToastModule
+    ToastModule,
+    HeaderComponent,
+    FileUpload,
+    DatePicker
   ],
   providers: [MessageService],
-  template: `
-    <div class="min-h-screen bg-white relative p-4">
-      <!-- Top Right Icons -->
-      <div class="absolute top-4 right-4 flex space-x-4">
-        <img src="assets/icons/tools.svg" alt="Settings" class="w-8 h-8" />
-        <img src="assets/icons/user.svg" alt="User" class="w-8 h-8" />
-      </div>
-
-      <!-- Logo + Title -->
-      <div class="text-center mb-6">
-        <img src="assets/images/logo.png" alt="Logo" class="mx-auto w-16" />
-        <h1 class="text-2xl font-bold text-black">Create Quotation</h1>
-        <div class="h-1 w-32 bg-yellow-400 mx-auto mt-1 mb-4"></div>
-      </div>
-
-      <!-- Quotation Form -->
-      <div class="border rounded-lg p-6 flex flex-col md:flex-row justify-between gap-4 shadow-sm">
-        <!-- Left Side Inputs -->
-        <div class="flex flex-col space-y-4 flex-1">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input pInputText placeholder="Contractor name" [(ngModel)]="quotation.contractorName" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Address" [(ngModel)]="quotation.address" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Profession" [(ngModel)]="quotation.profession" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Email" [(ngModel)]="quotation.email" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Phone Number" [(ngModel)]="quotation.phone" class="p-inputtext-sm w-full bg-white text-black" />
-            <input pInputText placeholder="Quotation Amount" [(ngModel)]="quotation.amount" class="p-inputtext-sm w-full bg-white text-black" />
-          </div>
-        </div>
-
-        <!-- Right Side Image Upload -->
-        <div class="flex flex-col items-center justify-center gap-2 flex-shrink-0 w-full md:w-72">
-          <div class="border w-full h-40 bg-gray-50 flex items-center justify-center rounded">
-            <img src="assets/icons/image.svg" alt="Placeholder" class="w-10 h-10" *ngIf="!previewUrl" />
-            <img [src]="previewUrl" *ngIf="previewUrl" class="w-full h-full object-contain rounded" alt="Uploaded image" />
-          </div>
-          <button 
-            pButton 
-            type="button" 
-            class="p-button mt-4 bg-yellow-400 text-black font-semibold shadow-md"
-            (click)="submitQuotation()"
-          > 
-            Create Quotation
-          </button>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [``],
+  templateUrl: `./quotation.component.html`,
+  styles: ``,
+   animations: [
+    trigger('fadeInStagger', [
+      transition(':enter', [
+        query('.animate-item', [
+          style({ opacity: 0, transform: 'translateY(20px)' }),
+          stagger(100, [
+            animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+          ])
+        ])
+      ])
+    ])
+  ]
 })
 export class QuotationComponent {
-  quotation = {
-    contractorName: '',
-    address: '',
-    profession: '',
-    email: '',
-    phone: '',
-    amount: ''
-  };
-  previewUrl: string | null = null;
-  constructor(private messageService: MessageService, private apiservice: ApiService, private router: Router) {}
+  IssueDate = '';
+  expirationDate = '';
+  quoteNo = '';
+  totalAmount = '';
 
-    onUpload(event: FileUploadEvent) {
-  const file = event.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      this.previewUrl = e.target && e.target.result ? e.target.result as string : null;
-    };
-    reader.readAsDataURL(file);
+  constructor(private messageService: MessageService) {}
+
+  onUpload(event: FileUploadEvent) {
+    console.log('Uploaded files:', event.files);
+    this.messageService.add({ 
+      severity: 'info', 
+      summary: 'Success', 
+      detail: 'File Uploaded with Basic Mode' 
+    });
   }
-
-  this.messageService.add({
-    severity: 'info',
-    summary: 'Success',
-    detail: 'File Uploaded with Basic Mode'
-  });
-}
-
-  submitQuotation() {
-    this.apiservice.getAllContractors().subscribe((response) => {
-    const nameToFind = this.quotation.contractorName.toLowerCase();
-    let found = false;
-    const cleaned = this.quotation.amount.replace(/[^0-9.-]+/g, "");
-
-    for (const contractor of response) {
-      console.log(contractor?.name);
-      if (
-        contractor?.name &&
-        contractor.name.toLowerCase() === nameToFind
-      ) {
-        console.log("Matching Contractor ID:", contractor.contractorId);
-        found = true;
-        this.apiservice.addQuote(101, contractor.contractorId, Number(cleaned) ,new Date("2025-05-27"), "Mainteneance").subscribe((response2) => {
-            alert('Your Quote was sucessfuly sent, ID:' + response2.quote_id);
-        });
-        console.log();
-        alert('Your Quote was sucessfuly sent');
-        this.router.navigate(['/contractorHome'])
-      }
-    }
-
-    if (!found) {
-      alert("No contractor found with the name:"+ nameToFind);
-    }
-  });
-
-}
-
 }
