@@ -44,3 +44,6 @@ docker-flyway-info:
 
 docker-flyway-migrate:
 	docker-compose run --rm flyway migrate
+
+docker-flyway-repair-migrate:
+	docker-compose run --rm flyway repair

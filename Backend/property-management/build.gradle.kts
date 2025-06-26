@@ -39,9 +39,13 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("software.amazon.awssdk:s3:2.21.0")
 	implementation("software.amazon.awssdk:cognitoidentityprovider:2.21.0") 
+<<<<<<< KB-UnitTests
+	implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
+=======
 	testImplementation("com.h2database:h2")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("io.micrometer:micrometer-registry-prometheus")
+>>>>>>> backend
 }
 
 kotlin {

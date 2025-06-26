@@ -34,7 +34,6 @@ class MaintenanceController(
         val scheduled_date: Date,
         val approved: Boolean,
         val b_uuid: UUID,
-        val cb_uuid: UUID,
         val img: UUID,
         val t_uuid: UUID,
     )
@@ -50,7 +49,6 @@ class MaintenanceController(
             java.sql.Date(info.scheduled_date.time),
             info.approved,
             info.b_uuid,
-            info.cb_uuid,
             info.img,
             info.t_uuid,
         )
