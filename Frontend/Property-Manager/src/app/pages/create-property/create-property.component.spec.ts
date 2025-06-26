@@ -8,6 +8,7 @@ describe('CreatePropertyComponent', () => {
   let fixture: ComponentFixture<CreatePropertyComponent>;
 
   beforeEach(async () => {
+    localStorage.setItem('userEmail', 'test@example.com');
     await TestBed.configureTestingModule({
       imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule]
     })
@@ -35,7 +36,9 @@ describe('CreatePropertyComponent', () => {
     component.form.patchValue({
       name: 'Test Property',
       area: 100,
-      address: '123 Main St'
+      address: '123 Main St',
+      type: 'Apartment',
+      propertyValue: 1000000
     });
     expect(component.form.valid).toBeTrue();
   });
@@ -54,7 +57,9 @@ describe('CreatePropertyComponent', () => {
     component.form.patchValue({
       name: 'Test Property',
       area: 100,
-      address: '123 Main St'
+      address: '123 Main St',
+      type: 'Apartment',
+      propertyValue: 1000000
     });
     component.onSubmit();
 
