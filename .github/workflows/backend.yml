@@ -69,5 +69,5 @@ jobs:
             SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
             SPRING_JPA_SHOW_SQL: true
             SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-          run: ./gradlew test --scan -Dspring.profiles.active=test --info
+          run: ./gradlew test --scan -Dspring.profiles.active=test
           working-directory: Backend/property-management
