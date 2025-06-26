@@ -3,7 +3,13 @@
 <div class="px-10 py-8">
   <h2 class="text-2xl font-bold mb-2">Create New Property</h2>
   <div class="h-1 w-64 bg-yellow-400 mb-6"></div>
-  <div class="border rounded-lg p-12 shadow-sm bg-white max-w-6xl mx-auto">
+  <div
+    [ngClass]="{
+      'border rounded-lg p-12 shadow-sm max-w-6xl mx-auto': true,
+      'bg-#3d444d border-black text-black': !isDarkMode,
+      'bg-#2b3036 border-white text-white': isDarkMode
+    }"
+  >
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-2 gap-4">
       <div class="flex flex-col space-y-4">
         <div class="mb-8">

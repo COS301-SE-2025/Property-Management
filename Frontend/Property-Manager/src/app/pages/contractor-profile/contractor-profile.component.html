@@ -12,9 +12,11 @@
 
   <div
     [ngClass]="{
-      'border rounded-lg p-12 shadow-sm bg-white max-w-6xl mx-auto': true,
-      'border-black': step === 1,
-      'border-gray-200': step !== 1
+      'border rounded-lg p-12 shadow-sm max-w-6xl mx-auto': true,
+      'bg-#3d444d border-black text-white': step === 1 && !isDarkMode,
+      'bg-#2b3036 border-black text-white': step === 1 && isDarkMode,
+      'border-gray-200': step !== 1 && !isDarkMode,
+      'border-gray-700': step !== 1 && isDarkMode
     }"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
   styles: [],
 })
 
-export class CreatePropertyComponent {
+export class CreatePropertyComponent implements OnInit {
   form: ReturnType<FormBuilder['group']>;
 
   constructor(private fb: FormBuilder, private propertyService: PropertyService, private router: Router) {
@@ -67,5 +67,11 @@ onFileSelected(event: Event) {
         }
       });
     }
+  }
+
+  public isDarkMode = false;
+
+  ngOnInit() {
+    this.isDarkMode = document.documentElement.classList.contains('dark-theme');
   }
 }
