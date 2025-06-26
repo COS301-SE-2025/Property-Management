@@ -1,0 +1,5 @@
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
+    testImplementation("io.mockk:mockk:1.10.6")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+}

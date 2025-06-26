@@ -116,7 +116,7 @@ class TrusteeAuthController(
                 accessToken = tokens.accessToken,
                 refreshToken = tokens.refreshToken,
                 userType = "trustee",
-                userId = trustee.uuid.toString(),
+                userId = trustee.trusteeUuid.toString(),
             ),
         )
     }
