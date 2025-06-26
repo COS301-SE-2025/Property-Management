@@ -5,6 +5,26 @@
          <img src= "assets/images/logo.png" class="w-16 h-12 ml-8 " alt="logo">
     <p class = "font-medium text-xl">Property Manager</p>
 
+    <!--BreadCrumb-->
+    <div class="pl-5">
+        <p-breadcrumb class="max-w-full" [model]="items">
+            <ng-template #item let-item>
+                <ng-container *ngIf="item.route && !item.active; else elseBlock">
+                    <a [routerLink]="item.route" class="p-breadcrumb-item-link">
+                        <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
+                        <span class="text-primary font-semibold">{{ item.label }}</span>
+                    </a>
+                </ng-container>
+                <ng-template #elseBlock>
+                    <span class="text-color">
+                        <span *ngIf="item.icon" [ngClass]="item.icon"></span>
+                        {{ item.label }}
+                    </span>
+                </ng-template>
+            </ng-template>
+        </p-breadcrumb>
+    </div>
+
     <div class = "flex flex-row items-center ml-auto">
         <div class = "relative">
         <button class = "cursor-pointer pr-3" (click)="dropDownSettings()"> 

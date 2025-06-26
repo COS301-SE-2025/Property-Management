@@ -4,6 +4,11 @@
     <p class = "text-xl font-normal">Your properties</p>
 </div>
 
+<div *ngIf="bcUser">
+    <button class = "mt-4 ml-2 cursor-pointer" (click)="openDrawer.openDrawer()"><img src="assets/icons/sideDrawer_button.svg" alt="Open drawer" class="w-9 h-9"></button>
+    <app-drawer #openDrawer/>
+</div>
+
 <div class = "flex flex-wrap justify-center gap-8 p-8">
     @for (house of houses(); track  house.buildingUuid)
     {
