@@ -13,19 +13,17 @@ import java.util.UUID
 @Table(name = "maintenancetask")
 data class Maintenance(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
+    @Column(name = "task_uuid")
+    val uuid: UUID? = null,
     val title: String,
     @Column(name = "description")
     val des: String,
     val status: String,
     var scheduled_date: java.sql.Date? = null,
     val approved: Boolean,
-    @Column(name = "task_uuid")
-    val uuid: UUID = UUID.randomUUID(),
     @Column(name = "building_uuid")
     val b_uuid: UUID,
-    @Column(name = "created_by_uuid")
-    val cb_uuid: UUID,
     @Column(name = "image_uuid")
     val img: UUID,
     @Column(name = "trustee_uuid")
