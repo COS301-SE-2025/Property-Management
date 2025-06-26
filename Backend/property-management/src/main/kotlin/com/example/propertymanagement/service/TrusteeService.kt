@@ -12,7 +12,7 @@ class TrusteeService(
 ) {
     fun getAll(): List<Trustee> = repository.findAll()
 
-    fun getById(id: Int): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    fun getById(id: UUID): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Trustee): Trustee = repository.save(item)
 
@@ -45,7 +45,7 @@ class TrusteeService(
     }
 
     fun update(
-        id: Int,
+        id: UUID,
         newItem: Trustee,
     ): Trustee {
         val existing = getById(id)
@@ -61,5 +61,8 @@ class TrusteeService(
 
     fun deleteByUuid(uuid: UUID) = repository.deleteByTrusteeUuid(uuid)
 
-    fun delete(id: Int) = repository.deleteById(id)
+    fun delete(id: UUID) = repository.deleteById(id)
+
+    fun getByEmail(email: String): Trustee =
+        repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
 }
