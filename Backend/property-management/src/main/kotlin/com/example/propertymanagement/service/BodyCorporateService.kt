@@ -9,7 +9,6 @@ import com.example.propertymanagement.dto.LoginResponse
 import com.example.propertymanagement.dto.UpdateBodyCorporateRequest
 import com.example.propertymanagement.model.BodyCorporate
 import com.example.propertymanagement.repository.BodyCorporateRepository
-import com.example.propertymanagement.service.CognitoService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
