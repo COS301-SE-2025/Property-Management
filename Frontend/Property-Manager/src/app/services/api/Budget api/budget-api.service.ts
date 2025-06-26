@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { BuildingDetails } from '../../../models/buildingDetails.model';
 
 @Injectable({
@@ -34,9 +34,9 @@ export class BudgetApiService {
     return this.http.get<BuildingDetails[]>(`${this.url}/budgets`);
   }
 
-  getBudgetsByBuildingId(buildingId: string): Observable<BuildingDetails>
+  getBudgetsByBuildingId(buildingId: string): Observable<BuildingDetails[]>
   {
-    return this.http.get<BuildingDetails>(`${this.url}/budgets/building/${buildingId}`);
+    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/building/${buildingId}`);
   }
 
   getBudgetsByYear(year: string): Observable<BuildingDetails[]>
@@ -51,7 +51,7 @@ export class BudgetApiService {
 
   updateBudget(budgetId: string, budget: BuildingDetails)
   {
-    const totalBudget = (budget.maintenanceBudget.budgetAmount + budget.inventoryBudget.budgetAmount);
+    const totalBudget = (budget.maintenanceBudget + budget.inventoryBudget);
 
     const updatedBudget = {
       year: budget.approvalDate.getFullYear(),
@@ -59,7 +59,7 @@ export class BudgetApiService {
       maintenanceBudget: budget.maintenanceBudget,
       inventoryBudget: budget.inventoryBudget,
       approvalDate: budget.approvalDate,
-      buildingUuid: budget.building.buildingUuid
+      buildingUuid: budget.buildingUuid
     };
 
     return this.http.put<BuildingDetails>(`${this.url}/budgets/${budgetId}`, updatedBudget);

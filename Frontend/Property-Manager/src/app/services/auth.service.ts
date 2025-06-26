@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CookieService } from 'ngx-cookie-service';
 
 
 export interface AuthTokens {
@@ -19,7 +18,7 @@ export class AuthService {
 
   private url = '/api';
 
-  constructor(private http: HttpClient, private cookieService: CookieService){}
+  constructor(private http: HttpClient){}
 
   bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
   {
@@ -32,8 +31,8 @@ export class AuthService {
           const expireDate = new Date();
           expireDate.setDate(expireDate.getDate() + 1);
 
-          this.cookieService.set('idToken', idToken, expireDate, '/');
-          this.cookieService.set('bodyCoporateId', bodyCoporateId, expireDate, '/');
+          document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
+          document.cookie = `bodyCoporateId=${bodyCoporateId}; expires=${expireDate.toUTCString()}; path=/`;
 
           resolve(result);
         },

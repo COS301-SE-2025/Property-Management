@@ -155,4 +155,12 @@ export class BudgetService {
       }
     });
   }
+  async getTasks(houseId: string)
+  {
+
+  }
+  async getGraph(houseId: string)
+  {
+    
+  }
 }

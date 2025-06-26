@@ -4,15 +4,15 @@
     <p class = "text-yellow-500 text-lg font-semibold mt-2">R {{ calculateTotalBudget() | formatAmount }}</p> 
 
     <div class="flex flex-wrap justify-center gap-4 px-6 mt-4">
-    <div class="bg-gray-50 p-4 rounded-lg shadow text-center w-45">
-        <p class = "font-medium text-sm text-gray-600 mb-1">Allocated Inventory budget</p>
-        <p class = "mt-1">R {{ budget().inventoryBudget.budgetAmount | formatAmount }}</p>
-
-        <div class="border-t border-gray-300 my-3">
-        <p class = "font-medium text-sm text-gray-600 mb-1">Allocated Maintenance Spent</p>
-        <p class = "mt-1">R {{ budget().maintenanceBudget.budgetAmount | formatAmount }}</p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow text-center w-45">
+            <p class = "font-medium text-sm text-gray-600 mb-1">Allocated Inventory budget</p>
+            <p class = "mt-1">R {{ budget().inventoryBudget | formatAmount }}</p>
         </div>
-    </div>
+
+        <div class="bg-gray-50 p-4 rounded-lg shadow text-center w-45">
+            <p class = "font-medium text-sm text-gray-600 mb-1">Allocated Maintenance Spent</p>
+            <p class = "mt-1">R {{ budget().maintenanceBudget | formatAmount }}</p>
+        </div>
     </div>
 
     @if(hasBudget)

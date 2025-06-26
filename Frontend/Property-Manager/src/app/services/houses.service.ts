@@ -81,14 +81,13 @@ export class HousesService {
   }
   async loadBudget(houseId: string){
 
-    this.budgetApiService.getBudgetsByBuildingId(houseId).subscribe({
-      next: (budget) => {
-        this.budgets.set(budget);
-      },
-      error: (error) => {
-        console.error("Error getting budgets", error);
+    console.log(houseId);
+    this.budgetApiService.getBudgetsByBuildingId(houseId).subscribe(
+      (bulidingDetails: BuildingDetails[]) => {
+        const firstElement = bulidingDetails[0];
+        this.budgets.set(firstElement);
       }
-    })
+    )
   }
   async createBudget(totalBudget: number, maintenanceBudget: number, inventoryBudget:number, updatedOn: Date, buildingId: string)
   {

@@ -4,9 +4,11 @@ import { MaintenanceTask } from "./maintenanceTask.model";
 
 export interface BuildingDetails{
     budgetUuid: string;
+    buildingUuid: string;
     approvalDate: Date
-    building: Building;
-    maintenanceBudget: Budget;
-    inventoryBudget: Budget;
-    maintenanceTasks: MaintenanceTask[];
+    inventoryBudget: number;
+    inventorySpent: number;
+    maintenanceBudget: number;
+    maintenanceSpent: number;
+    year?: number;   
 }

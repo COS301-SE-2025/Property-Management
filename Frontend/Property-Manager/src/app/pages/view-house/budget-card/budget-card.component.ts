@@ -27,8 +27,8 @@ export class BudgetCardComponent implements OnInit{
   }
 
   async ngOnInit() {
-      console.log("Checking for budget");
-      this.hasBudget = await this.isExistingBudget();
+    console.log("Checking for budget");
+    this.hasBudget = await this.isExistingBudget();
   }
 
   async isExistingBudget(): Promise<boolean>
@@ -38,7 +38,8 @@ export class BudgetCardComponent implements OnInit{
 
   calculateTotalBudget(): number
   {
-    return (this.budget().inventoryBudget.budgetAmount + this.budget().maintenanceBudget.budgetAmount);
+    console.log(this.budget());
+    return (this.budget().inventoryBudget + this.budget().maintenanceBudget);
   }
   RouteToManageBudget()
   {

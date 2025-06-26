@@ -63,5 +63,6 @@ export class ViewHouseComponent implements OnInit{
   {
     const houseId = String(this.route.snapshot.paramMap.get('houseId'));
     this.houseService.loadInventory(houseId);
+    this.houseService.loadBudget(houseId);
   }
 }
