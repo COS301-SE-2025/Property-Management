@@ -5,10 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.Optional
 import java.util.UUID
 
-interface TrusteeRepository : JpaRepository<Trustee, Int> {
-    fun findByUuid(uuid: UUID): Optional<Trustee>
+interface TrusteeRepository : JpaRepository<Trustee, UUID> {
+    fun findByTrusteeUuid(trusteeUuid: UUID): Optional<Trustee>
 
-    fun deleteByUuid(uuid: UUID)
+    fun deleteByTrusteeUuid(trusteeUuid: UUID)
 
     fun findByEmail(email: String): Optional<Trustee>
 }

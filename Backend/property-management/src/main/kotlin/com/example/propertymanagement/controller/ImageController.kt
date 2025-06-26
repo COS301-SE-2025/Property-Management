@@ -43,7 +43,7 @@ class ImageController(
                 .builder()
                 .bucket(bucketName)
                 .key(key)
-                .contentType(file.contentType ?: "application/octet-stream")
+                .contentType(file.contentType)
                 .build(),
             RequestBody.fromBytes(file.bytes),
         )

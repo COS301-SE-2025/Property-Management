@@ -73,26 +73,30 @@ class CognitoService(
     }
 
     fun login(
-        email: String,
+        username: String,
         password: String,
     ): AuthTokens {
-        val authRequest =
-            AdminInitiateAuthRequest
-                .builder()
-                .userPoolId(userPoolId)
-                .clientId(clientId)
-                .authFlow(AuthFlowType.ADMIN_NO_SRP_AUTH)
-                .authParameters(mapOf("USERNAME" to email, "PASSWORD" to password))
-                .build()
+        try {
+            val authRequest =
+                AdminInitiateAuthRequest
+                    .builder()
+                    .userPoolId(userPoolId)
+                    .clientId(clientId)
+                    .authFlow(AuthFlowType.ADMIN_NO_SRP_AUTH)
+                    .authParameters(mapOf("USERNAME" to username, "PASSWORD" to password))
+                    .build()
 
-        val result = cognitoClient.adminInitiateAuth(authRequest)
-        val tokens = result.authenticationResult()
+            val result = cognitoClient.adminInitiateAuth(authRequest)
+            val tokens = result.authenticationResult()
 
-        return AuthTokens(
-            idToken = tokens.idToken(),
-            accessToken = tokens.accessToken(),
-            refreshToken = tokens.refreshToken(),
-        )
+            return AuthTokens(
+                idToken = tokens.idToken(),
+                accessToken = tokens.accessToken(),
+                refreshToken = tokens.refreshToken(),
+            )
+        } catch (e: Exception) {
+            throw RuntimeException("Cognito login failed: ${e.message}", e)
+        }
     }
 
     data class AuthTokens(
