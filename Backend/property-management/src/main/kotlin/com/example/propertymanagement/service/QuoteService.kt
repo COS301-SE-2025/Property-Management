@@ -3,6 +3,7 @@ package com.example.propertymanagement.service
 import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.repository.QuoteRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.util.Date
 import java.util.NoSuchElementException
@@ -55,5 +56,6 @@ class QuoteService(
         return repository.save(updated)
     }
 
+    @Transactional
     fun delete(uuid: UUID) = repository.deleteByUuid(uuid)
 }

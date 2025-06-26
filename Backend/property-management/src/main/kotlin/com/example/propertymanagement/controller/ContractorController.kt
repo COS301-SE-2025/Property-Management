@@ -35,17 +35,37 @@ class ContractorController(
 
     data class ContractorDto(
         val name: String,
+        val contact_info: String,
+        val status: Boolean,
+        val apikey: String,
         val email: String,
         val phone: String,
-        val apikey: String,
-        val status: Boolean,
+        val address: String,
+        val city: String,
+        val postal_code: String,
+        val reg_number: String,
+        val description: String,
+        val services: String,
     )
 
     @PostMapping
     fun createUser(
-        @RequestBody ContractorDto: ContractorDto,
+        @RequestBody contractor: ContractorDto,
     ): Contractor =
-        service.addUser(ContractorDto.name, ContractorDto.email, ContractorDto.phone, ContractorDto.apikey, ContractorDto.status)
+        service.addUser(
+            contractor.name,
+            contractor.contact_info,
+            contractor.status,
+            contractor.apikey,
+            contractor.email,
+            contractor.phone,
+            contractor.address,
+            contractor.city,
+            contractor.postal_code,
+            contractor.reg_number,
+            contractor.description,
+            contractor.services,
+        )
 
     @PutMapping("/{uuid}")
     fun update(
