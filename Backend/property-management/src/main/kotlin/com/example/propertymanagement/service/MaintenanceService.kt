@@ -60,7 +60,7 @@ class MaintenanceService(
                 b_uuid = newItem.b_uuid,
                 img = newItem.img,
                 t_uuid = newItem.t_uuid,
-                c_uuid = newItem.c_uuid
+                c_uuid = newItem.c_uuid,
             )
         return repository.save(updated)
     }

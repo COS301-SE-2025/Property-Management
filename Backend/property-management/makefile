@@ -53,3 +53,5 @@ coverage:
 
 test:
 	./gradlew test
+docker-flyway-repair-clean:
+	docker-compose run --rm flyway -cleanDisabled=false clean
