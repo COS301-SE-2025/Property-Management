@@ -1,0 +1,20 @@
+database:
+  url: jdbc:postgresql://localhost:5432/test_db
+  username: test_user
+  password: test_password
+  driver-class-name: org.postgresql.Driver
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test_db
+    username: test_user
+    password: test_password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicTypeRegistry: TRACE
