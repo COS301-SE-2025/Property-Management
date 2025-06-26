@@ -179,4 +179,134 @@ class BodyCoporateControllerTest(
 
         verify(bodyCorporateService).searchBodyCorporatesByName("Corp")
     }
+
+    @Test
+    fun `getAllBodyCorporates should return 200 OK with paginated results`() {
+        val responseList = listOf(
+            BodyCorporateResponse(
+                corporateUuid = testUuid,
+                corporateName = "Test Corp",
+                contributionPerSqm = BigDecimal("10.00"),
+                totalBudget = BigDecimal("10000.00"),
+                email = "corp@test.com",
+                userId = "user1",
+                username = "testuser"
+            )
+        )
+        val pageResponse = org.springframework.data.domain.PageImpl(responseList)
+
+        `when`(bodyCorporateService.getAllBodyCorporates(any())).thenReturn(pageResponse)
+
+        mockMvc.perform(get("/api/body-corporates")
+            .param("page", "0")
+            .param("size", "20")
+            .param("sortBy", "corporateName")
+            .param("sortDirection", "asc"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.content.length()").value(1))
+            .andExpect(jsonPath("$.content[0].corporateName").value("Test Corp"))
+
+        verify(bodyCorporateService).getAllBodyCorporates(any())
+    }
+
+    @Test
+    fun `getBodyCorporateStatistics should return 200 OK with statistics`() {
+        val statistics = BodyCorporateService.BodyCorporateStatistics(
+        totalBodyCorporates = 5L,
+        totalCombinedBudget = BigDecimal("50000.00")
+    )
+
+        `when`(bodyCorporateService.getBodyCorporateStatistics()).thenReturn(statistics)
+
+        mockMvc.perform(get("/api/body-corporates/statistics"))
+        .andExpect(status().isOk)
+        .andExpect(jsonPath("$.totalBodyCorporates").value(5))
+        .andExpect(jsonPath("$.totalCombinedBudget").value(50000.00))
+
+        verify(bodyCorporateService).getBodyCorporateStatistics()
+    }
+
+    @Test
+    fun `getBodyCorporateByEmail should return 200 OK when found`() {
+        val response = BodyCorporateResponse(
+            corporateUuid = testUuid,
+            corporateName = "Test Corp",
+            contributionPerSqm = BigDecimal("10.00"),
+            totalBudget = BigDecimal("10000.00"),
+            email = "test@corp.com",
+            userId = "user123",
+            username = "testuser"
+        )
+
+        `when`(bodyCorporateService.getBodyCorporateByEmail("test@corp.com")).thenReturn(response)
+
+        mockMvc.perform(get("/api/body-corporates/email/{email}", "test@corp.com"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.corporateName").value("Test Corp"))
+
+        verify(bodyCorporateService).getBodyCorporateByEmail("test@corp.com")
+    }
+
+    @Test
+    fun `getBodyCorporateByEmail should return 404 NOT FOUND when not found`() {
+        `when`(bodyCorporateService.getBodyCorporateByEmail("missing@corp.com")).thenThrow(NoSuchElementException("not found"))
+
+        mockMvc.perform(get("/api/body-corporates/email/{email}", "missing@corp.com"))
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `getBodyCorporateByUserId should return 200 OK when found`() {
+        val response = BodyCorporateResponse(
+            corporateUuid = testUuid,
+            corporateName = "Test Corp",
+            contributionPerSqm = BigDecimal("10.00"),
+            totalBudget = BigDecimal("10000.00"),
+            email = "test@corp.com",
+            userId = "user123",
+            username = "testuser"
+        )
+
+        `when`(bodyCorporateService.getBodyCorporateByUserId("user123")).thenReturn(response)
+
+        mockMvc.perform(get("/api/body-corporates/user/{userId}", "user123"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.corporateName").value("Test Corp"))
+
+        verify(bodyCorporateService).getBodyCorporateByUserId("user123")
+    }
+
+    @Test
+    fun `getBodyCorporateByUserId should return 404 NOT FOUND when not found`() {
+        `when`(bodyCorporateService.getBodyCorporateByUserId("missingUser")).thenThrow(NoSuchElementException("not found"))
+
+        mockMvc.perform(get("/api/body-corporates/user/{userId}", "missingUser"))
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `getBodyCorporatesByMinimumBudget should return 200 OK with results`() {
+        val responseList = listOf(
+            BodyCorporateResponse(
+                corporateUuid = testUuid,
+                corporateName = "Corp1",
+                contributionPerSqm = BigDecimal("10.00"),
+                totalBudget = BigDecimal("20000.00"),
+                email = "corp1@corp.com",
+                userId = "user1",
+                username = "corp1user"
+            )
+        )
+
+        `when`(bodyCorporateService.getBodyCorporatesByMinimumBudget(BigDecimal("15000.00"))).thenReturn(responseList)
+
+        mockMvc.perform(get("/api/body-corporates/filter/budget")
+            .param("minBudget", "15000.00"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.length()").value(1))
+            .andExpect(jsonPath("$[0].corporateName").value("Corp1"))
+
+        verify(bodyCorporateService).getBodyCorporatesByMinimumBudget(BigDecimal("15000.00"))
+    }
+
 }

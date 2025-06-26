@@ -1,5 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
+import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 
 plugins {
 	kotlin("jvm") version "1.9.25"
@@ -7,6 +7,7 @@ plugins {
 	id("org.springframework.boot") version "3.4.5"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
+	id("jacoco")
 }
 
 group = "com.example"
@@ -61,9 +62,24 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	finalizedBy(tasks.jacocoTestReport)
 	systemProperty("aws.accessKeyId", "test-access-key")
 	systemProperty("aws.secretAccessKey", "test-secret-key")
 	systemProperty("aws.region", "us-east-1")
 	systemProperty("aws.s3.endpoint", "")
 	systemProperty("aws.bucket-name", "test-bucket")
+}
+
+jacoco {
+	toolVersion = "0.8.11" 
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test) 
+
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+		csv.required.set(false)
+	}
 }
