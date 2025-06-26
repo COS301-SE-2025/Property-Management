@@ -47,3 +47,9 @@ docker-flyway-migrate:
 
 docker-flyway-repair-migrate:
 	docker-compose run --rm flyway repair
+
+coverage:
+	./gradlew clean test jacocoTestReport
+
+test:
+	./gradlew test
