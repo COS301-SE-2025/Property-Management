@@ -80,6 +80,7 @@ async fetchTrusteeAndCorporateInfo() {
 
   async onSubmit() {
     if (this.form.valid) {
+      console.log(this.form.value);
       let propertyImage = null;
 
       if (this.selectedImageFile) {
