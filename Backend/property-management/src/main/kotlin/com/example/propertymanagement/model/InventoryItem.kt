@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.math.BigDecimal
 import java.util.UUID
 
 @Entity
@@ -20,4 +21,6 @@ data class InventoryItem(
     val quantityInStock: Int? = null,
     @Column(name = "building_uuid_fk", nullable = false)
     val buildingUuidFk: UUID,
+    @Column(name = "price", nullable = false)
+    val price: BigDecimal? = null,
 )
