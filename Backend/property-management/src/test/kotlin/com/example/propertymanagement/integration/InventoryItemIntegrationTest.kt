@@ -88,6 +88,7 @@ class InventoryItemIntegrationTest {
                 unit = "pcs",
                 quantity = 10,
                 buildingUuid = buildingUuid,
+                price = 15.99.toBigDecimal(),
             )
         val postResponse =
             restTemplate.postForEntity(
@@ -109,6 +110,7 @@ class InventoryItemIntegrationTest {
                 unit = "pcs",
                 quantity = 5,
                 buildingUuid = buildingUuid,
+                price = 9.99.toBigDecimal(),
             )
         restTemplate.postForEntity(
             "http://localhost:$port/api/inventory",
@@ -133,6 +135,7 @@ class InventoryItemIntegrationTest {
                 unit = "pcs",
                 quantity = 15,
                 buildingUuid = buildingUuid,
+                price = 5.49.toBigDecimal(),
             )
         val postResponse =
             restTemplate.postForEntity(
@@ -159,6 +162,7 @@ class InventoryItemIntegrationTest {
                 unit = "pcs",
                 quantity = 3,
                 buildingUuid = buildingUuid,
+                price = 29.99.toBigDecimal(),
             )
         restTemplate.postForEntity(
             "http://localhost:$port/api/inventory",
@@ -183,6 +187,7 @@ class InventoryItemIntegrationTest {
                 unit = "pcs",
                 quantity = 2,
                 buildingUuid = buildingUuid,
+                price = 25.0.toBigDecimal(),
             )
         val postResponse =
             restTemplate.postForEntity(
@@ -219,6 +224,7 @@ class InventoryItemIntegrationTest {
                 unit = "liters",
                 quantity = 5,
                 buildingUuid = buildingUuid,
+                price = 12.99.toBigDecimal(),
             )
         val postResponse =
             restTemplate.postForEntity(
@@ -253,6 +259,7 @@ class InventoryItemIntegrationTest {
                 unit = "pcs",
                 quantity = 10,
                 buildingUuid = buildingUuid,
+                price = 0.99.toBigDecimal(),
             )
         val postResponse =
             restTemplate.postForEntity(
@@ -287,6 +294,7 @@ class InventoryItemIntegrationTest {
                 unit = "pcs",
                 quantity = 30,
                 buildingUuid = buildingUuid,
+                price = 0.05.toBigDecimal(),
             )
         val postResponse =
             restTemplate.postForEntity(
@@ -321,6 +329,7 @@ class InventoryItemIntegrationTest {
                 unit = "bottles",
                 quantity = 8,
                 buildingUuid = buildingUuid,
+                price = 3.99.toBigDecimal(),
             )
         val postResponse =
             restTemplate.postForEntity(
