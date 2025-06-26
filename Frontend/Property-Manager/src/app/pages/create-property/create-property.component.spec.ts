@@ -25,6 +25,7 @@ describe('CreatePropertyComponent', () => {
   it('should have an invalid form when required fields are empty', () => {
     component.form.patchValue({
       name: '',
+      area: 0,
       address: ''
     });
     expect(component.form.invalid).toBeTrue();
@@ -33,6 +34,7 @@ describe('CreatePropertyComponent', () => {
   it('should have a valid form when required fields are filled', () => {
     component.form.patchValue({
       name: 'Test Property',
+      area: 100,
       address: '123 Main St'
     });
     expect(component.form.valid).toBeTrue();
@@ -51,6 +53,7 @@ describe('CreatePropertyComponent', () => {
     spyOn(console, 'log');
     component.form.patchValue({
       name: 'Test Property',
+      area: 100,
       address: '123 Main St'
     });
     component.onSubmit();
@@ -66,6 +69,7 @@ describe('CreatePropertyComponent', () => {
     spyOn(console, 'log');
     component.form.patchValue({
       name: '',
+      area: -100,
       address: ''
     });
     component.onSubmit();

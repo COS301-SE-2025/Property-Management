@@ -1,0 +1,40 @@
+
+<div class = "flex flex-col" [ngStyle]="{ 'background-color': 'var(--bg-color)'}">
+    <!-- Name -->
+    <div class = "flex flex-row  items-center px-4 py-2"> 
+         <img src= "assets/images/logo.png" class="w-16 h-12 ml-8 " alt="logo">
+    <p class = "font-medium text-xl">Property Manager</p>
+
+    <div class = "flex flex-row items-center ml-auto">
+        <div class = "relative">
+        <button class = "cursor-pointer pr-3" (click)="dropDownSettings()"> 
+            <img [src]= "isDarkMode? 'assets/icons/settings_gray.svg': 'assets/icons/settings.svg'" class="w-9 h-9" alt=""> 
+        </button>
+        <button class = "cursor-pointer" (click)="dropDownProfile()">
+            <img [src]= "isDarkMode? 'assets/icons/profile_gray.svg': 'assets/icons/profile.svg'" class="w-9 h-9" alt="">
+        </button>
+
+        <div *ngIf="dropDownProfileOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-22 z-50">
+            <button (click)="signOut()" class= "block text-red-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
+            Sign out
+            </button>  
+            <button class= "block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer">
+            Help?
+            </button>          
+        </div>
+
+        <div *ngIf="dropDownSettingsOpen" class= "absolute right-1 top-18 bg-white border rounded shadow-md w-38 z-50" [ngStyle]="{ 'background-color': 'var(--bg-color)'}">
+            <button (click)="toggleDarkMode()" class="block text-black w-full text-left px-8 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200" [ngStyle]="{ 'color':'var(--text-color)', 'border-bottom-color':'var(--border-color)' }">
+            {{ isDarkMode? 'Light mode': 'Dark mode' }}
+            </button>  
+            <button class= "block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer">
+            Change font size
+            </button>          
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- bar -->
+    <div class = "propertyYellow-bg h-4 w-full"></div>
+</div>

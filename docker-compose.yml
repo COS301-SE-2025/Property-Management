@@ -62,9 +62,26 @@ services:
     networks:
       - app-network
 
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./Backend/property-management/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
 networks:
   app-network:
     driver: bridge
 
 volumes:
   postgres-data:
+  grafana-storage:

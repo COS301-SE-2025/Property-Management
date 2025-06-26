@@ -1,0 +1,86 @@
+<div class = " flex w-full flex-col">
+      <!-- Name -->
+      <div class = "flex flex-row  items-center px-4 py-2"> 
+        <img src= "assets/images/logo.png" class="w-16 h-12 ml-8 " alt="logo">
+        <p class = "font-medium font-lato text-xl ">Property Manager</p>
+
+        <div class = "flex flex-row items-center ml-auto">
+          <div class = "relative">
+
+            <a [routerLink]="['/login']" >
+            <button class = "cursor-pointer w-24 h-8 mr-3 rounded-xl mb-2 font-lato text-md hover:bg-gray-200"> 
+              Login
+            </button>
+            </a>
+            <button class = "cursor-pointer w-24 h-8 mr-3 bg-yellow-300 rounded-xl mb-2 font-lato text-md hover:bg-yellow-400" (click)="dropDown()"> 
+              Register
+            </button>
+
+            <div *ngIf="dropDownOpen" class= "absolute right-1 top-14 bg-white  border border-yellow-300 rounded-xl shadow-xl w-40 font-lato l-25 z-50 overflow-hidden">
+              <a [routerLink]="['/register-body-corporate']" >
+              <button (click)="signOut()" class= "block text-gray-700 font-lato w-full text-left px-3 py-1 hover:bg-gray-200/50 cursor-pointer">
+                Register as Body Corporate
+              </button>
+              </a> 
+              <a [routerLink]="['/register-owner']" >
+              <button (click)="signOut()" class= "block text-gray-700 font-lato w-full text-left px-3 py-1 hover:bg-gray-200/50 cursor-pointer">
+                Register as Owner
+              </button>
+              </a> 
+              <a [routerLink]="['/contractorRegister']" >
+              <button (click)="signOut()" class= "block text-gray-700 font-lato w-full text-left px-3 py-1 hover:bg-gray-200/50 cursor-pointer">
+                Register as Contractor
+              </button>
+              </a>            
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- bar -->
+      <div class = "propertyYellow-bg h-4 w-full"></div>
+    </div>
+<!-- Animated Container -->
+<div class="min-h-screen flex flex-col" [@fadeInStagger]>
+  <div class="flex-grow relative overflow-hidden">
+    
+    <!-- Background -->
+    <div class="absolute inset-0 bg-[url('/assets/images/background.jpg')] bg-cover bg-center filter blur-sm scale-110"></div>
+
+    <!-- Foreground Content -->
+    <div class="relative z-10 h-full w-full px-12 py-25 flex items-center justify-between text-white">
+      
+      <!-- Left Side: Overlapping Images -->
+      <div class="flex flex-col gap-12 text-xl mb-20 relative h-64 w-80 animate-item">
+        <img src="/assets/images/pic2.png" alt="pic2" class="absolute top-0 left-0 w-80 h-60 z-10 rounded shadow-lg" />
+        <img src="/assets/images/pic.png" alt="pic" class="absolute top-30 left-10 w-80 h-60 z-20 rounded shadow-xl" />
+      </div>
+
+      <!-- Center: Description -->
+      <div class="max-w-xl text-center text-white font-light leading-relaxed font-medium text-xl animate-item">
+        <p>
+          Property Management system, a comprehensive solution designed to streamline maintenance operations for
+          property managers and corporate bodies. The system addresses critical challenges in contractor management,
+          inventory control, and maintenance planning to enhance operational efficiency and financial oversight.
+        </p>
+      </div>
+
+      <!-- Right Side: Icons -->
+      <div class="flex flex-col gap-12 text-white font-medium text-xl items-center">
+        <div class="flex flex-col items-center animate-item">
+          <img src="/assets/icons/suitcase.svg" alt="Contractor Sourcing and Management" class="h-15 mb-1" />
+          <span>Contractor Sourcing and Management</span>
+        </div>
+        <div class="flex flex-col items-center animate-item">
+          <img src="/assets/icons/tools.svg" alt="Inventory Management" class="h-15 mb-1" />
+          <span>Inventory Management</span>
+        </div>
+        <div class="flex flex-col items-center animate-item">
+          <img src="/assets/icons/qoute.svg" alt="Quote Management" class="h-15 mb-1" />
+          <span>Quote Management</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

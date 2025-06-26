@@ -1,17 +1,12 @@
+import { Budget } from "./budget.model";
+import { Building } from "./building.model";
+import { MaintenanceTask } from "./maintenanceTask.model";
+
 export interface BuildingDetails{
     budgetUuid: string;
-    buildingUuid: string;
-    totalBudget: number;
-    maintenanceBudget: number;
-    inventoryBudget: number;
-    inventorySpent?: number;
-    maintenanceSpent?: number;
     approvalDate: Date
-    maintenanceTasks?: {
-        title: string;
-        description: string;
-        status: string;
-        approved: boolean;
-        proofImages: string[];
-    }[];
+    building: Building;
+    maintenanceBudget: Budget;
+    inventoryBudget: Budget;
+    maintenanceTasks: MaintenanceTask[];
 }

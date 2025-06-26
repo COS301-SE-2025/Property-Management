@@ -1,5 +1,5 @@
 export interface Budget{
-    category: string;
+    category: "maintenance" | "inventory" | "Maintenance" | "Inventory";
     budgetAmount: number;
     budgetSpent?: number;
 }
