@@ -3,6 +3,7 @@ package com.example.propertymanagement.dto
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.PositiveOrZero
+import java.math.BigDecimal
 import java.util.UUID
 
 data class InventoryItemResponseDto(
@@ -11,6 +12,7 @@ data class InventoryItemResponseDto(
     val unit: String?,
     val quantityInStock: Int?,
     val buildingUuidFk: UUID,
+    val price: BigDecimal? = null,
 )
 
 data class CreateInventoryItemDto(
@@ -23,6 +25,8 @@ data class CreateInventoryItemDto(
     val quantity: Int,
     @field:NotNull(message = "Building UUID is required")
     val buildingUuid: UUID,
+    @field:NotNull(message = "Price is required")
+    val price: BigDecimal? = null,
 )
 
 data class UpdateInventoryItemDto(

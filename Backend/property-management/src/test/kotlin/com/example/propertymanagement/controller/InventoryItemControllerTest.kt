@@ -43,6 +43,7 @@ class InventoryItemControllerTest {
             unit = "Bags",
             quantityInStock = 50,
             buildingUuidFk = buildingUuid,
+            price = 100.0.toBigDecimal(),
         )
 
     @Test
@@ -91,6 +92,7 @@ class InventoryItemControllerTest {
                 unit = "Bags",
                 quantity = 50,
                 buildingUuid = buildingUuid,
+                price = 100.toBigDecimal(),
             )
 
         whenever(inventoryItemService.createInventoryItem(any())).thenReturn(sampleResponseDto())
