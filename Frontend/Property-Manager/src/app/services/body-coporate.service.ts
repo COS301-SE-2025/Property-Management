@@ -32,18 +32,18 @@ export class BodyCoporateService {
       proofImages: ["assets/images/sinkMock1.jpg", "assets/images/sinkMock2.jpeg", "assets/images/sinkMock3.jpeg"],
       inventoryItemsUsed:[
         {
-          itemId: 4,
+          itemUuid: '4',
           name: "Tap",
           unit: "1",
-          quantityInStock: 1,
-          buildingId: 1,
+          quantity: 1,
+          buildingUuid: '1',
         },
         {
-          itemId: 5,
+          itemUuid: '5',
           name: "Silicon tube",
           unit: "1",
-          quantityInStock: 1,
-          buildingId: 1,
+          quantity: 1,
+          buildingUuid: '1',
         }
       ],
       ReviewScore: 4,
@@ -114,7 +114,7 @@ export class BodyCoporateService {
 
   fundContribution = signal<BuildingContribution[]>([
     {
-      buildingId: 1,
+      buildingUuid: '1',
       name: "Name 1",
       address: "example 1 address",
       UnitNo: "1",
@@ -123,7 +123,7 @@ export class BodyCoporateService {
       annualContribution: 12000
     },
     {
-      buildingId: 2,
+      buildingUuid: '2',
       name: "Name 2",
       address: "example 2 address",
       UnitNo: "2",
@@ -132,7 +132,7 @@ export class BodyCoporateService {
       annualContribution: 8000
     },
     {
-      buildingId: 3,
+      buildingUuid: '3',
       name: "Name 3",
       address: "example 3 address",
       UnitNo: "3",

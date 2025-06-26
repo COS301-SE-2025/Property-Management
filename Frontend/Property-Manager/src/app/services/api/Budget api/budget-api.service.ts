@@ -21,7 +21,6 @@ export class BudgetApiService {
       approvalDate: updatedOn,
       buildingUuid: buildingId
     };
-
     return this.http.post<BuildingDetails>(`${this.url}/budgets`, newBudget);
   }
 
@@ -52,13 +51,15 @@ export class BudgetApiService {
 
   updateBudget(budgetId: string, budget: BuildingDetails)
   {
+    const totalBudget = (budget.maintenanceBudget.budgetAmount + budget.inventoryBudget.budgetAmount);
+
     const updatedBudget = {
       year: budget.approvalDate.getFullYear(),
-      totalBudget: budget.totalBudget,
+      totalBudget: totalBudget,
       maintenanceBudget: budget.maintenanceBudget,
       inventoryBudget: budget.inventoryBudget,
       approvalDate: budget.approvalDate,
-      buildingUuid: budget.buildingUuid
+      buildingUuid: budget.building.buildingUuid
     };
 
     return this.http.put<BuildingDetails>(`${this.url}/budgets/${budgetId}`, updatedBudget);

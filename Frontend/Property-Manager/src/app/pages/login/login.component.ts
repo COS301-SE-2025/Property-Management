@@ -45,35 +45,35 @@ export class LoginComponent {
     console.log(this.email)
     console.log(this.password)
 
-    return this.authService.login(this.email, this.password)
-    .then(tokens => {
-      //TODO: Store tokens
-      console.log("Successfully logged in")
+    // return this.authService.login(this.email, this.password)
+    // .then(tokens => {
+    //   //TODO: Store tokens
+    //   console.log("Successfully logged in")
       
       
-      if(tokens.givenName === 'owner')
-      {
-        this.router.navigate(['/home']);
-      }
-      else if(tokens.givenName === 'contractor')
-      {
-        this.router.navigate(['/contractorHome']);
-      }
-    })
-    .catch(error => {
-      console.error("Login error: ", error);
+    //   if(tokens.givenName === 'owner')
+    //   {
+    //     this.router.navigate(['/home']);
+    //   }
+    //   else if(tokens.givenName === 'contractor')
+    //   {
+    //     this.router.navigate(['/contractorHome']);
+    //   }
+    // })
+    // .catch(error => {
+    //   console.error("Login error: ", error);
 
-      const status = error?.status || error?.__zone_symbol__status;
-      console.log(status);
+    //   const status = error?.status || error?.__zone_symbol__status;
+    //   console.log(status);
 
-      if(status === 400 || error.code === "NotAuthorizedException") 
-      {
-        this.userError = true;
-      }
-      else
-      {
-        this.serverError = true;
-      }
-    });
+    //   if(status === 400 || error.code === "NotAuthorizedException") 
+    //   {
+    //     this.userError = true;
+    //   }
+    //   else
+    //   {
+    //     this.serverError = true;
+    //   }
+    // });
   }
 }

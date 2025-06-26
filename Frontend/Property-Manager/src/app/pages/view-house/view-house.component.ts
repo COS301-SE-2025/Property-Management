@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, OnInit, signal } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../components/header/header.component";
 import { HousesService } from '../../services/houses.service';
 import { ActivatedRoute } from '@angular/router';
-import { House } from '../../models/house.model';
 import { CardModule } from 'primeng/card';
 import { InventoryCardComponent } from "./inventory-card/inventory-card.component";
 import { BudgetCardComponent } from "./budget-card/budget-card.component";
 import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
+import { Property } from '../../models/property.model';
 
 @Component({
   selector: 'app-view-house',
@@ -31,25 +31,37 @@ import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
   ]
 })
 export class ViewHouseComponent implements OnInit{
-  public house: House | undefined;
-  public findHouse = false;
+  public house = signal<Property | undefined>(undefined);
+  public findHouse = signal(false);
 
-  constructor(private route: ActivatedRoute, public houseService: HousesService){}
+  constructor(private route: ActivatedRoute, public houseService: HousesService){
+    effect(() => {
+      const houseId = this.route.snapshot.paramMap.get('houseId');
+      const houses = this.houseService.houses();
+
+      console.log(houseId);
+
+      if(houseId && houses.length > 0)
+      {
+        const house = this.houseService.getHouseById(houseId);
+        console.log(house);
+
+        if(house)
+        {
+          this.house.set(house);
+        }
+      }
+      else
+      {
+        console.log("Setting findhouse to true");
+        this.findHouse.set(true);
+      }
+    });
+  }
 
   ngOnInit()
   {
-    this.findHouse = false;
-
-    
     const houseId = String(this.route.snapshot.paramMap.get('houseId'));
-    this.house = this.houseService.getHouseById(houseId);
-
     this.houseService.loadInventory(houseId);
-    this.houseService.loadBudgetTimeline(houseId);
-
-    if(this.house === undefined)
-    {
-      this.findHouse = true;
-    }
   }
 }

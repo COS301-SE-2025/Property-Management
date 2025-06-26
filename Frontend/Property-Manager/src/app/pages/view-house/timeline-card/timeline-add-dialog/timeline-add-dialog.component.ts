@@ -3,14 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { DatePickerModule } from 'primeng/datepicker';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 
 @Component({
   selector: 'app-timeline-add-dialog',
-  imports: [ReactiveFormsModule, DialogModule, FloatLabelModule, DatePickerModule, CommonModule, MultiSelectModule],
+  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, MultiSelectModule],
   templateUrl: './timeline-add-dialog.component.html',
   styles: ``
 })

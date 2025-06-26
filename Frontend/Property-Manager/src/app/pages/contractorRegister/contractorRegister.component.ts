@@ -46,43 +46,43 @@ export class ContractorRegisterComponent {
   return `key_${Math.abs(hash).toString(36)}_${randomPart}`;
 }
 
-   async register(): Promise<void> {
-    if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
-      this.emptyField = true;
-      return;
-    }
+//    async register(): Promise<void> {
+//     if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
+//       this.emptyField = true;
+//       return;
+//     }
 
-    this.userError = false;
-    this.serverError = false;
-    this.emptyField = false;
+//     this.userError = false;
+//     this.serverError = false;
+//     this.emptyField = false;
 
-        console.log(this.email)
-        console.log(this.password)
+//         console.log(this.email)
+//         console.log(this.password)
 
-        return this.authService.register(this.email, this.password, 'contractor')
-            .then(tokens => {
-                //TODO: Store tokens
-                console.log("Successfully logged in");
-                console.log(tokens);
+//         return this.authService.register(this.email, this.password, 'contractor')
+//             .then(tokens => {
+//                 //TODO: Store tokens
+//                 console.log("Successfully logged in");
+//                 console.log(tokens);
 
-                this.router.navigate(['/verifyEmail'], {
-                    state: {
-                        username: tokens.user.getUsername()
-                    }
-                });
-            })
-            .catch(error => {
-                console.error("Login error: ", error);
+//                 this.router.navigate(['/verifyEmail'], {
+//                     state: {
+//                         username: tokens.user.getUsername()
+//                     }
+//                 });
+//             })
+//             .catch(error => {
+//                 console.error("Login error: ", error);
 
-                const status = error?.status || error?.__zone_symbol__status;
-                console.log(status);
+//                 const status = error?.status || error?.__zone_symbol__status;
+//                 console.log(status);
 
-                if (status === 400 || error.code === "NotAuthorizedException") {
-                    this.userError = true;
-                }
-                else {
-                    this.serverError = true;
-                }
-            });
-    }
+//                 if (status === 400 || error.code === "NotAuthorizedException") {
+//                     this.userError = true;
+//                 }
+//                 else {
+//                     this.serverError = true;
+//                 }
+//             });
+//     }
 }

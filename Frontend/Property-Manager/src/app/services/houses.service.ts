@@ -1,8 +1,12 @@
 import { Injectable, signal } from '@angular/core';
-import { House } from '../models/house.model'
 import { Inventory } from '../models/inventory.model';
 import { Budget } from '../models/budget.model';
 import { Timeline } from '../models/timeline.model';
+import { BuildingApiService } from './api/Building api/building-api.service';
+import { BudgetApiService } from './api/Budget api/budget-api.service';
+import { InventoryItemApiService } from './api/InventoryItem api/inventory-item-api.service';
+import { Property } from '../models/property.model';
+import { BuildingDetails } from '../models/buildingDetails.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -10,11 +14,13 @@ import { ApiService } from './api.service';
 })
 export class HousesService {
 
-  constructor(private apiService: ApiService) { }
+  private tempTrusteeId = 'b6785ed2-3230-4d55-8b83-660b63ca32f0';
 
-  houses = signal<House[]>([]);
+  constructor(private buildingApiService: BuildingApiService, private budgetApiService: BudgetApiService, private inventoryItemApiService: InventoryItemApiService, private apiService: ApiService) { }
+
+  houses = signal<Property[]>([]);
   inventory = signal<Inventory[]>([]);
-  budgets = signal<Budget[]>([]);
+  budgets = signal<BuildingDetails>({} as BuildingDetails);
   timeline = signal<Timeline[]>([]);
 
   mockImages = [
@@ -23,7 +29,7 @@ export class HousesService {
     "assets/images/houseDemo3.jpg"
   ];
 
-  addToHouses(house: House)
+  addToHouses(house: Property)
   {
     this.houses.set([...this.houses(), house]);
   }
@@ -37,7 +43,8 @@ export class HousesService {
     this.houses.set(this.houses().filter((h) => h.buildingUuid !== id));
   }
 
-  getHouseById(id: string): House | undefined{
+  getHouseById(id: string): Property | undefined{
+    console.log(this.houses());
     return this.houses().find(house => house.buildingUuid === id);
   }
 
@@ -57,61 +64,49 @@ export class HousesService {
       return;
     }
 
-    this.apiService.getBuildings().subscribe({
-      next: (houses) => {
-        this.houses.set(
-          houses.map((house) => ({
-            ...house,
-            image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
-          }))
-        );
+    this.buildingApiService.getBuildingsByTrustee(this.tempTrusteeId).subscribe({
+      next: (house) => {
+        console.log(house);
+        
+        this.houses.set(house.map((h) => ({
+          ...h,
+          propertyImage: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
+        })));
+
       },
-      error: (err) => {
-        console.error("Error loading houses:", err); 
+      error: (error) => {
+        console.error("Error loading properties", error);
       }
     })
   }
-  async loadBudgetTimeline(houseId: string){
+  async loadBudget(houseId: string){
 
-    this.budgets.set([]);
-    this.timeline.set([]);
-
-    this.apiService.getBuildingDetails(houseId).subscribe({
-      next: (details) => {
-        console.log(details);
-        
-        if(!details)
-        {
-          throw Error("No building details returned");
-        }
-
-        const budget: Budget[] = [
-          {
-            category: "inventory",
-            budgetAmount: details.inventoryBudget.budgetAmount,
-            budgetSpent: details.inventoryBudget.budgetSpent
-          },
-          {
-            category: "maintenance",
-            budgetAmount: details.maintenanceBudget.budgetAmount,
-            budgetSpent: details.maintenanceBudget.budgetSpent
-          }
-        ];
-
+    this.budgetApiService.getBudgetsByBuildingId(houseId).subscribe({
+      next: (budget) => {
         this.budgets.set(budget);
-
-        const timeLineArr: Timeline[] = (details.maintenanceTasks ?? []).map(task => ({
-          description: task.description,
-          done: task.status === 'done'
-        }));
-
-        this.timeline.set(timeLineArr);
-        this.sortTimeline();
       },
-      error: (err) => {
-        console.error("Error loading budget and timeline", err)
+      error: (error) => {
+        console.error("Error getting budgets", error);
       }
     })
+  }
+  async createBudget(totalBudget: number, maintenanceBudget: number, inventoryBudget:number, updatedOn: Date, buildingId: string)
+  {
+    // this.budgetApiService.createBudget(totalBudget)
+  }
+  async isBudget(buildingId: string): Promise<boolean>
+  {
+   return new Promise((resolve) => {
+    this.budgetApiService.getBudgetsByBuildingId(buildingId).subscribe({
+      next: (budget) => {
+        const budgetExists = Array.isArray(budget) && budget.length > 0;
+        resolve(budgetExists);
+      },
+      error: () => {
+        resolve(false)
+      }
+    })
+   });
   }
   async loadInventory(houseId: string)
   {

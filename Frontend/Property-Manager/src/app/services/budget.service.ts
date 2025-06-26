@@ -22,7 +22,7 @@ export class BudgetService {
   ];
 
   house = signal<House>({
-    buildingId: 1,
+    buildingUuid: '1',
     name: 'Property X',
     address: '123 Example Str, Pretoria',
     image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
@@ -42,29 +42,29 @@ export class BudgetService {
   
   inventory = signal<Inventory[]>([
     {
-      itemId: 1,
+      itemUuid: '1',
       name: 'Light bulbs',
       unit: 'Unit 1',
-      quantityInStock: 6,
-      buildingId: 1,
+      quantity: 6,
+      buildingUuid: '1',
       price: 100,
       boughtDate: new Date('2025-05-01')
     },
     {
-      itemId: 2,
+      itemUuid: '2',
       name: 'Grey paint 5L bucket',
       unit: 'Unit 2',
-      quantityInStock: 3,
-      buildingId: 1,
+      quantity: 3,
+      buildingUuid: '1',
       price: 500,
       boughtDate: new Date('2024-11-12')
     },
     {
-      itemId: 3,
+      itemUuid: '3',
       name: 'Box of 25 tiles',
       unit: 'Unit 3',
-      quantityInStock: 5,
-      buildingId: 1,
+      quantity: 5,
+      buildingUuid: '1',
       price: 1500,
       boughtDate: new Date('2025-06-10')
     }
@@ -90,18 +90,18 @@ export class BudgetService {
       proofImages: ["assets/images/sinkMock1.jpg", "assets/images/sinkMock2.jpeg", "assets/images/sinkMock3.jpeg"],
       inventoryItemsUsed:[
         {
-          itemId: 4,
+          itemUuid: '4',
           name: "Tap",
           unit: "1",
-          quantityInStock: 1,
-          buildingId: 1,
+          quantity: 1,
+          buildingUuid: '1',
         },
         {
-          itemId: 5,
+          itemUuid: '5',
           name: "Silicon tube",
           unit: "1",
-          quantityInStock: 1,
-          buildingId: 1,
+          quantity: 1,
+          buildingUuid: '1',
         }
       ],
       ReviewScore: 4,
@@ -141,13 +141,13 @@ export class BudgetService {
     }
   ])
   
-  async getInventory(houseId: number)
+  async getInventory(houseId: string)
   {
     this.inventory.set([]);
 
     this.apiService.getInventory().subscribe({
       next: (inventory) => {
-        const filterInventory = inventory.filter(item => item.buildingId == houseId);
+        const filterInventory = inventory.filter(item => item.buildingUuid == houseId);
         this.inventory.set(filterInventory);
       },
       error: (err) => {

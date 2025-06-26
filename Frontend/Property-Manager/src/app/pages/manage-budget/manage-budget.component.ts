@@ -44,14 +44,5 @@ export class ManageBudgetComponent implements OnInit {
     {
       this.findHouse = true;
     }
-    else if(!this.house.hasBudget)
-    {
-      this.showBudgetDialog();
-    }
-  }
-
-  showBudgetDialog()
-  {
-    console.warn("Check that when a property is created it must have a budget")
   }
 }

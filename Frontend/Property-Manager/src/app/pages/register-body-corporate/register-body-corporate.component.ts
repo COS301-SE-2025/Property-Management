@@ -121,7 +121,7 @@ export class RegisterBodyCorporateComponent {
     this.emptyField = false;
 
     try {
-      const result = await this.authService.register(this.email, this.password, 'bodyCorporate');
+      // const result = await this.authService.register(this.email, this.password, 'bodyCorporate');
       
       // Add API call to register body corporate details
     //   await this.apiService.registerBodyCorporate(
@@ -132,11 +132,11 @@ export class RegisterBodyCorporateComponent {
     //     result.user.getUsername()
     //   ).toPromise();
 
-      this.router.navigate(['/verifyEmail'], {
-        state: {
-          username: result.user.getUsername()
-        }
-      });
+      // this.router.navigate(['/verifyEmail'], {
+      //   state: {
+      //     username: result.user.getUsername()
+      //   }
+      // });
     } catch (error: unknown) {
       console.error('Registration error:', error);
       if (

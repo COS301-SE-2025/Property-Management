@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Property } from '../../../models/property.model';
+import { response } from 'express';
 
 @Injectable({
   providedIn: 'root'
@@ -63,7 +64,9 @@ export class BuildingApiService {
 
   getBuildingsByTrustee(trusteeId: string): Observable<Property[]>
   {
-    return this.http.get<Property[]>(`${this.url}/buildings/trustee/${trusteeId}`);
+    return this.http.get<{buildings: Property[]} >(`${this.url}/buildings/trustee/${trusteeId}`).pipe(
+      map(response => response.buildings)
+    );
   }
 
   searchBuildingsByName(buildingName: string): Observable<Property[]>

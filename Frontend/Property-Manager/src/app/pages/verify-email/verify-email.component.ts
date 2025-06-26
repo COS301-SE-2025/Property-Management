@@ -27,24 +27,24 @@ export class VerifyEmailComponent {
   public verificationCode = '';
   public username = '';
 
-  sendCode()
-  {
-    console.log(this.username);
-    console.log(this.verificationCode);
-    if(!this.verificationCode)
-    {
-      return;
-    }
+  // sendCode()
+  // {
+  //   console.log(this.username);
+  //   console.log(this.verificationCode);
+  //   if(!this.verificationCode)
+  //   {
+  //     return;
+  //   }
 
-    return this.authService.confirmRegister(this.username, this.verificationCode)
-    .then(tokens => {
-      console.log("Verified email");
-      console.log(tokens);
+  //   return this.authService.confirmRegister(this.username, this.verificationCode)
+  //   .then(tokens => {
+  //     console.log("Verified email");
+  //     console.log(tokens);
   
-      this.router.navigate(['/login']);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  }
+  //     this.router.navigate(['/login']);
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //   });
+  // }
 }

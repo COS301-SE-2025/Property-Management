@@ -56,9 +56,9 @@ import { Router } from '@angular/router';
             </button>
           </p-floatlabel>
 
-          <div class="pl-25">
+          <!-- <div class="pl-25">
             <button (click)="register()" class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Register</button>
-          </div>
+          </div> -->
 
           <div *ngIf="emptyField || userError || serverError" class="pl-20">
             <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">Email, contact number, or password missing</p>
@@ -97,49 +97,49 @@ export class RegisterOwnerComponent {
     this.passwordVisible = !this.passwordVisible;
   }
 
-  async register(): Promise<void> {
-    if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
-      this.emptyField = true;
-      return;
-    }
+  // async register(): Promise<void> {
+  //   if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
+  //     this.emptyField = true;
+  //     return;
+  //   }
 
-    this.userError = false;
-    this.serverError = false;
-    this.emptyField = false;
+  //   this.userError = false;
+  //   this.serverError = false;
+  //   this.emptyField = false;
 
-    try {
+  //   try {
 
-      const result = await this.authService.register(this.email, this.password, 'owner');
-      console.log(result.user.getUsername());
+  //     const result = await this.authService.register(this.email, this.password, 'owner');
+  //     console.log(result.user.getUsername());
 
-      const apikey = result?.userSub || result?.user?.getUsername() || '';
+  //     const apikey = result?.userSub || result?.user?.getUsername() || '';
 
-      await this.apiService.registerTrustee(this.email, this.email, this.contactNumber, apikey).toPromise();
+  //     await this.apiService.registerTrustee(this.email, this.email, this.contactNumber, apikey).toPromise();
 
-      console.log('Successfully registered');
+  //     console.log('Successfully registered');
 
-      this.router.navigate(['/verifyEmail'], {
-          state: {
-              username: result.user.getUsername()
-          }
-      });
-    } catch (error: unknown) {
-      console.error('Registration error: ', error);
-      if (
-        typeof error === 'object' &&
-        error !== null &&
-        ('status' in error || 'code' in error)
-      ) {
-        const err = error as { status?: number; code?: string };
-        if (err.status === 400 || err.code === 'NotAuthorizedException') {
-          this.userError = true;
-        } else {
-          this.serverError = true;
-        }
-      } else {
-        this.serverError = true;
-      }
-      throw error;
-    }
-  }
+  //     this.router.navigate(['/verifyEmail'], {
+  //         state: {
+  //             username: result.user.getUsername()
+  //         }
+  //     });
+  //   } catch (error: unknown) {
+  //     console.error('Registration error: ', error);
+  //     if (
+  //       typeof error === 'object' &&
+  //       error !== null &&
+  //       ('status' in error || 'code' in error)
+  //     ) {
+  //       const err = error as { status?: number; code?: string };
+  //       if (err.status === 400 || err.code === 'NotAuthorizedException') {
+  //         this.userError = true;
+  //       } else {
+  //         this.serverError = true;
+  //       }
+  //     } else {
+  //       this.serverError = true;
+  //     }
+  //     throw error;
+  //   }
+  // }
 }

@@ -1,5 +1,5 @@
 export interface Building{
-    buildingId: number,
+    buildingUuid: string,
     name: string;
     address: string;
     image?: string;

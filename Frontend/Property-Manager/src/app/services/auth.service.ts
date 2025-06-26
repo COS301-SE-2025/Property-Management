@@ -1,135 +1,71 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  AuthenticationDetails,
-  CognitoUser,
-  CognitoUserAttribute,
-  CognitoUserPool,
-  ISignUpResult,
-} from 'amazon-cognito-identity-js';
-import { environment } from '../../environments/environments';
-import { jwtDecode } from 'jwt-decode';
+import { Observable } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
+
 
 export interface AuthTokens {
-  accessToken: string;
   idToken: string;
+  accessToken: string;
   refreshToken: string;
-  givenName?: string;
-  sub?: string;
+  userType: string;
+  userId: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private userPool = new CognitoUserPool({
-    UserPoolId: environment.cognito.userPoolId,
-    ClientId: environment.cognito.userPoolWebClientId,
-  });
 
-  login(email: string, password: string): Promise<AuthTokens> {
-  const authenticationDetails = new AuthenticationDetails({
-    Username: email,
-    Password: password,
-  });
+  private url = '/api';
 
-  const userData = {
-    Username: email,
-    Pool: this.userPool,
-  };
+  constructor(private http: HttpClient, private cookieService: CookieService){}
 
-  const cognitoUser = new CognitoUser(userData);
-
-  return new Promise((resolve, reject) => {
-    cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: (result) => {
-        const idToken = result.getIdToken().getJwtToken();
-        const decodedToken = jwtDecode<{ 
-          sub: string;          
-          given_name?: string; 
-        }>(idToken);
-
-        resolve({
-          accessToken: result.getAccessToken().getJwtToken(),
-          idToken: idToken,
-          refreshToken: result.getRefreshToken().getToken(),
-          givenName: decodedToken.given_name,
-          sub: decodedToken.sub,  
-        });
-      },
-      onFailure: (err) => {
-        reject(err);
-      },
-    });
-  });
-}
-
-  register(
-    email: string,
-    password: string,
-    name: string,
-    attributes: Record<string, string> = {}
-  ): Promise<ISignUpResult> {
-
-    const username = email.split('@')[0] + Date.now();
-
-    const list: CognitoUserAttribute[] = [
-      new CognitoUserAttribute({
-        Name: 'email',
-        Value: email
-      }),
-      new CognitoUserAttribute({
-        Name: 'given_name',
-        Value: name
-      })
-    ];
-
-    for (const [key, value] of Object.entries(attributes)) {
-      list.push(new CognitoUserAttribute({
-        Name: key,
-        Value: value
-      }));
-    }
-
+  bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
+  {
     return new Promise((resolve, reject) => {
-      this.userPool.signUp(username, password, list, [], (err, result) => {
-        if (err) {
-          reject(err);
-          return;
+      this.bodyCoporateLoginRequest(email, password).subscribe({
+        next: (result) => {
+          const idToken = result.idToken;
+          const bodyCoporateId = result.userId;
+
+          const expireDate = new Date();
+          expireDate.setDate(expireDate.getDate() + 1);
+
+          this.cookieService.set('idToken', idToken, expireDate, '/');
+          this.cookieService.set('bodyCoporateId', bodyCoporateId, expireDate, '/');
+
+          resolve(result);
+        },
+        error: (error) => {
+          reject(error);
         }
-        resolve(result!);
-      });
-    });
+      })
+    })
   }
 
-  confirmRegister(email: string, code: string): Promise<string | undefined> {
-    const userData = {
-      Username: email,
-      Pool: this.userPool,
+  private bodyCoporateLoginRequest(email: string, password: string) : Observable<AuthTokens>
+  {
+    const req = {
+      emaiL: email,
+      password: password
     };
 
-    const user = new CognitoUser(userData);
-
-    return new Promise((resolve, reject) => {
-      user.confirmRegistration(code, true, (err, result) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(result);
-      });
-    });
+    return this.http.post<AuthTokens>(`${this.url}/body-coporates/login`, req);
   }
 
-  logout(): boolean {
-    const user = this.userPool.getCurrentUser();
+  bodyCoporateRegister()
+  {
 
-    if (user) {
-      user.signOut();
-      console.log("user signed out");
-      return true;
-    } else {
-      console.error("user couldnt log out");
-      return false;
-    }
+  }
+
+  trusteeLogin()
+  {
+
+  }
+
+  trusteeRegister()
+  {
+
   }
 }

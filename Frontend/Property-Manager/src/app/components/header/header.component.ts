@@ -43,14 +43,14 @@ export class HeaderComponent {
   signOut()
   {
     this.dropDownProfileOpen = false;
-    if(this.authService.logout())
-    {
-      this.router.navigate(['/login']);
-    }
-    else
-    {
-      console.error("couldnt log out");
-    } 
+    this.router.navigate(['/login']);
+    // if(this.authService.logout())
+    // {
+    // }
+    // else
+    // {
+    //   console.error("couldnt log out");
+    // } 
   }
 
   toggleDarkMode()
