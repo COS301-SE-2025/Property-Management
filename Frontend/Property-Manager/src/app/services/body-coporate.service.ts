@@ -140,17 +140,17 @@ export class BodyCoporateService {
     }
   ]);
 
-  maintenanceGraph = signal<Graph>({
-    labels: [2020, 2021, 2022, 2023, 2024, 2025],
-    datasets:[
-      {
-        data: [130000, 110000, 85000, 160000, 220000, 180000],
-        backgroundColor: 'rgba(255,227,114, 0.7)',
-        borderColor: 'rgb(255,227,114)',
-        borderWidth: 1
-      }
-    ]
-  });
+  // maintenanceGraph = signal<Graph>({
+  //   labels: [2020, 2021, 2022, 2023, 2024, 2025],
+  //   datasets:[
+  //     {
+  //       data: [130000, 110000, 85000, 160000, 220000, 180000],
+  //       backgroundColor: 'rgba(255,227,114, 0.7)',
+  //       borderColor: 'rgb(255,227,114)',
+  //       borderWidth: 1
+  //     }
+  //   ]
+  // });
 
   contractorDetails = signal<ContractorDetails[]>([
     {

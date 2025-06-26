@@ -57,7 +57,9 @@ export class BudgetApiService {
       year: budget.approvalDate.getFullYear(),
       totalBudget: totalBudget,
       maintenanceBudget: budget.maintenanceBudget,
+      maintenanceSpent: budget.maintenanceSpent,
       inventoryBudget: budget.inventoryBudget,
+      inventorySpent: budget.inventorySpent,
       approvalDate: budget.approvalDate,
       buildingUuid: budget.buildingUuid
     };

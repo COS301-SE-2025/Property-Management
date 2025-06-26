@@ -7,6 +7,7 @@ import { Property } from '../models/property.model';
 import { BuildingDetails } from '../models/buildingDetails.model';
 import { TaskApiService } from './api/Task api/task-api.service';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
+import { Graph } from '../models/graph.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,8 @@ export class HousesService {
   inventory = signal<Inventory[]>([]);
   budgets = signal<BuildingDetails>({} as BuildingDetails);
   timeline = signal<MaintenanceTask[]>([]);
+  budgetGraph = signal<Graph>;
+  labels: Date[] = [];
 
   mockImages = [
     "assets/images/houseDemo.jpg",
@@ -48,6 +51,8 @@ export class HousesService {
   addToTasks(task: MaintenanceTask)
   {
     this.timeline.set([...this.timeline(), task]);
+    console.log(this.timeline());
+    this.sortTimeline();
   }
 
   getHouseById(id: string): Property | undefined{
@@ -90,14 +95,14 @@ export class HousesService {
 
     this.budgetApiService.getBudgetsByBuildingId(houseId).subscribe(
       (bulidingDetails: BuildingDetails[]) => {
-        const firstElement = bulidingDetails[0];
+        const firstElement = bulidingDetails[bulidingDetails.length-1];
         this.budgets.set(firstElement);
+
+        // const graphData = {
+        //   labels: firstElement.
+        // }
       }
     )
-  }
-  updateBudget()
-  {
-
   }
   async isBudget(buildingId: string): Promise<boolean>
   {
@@ -131,14 +136,13 @@ export class HousesService {
   {
     this.taskApiService.getAllTasks().subscribe({
       next: (task) => {
-        if(task.b_uuid === buildingId)
-        {
-          this.addToTasks(task);
-        }
+        const filteredTasks = task.filter(t => t.b_uuid === buildingId);
+        this.timeline.set(filteredTasks);
+        this.sortTimeline();
       },
       error: (err) => {
         console.error("Error getting tasks", err);
       }
-    })
+    });
   }
 }

@@ -11,4 +11,5 @@ export interface MaintenanceTask{
     b_uuid: string;
     t_uuid: string;
     img?: string[] | string; 
+    done?: boolean;
 }

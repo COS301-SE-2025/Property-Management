@@ -4,6 +4,6 @@ export interface Inventory {
     unit: string;
     quantityInStock: number;
     buildingUuid: string;
-    price?: number; 
+    price: number; 
     boughtDate?: Date;
 }

@@ -18,20 +18,20 @@ export class TaskApiService {
       title: title,
       des: des,
       status: status,
-      scheduled_date: formatDate(scheduledDate, 'yyyy-MM-dd', 'en-ZA'),
+      scheduled_date: scheduledDate,
       approved: approved,
       b_uuid: buildingId,
       t_uuid: trusteeId,
-      img: "1"
+      img: "2de5597f-981b-4de5-b2af-45703cc7c258"
     };
     console.log(req);
 
     return this.http.post<MaintenanceTask>(`${this.url}/maintenance`, req);
   } 
 
-  getAllTasks(): Observable<MaintenanceTask>
+  getAllTasks(): Observable<MaintenanceTask[]>
   {
-    return this.http.get<MaintenanceTask>(`${this.url}/maintenance`)
+    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`)
   }
 
   getTaskById(taskId: string): Observable<MaintenanceTask>

@@ -27,11 +27,12 @@ export class InventoryItemApiService {
     return this.http.get<Inventory>(`${this.url}/inventory/${inventoryId}`);
   }
 
-  addInventoryItem(name: string, unit: string, quantity:number, buildingId: string) : Observable<Inventory>
+  addInventoryItem(name: string, unit: string, price: number, quantity:number, buildingId: string) : Observable<Inventory>
   {
     const item ={
       name: name,
       unit: unit,
+      price: price,
       quantity: quantity,
       buildingUuid: buildingId
     }

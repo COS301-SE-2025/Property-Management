@@ -42,7 +42,6 @@ export class ViewHouseComponent implements OnInit{
       if(houseId && houses.length > 0)
       {
         const house = this.houseService.getHouseById(houseId);
-        console.log(house);
 
         if(house)
         {
@@ -56,11 +55,22 @@ export class ViewHouseComponent implements OnInit{
     });
   }
 
-  ngOnInit()
+  async ngOnInit()
   {
     const houseId = String(this.route.snapshot.paramMap.get('houseId'));
-    this.houseService.loadInventory(houseId);
-    this.houseService.loadBudget(houseId);
-    this.houseService.loadTasks(houseId);
+    
+    try{
+      await Promise.all([
+        this.houseService.loadInventory(houseId),
+        this.houseService.loadBudget(houseId),
+        this.houseService.loadTasks(houseId)
+
+      ]);
+    }
+    catch(error)
+    {
+      console.error("Error loading data:", error);
+      this.findHouse.set(true);
+    }
   }
 }

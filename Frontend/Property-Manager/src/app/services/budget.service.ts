@@ -11,62 +11,62 @@ import { MaintenanceTask } from '../models/maintenanceTask.model';
 })
 export class BudgetService {
 
-  constructor(private apiService : ApiService) { }
+  // constructor(private apiService : ApiService) { }
 
-  //Mock data   
-  mockImages = [
-    "assets/images/houseDemo.jpg",
-    "assets/images/houseDemo2.jpg",
-    "assets/images/houseDemo3.jpg"
-  ];
+  // //Mock data   
+  // mockImages = [
+  //   "assets/images/houseDemo.jpg",
+  //   "assets/images/houseDemo2.jpg",
+  //   "assets/images/houseDemo3.jpg"
+  // ];
 
-  house = signal<House>({
-    buildingUuid: '1',
-    name: 'Property X',
-    address: '123 Example Str, Pretoria',
-    image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
-  });
+  // house = signal<House>({
+  //   buildingUuid: '1',
+  //   name: 'Property X',
+  //   address: '123 Example Str, Pretoria',
+  //   image: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
+  // });
 
-  budgetGraph = signal<Graph>({
-    labels: [2022, 2023, 2024, 2025],
-    datasets: [
-      {
-        data:[10000, 20000, 40000, 65000],
-        fill: false,
-        borderColor: 'rgb(255,227,114)',
-        tension: 0.1
-      }
-    ]
-  });
+  // budgetGraph = signal<Graph>({
+  //   labels: [2022, 2023, 2024, 2025],
+  //   datasets: [
+  //     {
+  //       data:[10000, 20000, 40000, 65000],
+  //       fill: false,
+  //       borderColor: 'rgb(255,227,114)',
+  //       tension: 0.1
+  //     }
+  //   ]
+  // });
   
-  inventory = signal<Inventory[]>([]);
+  // inventory = signal<Inventory[]>([]);
 
-  maintenanceTasks = signal<MaintenanceTask[]>([]);
+  // maintenanceTasks = signal<MaintenanceTask[]>([]);
 
-  overallBudget = signal<Budget[]>([
+  // overallBudget = signal<Budget[]>([
     
-  ])
+  // ])
   
-  async getInventory(houseId: string)
-  {
-    this.inventory.set([]);
+  // async getInventory(houseId: string)
+  // {
+  //   this.inventory.set([]);
 
-    this.apiService.getInventory().subscribe({
-      next: (inventory) => {
-        const filterInventory = inventory.filter(item => item.buildingUuid == houseId);
-        this.inventory.set(filterInventory);
-      },
-      error: (err) => {
-        console.error('Error fetching inventory:', err);
-      }
-    });
-  }
-  async getTasks(houseId: string)
-  {
-    this.maintenanceTasks.set([]);
-  }
-  async getGraph(houseId: string)
-  {
+  //   this.apiService.getInventory().subscribe({
+  //     next: (inventory) => {
+  //       const filterInventory = inventory.filter(item => item.buildingUuid == houseId);
+  //       this.inventory.set(filterInventory);
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching inventory:', err);
+  //     }
+  //   });
+  // }
+  // async getTasks(houseId: string)
+  // {
+  //   this.maintenanceTasks.set([]);
+  // }
+  // async getGraph(houseId: string)
+  // {
     
-  }
+  // }
 }
