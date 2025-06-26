@@ -10,5 +10,5 @@ interface ContractorRepository : JpaRepository<Contractor, UUID> {
 
     fun deleteByUuid(uuid: UUID)
 
-    fun findByEmail(email: String): Contractor?
+    fun findByEmail(email: String): Optional<Contractor>
 }

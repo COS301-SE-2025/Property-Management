@@ -39,6 +39,7 @@ class InventoryItemService(
                 unit = createDto.unit,
                 quantityInStock = createDto.quantity,
                 buildingUuidFk = createDto.buildingUuid,
+                price = createDto.price,
             )
 
         val savedItem = inventoryItemRepository.save(inventoryItem)
@@ -108,5 +109,6 @@ class InventoryItemService(
             unit = this.unit,
             quantityInStock = this.quantityInStock,
             buildingUuidFk = this.buildingUuidFk,
+            price = this.price,
         )
 }

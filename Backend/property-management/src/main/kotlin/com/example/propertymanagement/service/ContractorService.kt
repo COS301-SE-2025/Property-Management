@@ -77,4 +77,7 @@ class ContractorService(
             )
         return add(newUser)
     }
+
+    fun getByEmail(email: String): Contractor =
+        repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
 }

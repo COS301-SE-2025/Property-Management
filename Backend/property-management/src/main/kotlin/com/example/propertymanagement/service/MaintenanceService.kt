@@ -28,6 +28,7 @@ class MaintenanceService(
         b_uuid: UUID,
         img: UUID,
         t_uuid: UUID,
+        c_uuid: UUID,
     ): Maintenance {
         val newUser =
             Maintenance(
@@ -39,6 +40,7 @@ class MaintenanceService(
                 b_uuid = b_uuid,
                 img = img,
                 t_uuid = t_uuid,
+                c_uuid = c_uuid,
             )
         return add(newUser)
     }
@@ -58,6 +60,7 @@ class MaintenanceService(
                 b_uuid = newItem.b_uuid,
                 img = newItem.img,
                 t_uuid = newItem.t_uuid,
+                c_uuid = newItem.c_uuid
             )
         return repository.save(updated)
     }

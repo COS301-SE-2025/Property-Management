@@ -85,6 +85,7 @@ class InventoryUsageIntegrationTest {
                 unit = "pcs",
                 quantity = 100,
                 buildingUuid = buildingUuid,
+                price = 10.0.toBigDecimal(),
             )
         val itemResponse =
             restTemplate.postForEntity(

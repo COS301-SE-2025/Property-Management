@@ -13,4 +13,10 @@ export class PropertyService {
     console.log('POST', this.apiUrl, 'Payload:', data);
     return this.http.post<Property>(this.apiUrl, data); 
   }
+
+  uploadImage(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  return this.http.post<{ imageId: string }>('/api/images/upload', formData);
+}
 }
