@@ -12,7 +12,8 @@ class ContractorService(
 ) {
     fun getAll(): List<Contractor> = repository.findAll()
 
-    fun getByUuid(uuid: UUID): Contractor =repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
+    fun getByUuid(uuid: UUID): Contractor =
+        repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
     fun updateByUuid(
         uuid: UUID,
@@ -25,7 +26,7 @@ class ContractorService(
                 email = newItem.email,
                 phone = newItem.phone,
                 apikey = newItem.apikey,
-                banned = newItem.banned,
+                status = newItem.status,
             )
         return repository.save(updated)
     }
@@ -39,10 +40,9 @@ class ContractorService(
         email: String,
         phone: String,
         apikey: String,
-        banned: Boolean,
+        status: Boolean,
     ): Contractor {
-        val newUser = Contractor(name = name, email = email, phone = phone, apikey = apikey, banned = banned)
+        val newUser = Contractor(name = name, email = email, phone = phone, apikey = apikey, status = status)
         return add(newUser)
     }
-
 }

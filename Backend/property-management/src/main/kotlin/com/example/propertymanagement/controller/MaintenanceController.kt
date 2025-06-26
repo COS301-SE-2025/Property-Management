@@ -2,7 +2,6 @@ package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.model.Maintenance
 import com.example.propertymanagement.service.MaintenanceService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,9 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
-import java.math.BigDecimal
 import java.util.Date
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/maintenance")
@@ -27,26 +25,35 @@ class MaintenanceController(
     @GetMapping("/{uuid}")
     fun getByUuid(
         @PathVariable uuid: UUID,
-    ): ResponseEntity<Maintenance> {
-        val maintenance = service.getByUuid(uuid)
-        return if (maintenance != null) ResponseEntity.ok(maintenance) else ResponseEntity.notFound().build()
-    }
+    ): ResponseEntity<Maintenance> = ResponseEntity.ok(service.getByUuid(uuid))
 
-    data class info(
-        var title: String,
-        var des: String,
-        var status: String,
-        var scheduled_date: Date,
-        var created_by: Int,
-        var img: String,
-        var approved: Boolean,
-        var building_id: Int
+    data class Info(
+        val title: String,
+        val des: String,
+        val status: String,
+        val scheduled_date: Date,
+        val approved: Boolean,
+        val b_uuid: UUID,
+        val cb_uuid: UUID,
+        val img: UUID,
+        val t_uuid: UUID,
     )
 
     @PostMapping
     fun createUser(
-        @RequestBody info: info,
-    ): Maintenance = service.add(info.title, info.des, info.status, info.scheduled_date, info.created_by, info.img, info.approved, info.building_id)
+        @RequestBody info: Info,
+    ): Maintenance =
+        service.add(
+            info.title,
+            info.des,
+            info.status,
+            java.sql.Date(info.scheduled_date.time),
+            info.approved,
+            info.b_uuid,
+            info.cb_uuid,
+            info.img,
+            info.t_uuid,
+        )
 
     @PutMapping("/{uuid}")
     fun update(
