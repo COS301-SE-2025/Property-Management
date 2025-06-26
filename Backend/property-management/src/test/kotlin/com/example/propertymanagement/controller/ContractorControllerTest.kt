@@ -1,28 +1,22 @@
+import com.example.propertymanagement.controller.ContractorController
 import com.example.propertymanagement.model.Contractor
+import com.example.propertymanagement.service.CognitoService
+import com.example.propertymanagement.service.ContractorService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import com.example.propertymanagement.controller.ContractorController
-import com.example.propertymanagement.service.ContractorService
-import com.example.propertymanagement.service.CognitoService
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.UUID
-import org.mockito.Mockito.doNothing
-import org.mockito.Mockito.`when`
-
 
 @WebMvcTest(ContractorController::class)
 @ContextConfiguration(classes = [com.example.propertymanagement.PropertyManagemnetApplication::class])
@@ -36,7 +30,6 @@ class ContractorControllerTest {
     @MockBean
     lateinit var cognitoService: CognitoService
 
-
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
@@ -44,21 +37,22 @@ class ContractorControllerTest {
 
     @Test
     fun `should return contractor for valid contractorId`() {
-        val response = Contractor(
-            uuid = sampleUuid,
-            name = "Karabelo",
-            email = "karabelotaole04@gmail.com",
-            phone = "013456789",
-            apikey = "0210323-2313-123",
-            contact_info = "Test",
-            status = false,
-            address = "Tes street",
-            city = "Pretoria",
-            postal_code = "0419",
-            reg_number = "23123123131",
-            description = "Good pipe layer",
-            services = "Pipe laying"
-        )
+        val response =
+            Contractor(
+                uuid = sampleUuid,
+                name = "Karabelo",
+                email = "karabelotaole04@gmail.com",
+                phone = "013456789",
+                apikey = "0210323-2313-123",
+                contact_info = "Test",
+                status = false,
+                address = "Tes street",
+                city = "Pretoria",
+                postal_code = "0419",
+                reg_number = "23123123131",
+                description = "Good pipe layer",
+                services = "Pipe laying",
+            )
         given(contractorService.getByUuid(sampleUuid)).willReturn(response)
 
         mockMvc
@@ -85,10 +79,10 @@ class ContractorControllerTest {
         val unknownUuid = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
         given(contractorService.getByUuid(unknownUuid)).willThrow(NoSuchElementException("contractor not found: $unknownUuid"))
 
-       mockMvc.perform(get("/api/contractor/$unknownUuid"))
-        .andExpect(status().isNotFound)
-        .andExpect(content().string("")) // optional: check empty response
-
+        mockMvc
+            .perform(get("/api/contractor/$unknownUuid"))
+            .andExpect(status().isNotFound)
+            .andExpect(content().string("")) // optional: check empty response
     }
 
     @Test

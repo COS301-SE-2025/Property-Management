@@ -29,5 +29,4 @@ data class Maintenance(
     val t_uuid: UUID,
     @Column(name = "contractor_uuid")
     val c_uuid: UUID? = null,
-    
 )

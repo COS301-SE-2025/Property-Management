@@ -1,22 +1,19 @@
+import com.example.propertymanagement.controller.TrusteeController
 import com.example.propertymanagement.model.Trustee
+import com.example.propertymanagement.service.CognitoService
+import com.example.propertymanagement.service.TrusteeService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import com.example.propertymanagement.controller.TrusteeController
-import com.example.propertymanagement.service.TrusteeService
-import com.example.propertymanagement.service.CognitoService
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.UUID
@@ -32,7 +29,6 @@ class TrusteeControllerTest {
 
     @MockBean
     lateinit var cognitoService: CognitoService
-
 
     @Autowired
     lateinit var objectMapper: ObjectMapper

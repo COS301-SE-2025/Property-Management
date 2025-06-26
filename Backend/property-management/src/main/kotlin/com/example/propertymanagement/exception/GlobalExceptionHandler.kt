@@ -48,5 +48,4 @@ class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(ex: NoSuchElementException): ResponseEntity<Map<String, String>> =
         ResponseEntity(mapOf("error" to (ex.message ?: "Not found")), HttpStatus.NOT_FOUND)
-
 }
