@@ -22,6 +22,8 @@ export class LoginComponent {
   public userError = false;
   public serverError = false;
 
+  public selectedUserType = 'bodyCorporate'; // defualt change after login
+
   constructor(private authService: AuthService, private router: Router){}
 
   togglePassword()
@@ -29,51 +31,48 @@ export class LoginComponent {
     this.passwordVisible = !this.passwordVisible;
   }
 
-  login()
-  {
-
-    if(this.email.length === 0 || this.password.length === 0)
-    {
+  async login(): Promise<void> {
+    if (this.email.length === 0 || this.password.length === 0) {
       this.emptyField = true;
       return;
     }
 
+    this.emptyField = false;
     this.userError = false;
     this.serverError = false;
-    this.emptyField = false;
 
-    console.log(this.email)
-    console.log(this.password)
+    try {
+      const bodyCorpTokens = await this.authService.bodyCoporateLogin(this.email, this.password);
+      localStorage.setItem('userType', 'bodyCorporate');
+      console.log('Body Corporate logged in:', bodyCorpTokens);
+      this.router.navigate(['/home']);
+      return;
+    } catch (error) {
+      console.warn('Body Corporate login failed, trying Trustee...');
+    }
 
-    // return this.authService.login(this.email, this.password)
-    // .then(tokens => {
-    //   //TODO: Store tokens
-    //   console.log("Successfully logged in")
-      
-      
-    //   if(tokens.givenName === 'owner')
-    //   {
-    //     this.router.navigate(['/home']);
-    //   }
-    //   else if(tokens.givenName === 'contractor')
-    //   {
-    //     this.router.navigate(['/contractorHome']);
-    //   }
-    // })
-    // .catch(error => {
-    //   console.error("Login error: ", error);
+    try {
+      const trusteeTokens = await this.authService.trusteeLogin(this.email, this.password);
+      localStorage.setItem('userType', 'trustee');
+      console.log('Trustee logged in:', trusteeTokens);
+      this.router.navigate(['/trusteeHome']);
+      return; 
+    } catch (error) {
+      console.warn('Trustee login failed, trying Contractor...');
+    }
 
-    //   const status = error?.status || error?.__zone_symbol__status;
-    //   console.log(status);
+    try {
+      const contractorTokens = await this.authService.contractorLogin(this.email, this.password);
+      localStorage.setItem('userType', 'contractor');
+      console.log('Contractor logged in:', contractorTokens);
+      this.router.navigate(['/contractorHome']);
+      return;
+    } catch (error) {
+      console.warn('Contractor login failed:', error);
+    }
 
-    //   if(status === 400 || error.code === "NotAuthorizedException") 
-    //   {
-    //     this.userError = true;
-    //   }
-    //   else
-    //   {
-    //     this.serverError = true;
-    //   }
-    // });
+    //all failed
+    this.userError = true;
+
   }
 }

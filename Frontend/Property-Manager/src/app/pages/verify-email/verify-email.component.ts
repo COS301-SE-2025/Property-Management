@@ -13,38 +13,63 @@ import { Router } from '@angular/router';
 })
 export class VerifyEmailComponent {
 
-  constructor(private authService: AuthService, private router: Router) {
-    const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras.state as {
-      username: string
-    };
-    
-    if (state) {
-      this.username = state.username;
-    }
-  }
-
   public verificationCode = '';
   public username = '';
+  public userType = '';
 
-  // sendCode()
-  // {
-  //   console.log(this.username);
-  //   console.log(this.verificationCode);
-  //   if(!this.verificationCode)
-  //   {
-  //     return;
-  //   }
+  public emptyField = false;
+  public errorMessage = '';
 
-  //   return this.authService.confirmRegister(this.username, this.verificationCode)
-  //   .then(tokens => {
-  //     console.log("Verified email");
-  //     console.log(tokens);
-  
-  //     this.router.navigate(['/login']);
-  //   })
-  //   .catch(error => {
-  //     console.log(error);
-  //   });
-  // }
+  constructor(private authService: AuthService, private router: Router) {
+    const storedUsername = sessionStorage.getItem('pendingUsername');
+    const storedUserType = sessionStorage.getItem('userType');
+    
+    if (storedUsername) {
+        this.username = storedUsername;
+      }else {
+        console.error('No username found for verification.');
+        this.router.navigate(['/register-body-corporate']);
+      }
+    
+
+   if (storedUserType) {
+        this.userType = storedUserType;
+      } else {
+        console.error('No user type found.');
+        this.router.navigate(['/register-body-corporate']);
+      }
+  }
+
+  async sendCode(): Promise<void> {
+    if(!this.verificationCode) {
+      this.emptyField = true;
+      return;
+    }
+
+    this.emptyField = false;
+    this.errorMessage = '';
+
+    try {
+      if(this.userType === 'bodyCorporate') {
+        const result = await this.authService.confirmBodyCoporateRegistration(this.username, this.verificationCode);
+        console.log('Email verification successful:', result);
+      }else if(this.userType === 'trustee') {
+        //add trustee implementation
+      } else if(this.userType === 'contractor') {
+        //add contractor implementation
+      }else {
+        console.error('Unknown user type:', this.userType);
+        this.errorMessage = 'Invalid user type. Please register again.';
+        return;
+      }
+
+      sessionStorage.removeItem('pendingUsername');
+      sessionStorage.removeItem('userType');
+      this.router.navigate(['/login']);
+
+    } catch (error) {
+      console.error('Verification failed:', error);
+      this.errorMessage = 'Verification failed. Please check your code and try again.';
+    }
+  }
 }
