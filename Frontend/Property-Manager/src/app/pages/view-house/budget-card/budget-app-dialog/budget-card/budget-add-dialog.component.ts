@@ -46,14 +46,10 @@ export class BudgetAddDialogComponent extends DialogComponent implements OnInit{
       const maintenanceBudget = this.form.value.maintenanceBudget;
       const totalBudget = inventoryBudget + maintenanceBudget;
   
-      console.log(totalBudget);
-      console.log(maintenanceBudget);
-      console.log(inventoryBudget);
-      console.log(this.houseId);
-  
       this.budgetApiService.createBudget(totalBudget, maintenanceBudget, inventoryBudget, this.date, this.houseId).subscribe({
         next: (response) => {
           console.log(response);
+          this.form.reset();
           this.closeDialog();
           this.router.navigate(['viewHouse', this.houseId]).then(() => {
             window.location.reload();

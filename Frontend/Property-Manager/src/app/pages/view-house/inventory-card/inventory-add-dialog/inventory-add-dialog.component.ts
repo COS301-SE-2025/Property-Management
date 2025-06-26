@@ -5,6 +5,10 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
+import { HousesService } from '../../../../services/houses.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { InventoryItemApiService } from '../../../../services/api/InventoryItem api/inventory-item-api.service';
+import { response } from 'express';
 
 @Component({
   selector: 'app-inventory-add-dialog',
@@ -15,15 +19,16 @@ import { DialogComponent } from '../../../../components/dialog/dialog.component'
 export class InventoryAddDialogComponent extends DialogComponent implements OnInit{
 
   form!: FormGroup;
+  houseId = '';
 
-  public name = '';
-  public price = 0;
-  public quantity = 0;
   public boughtOn = new Date();
   public addError = false;
 
 
-  constructor(private fb: FormBuilder){ super() }
+  constructor(private fb: FormBuilder, private inventoryItemApiService: InventoryItemApiService, private route: ActivatedRoute, private router: Router){ 
+    super() ;
+    this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
+  }
 
   ngOnInit(): void {
       this.form = this.fb.group({
@@ -38,12 +43,27 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     super.closeDialog();
     this.form.reset();
   }
-  onSubmit(): void{
-    //TODO: Implement the logic to add an inventory item
+ async onSubmit(){
+
     if(this.form.valid){
-      console.log("Inventory item added");
-      this.form.reset();
-      this.closeDialog();
+      console.log("Inventory item being added...");
+      const name = this.form.value.name;
+      // const price = this.form.value.price;
+      const quantity = this.form.value.quantity;
+
+      this.inventoryItemApiService.addInventoryItem(name, "unit 1", quantity, this.houseId).subscribe({
+        next: (response) => {
+          console.log(response);
+          this.form.reset();
+          this.closeDialog();
+          this.router.navigate(['viewHouse', this.houseId]).then(() => {
+            window.location.reload();
+          });
+        },
+        error: (err) => {
+          console.error("Failed to create inventory item", err);
+        }
+      });
     }
   }
 }

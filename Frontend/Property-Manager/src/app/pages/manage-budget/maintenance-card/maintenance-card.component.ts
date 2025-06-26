@@ -23,13 +23,13 @@ export class MaintenanceCardComponent {
 
   @ViewChild('taskDialog') taskDialog!: TaskDialogComponent;
 
-  getMaintenanceTotal(): number {
-    let total = 0;
-    this.maintenance().forEach((item) => {
-      total += item.cost;
-    });
-    return total;
-  }
+  // getMaintenanceTotal(): number {
+  //   let total = 0;
+  //   this.maintenance().forEach((item) => {
+  //     total += item.cost;
+  //   });
+  //   return total;
+  // }
 
   showMaintenanceDetailsDialog(maintenance: MaintenanceTask | MaintenanceTask[] | undefined): void {
     if(!maintenance || Array.isArray(maintenance)){

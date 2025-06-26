@@ -39,8 +39,6 @@ export class ViewHouseComponent implements OnInit{
       const houseId = this.route.snapshot.paramMap.get('houseId');
       const houses = this.houseService.houses();
 
-      console.log(houseId);
-
       if(houseId && houses.length > 0)
       {
         const house = this.houseService.getHouseById(houseId);
@@ -53,7 +51,6 @@ export class ViewHouseComponent implements OnInit{
       }
       else
       {
-        console.log("Setting findhouse to true");
         this.findHouse.set(true);
       }
     });
@@ -64,5 +61,6 @@ export class ViewHouseComponent implements OnInit{
     const houseId = String(this.route.snapshot.paramMap.get('houseId'));
     this.houseService.loadInventory(houseId);
     this.houseService.loadBudget(houseId);
+    this.houseService.loadTasks(houseId);
   }
 }

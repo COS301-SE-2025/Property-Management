@@ -13,79 +13,77 @@ export class BodyCoporateService {
 
   //Mock data
   pendingTasks = signal<MaintenanceTask[]>([
-    {
-      description: 'Fixed sink leak',
-      UnitNo: "1",
-      cost: 1000,
-      DoneBy: {
-        contractorId: 1,
-        name: 'ABC Plumbing',
-        email: 'abc_plumbing@gmail.com',
-        phone: '0123456789',
-        apikey: 'abc123',
-        banned: false,
-      },
-      DoneOn: new Date('2025-06-11'),
-      DueDate: new Date('2025-06-11'),
-      status: "pending",
-      approved: true,
-      proofImages: ["assets/images/sinkMock1.jpg", "assets/images/sinkMock2.jpeg", "assets/images/sinkMock3.jpeg"],
-      inventoryItemsUsed:[
-        {
-          itemUuid: '4',
-          name: "Tap",
-          unit: "1",
-          quantity: 1,
-          buildingUuid: '1',
-        },
-        {
-          itemUuid: '5',
-          name: "Silicon tube",
-          unit: "1",
-          quantity: 1,
-          buildingUuid: '1',
-        }
-      ],
-      ReviewScore: 4,
-      ReviewDescription: "Very happy with the job",
-      numOfAssignedContractors: 2
-    },
-    {
-      description: 'Fixed light bulb',
-      UnitNo: "2",
-      cost: 200,
-      DoneBy: {
-        contractorId: 2,
-        name: 'XYZ Electricians',
-        email: 'xyz_electrician@gmail.com',
-        phone: '0987654321',
-        apikey: 'xyz456',
-        banned: false,
-      } as Contractor,
-      DoneOn: new Date('2024-05-28'),
-      DueDate: new Date('2024-05-28'),
-      status: "pending",
-      approved: true,
-      numOfAssignedContractors: 4
-    },
-    {
-      description: 'Repaint interior',
-      UnitNo: "3",
-      cost: 200,
-      DoneBy: {
-        contractorId: 2,
-        name: 'XYZ Electricians',
-        email: 'xyz_electrician@gmail.com',
-        phone: '0987654321',
-        apikey: 'xyz456',
-        banned: false,
-      } as Contractor,
-      DoneOn: new Date('2024-05-28'),
-      DueDate: new Date('2024-05-11'),
-      status: "pending",
-      approved: true,
-      numOfAssignedContractors: 3
-    }
+    // {
+    //   description: 'Fixed sink leak',
+    //   DoneBy: {
+    //     contractorId: 1,
+    //     name: 'ABC Plumbing',
+    //     email: 'abc_plumbing@gmail.com',
+    //     phone: '0123456789',
+    //     apikey: 'abc123',
+    //     banned: false,
+    //   },
+    //   DoneOn: new Date('2025-06-11'),
+    //   DueDate: new Date('2025-06-11'),
+    //   status: "pending",
+    //   approved: true,
+    //   proofImages: ["assets/images/sinkMock1.jpg", "assets/images/sinkMock2.jpeg", "assets/images/sinkMock3.jpeg"],
+    //   inventoryItemsUsed:[
+    //     {
+    //       itemUuid: '4',
+    //       name: "Tap",
+    //       unit: "1",
+    //       quantity: 1,
+    //       buildingUuid: '1',
+    //     },
+    //     {
+    //       itemUuid: '5',
+    //       name: "Silicon tube",
+    //       unit: "1",
+    //       quantity: 1,
+    //       buildingUuid: '1',
+    //     }
+    //   ],
+    //   ReviewScore: 4,
+    //   ReviewDescription: "Very happy with the job",
+    //   numOfAssignedContractors: 2
+    // },
+    // {
+    //   description: 'Fixed light bulb',
+    //   UnitNo: "2",
+    //   cost: 200,
+    //   DoneBy: {
+    //     contractorId: 2,
+    //     name: 'XYZ Electricians',
+    //     email: 'xyz_electrician@gmail.com',
+    //     phone: '0987654321',
+    //     apikey: 'xyz456',
+    //     banned: false,
+    //   } as Contractor,
+    //   DoneOn: new Date('2024-05-28'),
+    //   DueDate: new Date('2024-05-28'),
+    //   status: "pending",
+    //   approved: true,
+    //   numOfAssignedContractors: 4
+    // },
+    // {
+    //   description: 'Repaint interior',
+    //   UnitNo: "3",
+    //   cost: 200,
+    //   DoneBy: {
+    //     contractorId: 2,
+    //     name: 'XYZ Electricians',
+    //     email: 'xyz_electrician@gmail.com',
+    //     phone: '0987654321',
+    //     apikey: 'xyz456',
+    //     banned: false,
+    //   } as Contractor,
+    //   DoneOn: new Date('2024-05-28'),
+    //   DueDate: new Date('2024-05-11'),
+    //   status: "pending",
+    //   approved: true,
+    //   numOfAssignedContractors: 3
+    // }
   ]);
 
   lifeCycleCosts = signal<LifeCycleCost[]>([

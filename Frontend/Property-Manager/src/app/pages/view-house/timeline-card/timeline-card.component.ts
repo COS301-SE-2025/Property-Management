@@ -2,9 +2,9 @@ import { Component, inject, input } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TimelineModule } from 'primeng/timeline';
 import { HousesService } from '../../../services/houses.service';
-import { Timeline } from '../../../models/timeline.model';
 import { CommonModule } from '@angular/common';
 import { TimelineAddDialogComponent } from './timeline-add-dialog/timeline-add-dialog.component';
+import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 
 @Component({
   selector: 'app-timeline-card',
@@ -15,5 +15,5 @@ import { TimelineAddDialogComponent } from './timeline-add-dialog/timeline-add-d
 export class TimelineCardComponent {
   houseService = inject(HousesService);
 
-  timeline = input.required<Timeline[]>();
+  timeline = input.required<MaintenanceTask[]>();
 }

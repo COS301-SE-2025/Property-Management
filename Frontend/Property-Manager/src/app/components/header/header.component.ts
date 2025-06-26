@@ -24,7 +24,6 @@ export class HeaderComponent {
     else
     {
       this.isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      console.log(this.isDarkMode);
     }
     this.applyDarkMode();
   }
@@ -62,7 +61,6 @@ export class HeaderComponent {
   }
   private applyDarkMode()
   {
-    console.log("Applying dark mode:", this.isDarkMode);
     const root = document.documentElement;
     if(this.isDarkMode)
     {

@@ -1,13 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { Inventory } from '../models/inventory.model';
-import { Budget } from '../models/budget.model';
-import { Timeline } from '../models/timeline.model';
 import { BuildingApiService } from './api/Building api/building-api.service';
 import { BudgetApiService } from './api/Budget api/budget-api.service';
 import { InventoryItemApiService } from './api/InventoryItem api/inventory-item-api.service';
 import { Property } from '../models/property.model';
 import { BuildingDetails } from '../models/buildingDetails.model';
-import { ApiService } from './api.service';
+import { TaskApiService } from './api/Task api/task-api.service';
+import { MaintenanceTask } from '../models/maintenanceTask.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +15,12 @@ export class HousesService {
 
   private tempTrusteeId = 'b6785ed2-3230-4d55-8b83-660b63ca32f0';
 
-  constructor(private buildingApiService: BuildingApiService, private budgetApiService: BudgetApiService, private inventoryItemApiService: InventoryItemApiService, private apiService: ApiService) { }
+  constructor(private buildingApiService: BuildingApiService, private budgetApiService: BudgetApiService, private inventoryItemApiService: InventoryItemApiService, private taskApiService: TaskApiService) { }
 
   houses = signal<Property[]>([]);
   inventory = signal<Inventory[]>([]);
   budgets = signal<BuildingDetails>({} as BuildingDetails);
-  timeline = signal<Timeline[]>([]);
+  timeline = signal<MaintenanceTask[]>([]);
 
   mockImages = [
     "assets/images/houseDemo.jpg",
@@ -33,14 +32,22 @@ export class HousesService {
   {
     this.houses.set([...this.houses(), house]);
   }
-  addToTimeline(timeLine: Timeline)
+  addToTimeline(task: MaintenanceTask)
   {
-    this.timeline.set([...this.timeline(), timeLine]);
+    this.timeline.set([...this.timeline(), task]);
   }
 
   removeFromHouses(id : string)
   {
     this.houses.set(this.houses().filter((h) => h.buildingUuid !== id));
+  }
+  addToInventory(item: Inventory)
+  {
+    this.inventory.set([...this.inventory(), item]);
+  }
+  addToTasks(task: MaintenanceTask)
+  {
+    this.timeline.set([...this.timeline(), task]);
   }
 
   getHouseById(id: string): Property | undefined{
@@ -50,10 +57,10 @@ export class HousesService {
 
   private sortTimeline()
   {
-    return this.timeline().sort((a: Timeline, b: Timeline) => {
+    return this.timeline().sort((a: MaintenanceTask, b: MaintenanceTask) => {
       //Sort by done status, done items should be at the end
-      if(!a.done && b.done) return -1;
-      else if(a.done && !b.done) return 1;
+      if(!a.status && b.status) return -1;
+      else if(a.status && !b.status) return 1;
       return 0;
     })
   }
@@ -81,7 +88,6 @@ export class HousesService {
   }
   async loadBudget(houseId: string){
 
-    console.log(houseId);
     this.budgetApiService.getBudgetsByBuildingId(houseId).subscribe(
       (bulidingDetails: BuildingDetails[]) => {
         const firstElement = bulidingDetails[0];
@@ -89,9 +95,9 @@ export class HousesService {
       }
     )
   }
-  async createBudget(totalBudget: number, maintenanceBudget: number, inventoryBudget:number, updatedOn: Date, buildingId: string)
+  updateBudget()
   {
-    // this.budgetApiService.createBudget(totalBudget)
+
   }
   async isBudget(buildingId: string): Promise<boolean>
   {
@@ -111,14 +117,28 @@ export class HousesService {
   {
     this.inventory.set([]); 
 
-    this.apiService.getInventory().subscribe({
+    this.inventoryItemApiService.getInventoryItemsByBuilding(houseId).subscribe({
       next: (inventory) => {
-       const filterInventory = inventory.filter(item => item.buildingUuid === houseId)
-       this.inventory.set(filterInventory)
+       console.log(inventory);
+       this.inventory.set(inventory);
       },
       error: (err) => {
         console.error("Error loading inventory:", err);
       }
     });
+  }
+  async loadTasks(buildingId: string)
+  {
+    this.taskApiService.getAllTasks().subscribe({
+      next: (task) => {
+        if(task.b_uuid === buildingId)
+        {
+          this.addToTasks(task);
+        }
+      },
+      error: (err) => {
+        console.error("Error getting tasks", err);
+      }
+    })
   }
 }

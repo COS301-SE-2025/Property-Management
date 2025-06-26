@@ -2,7 +2,7 @@ export interface Inventory {
     itemUuid: string;
     name: string;
     unit: string;
-    quantity: number;
+    quantityInStock: number;
     buildingUuid: string;
     price?: number; 
     boughtDate?: Date;

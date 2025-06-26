@@ -38,7 +38,6 @@ export class BudgetCardComponent implements OnInit{
 
   calculateTotalBudget(): number
   {
-    console.log(this.budget());
     return (this.budget().inventoryBudget + this.budget().maintenanceBudget);
   }
   RouteToManageBudget()
