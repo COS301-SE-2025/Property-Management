@@ -16,112 +16,122 @@ import org.springframework.test.web.servlet.put
 class InventoryItemSqlInjectionTest(
     @Autowired val mockMvc: MockMvc,
 ) {
-
     @Test
     fun `get inventory item by uuid endpoint should not be vulnerable to SQL injection`() {
         val maliciousUuid = "123e4567-e89b-12d3-a456-426614174000' OR '1'='1"
-        mockMvc.get("/api/inventory/$maliciousUuid") {
-            accept(MediaType.APPLICATION_JSON)
-        }.andExpect {
-            status { is4xxClientError() }
-        }
+        mockMvc
+            .get("/api/inventory/$maliciousUuid") {
+                accept(MediaType.APPLICATION_JSON)
+            }.andExpect {
+                status { is4xxClientError() }
+            }
     }
 
     @Test
     fun `get inventory items by building uuid endpoint should not be vulnerable to SQL injection`() {
         val maliciousBuildingUuid = "123e4567-e89b-12d3-a456-426614174000' OR '1'='1"
-        mockMvc.get("/api/inventory/building/$maliciousBuildingUuid") {
-            accept(MediaType.APPLICATION_JSON)
-        }.andExpect {
-            status { is4xxClientError() }
-        }
+        mockMvc
+            .get("/api/inventory/building/$maliciousBuildingUuid") {
+                accept(MediaType.APPLICATION_JSON)
+            }.andExpect {
+                status { is4xxClientError() }
+            }
     }
 
     @Test
     fun `update inventory item by uuid endpoint should not be vulnerable to SQL injection`() {
         val maliciousUuid = "123e4567-e89b-12d3-a456-426614174000' OR '1'='1"
-        val updateJson = """
+        val updateJson =
+            """
             {
                 "name": "Updated Item",
                 "unit": "pieces",
                 "quantity": 10
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        mockMvc.put("/api/inventory/$maliciousUuid") {
-            contentType = MediaType.APPLICATION_JSON
-            content = updateJson
-            accept(MediaType.APPLICATION_JSON)
-        }.andExpect {
-            status { is4xxClientError() }
-        }
+        mockMvc
+            .put("/api/inventory/$maliciousUuid") {
+                contentType = MediaType.APPLICATION_JSON
+                content = updateJson
+                accept(MediaType.APPLICATION_JSON)
+            }.andExpect {
+                status { is4xxClientError() }
+            }
     }
 
     @Test
     fun `update quantity by uuid endpoint should not be vulnerable to SQL injection`() {
         val maliciousUuid = "123e4567-e89b-12d3-a456-426614174000' OR '1'='1"
-        val quantityUpdateJson = """
+        val quantityUpdateJson =
+            """
             {
                 "quantity": 5,
                 "operation": "SET"
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        mockMvc.patch("/api/inventory/$maliciousUuid/quantity") {
-            contentType = MediaType.APPLICATION_JSON
-            content = quantityUpdateJson
-            accept(MediaType.APPLICATION_JSON)
-        }.andExpect {
-            status { is4xxClientError() }
-        }
+        mockMvc
+            .patch("/api/inventory/$maliciousUuid/quantity") {
+                contentType = MediaType.APPLICATION_JSON
+                content = quantityUpdateJson
+                accept(MediaType.APPLICATION_JSON)
+            }.andExpect {
+                status { is4xxClientError() }
+            }
     }
 
     @Test
     fun `delete inventory item by uuid endpoint should not be vulnerable to SQL injection`() {
         val maliciousUuid = "123e4567-e89b-12d3-a456-426614174000' OR '1'='1"
-        mockMvc.delete("/api/inventory/$maliciousUuid") {
-            accept(MediaType.APPLICATION_JSON)
-        }.andExpect {
-            status { is4xxClientError() }
-        }
+        mockMvc
+            .delete("/api/inventory/$maliciousUuid") {
+                accept(MediaType.APPLICATION_JSON)
+            }.andExpect {
+                status { is4xxClientError() }
+            }
     }
 
     @Test
     fun `update inventory item should handle SQL injection in request body`() {
         val validUuid = "123e4567-e89b-12d3-a456-426614174000"
-        val maliciousUpdateJson = """
+        val maliciousUpdateJson =
+            """
             {
                 "name": "Item'; DROP TABLE inventoryitem;--",
                 "unit": "pieces' OR '1'='1",
                 "quantity": 10
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        mockMvc.put("/api/inventory/$validUuid") {
-            contentType = MediaType.APPLICATION_JSON
-            content = maliciousUpdateJson
-            accept(MediaType.APPLICATION_JSON)
-        }.andExpect {
-            status { isNotFound() }
-        }
+        mockMvc
+            .put("/api/inventory/$validUuid") {
+                contentType = MediaType.APPLICATION_JSON
+                content = maliciousUpdateJson
+                accept(MediaType.APPLICATION_JSON)
+            }.andExpect {
+                status { isNotFound() }
+            }
     }
 
     @Test
     fun `update quantity should handle SQL injection in request body`() {
         val validUuid = "123e4567-e89b-12d3-a456-426614174000"
-        val maliciousQuantityJson = """
+        val maliciousQuantityJson =
+            """
             {
                 "quantity": 5,
                 "operation": "SET'; DROP TABLE inventoryitem;--"
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        mockMvc.patch("/api/inventory/$validUuid/quantity") {
-            contentType = MediaType.APPLICATION_JSON
-            content = maliciousQuantityJson
-            accept(MediaType.APPLICATION_JSON)
-        }.andExpect {
-            status { is4xxClientError() }
-        }
+        mockMvc
+            .patch("/api/inventory/$validUuid/quantity") {
+                contentType = MediaType.APPLICATION_JSON
+                content = maliciousQuantityJson
+                accept(MediaType.APPLICATION_JSON)
+            }.andExpect {
+                status { is4xxClientError() }
+            }
     }
 }
