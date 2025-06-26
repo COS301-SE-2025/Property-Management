@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Router } from '@angular/router';
-import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-contractor-register',
@@ -27,7 +26,6 @@ export class ContractorRegisterComponent {
     public serverError = false;
 
     constructor(
-    private apiService: ApiService,
     private authService: AuthService, private router: Router
   ) {}
 

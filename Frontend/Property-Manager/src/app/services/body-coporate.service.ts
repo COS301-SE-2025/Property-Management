@@ -1,10 +1,11 @@
 import { Injectable, signal } from '@angular/core';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
-import { Contractor } from '../models/contractor.model';
 import { LifeCycleCost } from '../models/lifeCycleCost.model';
-import { BuildingContribution } from '../models/buildingContribution.model';
 import { Graph } from '../models/graph.model';
 import { ContractorDetails } from '../models/contractorDetails.model';
+import { ReserveFund } from '../models/reserveFund.model';
+import { BodyCoporateApiService } from './api/Body Coporate api/body-coporate-api.service';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,79 +13,7 @@ import { ContractorDetails } from '../models/contractorDetails.model';
 export class BodyCoporateService {
 
   //Mock data
-  pendingTasks = signal<MaintenanceTask[]>([
-    // {
-    //   description: 'Fixed sink leak',
-    //   DoneBy: {
-    //     contractorId: 1,
-    //     name: 'ABC Plumbing',
-    //     email: 'abc_plumbing@gmail.com',
-    //     phone: '0123456789',
-    //     apikey: 'abc123',
-    //     banned: false,
-    //   },
-    //   DoneOn: new Date('2025-06-11'),
-    //   DueDate: new Date('2025-06-11'),
-    //   status: "pending",
-    //   approved: true,
-    //   proofImages: ["assets/images/sinkMock1.jpg", "assets/images/sinkMock2.jpeg", "assets/images/sinkMock3.jpeg"],
-    //   inventoryItemsUsed:[
-    //     {
-    //       itemUuid: '4',
-    //       name: "Tap",
-    //       unit: "1",
-    //       quantity: 1,
-    //       buildingUuid: '1',
-    //     },
-    //     {
-    //       itemUuid: '5',
-    //       name: "Silicon tube",
-    //       unit: "1",
-    //       quantity: 1,
-    //       buildingUuid: '1',
-    //     }
-    //   ],
-    //   ReviewScore: 4,
-    //   ReviewDescription: "Very happy with the job",
-    //   numOfAssignedContractors: 2
-    // },
-    // {
-    //   description: 'Fixed light bulb',
-    //   UnitNo: "2",
-    //   cost: 200,
-    //   DoneBy: {
-    //     contractorId: 2,
-    //     name: 'XYZ Electricians',
-    //     email: 'xyz_electrician@gmail.com',
-    //     phone: '0987654321',
-    //     apikey: 'xyz456',
-    //     banned: false,
-    //   } as Contractor,
-    //   DoneOn: new Date('2024-05-28'),
-    //   DueDate: new Date('2024-05-28'),
-    //   status: "pending",
-    //   approved: true,
-    //   numOfAssignedContractors: 4
-    // },
-    // {
-    //   description: 'Repaint interior',
-    //   UnitNo: "3",
-    //   cost: 200,
-    //   DoneBy: {
-    //     contractorId: 2,
-    //     name: 'XYZ Electricians',
-    //     email: 'xyz_electrician@gmail.com',
-    //     phone: '0987654321',
-    //     apikey: 'xyz456',
-    //     banned: false,
-    //   } as Contractor,
-    //   DoneOn: new Date('2024-05-28'),
-    //   DueDate: new Date('2024-05-11'),
-    //   status: "pending",
-    //   approved: true,
-    //   numOfAssignedContractors: 3
-    // }
-  ]);
+  pendingTasks = signal<MaintenanceTask[]>([]);
 
   lifeCycleCosts = signal<LifeCycleCost[]>([
     {
@@ -110,35 +39,7 @@ export class BodyCoporateService {
     }
   ]);
 
-  fundContribution = signal<BuildingContribution[]>([
-    {
-      buildingUuid: '1',
-      name: "Name 1",
-      address: "example 1 address",
-      UnitNo: "1",
-      floorArea: 100,
-      quota: 12,
-      annualContribution: 12000
-    },
-    {
-      buildingUuid: '2',
-      name: "Name 2",
-      address: "example 2 address",
-      UnitNo: "2",
-      floorArea: 67,
-      quota: 9,
-      annualContribution: 8000
-    },
-    {
-      buildingUuid: '3',
-      name: "Name 3",
-      address: "example 3 address",
-      UnitNo: "3",
-      floorArea: 145,
-      quota: 16,
-      annualContribution: 20000
-    }
-  ]);
+  fundContribution = signal<ReserveFund[]>([]);
 
   // maintenanceGraph = signal<Graph>({
   //   labels: [2020, 2021, 2022, 2023, 2024, 2025],
@@ -207,5 +108,59 @@ export class BodyCoporateService {
       projectHistory: "Worked on sinks, toilets, etc",
       projectHistoryProof: "History.pdf" 
     }
-  ])
+  ]);
+
+  constructor(private bodyCoporateApiService: BodyCoporateApiService){}
+
+  async addToTask(task: MaintenanceTask): Promise<void> {
+    this.pendingTasks.update(tasks => [...tasks, task]);
+  }
+
+  async loadPendingTasks(): Promise<void> {
+    try {
+      const buildings = await firstValueFrom(
+        this.bodyCoporateApiService.getBuildingsLinkedtoBC()
+      );
+
+      const buildingUuids: string[] = buildings
+        .map(b => b.buildingUuid)
+        .filter((uuid): uuid is string => typeof uuid === 'string');
+
+      await Promise.all(buildingUuids.map(async uuid => {
+        try {
+          const tasks = await firstValueFrom(
+            this.bodyCoporateApiService.getPendingTasks(uuid)
+          );
+          tasks.forEach(task => this.addToTask(task));
+        } catch (error) {
+          console.error(`Failed to load tasks for building ${uuid}`, error);
+        }
+      }));
+    } catch (error) {
+      console.error('Failed to load buildings', error);
+    }
+  }
+  async loadFundContribution(): Promise<void> {
+  try {
+    const [buildings, bc] = await Promise.all([
+      firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC()),
+      firstValueFrom(this.bodyCoporateApiService.getBodyCoporate())
+    ]);
+
+    const reserveFunds = buildings
+      .filter((building): building is typeof building & { area: number } => typeof building.area === 'number')
+      .map(building => 
+        this.bodyCoporateApiService.getAndCalculateReserveFund(
+          bc, 
+          building.area
+        )
+      );
+
+    this.fundContribution.set(reserveFunds);
+    
+  } catch (error) {
+    console.error('Failed to load fund contributions', error);
+    this.fundContribution.set([]);
+  }
+}
 }

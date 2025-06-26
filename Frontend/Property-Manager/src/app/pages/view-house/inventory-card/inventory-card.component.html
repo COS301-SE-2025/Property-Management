@@ -1,7 +1,7 @@
 <div class = "flex flex-col items-center justify-center">
     <p-card class="text-center">
     <ng-template #title>Inventory</ng-template>
-    <p-table [value] = "inventory()" stripedRows [tableStyle]="{ 'min-width': '22rem' }">
+    <p-table [value] = "inventory()" [tableStyle]="{ 'min-width': '22rem' }">
         <ng-template #header>
         <tr>
             <th pSortableColumn="name">

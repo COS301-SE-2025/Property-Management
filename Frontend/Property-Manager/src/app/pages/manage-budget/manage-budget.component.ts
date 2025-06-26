@@ -2,7 +2,6 @@ import { Component, effect, OnInit, signal } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../components/header/header.component";
-import { BudgetService } from '../../services/budget.service';
 import { GraphCardComponent } from './graph-card/graph-card.component';
 import { InventoryBudgetCardComponent } from './inventory-budget-card/inventory-budget-card.component';
 import { MaintenanceCardComponent } from "./maintenance-card/maintenance-card.component";
@@ -36,7 +35,7 @@ export class ManageBudgetComponent implements OnInit {
   public findHouse = signal(false);
   public loading = signal(true);
 
-  constructor(public budgetService: BudgetService, public houseService: HousesService, private route: ActivatedRoute) {
+  constructor(public houseService: HousesService, private route: ActivatedRoute) {
     effect(() => {
       const houseId = this.route.snapshot.paramMap.get('houseId');
       console.log(houseId);
