@@ -2,7 +2,6 @@
 # === Kotlin Backend ===
 Backend\property-management\src\main\resources\application.properties
 *.properties
-*.yml
 config.env
 .env
 .env.*
@@ -31,5 +30,3 @@ Thumbs.db
 *.tmp
 *.swp
 *~
-
-Backend/property-management/src/main/resources

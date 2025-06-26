@@ -9,7 +9,7 @@ on:
 
 jobs:
     lint:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         steps:
             - uses: actions/checkout@v3
             - name: Install ktlint
@@ -18,10 +18,17 @@ jobs:
               run: ./ktlint "Backend/property-management/src/**/*.kt"
         
     build:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         needs: lint
         steps:
             - uses: actions/checkout@v3
+            
+            - name: Set up JDK
+              uses: actions/setup-java@v3
+              with:
+                java-version: '21'
+                distribution: 'temurin' 
+
             - name: Make gradlew executable
               run: chmod +x ./gradlew
               working-directory: Backend
@@ -30,7 +37,7 @@ jobs:
               working-directory: Backend/property-management
 
     test:
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-22.04
       needs: build
       services:
         postgres:
