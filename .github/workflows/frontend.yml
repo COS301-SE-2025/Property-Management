@@ -9,7 +9,7 @@ on:
 
 jobs:
     lint:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         steps:
             - uses: actions/checkout@v3
 
@@ -29,9 +29,35 @@ jobs:
               run: npm run lint
               working-directory: Frontend/Property-Manager
         
+    audit:
+      runs-on: ubuntu-22.04
+      needs: lint
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Cache node_modules
+          uses: actions/cache@v3
+          with:
+              path: Frontend/Property-Manager/node_modules
+              key: npm-${{ hashFiles('Frontend/Property-Manager/package-lock.json') }}
+              restore-keys: |
+                npm-
+            
+        - name: Install dependencies
+          run: npm ci
+          working-directory: Frontend/Property-Manager 
+
+        - name: Audit packages
+          run: npm audit || [ $? -eq 1 ] || exit $?
+          working-directory: Frontend/Property-Manager
+          
+        - name: Fail on critical vulnerabilites 
+          run: npm audit --audit-level=critical
+          working-directory: Frontend/Property-Manager
+        
     build:
-        runs-on: ubuntu-latest
-        needs: lint
+        runs-on: ubuntu-22.04
+        needs: audit
         steps:
             - uses: actions/checkout@v3
 
@@ -52,7 +78,7 @@ jobs:
               working-directory: Frontend/Property-Manager
       
     test:
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-22.04
       needs: build
       steps:
           - uses: actions/checkout@v3
@@ -69,6 +95,6 @@ jobs:
             run: npm ci
             working-directory: Frontend/Property-Manager
 
-          - name: Run unit tests
+          - name: Run unit and integration tests
             run: npm run test -- --watch=false --browsers=ChromeHeadlessCI
             working-directory: Frontend/Property-Manager

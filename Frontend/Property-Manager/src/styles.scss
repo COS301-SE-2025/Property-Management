@@ -11,3 +11,161 @@
 ::ng-deep .p-drawer {
   background-color: #facc15 !important; 
 }
+
+.custom-upload-button .p-button {
+  background-color: white !important;
+  color: black !important;
+  font-weight: 600;
+  border-radius: 0.5rem;
+   border: 1px solid black !important;
+   
+}
+
+
+.dark-theme {
+  --bg-color: #3d444d;
+  --text-color: #FDFDFD;
+  --border-color: #000000;
+
+  --dark-background: #3d444d;      
+  --dark-card-background: #2d3436;        
+  --text-color: #FDFDFD;          
+  --card-border: #000000;  
+  --card-hover: #4a5568;
+
+  --datatable-header-bg: #2d2d2d;
+  --datatable-header-text: #f0f0f0;
+  --datatable-body-bg: #2d2d2d;
+  --datatable-body-text: #f0f0f0;
+  --datatable-border: #444;
+
+  --dialog-bg: #2d2d2d;
+  --dialog-header-bg: #333;
+  --dialog-header-text: #f0f0f0;
+  --dialog-content-text: #e0e0e0;
+  --dialog-border: #444;
+  --dialog-mask-bg: rgba(0, 0, 0, 0.7);
+}
+:root, .dark-theme {
+  transition: all 0.3s ease;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.dark-theme .p-card{
+  background: var(--dark-background);
+  color: var(--text-color);
+}
+.dark-theme .bg-gray-50  {
+  background: var(--card-hover);
+  color: var(--text-color);
+}
+.dark-theme .bg-gray-50  p{
+  color: var(--text-color);
+}
+
+.dark-theme .p-datatable{
+  background: var(--datatable-body-bg);
+  color: var(--datatable-body-text);
+}
+
+.dark-theme .p-datatable .p-datatable-header {
+  background: var(--datatable-header-bg);
+  color: var(--datatable-header-text);
+}
+
+.dark-theme .p-datatable .p-datatable-thead > tr > th {
+  background: var(--datatable-header-bg);
+  color: var(--datatable-header-text);
+  border-color: var(--datatable-border);
+}
+
+.dark-theme .p-datatable .p-datatable-tbody > tr {
+  background: var(--datatable-body-bg);
+  color: var(--datatable-body-text);
+  border-color: var(--datatable-border);
+}
+
+.dark-theme .p-datatable .p-datatable-tbody > tr:nth-child(even) {
+  background: var(--datatable-row-even-bg);
+}
+
+.dark-theme .p-datatable .p-datatable-tbody > tr:hover {
+  background: var(--datatable-row-hover-bg);
+}
+.dark-theme .p-dialog {
+  background: var(--dialog-bg);
+  color: var(--dialog-content-text);
+  border-color: var(--dialog-border);
+}
+
+.dark-theme .p-dialog .p-dialog-header {
+  background: var(--dialog-header-bg);
+  color: var(--dialog-header-text);
+  border-bottom-color: var(--dialog-border);
+}
+
+.dark-theme .p-dialog .p-dialog-content {
+  background: var(--dialog-bg);
+  color: var(--dialog-content-text);
+}
+
+.dark-theme .p-dialog .p-dialog-footer {
+  border-top-color: var(--dialog-border);
+  background: var(--dialog-bg);
+}
+
+.dark-theme .p-dialog-mask {
+  background-color: var(--dialog-mask-bg);
+}
+
+.dark-theme .p-dialog .p-float-label input {
+  background: #333;
+  color: var(--text-color);
+  border-color: var(--surface-border);
+}
+
+.dark-theme .p-dialog .p-float-label label {
+  color: var(--text-color-secondary);
+}
+
+.dark-theme .p-datepicker-panel {
+  background-color: #333;
+  color: var(--text-color);
+  border-color: var(--surface-border);
+}
+.dark-theme .p-datepicker-input {
+  background-color: #333;
+  color: var(--text-color);
+}
+
+.dark-theme .p-datepicker-header {
+  background: #2d2d2d;
+}
+
+.dark-theme .p-dialog button {
+  background-color: #444;
+  color: var(--text-color);
+}
+
+.dark-theme .p-dialog button:enabled:hover {
+  background: #555;
+}
+
+.dark-theme .p-listbox{
+  background: var(--dark-background);
+  color: var(--text-color);
+}
+
+.dark-theme .p-listbox-option{
+  background: var(--dialog-bg);
+  color: var(--text-color);
+}
+
+.dark-theme .p-breadcrumb
+{
+  background: var(--dark-background);
+}

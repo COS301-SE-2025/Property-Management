@@ -3,6 +3,9 @@ package com.example.propertymanagement.service
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.repository.ContractorRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.NoSuchElementException
+import java.util.UUID
 
 @Service
 class ContractorService(
@@ -10,36 +13,74 @@ class ContractorService(
 ) {
     fun getAll(): List<Contractor> = repository.findAll()
 
-    fun getById(id: Int): Contractor = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
+    fun getByUuid(uuid: UUID): Contractor =
+        repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
+
+    fun updateByUuid(
+        uuid: UUID,
+        update: Contractor,
+    ): Contractor {
+        val existing = getByUuid(uuid)
+
+        val updated =
+            existing.copy(
+                name = update.name ?: existing.name,
+                contact_info = update.contact_info ?: existing.contact_info,
+                status = update.status ?: existing.status,
+                apikey = update.apikey ?: existing.apikey,
+                email = update.email ?: existing.email,
+                phone = update.phone ?: existing.phone,
+                address = update.address ?: existing.address,
+                city = update.city ?: existing.city,
+                postal_code = update.postal_code ?: existing.postal_code,
+                reg_number = update.reg_number ?: existing.reg_number,
+                description = update.description ?: existing.description,
+                services = update.services ?: existing.services,
+                corporate_uuid = update.corporate_uuid ?: existing.corporate_uuid,
+            )
+
+        return repository.save(updated)
+    }
+
+    @Transactional
+    fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
 
     fun add(item: Contractor): Contractor = repository.save(item)
 
     fun addUser(
         name: String,
+        contact_info: String,
+        status: Boolean,
+        apikey: String,
         email: String,
         phone: String,
-        apikey: String,
-        banned: Boolean,
+        address: String,
+        city: String,
+        postal_code: String,
+        reg_number: String,
+        description: String,
+        services: String,
+        corporate_uuid: UUID,
     ): Contractor {
-        val newUser = Contractor(name = name, email = email, phone = phone, apikey = apikey, banned = banned)
+        val newUser =
+            Contractor(
+                name = name,
+                contact_info = contact_info,
+                status = status,
+                apikey = apikey,
+                email = email,
+                phone = phone,
+                address = address,
+                city = city,
+                postal_code = postal_code,
+                reg_number = reg_number,
+                description = description,
+                services = services,
+                corporate_uuid = corporate_uuid,
+            )
         return add(newUser)
     }
 
-    fun update(
-        id: Int,
-        newItem: Contractor,
-    ): Contractor {
-        val existing = getById(id)
-        val updated =
-            existing.copy(
-                name = newItem.name,
-                email = newItem.email,
-                phone = newItem.phone,
-                apikey = newItem.apikey,
-                banned = newItem.banned,
-            )
-        return repository.save(updated)
-    }
-
-    fun delete(id: Int) = repository.deleteById(id)
+    fun getByEmail(email: String): Contractor =
+        repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
 }

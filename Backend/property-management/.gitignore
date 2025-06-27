@@ -38,3 +38,8 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+# Ignore Spring Boot configuration files
+**/application.yml
+**/application.yaml
+**/application.properties

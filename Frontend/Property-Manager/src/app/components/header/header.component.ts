@@ -1,62 +1,180 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule],
-  template: `
-    <div class = "flex flex-col">
-      <!-- Name -->
-      <div class = "flex flex-row justify-between items-center px-4 py-2"> 
-        <p class = "font-medium text-xl">Property Manager</p>
-
-        <div class = "flex flex-row items-center">
-          <div class = "relative">
-            <button class = "cursor-pointer pr-3"> 
-              <img src= "assets/icons/settings.svg" class="w-9 h-9" alt=""> 
-            </button>
-            <button class = "cursor-pointer" (click)="dropDown()">
-              <img src= "assets/icons/profile.svg" class="w-9 h-9" alt="">
-            </button>
-
-            <div *ngIf="dropDownOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-22 z-50">
-              <button (click)="signOut()" class= "block text-red-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer">
-                Sign out
-              </button>            
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- bar -->
-      <div class = "propertyYellow-bg h-4 w-full"></div>
-    </div>
-  `,
+  imports: [CommonModule, BreadcrumbModule, RouterModule],
+  templateUrl: `./header.component.html`,
   styles: ''
 })
 export class HeaderComponent {
 
-  public dropDownOpen = false;
+  public dropDownProfileOpen = false;
+  public dropDownSettingsOpen = false;
+  public isDarkMode = false;
+  public items: MenuItem[] = [];
 
-  constructor(private authService: AuthService, private router: Router){}
+  public typeUser: string | null = null;
+  private routeMap: Record<string, Record<string, MenuItem[]>> = {
+  'body coporate': {
+    '/home': [
+      { label: 'Home', route: '/home' }
+    ],
+    '/bodyCoporate': [
+      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' }
+    ],
+    '/bodyCoporate/contractors': [
+      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate', route: '/bodyCoporate' },
+      { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' }
+    ],
+    '/bodyCoporate/publicContractors': [
+      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate', route: '/bodyCoporate' },
+      { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' }
+    ],
+    '/contractorDetails': [
+      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate', route: '/bodyCoporate' },
+      { label: 'Contractors', route: '/bodyCoporate/contractors' },
+      { label: 'Contractor Details', route: '/contractorDetails' }
+    ],
+    '/viewHouse': [
+      { label: 'Home', route: '/home' },
+      { label: 'View House', route: '/viewHouse' }
+    ],
+    '/manageBudget': [
+      { label: 'Home', route: '/home' },
+      { label: 'View House', route: '/viewHouse' },
+      { label: 'Manage Budget', route: '/manageBudget' }
+    ],
+    '/create-property': [
+      { label: 'Home', route: '/home' },
+      { label: 'Create Property', route: '/create-property' }
+    ]
+  },
+  'trustee': {
+    '/home': [
+      { label: 'Home', route: '/home' }
+    ],
+    '/viewHouse': [
+      { label: 'Home', route: '/home' },
+      { label: 'View House', route: '/viewHouse' }
+    ],
+    '/manageBudget': [
+      { label: 'Home', route: '/home' },
+      { label: 'View House', route: '/viewHouse' },
+      { label: 'Manage Budget', route: '/manageBudget' }
+    ]
+  },
+  'contractor': {
+    '/home': [
+      { label: 'Home', route: '/home' }
+    ],
+    '/contractorHome': [
+      { label: 'Home', route: '/home' },
+      { label: 'Contractor Dashboard', route: '/contractorHome' }
+    ],
+    '/contractor-profile': [
+      { label: 'Home', route: '/home' },
+      { label: 'Profile', route: '/contractor-profile' }
+    ],
+    '/quotation': [
+      { label: 'Home', route: '/home' },
+      { label: 'Quotations', route: '/quotation' }
+    ]
+  }
+  };
 
-  dropDown()
+  constructor(private authService: AuthService, private router: Router){
+    const saved = localStorage.getItem('darkMode');
+    if(saved !== null)
+    {
+      this.isDarkMode = saved === 'true';
+    }
+    else
+    {
+      this.isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    this.applyDarkMode();
+
+    this.typeUser = localStorage.getItem('typeUser');
+
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+      this.updateBreadcrumbs(event.url);
+    });
+  }
+
+  dropDownProfile()
   {
-    this.dropDownOpen = !this.dropDownOpen;
+    this.dropDownSettingsOpen = false;
+    this.dropDownProfileOpen = !this.dropDownProfileOpen;
+  }
+  dropDownSettings()
+  {
+    this.dropDownProfileOpen = false;
+    this.dropDownSettingsOpen = !this.dropDownSettingsOpen;
   }
 
   signOut()
   {
-    this.dropDownOpen = false;
-    if(this.authService.logout())
+    this.dropDownProfileOpen = false;
+    this.router.navigate(['/login']);
+    // if(this.authService.logout())
+    // {
+    // }
+    // else
+    // {
+    //   console.error("couldnt log out");
+    // } 
+  }
+
+  toggleDarkMode()
+  {
+    this.isDarkMode = !this.isDarkMode;
+    this.applyDarkMode();
+
+    localStorage.setItem('darkMode', this.isDarkMode.toString());
+  }
+  private applyDarkMode()
+  {
+    const root = document.documentElement;
+    if(this.isDarkMode)
     {
-      this.router.navigate(['/login']);
+      root.classList.add('dark-theme');
     }
     else
     {
-      console.error("couldnt log out");
-    } 
+      root.classList.remove('dark-theme');
+    }
+  }
+  private updateBreadcrumbs(url: string): void {
+    if (!this.typeUser) return;
+
+    const baseUrl = url.split('?')[0].split('#')[0];
+    
+    const parameterlessUrl = baseUrl.split('/').slice(0, 2).join('/') || '/';
+
+    const userRoutes = this.routeMap[this.typeUser];
+    if (!userRoutes) return;
+
+    if (userRoutes[baseUrl]) {
+      this.items = [...userRoutes[baseUrl]];
+      return;
+    }
+
+    if (userRoutes[parameterlessUrl]) {
+      this.items = [...userRoutes[parameterlessUrl]];
+      return;
+    }
+
+    this.items = [{ label: 'Home', route: '/home' }];
   }
 }

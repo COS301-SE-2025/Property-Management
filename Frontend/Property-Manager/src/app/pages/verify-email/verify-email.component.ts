@@ -8,70 +8,69 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-verify-email',
   imports: [FloatLabelModule, CommonModule, FormsModule],
-  template: `
-    <div class = "flex w-full justify-center items-center h-screen bg-gray-100">
-      <div class = "flex w-[700px] h-[400px] shadow-lg rounded overflow-hidden border">
-
-        <div class = "w-2/6 bg-white flex flex-col items-center justify-center p-6 border-r">
-          <img class = "h-24 mb-4" src="assets/images/logo.png" alt="App logo">
-          <p class = "font-semibold text-lg">Property Manager</p>
-        </div>
-
-        <div class = "w-4/6 propertyYellow-bg p-8 flex flex-col justify-center">
-            <p class = "text-center text-xl font-semibold mb-2">A verification code has been sent to email address. Enter the code here to verify your account </p>
-            <div class="mb-6 mt-8">
-            <p-floatlabel variant="on">
-              <input class="w-full border rounded" pInputText id="on_label" [(ngModel)]="verificationCode" autocomplete="off">
-              <label class="pl-6" for="on_label">Enter Verification Code</label>
-            </p-floatlabel>
-          </div>
-          <div>
-            <button (click)="sendCode()" class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800 w-full">
-              Send Verification code
-            </button>
-          </div>
-        </div>
-
-
-      </div>
-    </div>
-  `,
+  templateUrl: './verify-email.component.html',
   styles: ``
 })
 export class VerifyEmailComponent {
 
-  constructor(private authService: AuthService, private router: Router) {
-    const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras.state as {
-      username: string
-    };
-    
-    if (state) {
-      this.username = state.username;
-    }
-  }
-
   public verificationCode = '';
   public username = '';
+  public userType = '';
 
-  sendCode()
-  {
-    console.log(this.username);
-    console.log(this.verificationCode);
-    if(!this.verificationCode)
-    {
+  public emptyField = false;
+  public errorMessage = '';
+
+  constructor(private authService: AuthService, private router: Router) {
+    const storedUsername = sessionStorage.getItem('pendingUsername');
+    const storedUserType = sessionStorage.getItem('userType');
+    
+    if (storedUsername) {
+        this.username = storedUsername;
+      }else {
+        console.error('No username found for verification.');
+        this.router.navigate(['']);
+      }
+    
+
+   if (storedUserType) {
+        this.userType = storedUserType;
+      } else {
+        console.error('No user type found.');
+        this.router.navigate(['/register-body-corporate']);
+      }
+  }
+
+  async sendCode(): Promise<void> {
+    if(!this.verificationCode) {
+      this.emptyField = true;
       return;
     }
 
-    return this.authService.confirmRegister(this.username, this.verificationCode)
-    .then(tokens => {
-      console.log("Verified email");
-      console.log(tokens);
-  
+    this.emptyField = false;
+    this.errorMessage = '';
+
+    try {
+      if(this.userType === 'bodyCorporate') {
+        const result = await this.authService.confirmBodyCoporateRegistration(this.username, this.verificationCode);
+        console.log('Email verification successful:', result);
+      }else if(this.userType === 'trustee') {
+        const result = await this.authService.confirmTrusteeRegistration(this.username, this.verificationCode);
+        console.log('Email verification successful:', result);
+      } else if(this.userType === 'contractor') {
+        //add contractor implementation
+      }else {
+        console.error('Unknown user type:', this.userType);
+        this.errorMessage = 'Invalid user type. Please register again.';
+        return;
+      }
+
+      sessionStorage.removeItem('pendingUsername');
+      sessionStorage.removeItem('userType');
       this.router.navigate(['/login']);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+
+    } catch (error) {
+      console.error('Verification failed:', error);
+      this.errorMessage = 'Verification failed. Please check your code and try again.';
+    }
   }
 }

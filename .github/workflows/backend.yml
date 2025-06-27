@@ -9,7 +9,7 @@ on:
 
 jobs:
     lint:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         steps:
             - uses: actions/checkout@v3
             - name: Install ktlint
@@ -18,10 +18,17 @@ jobs:
               run: ./ktlint "Backend/property-management/src/**/*.kt"
         
     build:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         needs: lint
         steps:
             - uses: actions/checkout@v3
+            
+            - name: Set up JDK
+              uses: actions/setup-java@v3
+              with:
+                java-version: '21'
+                distribution: 'temurin' 
+
             - name: Make gradlew executable
               run: chmod +x ./gradlew
               working-directory: Backend
@@ -30,15 +37,15 @@ jobs:
               working-directory: Backend/property-management
 
     test:
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-22.04
       needs: build
       services:
         postgres:
           image: postgres:15
           env:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_DB: test
+            POSTGRES_USER: test
+            POSTGRES_PASSWORD: test
+            POSTGRES_DB: testdb
           ports:
             - 5432:5432
           options: >-
@@ -56,11 +63,11 @@ jobs:
             distribution: 'temurin'
         - name: Run unit tests
           env:
-            SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test
-            SPRING_DATASOURCE_USERNAME: postgres
-            SPRING_DATASOURCE_PASSWORD: postgres
-            SPRING_JPA_HIBERNATE_DDL_AUTO: update
+            SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+            SPRING_DATASOURCE_USERNAME: test
+            SPRING_DATASOURCE_PASSWORD: test
+            SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
             SPRING_JPA_SHOW_SQL: true
             SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-          run: ./gradlew test --scan
+          run: ./gradlew test --scan -Dspring.profiles.active=test
           working-directory: Backend/property-management

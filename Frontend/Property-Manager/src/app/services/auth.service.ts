@@ -1,135 +1,288 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  AuthenticationDetails,
-  CognitoUser,
-  CognitoUserAttribute,
-  CognitoUserPool,
-  ISignUpResult,
-} from 'amazon-cognito-identity-js';
-import { environment } from '../../environments/environments';
-import { jwtDecode } from 'jwt-decode';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+
 
 export interface AuthTokens {
-  accessToken: string;
   idToken: string;
+  accessToken: string;
   refreshToken: string;
-  givenName?: string;
-  sub?: string;
+  userType: string;
+  userId: string;
 }
+
+export interface BodyCoporateRegisterResponse {
+  corporateUuid: string;
+  corporateName: string;
+  email: string;
+  cognitoUserId: string;
+  username: string;
+  emailVerificationRequired: boolean;
+}
+
+export interface trusteeRegisterResponse {
+  email: string;
+  cognitoUserId: string;
+  username: string;
+}
+
+export interface contractorRegisterResponse {
+  email: string;
+  cognitoUserId: string;
+  username: string;
+}
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private userPool = new CognitoUserPool({
-    UserPoolId: environment.cognito.userPoolId,
-    ClientId: environment.cognito.userPoolWebClientId,
-  });
 
-  login(email: string, password: string): Promise<AuthTokens> {
-  const authenticationDetails = new AuthenticationDetails({
-    Username: email,
-    Password: password,
-  });
+  private url = '/api';
 
-  const userData = {
-    Username: email,
-    Pool: this.userPool,
-  };
+  constructor(private http: HttpClient, private router: Router){}
 
-  const cognitoUser = new CognitoUser(userData);
-
-  return new Promise((resolve, reject) => {
-    cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: (result) => {
-        const idToken = result.getIdToken().getJwtToken();
-        const decodedToken = jwtDecode<{ 
-          sub: string;          
-          given_name?: string; 
-        }>(idToken);
-
-        resolve({
-          accessToken: result.getAccessToken().getJwtToken(),
-          idToken: idToken,
-          refreshToken: result.getRefreshToken().getToken(),
-          givenName: decodedToken.given_name,
-          sub: decodedToken.sub,  
-        });
-      },
-      onFailure: (err) => {
-        reject(err);
-      },
-    });
-  });
-}
-
-  register(
-    email: string,
-    password: string,
-    name: string,
-    attributes: Record<string, string> = {}
-  ): Promise<ISignUpResult> {
-
-    const username = email.split('@')[0] + Date.now();
-
-    const list: CognitoUserAttribute[] = [
-      new CognitoUserAttribute({
-        Name: 'email',
-        Value: email
-      }),
-      new CognitoUserAttribute({
-        Name: 'given_name',
-        Value: name
-      })
-    ];
-
-    for (const [key, value] of Object.entries(attributes)) {
-      list.push(new CognitoUserAttribute({
-        Name: key,
-        Value: value
-      }));
-    }
-
+  bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
+  {
     return new Promise((resolve, reject) => {
-      this.userPool.signUp(username, password, list, [], (err, result) => {
-        if (err) {
-          reject(err);
-          return;
+      this.bodyCoporateLoginRequest(email, password).subscribe({
+        next: (result) => {
+          const idToken = result.idToken;
+          const bodyCoporateId = result.userId;
+
+          const expireDate = new Date();
+          expireDate.setDate(expireDate.getDate() + 1);
+
+          document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
+          document.cookie = `bodyCoporateId=${bodyCoporateId}; expires=${expireDate.toUTCString()}; path=/`;
+
+          resolve(result);
+        },
+        error: (error) => {
+          reject(error);
         }
-        resolve(result!);
-      });
-    });
+      })
+    })
   }
 
-  confirmRegister(email: string, code: string): Promise<string | undefined> {
-    const userData = {
-      Username: email,
-      Pool: this.userPool,
+  private bodyCoporateLoginRequest(email: string, password: string) : Observable<AuthTokens>
+  {
+    const req = {
+      email,
+      password
     };
 
-    const user = new CognitoUser(userData);
+    return this.http.post<AuthTokens>(`${this.url}/body-corporates/login`, req);
+  }
 
+  bodyCoporateRegister(
+    corporateName: string,
+    contributionPerSqm: number,
+    email: string,
+    password: string,
+    totalBudget?: number,
+    contactNumber?: string
+  ): Promise<BodyCoporateRegisterResponse> {
     return new Promise((resolve, reject) => {
-      user.confirmRegistration(code, true, (err, result) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(result);
+      this.bodyCoporateRegisterRequest(
+        corporateName,
+        contributionPerSqm,
+        email,
+        password,
+        totalBudget,
+        contactNumber
+      ).subscribe({
+        next: (result) => resolve(result),
+        error: (error) => reject(error)
       });
     });
   }
 
-  logout(): boolean {
-    const user = this.userPool.getCurrentUser();
+  private bodyCoporateRegisterRequest(
+    corporateName: string,
+    contributionPerSqm: number,
+    email: string,
+    password: string,
+    totalBudget?: number,
+    contactNumber?: string
+  ): Observable<BodyCoporateRegisterResponse> {
 
-    if (user) {
-      user.signOut();
-      console.log("user signed out");
-      return true;
-    } else {
-      console.error("user couldnt log out");
-      return false;
-    }
+    const req = {
+      corporateName,
+      contributionPerSqm,
+      email,
+      password,
+      totalBudget,
+      contactNumber
+    };
+
+    return this.http.post<BodyCoporateRegisterResponse>(`${this.url}/body-corporates/register`, req);
+  }
+
+  confirmBodyCoporateRegistration(username: string, code: string): Promise<{ message: string }> {
+    return new Promise((resolve, reject) => {
+      const req = { username, code };
+
+      this.http.post<{ message: string }>(`${this.url}/body-corporates/confirm-registration`, req)
+        .subscribe({
+          next: (result) => resolve(result),
+          error: (error) => reject(error)
+        });
+    });
+  }
+
+  trusteeLogin(email: string, password: string): Promise<AuthTokens>
+  {
+    return new Promise((resolve, reject) => {
+      this.trusteeLoginRequest(email, password).subscribe({
+        next: (result) => {
+          const idToken = result.idToken;
+          const trusteeId = result.userId;
+
+          const expireDate = new Date();
+          expireDate.setDate(expireDate.getDate() + 1);
+
+          document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
+          document.cookie = `trusteeId=${trusteeId}; expires=${expireDate.toUTCString()}; path=/`;
+
+          resolve(result);
+        },
+        error: (error) => {
+          reject(error);
+        }
+      })
+    })
+  }
+
+  private trusteeLoginRequest(email: string, password: string) : Observable<AuthTokens>
+  {
+    const req = {
+      email,
+      password
+    };
+
+    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req);
+  }
+
+  trusteeRegister(
+    email: string,
+    password: string,
+    contactNumber?: string
+  ): Promise<trusteeRegisterResponse> {
+    return new Promise((resolve, reject) => {
+      this.trusteeRegisterRequest(
+        email,
+        password,
+        contactNumber
+      ).subscribe({
+        next: (result) => resolve(result),
+        error: (error) => reject(error)
+      });
+    });
+  }
+
+  private trusteeRegisterRequest(
+    email: string,
+    password: string,
+    contactNumber?: string
+  ): Observable<trusteeRegisterResponse> {
+
+    const req = {
+      email,
+      password,
+      contactNumber
+    };
+
+    return this.http.post<trusteeRegisterResponse>(`${this.url}/trustee/auth/register`, req);
+  }
+
+  confirmTrusteeRegistration(username: string, code: string): Promise<{ message: string }> {
+    return new Promise((resolve, reject) => {
+      const req = { username, code };
+
+      this.http.post<{ "message": "Account confirmed." }>(`${this.url}/trustee/auth/confirm`, req)
+        .subscribe({
+          next: (result) => resolve(result),
+          error: (error) => reject(error)
+        });
+    });
+  }
+
+  contractorLogin(email: string, password: string): Promise<AuthTokens>
+  {
+    return new Promise((resolve, reject) => {
+      this.contractorLoginRequest(email, password).subscribe({
+        next: (result) => {
+          const idToken = result.idToken;
+          const contractorId = result.userId;
+
+          const expireDate = new Date();
+          expireDate.setDate(expireDate.getDate() + 1);
+
+          document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
+          document.cookie = `contractorId=${contractorId}; expires=${expireDate.toUTCString()}; path=/`;
+
+          resolve(result);
+        },
+        error: (error) => {
+          reject(error);
+        }
+      })
+    })
+  }
+
+  private contractorLoginRequest(email: string, password: string) : Observable<AuthTokens>
+  {
+    const req = {
+      email,
+      password
+    };
+
+    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req);
+  }
+
+  contractorRegister(
+    email: string,
+    password: string,
+    contactNumber?: string
+  ): Promise<contractorRegisterResponse> {
+    return new Promise((resolve, reject) => {
+      this.contractorRegisterRequest(
+        email,
+        password,
+        contactNumber
+      ).subscribe({
+        next: (result) => resolve(result),
+        error: (error) => reject(error)
+      });
+    });
+  }
+
+  private contractorRegisterRequest(
+    email: string,
+    password: string,
+    contactNumber?: string
+  ): Observable<contractorRegisterResponse> {
+
+    const req = {
+      email,
+      password,
+      contactNumber
+    };
+
+    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req);
+  }
+
+  confirmContractorRegistration(username: string, code: string): Promise<{ message: string }> {
+    return new Promise((resolve, reject) => {
+      const req = { username, code };
+
+      this.http.post<{ "message": "Account confirmed." }>(`${this.url}/contractor/auth/confirm`, req)
+        .subscribe({
+          next: (result) => resolve(result),
+          error: (error) => reject(error)
+        });
+    });
   }
 }

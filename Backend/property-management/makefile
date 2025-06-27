@@ -24,8 +24,34 @@ refresh:
 
 rebuild: clean refresh
 
+scan: 
+	$(GRADLEW) test --scan
+
 install-lint:
 	curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint
 
 lint:
 	./ktlint -F "src/**/*.kt"
+
+docker:
+	docker-compose up
+
+docker-build:
+	docker-compose build
+
+docker-flyway-info:
+	docker-compose run --rm flyway info
+
+docker-flyway-migrate:
+	docker-compose run --rm flyway migrate
+
+docker-flyway-repair-migrate:
+	docker-compose run --rm flyway repair
+
+coverage:
+	./gradlew clean test jacocoTestReport
+
+test:
+	./gradlew test
+docker-flyway-repair-clean:
+	docker-compose run --rm flyway -cleanDisabled=false clean

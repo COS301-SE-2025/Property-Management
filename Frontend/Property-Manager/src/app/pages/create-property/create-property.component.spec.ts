@@ -8,6 +8,7 @@ describe('CreatePropertyComponent', () => {
   let fixture: ComponentFixture<CreatePropertyComponent>;
 
   beforeEach(async () => {
+    localStorage.setItem('userEmail', 'test@example.com');
     await TestBed.configureTestingModule({
       imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule]
     })
@@ -25,6 +26,7 @@ describe('CreatePropertyComponent', () => {
   it('should have an invalid form when required fields are empty', () => {
     component.form.patchValue({
       name: '',
+      area: 0,
       address: ''
     });
     expect(component.form.invalid).toBeTrue();
@@ -33,7 +35,10 @@ describe('CreatePropertyComponent', () => {
   it('should have a valid form when required fields are filled', () => {
     component.form.patchValue({
       name: 'Test Property',
-      address: '123 Main St'
+      area: 100,
+      address: '123 Main St',
+      type: 'Apartment',
+      propertyValue: 1000000
     });
     expect(component.form.valid).toBeTrue();
   });
@@ -51,7 +56,10 @@ describe('CreatePropertyComponent', () => {
     spyOn(console, 'log');
     component.form.patchValue({
       name: 'Test Property',
-      address: '123 Main St'
+      area: 100,
+      address: '123 Main St',
+      type: 'Apartment',
+      propertyValue: 1000000
     });
     component.onSubmit();
 
@@ -66,6 +74,7 @@ describe('CreatePropertyComponent', () => {
     spyOn(console, 'log');
     component.form.patchValue({
       name: '',
+      area: -100,
       address: ''
     });
     component.onSubmit();
