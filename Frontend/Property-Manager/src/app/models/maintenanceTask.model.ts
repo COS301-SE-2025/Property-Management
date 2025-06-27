@@ -4,7 +4,7 @@ import { Inventory } from "./inventory.model";
 export interface MaintenanceTask{
     uuid: string;
     title: string;
-    description: string;
+    des: string;
     status: string;
     scheduled_date: Date;
     approved: boolean;

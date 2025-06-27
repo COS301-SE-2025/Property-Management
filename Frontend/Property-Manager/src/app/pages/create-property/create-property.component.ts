@@ -104,9 +104,9 @@ async fetchTrusteeAndCorporateInfo() {
           : [],
         latestInspectionDate: new Date().toISOString().split('T')[0],
         propertyImage: propertyImage ?? null,
-        trustees: this.trusteeId !== null ? [this.trusteeId] : [],
-        trusteeUuid: this.trusteeUuid,
-        coporateUuid: this.coporateUuid,
+        trustees: this.trusteeId !== null ? [String(this.trusteeId)] : [],
+        trusteeUuid: this.trusteeUuid ?? undefined,
+        coporateUuid: this.coporateUuid ?? undefined,
       };
 
       this.propertyService.createProperty(payload).subscribe({

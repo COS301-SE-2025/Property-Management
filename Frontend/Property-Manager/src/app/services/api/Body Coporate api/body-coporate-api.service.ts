@@ -20,30 +20,42 @@ export class BodyCoporateApiService {
   getBuildingsLinkedtoBC(): Observable<Property[]>
   {
     return this.http.get<Property[]>(`${this.url}/buildings`).pipe(
-      map(properties => properties.filter(property => property.coporateUuid === this.tempBcId))
+      map(properties => { 
+        console.log(properties);
+        return properties.filter(property => {
+          return property.coporateUuid === this.tempBcId;
+        })
+      })
     );
   }
   getPendingTasks(buildingId: string): Observable<MaintenanceTask[]>
   {
     return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`).pipe(
-      map(tasks => tasks.filter(task => task.b_uuid === buildingId && task.status.includes('pending')))
+      map(tasks => {
+        console.log(tasks);
+        return tasks.filter(task => {
+          return task.b_uuid === buildingId && task.status.includes('pending')
+        });
+      })
     );
   }
   getBodyCoporate(): Observable<BodyCoporate>
   {
-    return this.http.get<BodyCoporate>(`${this.url}/body-coporates/${this.tempBcId}`);
+    return this.http.get<BodyCoporate>(`${this.url}/body-corporates/${this.tempBcId}`);
   }
-  getAndCalculateReserveFund(bc: BodyCoporate, floorArea: number): ReserveFund
+  getAndCalculateReserveFund(bc: BodyCoporate, floorArea: number, unitName: string): ReserveFund
   {
     const contri = (floorArea*bc.contributionPerSqm);
     const quota = (contri/floorArea)/10;
 
     const response: ReserveFund = {
+      unitName: unitName,
       floorArea: floorArea,
       contributionPerSqm: bc.contributionPerSqm,
       annualContribution: contri,
       partipationQuota: quota
     };
+    console.log(response);
 
     return response;
   }

@@ -1,6 +1,6 @@
 <div class="flex flex-col items-center justify-center h-full shadow-md">
     <div class="h-full w-full overflow-auto">
-        <span class="text-2xl font-semibold ml-60">Reserve fund Contribution Schedule</span>
+        <span class="text-2xl font-semibold ml-45">Reserve fund Contribution Schedule</span>
         <p-table [value]="schedule()" [tableStyle]="{ 'min-width' : '40rem'}">
             <ng-template #header>
                 <tr>
@@ -20,9 +20,9 @@
             </ng-template>
             <ng-template #body let-schedule>
                 <tr>
-                    <td>{{ schedule.UnitNo }}</td>
+                    <td>{{ schedule.unitName }}</td>
                     <td>{{ schedule.floorArea }} ms</td>
-                    <td>{{ schedule.quota }}%</td>
+                    <td>{{ schedule.partipationQuota }}%</td>
                     <td>R {{ schedule.annualContribution | formatAmount }}</td>
                 </tr>
             </ng-template>
