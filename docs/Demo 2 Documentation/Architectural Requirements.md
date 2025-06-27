@@ -33,7 +33,7 @@ This pattern improves modularity, security, testability, and maintenance.
 - **Database Query Performance:** ≤ 200ms for complex queries involving joins across 3+ tables
 - **File Upload Performance:** ≤ 2 seconds for images up to 10MB
 - **Page Load Time:** ≤ 3 seconds for initial page load, ≤ 1 second for subsequent navigations
-- **Concurrent User Support:** Support 100 concurrent users without performance degradation
+
 ### 3.2 Reliability
 - **System Uptime:** 99.5% availability (maximum 3.65 hours downtime per month)
 - **Data Consistency:** 100% ACID compliance for financial transactions
