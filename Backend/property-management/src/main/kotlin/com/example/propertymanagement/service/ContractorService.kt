@@ -36,6 +36,7 @@ class ContractorService(
                 reg_number = update.reg_number ?: existing.reg_number,
                 description = update.description ?: existing.description,
                 services = update.services ?: existing.services,
+                corporate_uuid = update.corporate_uuid ?: existing.corporate_uuid,
             )
 
         return repository.save(updated)
@@ -59,6 +60,7 @@ class ContractorService(
         reg_number: String,
         description: String,
         services: String,
+        corporate_uuid: UUID,
     ): Contractor {
         val newUser =
             Contractor(
@@ -74,6 +76,7 @@ class ContractorService(
                 reg_number = reg_number,
                 description = description,
                 services = services,
+                corporate_uuid = corporate_uuid,
             )
         return add(newUser)
     }
