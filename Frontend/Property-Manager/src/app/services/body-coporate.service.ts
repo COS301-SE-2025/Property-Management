@@ -1,6 +1,5 @@
 import { Injectable, signal } from '@angular/core';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
-import { Contractor } from '../models/contractor.model';
 import { LifeCycleCost } from '../models/lifeCycleCost.model';
 import { BuildingContribution } from '../models/buildingContribution.model';
 import { Graph } from '../models/graph.model';
@@ -20,10 +19,17 @@ export class BodyCoporateService {
       DoneBy: {
         contractorId: 1,
         name: 'ABC Plumbing',
+        contact_info: '0123456789',
+        status: false,
+        apikey: 'abc123',
         email: 'abc_plumbing@gmail.com',
         phone: '0123456789',
-        apikey: 'abc123',
-        banned: false,
+        address: '123 Example Street',
+        city: 'Pretoria',
+        postal_code: '01800',
+        reg_number: 'REG123',
+        description: 'General plumbing repairs',
+        services: 'Plumbing'
       },
       DoneOn: new Date('2025-06-11'),
       DueDate: new Date('2025-06-11'),
@@ -57,11 +63,18 @@ export class BodyCoporateService {
       DoneBy: {
         contractorId: 2,
         name: 'XYZ Electricians',
+        contact_info: '0987654321',
+        status: false,
+        apikey: 'xyz456',
         email: 'xyz_electrician@gmail.com',
         phone: '0987654321',
-        apikey: 'xyz456',
-        banned: false,
-      } as Contractor,
+        address: '456 Example Avenue',
+        city: 'Pretoria',
+        postal_code: '01801',
+        reg_number: 'REG456',
+        description: 'Electrical repairs',
+        services: 'Electrical'
+      },
       DoneOn: new Date('2024-05-28'),
       DueDate: new Date('2024-05-28'),
       status: "pending",
@@ -73,13 +86,20 @@ export class BodyCoporateService {
       UnitNo: "3",
       cost: 200,
       DoneBy: {
-        contractorId: 2,
-        name: 'XYZ Electricians',
-        email: 'xyz_electrician@gmail.com',
-        phone: '0987654321',
-        apikey: 'xyz456',
-        banned: false,
-      } as Contractor,
+        contractorId: 3,
+        name: 'Home Builder',
+        contact_info: '0332452348',
+        status: false,
+        apikey: 'home789',
+        email: 'homebuilder@example.com',
+        phone: '0332452348',
+        address: '789 Example Road',
+        city: 'Pretoria',
+        postal_code: '01802',
+        reg_number: 'REG789',
+        description: 'Painting and building',
+        services: 'Painting'
+      },
       DoneOn: new Date('2024-05-28'),
       DueDate: new Date('2024-05-11'),
       status: "pending",

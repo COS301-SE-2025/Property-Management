@@ -4,6 +4,10 @@ import { StepOneComponent } from './step-one.component';
 import { StepTwoComponent } from './step-two.component';
 import { StepThreeComponent } from './step-three.component';
 import { HeaderComponent } from '../../components/header/header.component';
+import { Contractor } from '../../models/contractor.model';
+import { ContractorService } from '../../services/contractor.service';
+
+
 
 @Component({
   selector: 'app-contractor-profile',
@@ -15,10 +19,31 @@ import { HeaderComponent } from '../../components/header/header.component';
 
 
 export class ContractorProfileComponent implements OnInit {
+
+  contractor: Contractor = {
+    name: '',
+    contact_info: '',
+    status: false,
+    apikey: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    postal_code: '',
+    reg_number: '',
+    description: '',
+    services: ''
+  };
+
+  constructor(private contractorService: ContractorService) {}
+
   step = 1;
 
   submitProfile() {
-    console.log('Contractor profile setup complete!');
+    this.contractorService.addContractor(this.contractor).subscribe({
+      next: (res) => alert('Contractor created!'),
+      error: (err) => alert('Error: ' + err.message)
+    });
   }
 
   onFileSelected(event: Event) {

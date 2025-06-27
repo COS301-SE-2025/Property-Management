@@ -1,6 +1,12 @@
-import { Contractor } from "./contractor.model";
+export interface ContractorDetails {
+    contractorId: number;
+    name: string;
+    email: string;
+    phone: string;
+    apikey: string;
+    banned: boolean;
+    images?: string[];
 
-export interface ContractorDetails extends Contractor{
     address: string;
     status: string;
     licenseNum: number;
