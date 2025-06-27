@@ -41,9 +41,9 @@
         </button>
         </p-floatlabel>
 
-        <!-- <div class="pl-25">
+        <div class="pl-25">
         <button (click)="register()" class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Register</button>
-        </div> -->
+        </div>
 
         <div *ngIf="emptyField || userError || serverError" class="pl-20">
         <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">Email, contact number, or password missing</p>
