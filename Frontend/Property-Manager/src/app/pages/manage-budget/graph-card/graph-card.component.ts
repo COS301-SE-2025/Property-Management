@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 // import { BudgetService } from '../../../services/budget.service';
 import { Graph } from '../../../models/graph.model';
 import { ChartModule } from 'primeng/chart';

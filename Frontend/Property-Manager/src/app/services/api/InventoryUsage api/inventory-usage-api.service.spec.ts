@@ -256,7 +256,7 @@ describe('InventoryUsageApiService', () => {
         next: (usages) => {
           expect(usages).toEqual(mockUsages);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/by-itemitem1`
+            `${baseUrl}/inventory-usage/by-item/item1`
           );
         },
         error: () => fail('expected success but got error')

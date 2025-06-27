@@ -45,7 +45,8 @@ export class InventoryItemApiService {
     const item = {
       name: inventoryItem.name,
       unit: inventoryItem.unit,
-      quantity: inventoryItem.quantityInStock
+      quantity: inventoryItem.quantityInStock,
+      price: inventoryItem.price
     }
 
     return this.http.put<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`, item);

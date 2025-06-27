@@ -29,14 +29,16 @@ describe('BuildingApiService', () => {
   describe('createBuilidng', () => {
     it('should create a building successfully', () => {
       const mockProperty: Property = {
+        buildingUuid: '1',
         name: 'Test Building',
         address: '123 Main St',
         type: 'Commercial',
-        trustees: '1',
         propertyValue: 1000000,
         primaryContractors: [1, 2],
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
+        trustees: '1',
+        area: 2
       };
 
       const expectedBody: Property = {
@@ -46,8 +48,9 @@ describe('BuildingApiService', () => {
         propertyValue: 1000000,
         primaryContractors: [1, 2],
         latestInspectionDate: '2023-01-01',
+        propertyImage: 'img1',
         trustees: '1',
-        propertyImage: 'img1'
+        area: 2
       };
 
       httpClientSpy.post.and.returnValue(of(mockProperty));
@@ -60,7 +63,8 @@ describe('BuildingApiService', () => {
         [1, 2],
         '2023-01-01',
         'img1',
-        '1'
+        '1',
+        2
       ).subscribe({
         next: (response) => {
           expect(response).toEqual(mockProperty);
@@ -85,7 +89,8 @@ describe('BuildingApiService', () => {
         [1],
         '2023-01-01',
         'img1',
-        '1'
+        '1',
+        2
       ).subscribe({
         next: () => fail('expected error but got success'),
         error: (error) => {
@@ -98,14 +103,15 @@ describe('BuildingApiService', () => {
     it('should return all buildings successfully', () => {
       const mockProperty: Property[] = [{
         buildingUuid: '1',
-        name: 'Building A',
-        address: '123 St',
+        name: 'Test Building',
+        address: '123 Main St',
         type: 'Commercial',
         propertyValue: 1000000,
-        primaryContractors: [1],
+        primaryContractors: [1, 2],
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
-        trustees: '1'
+        trustees: '1',
+        area: 2
       }];
 
       httpClientSpy.get.and.returnValue(of(mockProperty));
@@ -137,14 +143,15 @@ describe('BuildingApiService', () => {
     it('should return building by id successfully', () => {
       const mockProperty: Property = {
         buildingUuid: '1',
-        name: 'Building A',
-        address: '123 St',
+        name: 'Test Building',
+        address: '123 Main St',
         type: 'Commercial',
         propertyValue: 1000000,
-        primaryContractors: [1],
+        primaryContractors: [1, 2],
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
-        trustees: '1'
+        trustees: '1',
+        area: 2
       };
 
       httpClientSpy.get.and.returnValue(of(mockProperty));
@@ -184,7 +191,8 @@ describe('BuildingApiService', () => {
         primaryContractors: [2],
         latestInspectionDate: '2023-06-01',
         propertyImage: 'img2',
-        trustees: '2'
+        trustees: '2',
+        area: 2
       };
 
       const expectedBody = {
@@ -215,14 +223,15 @@ describe('BuildingApiService', () => {
     it('should handle error when update fails', () => {
       const mockProperty: Property = {
         buildingUuid: '1',
-        name: 'Building',
-        address: '123 St',
+        name: 'Test Building',
+        address: '123 Main St',
         type: 'Commercial',
         propertyValue: 1000000,
-        primaryContractors: [1],
+        primaryContractors: [1, 2],
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
-        trustees: '1'
+        trustees: '1',
+        area: 2
       };
 
       const errorResponse = new Error('Update failed');
@@ -241,14 +250,15 @@ describe('BuildingApiService', () => {
     it('should delete building successfully', () => {
       const mockProperty: Property = {
         buildingUuid: '1',
-        name: 'Building A',
-        address: '123 St',
+        name: 'Test Building',
+        address: '123 Main St',
         type: 'Commercial',
         propertyValue: 1000000,
-        primaryContractors: [1],
+        primaryContractors: [1, 2],
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
-        trustees: '1'
+        trustees: '1',
+        area: 2
       };
 
       httpClientSpy.delete.and.returnValue(of(mockProperty));
@@ -282,18 +292,19 @@ describe('BuildingApiService', () => {
       const mockProperties: Property[] = [
         {
           buildingUuid: '1',
-          name: 'Building A',
-          address: '123 St',
+          name: 'Test Building',
+          address: '123 Main St',
           type: 'Commercial',
           propertyValue: 1000000,
-          primaryContractors: [1],
+          primaryContractors: [1, 2],
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
-          trustees: ['1']
+          trustees: '1',
+          area: 2
         }
       ];
 
-      httpClientSpy.get.and.returnValue(of(mockProperties));
+      httpClientSpy.get.and.returnValue(of({buildings: mockProperties}));
 
       service.getBuildingsByTrustee('1').subscribe({
         next: (response) => {
@@ -307,7 +318,7 @@ describe('BuildingApiService', () => {
     });
 
     it('should return empty array when no buildings found for trustee', () => {
-      httpClientSpy.get.and.returnValue(of([]));
+      httpClientSpy.get.and.returnValue(of({buildings: []}));
 
       service.getBuildingsByTrustee('2').subscribe({
         next: (response) => {
@@ -324,13 +335,14 @@ describe('BuildingApiService', () => {
         {
           buildingUuid: '1',
           name: 'Test Building',
-          address: '123 St',
+          address: '123 Main St',
           type: 'Commercial',
           propertyValue: 1000000,
-          primaryContractors: [1],
+          primaryContractors: [1, 2],
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
-          trustees: ['1']
+          trustees: '1',
+          area: 2
         }
       ];
 
@@ -363,15 +375,16 @@ describe('BuildingApiService', () => {
     it('should return buildings of specified type successfully', () => {
       const mockProperties: Property[] = [
         {
-          buildingUuid: '1',
-          name: 'Commercial Building',
-          address: '123 St',
+         buildingUuid: '1',
+          name: 'Test Building',
+          address: '123 Main St',
           type: 'Commercial',
           propertyValue: 1000000,
-          primaryContractors: [1],
+          primaryContractors: [1, 2],
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
-          trustees: '1'
+          trustees: '1',
+          area: 2
         }
       ];
 
@@ -414,7 +427,8 @@ describe('BuildingApiService', () => {
         [1],
         '2023-01-01',
         'img1',
-        '1'
+        '1',
+        2
       ).subscribe({
         next: (response) => {
           expect(response).toBeDefined();
@@ -431,7 +445,8 @@ describe('BuildingApiService', () => {
         [1],
         '2023-01-01',
         'img1',
-        undefined as unknown as string
+        undefined as unknown as string,
+        2
       ).subscribe({
         next: (response) => {
           expect(response).toBeDefined();

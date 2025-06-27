@@ -1,6 +1,3 @@
-import { Contractor } from "./contractor.model";
-import { Inventory } from "./inventory.model";
-
 export interface MaintenanceTask{
     uuid: string;
     title: string;

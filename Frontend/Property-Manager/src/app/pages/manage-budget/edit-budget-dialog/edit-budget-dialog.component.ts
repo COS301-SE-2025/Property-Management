@@ -71,7 +71,7 @@ export class EditBudgetDialogComponent extends DialogComponent implements OnInit
       }
 
       this.budgetApiService.createBudget((inventoryBudget+maintenanceBudget), maintenanceBudget, inventoryBudget, new Date(), this.houseId).subscribe({
-        next: (response) => {
+        next: () => {
           this.form.reset();
           this.closeDialog();
           this.router.navigate(['manageBudget', this.houseId]).then(() => {
@@ -79,7 +79,7 @@ export class EditBudgetDialogComponent extends DialogComponent implements OnInit
           });
         },
         error: (err) => {
-          console.error("Failed to update budget");
+          console.error("Failed to update budget", err);
         }
       });
     }

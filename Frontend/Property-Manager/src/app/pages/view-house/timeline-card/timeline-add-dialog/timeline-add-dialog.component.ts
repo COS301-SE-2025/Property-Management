@@ -48,12 +48,13 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     console.log("Adding task");
     const cookie = document.cookie;
     const userId = this.getCookieValue(cookie, 'userId');
+    console.log(userId)
 
     const name = this.form.value.name;
     const des = this.form.value.description;
     const date = this.form.value.date;
 
-    this.taskApiService.createTask(name, des, "pending", date, false, this.houseId, this.tempTrusteeId).subscribe({
+    this.taskApiService.createTask(name, des, "pending", date, false, this.houseId, userId).subscribe({
       next: (response) => {
         console.log(response);
         this.form.reset();

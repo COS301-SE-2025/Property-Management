@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
-import { formatDate } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -31,12 +30,12 @@ export class TaskApiService {
 
   getAllTasks(): Observable<MaintenanceTask[]>
   {
-    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`)
+    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`);
   }
 
   getTaskById(taskId: string): Observable<MaintenanceTask>
   {
-    return this.http.get<MaintenanceTask>(`${this.url}/maintenance`)
+    return this.http.get<MaintenanceTask>(`${this.url}/maintenance/${taskId}`);
   }
 
   updateTaskStatus(status: 'pending' | 'done', taskId: string)

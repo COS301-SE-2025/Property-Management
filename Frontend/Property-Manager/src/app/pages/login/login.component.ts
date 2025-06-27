@@ -48,7 +48,7 @@ export class LoginComponent {
       this.router.navigate(['/home']);
       return;
     } catch (error) {
-      console.warn('Body Corporate login failed, trying Trustee...');
+      console.warn('Body Corporate login failed, trying Trustee...', error);
     }
 
     try {
@@ -58,7 +58,7 @@ export class LoginComponent {
       this.router.navigate(['/trusteeHome']);
       return; 
     } catch (error) {
-      console.warn('Trustee login failed, trying Contractor...');
+      console.warn('Trustee login failed, trying Contractor...',error);
     }
 
     try {
