@@ -22,7 +22,7 @@ data class Building(
     @Column(name = "property_value")
     val propertyValue: Double? = null,
     @Column(name = "primary_contractors")
-    val primaryContractors: Array<Int>? = null,
+    val primaryContractors: Array<String>? = null,
     @Column(name = "latest_inspection_date")
     val latestInspectionDate: LocalDate? = null,
     @Column(name = "property_image")
