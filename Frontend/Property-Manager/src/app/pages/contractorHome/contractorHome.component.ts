@@ -33,6 +33,54 @@ import {
     ]
 })
 
+<<<<<<< Updated upstream
 export class ContractorHomeComponent  {
    
+=======
+  constructor(private api: ApiService) {}
+
+  ngOnInit() {
+  const contractorId = "5c56261a-351d-4b37-9920-bf0c50da07ef"
+  //localStorage.getItem('contractorID');
+
+  if (!contractorId) {
+    console.warn('Contractor ID not found in localStorage.');
+    return;
+  }
+
+  this.api.getMaintenanceTasks().subscribe({
+    next: (tasks) => {
+      // Filter tasks that belong to the logged-in contractor
+      const filteredTasks = tasks.filter(task => task.c_uuid === contractorId);
+
+      if (filteredTasks.length === 0) {
+        this.tasks = []; // to trigger fallback UI
+        return;
+      }
+
+      const taskRequests = filteredTasks.map(task => {
+        if (task.img) {
+          return this.api.getPresignedImageUrl(task.img).pipe(
+  map(presignedUrl => ({
+    ...task,
+    imageUrl: presignedUrl
+  }))
+);
+        } else {
+          return of({
+            ...task,
+            imageUrl: 'assets/images/default.jpg'
+          });
+        }
+      });
+
+      forkJoin(taskRequests).subscribe(taskList => {
+        this.tasks = taskList;
+      });
+    },
+    error: err => console.error('Failed to load tasks', err)
+  });
+}
+
+>>>>>>> Stashed changes
 }
