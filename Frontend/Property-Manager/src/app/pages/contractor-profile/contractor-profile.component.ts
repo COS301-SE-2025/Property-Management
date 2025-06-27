@@ -41,7 +41,7 @@ export class ContractorProfileComponent implements OnInit {
 
   submitProfile() {
     this.contractorService.addContractor(this.contractor).subscribe({
-      next: (res) => alert('Contractor created!'),
+      next: () => alert('Contractor created!'),
       error: (err) => alert('Error: ' + err.message)
     });
   }
