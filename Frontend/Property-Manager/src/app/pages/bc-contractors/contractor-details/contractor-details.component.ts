@@ -3,16 +3,13 @@ import { TableModule } from 'primeng/table';
 import { ListboxModule } from 'primeng/listbox';
 import { CommonModule } from '@angular/common';
 import { BodyCoporateService } from '../../../services/body-coporate.service';
-import { FormatPhoneNumberPipe } from "../../../pipes/format-phone-number.pipe";
-import { HeaderComponent } from "../../../components/header/header.component";
-import { FormatDatePipe } from "../../../pipes/format-date.pipe";
 import { TaskDialogComponent } from '../../task-dialog/task-dialog.component';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-contractor-details',
-  imports: [CommonModule, TableModule, ListboxModule, FormatPhoneNumberPipe, HeaderComponent, FormatDatePipe, TaskDialogComponent],
+  imports: [CommonModule, TableModule, ListboxModule],
   templateUrl: './contractor-details.component.html',
   styles: ``
 })

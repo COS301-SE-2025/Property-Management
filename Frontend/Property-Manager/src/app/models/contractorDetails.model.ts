@@ -1,17 +1,12 @@
-export interface ContractorDetails {
-    contractorId: number;
-    name: string;
-    email: string;
-    phone: string;
-    apikey: string;
-    banned: boolean;
-    images?: string[];
+import { Contractor } from "./contractor.model";
 
-    address: string;
-    city: string;
-    postal_code: string;
-    reg_number: string;
-    description: string;
-    services: string;
-    coporateUuid?: string;
+export interface ContractorDetails extends Contractor {
+   address: string;
+   city: string;
+   postal_code: string;
+   reg_number: string;
+   description: string;
+   services: string;
+   image?: string;
+   coporateUuid?: string;
 }

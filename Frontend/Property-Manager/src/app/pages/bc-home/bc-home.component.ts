@@ -6,11 +6,10 @@ import { PendingTaskCardComponent } from "./pending-task-card/pending-task-card.
 import { BodyCoporateService } from '../../services/body-coporate.service';
 import { LifeCycleCardComponent } from "./life-cycle-card/life-cycle-card.component";
 import { ReserveFundCardComponent } from "./reserve-fund-card/reserve-fund-card.component";
-import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenance-graph-card.component';
 
 @Component({
   selector: 'app-bc-home',
-  imports: [HeaderComponent, DrawerComponent, PendingTaskCardComponent, LifeCycleCardComponent, ReserveFundCardComponent, MaintenanceGraphCardComponent],
+  imports: [HeaderComponent, DrawerComponent, PendingTaskCardComponent, LifeCycleCardComponent, ReserveFundCardComponent],
   templateUrl: './bc-home.component.html',
   styles: ``,
   animations: [
