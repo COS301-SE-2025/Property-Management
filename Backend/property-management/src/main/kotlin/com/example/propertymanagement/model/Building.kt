@@ -6,8 +6,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDate
 import java.util.UUID
-import com.vladmihalcea.hibernate.type.array.StringArrayType
-import org.hibernate.annotations.Type
 
 @Entity
 @Table(name = "building")
@@ -23,9 +21,8 @@ data class Building(
     val type: String? = null,
     @Column(name = "property_value")
     val propertyValue: Double? = null,
-    @Type(StringArrayType::class)
-    @Column(name = "primary_contractors", columnDefinition = "text[]")
-    val primaryContractors: Array<String>? = null,
+    @Column(name = "primary_contractors")
+    val primaryContractor: UUID? = null,
     @Column(name = "latest_inspection_date")
     val latestInspectionDate: LocalDate? = null,
     @Column(name = "property_image")

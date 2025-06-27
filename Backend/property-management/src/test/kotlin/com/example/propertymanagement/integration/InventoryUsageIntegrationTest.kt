@@ -65,7 +65,7 @@ class InventoryUsageIntegrationTest {
                 address = "456 Test Ave",
                 type = "Warehouse",
                 propertyValue = 200000.0,
-                primaryContractors = arrayOf("1"),
+                primaryContractor = UUID.randomUUID(),
                 latestInspectionDate = LocalDate.of(2024, 2, 2),
                 area = 2000.0,
                 trusteeUuid = UUID.randomUUID(),

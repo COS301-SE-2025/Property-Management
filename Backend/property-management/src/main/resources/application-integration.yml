@@ -1,4 +1,9 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/property_management_test
+    username: postgres
+    password: postgres
+
   jpa:
     hibernate:
       ddl-auto: update
