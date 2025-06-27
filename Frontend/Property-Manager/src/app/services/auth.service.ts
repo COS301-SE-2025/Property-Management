@@ -27,6 +27,13 @@ export interface trusteeRegisterResponse {
   username: string;
 }
 
+export interface contractorRegisterResponse {
+  email: string;
+  cognitoUserId: string;
+  username: string;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -195,6 +202,83 @@ export class AuthService {
       const req = { username, code };
 
       this.http.post<{ "message": "Account confirmed." }>(`${this.url}/trustee/auth/confirm`, req)
+        .subscribe({
+          next: (result) => resolve(result),
+          error: (error) => reject(error)
+        });
+    });
+  }
+
+  contractorLogin(email: string, password: string): Promise<AuthTokens>
+  {
+    return new Promise((resolve, reject) => {
+      this.contractorLoginRequest(email, password).subscribe({
+        next: (result) => {
+          const idToken = result.idToken;
+          const contractorId = result.userId;
+
+          const expireDate = new Date();
+          expireDate.setDate(expireDate.getDate() + 1);
+
+          document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
+          document.cookie = `contractorId=${contractorId}; expires=${expireDate.toUTCString()}; path=/`;
+
+          resolve(result);
+        },
+        error: (error) => {
+          reject(error);
+        }
+      })
+    })
+  }
+
+  private contractorLoginRequest(email: string, password: string) : Observable<AuthTokens>
+  {
+    const req = {
+      email,
+      password
+    };
+
+    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req);
+  }
+
+  contractorRegister(
+    email: string,
+    password: string,
+    contactNumber?: string
+  ): Promise<contractorRegisterResponse> {
+    return new Promise((resolve, reject) => {
+      this.contractorRegisterRequest(
+        email,
+        password,
+        contactNumber
+      ).subscribe({
+        next: (result) => resolve(result),
+        error: (error) => reject(error)
+      });
+    });
+  }
+
+  private contractorRegisterRequest(
+    email: string,
+    password: string,
+    contactNumber?: string
+  ): Observable<contractorRegisterResponse> {
+
+    const req = {
+      email,
+      password,
+      contactNumber
+    };
+
+    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req);
+  }
+
+  confirmContractorRegistration(username: string, code: string): Promise<{ message: string }> {
+    return new Promise((resolve, reject) => {
+      const req = { username, code };
+
+      this.http.post<{ "message": "Account confirmed." }>(`${this.url}/contractor/auth/confirm`, req)
         .subscribe({
           next: (result) => resolve(result),
           error: (error) => reject(error)

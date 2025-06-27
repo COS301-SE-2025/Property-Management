@@ -44,6 +44,7 @@ export class LoginComponent {
     try {
       const bodyCorpTokens = await this.authService.bodyCoporateLogin(this.email, this.password);
       localStorage.setItem('userType', 'bodyCorporate');
+      localStorage.setItem('bodyCorpID', bodyCorpTokens.userId),
       console.log('Body Corporate logged in:', bodyCorpTokens);
       this.router.navigate(['/home']);
       return;
@@ -54,6 +55,7 @@ export class LoginComponent {
     try {
       const trusteeTokens = await this.authService.trusteeLogin(this.email, this.password);
       localStorage.setItem('userType', 'trustee');
+      localStorage.setItem('trusteeID', trusteeTokens.userId),
       console.log('Trustee logged in:', trusteeTokens);
       this.router.navigate(['/home']);
       return; 
@@ -61,15 +63,16 @@ export class LoginComponent {
       console.warn('Trustee login failed, trying Contractor...',error);
     }
 
-    // try {
-    //   const contractorTokens = await this.authService.contractorLogin(this.email, this.password);
-    //   localStorage.setItem('userType', 'contractor');
-    //   console.log('Contractor logged in:', contractorTokens);
-    //   this.router.navigate(['/contractorHome']);
-    //   return;
-    // } catch (error) {
-    //   console.warn('Contractor login failed:', error);
-    // }
+    try {
+      const contractorTokens = await this.authService.contractorLogin(this.email, this.password);
+      localStorage.setItem('userType', 'contractor');
+      localStorage.setItem('contractorID', contractorTokens.userId),
+      console.log('Contractor logged in:', contractorTokens);
+      this.router.navigate(['/contractorHome']);
+      return;
+    } catch (error) {
+      console.warn('Contractor login failed:', error);
+    }
 
     //all failed
     this.userError = true;
