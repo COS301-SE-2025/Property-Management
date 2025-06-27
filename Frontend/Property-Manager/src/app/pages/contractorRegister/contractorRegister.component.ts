@@ -43,44 +43,53 @@ export class ContractorRegisterComponent {
   const randomPart = Math.random().toString(36).substring(2, 10);
   return `key_${Math.abs(hash).toString(36)}_${randomPart}`;
 }
+async register(): Promise<void> {
+    if (!this.email || !this.contactNumber || !this.password) {
+      this.emptyField = true;
+      return;
+    }
 
-//    async register(): Promise<void> {
-//     if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
-//       this.emptyField = true;
-//       return;
-//     }
+    this.userError = false;
+    this.serverError = false;
+    this.emptyField = false;
 
-//     this.userError = false;
-//     this.serverError = false;
-//     this.emptyField = false;
+    try {
+      const result = await this.authService.contractorRegister(
+        this.email,
+        this.password,
+        this.contactNumber
+      );
 
-//         console.log(this.email)
-//         console.log(this.password)
+    
+      sessionStorage.setItem('pendingUsername',result.username);
+      sessionStorage.setItem('userType', 'contractor');
+      console.log('Registration successful:', result);
 
-//         return this.authService.register(this.email, this.password, 'contractor')
-//             .then(tokens => {
-//                 //TODO: Store tokens
-//                 console.log("Successfully logged in");
-//                 console.log(tokens);
+    
+      
 
-//                 this.router.navigate(['/verifyEmail'], {
-//                     state: {
-//                         username: tokens.user.getUsername()
-//                     }
-//                 });
-//             })
-//             .catch(error => {
-//                 console.error("Login error: ", error);
-
-//                 const status = error?.status || error?.__zone_symbol__status;
-//                 console.log(status);
-
-//                 if (status === 400 || error.code === "NotAuthorizedException") {
-//                     this.userError = true;
-//                 }
-//                 else {
-//                     this.serverError = true;
-//                 }
-//             });
-//     }
+      this.router.navigate(['/verifyEmail'], {
+        state: {
+          username: result.username
+        }
+      });
+    } catch (error: unknown) {
+      console.error('Registration error:', error);
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        ('status' in error || 'code' in error)
+      ) {
+        const err = error as { status?: number; code?: string };
+        if (err.status === 400 || err.code === 'NotAuthorizedException') {
+          this.userError = true;
+        } else {
+          this.serverError = true;
+        }
+      } else {
+        this.serverError = true;
+      }
+      throw error;
+    }
+  }                 //TODO: Store tokens
 }
