@@ -33,7 +33,8 @@ describe('BuildingApiService Integration Tests', () => {
         primaryContractors: [1, 2],
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
-        trustees: '1'
+        trustees: '1',
+        area: 2
       };
 
       const expectedBody = {
@@ -44,7 +45,8 @@ describe('BuildingApiService Integration Tests', () => {
         primaryContractors: [1, 2],
         latestInspectionDate: '2023-01-01',
         trustees: '1',
-        propertyImage: 'img1'
+        propertyImage: 'img1',
+        area: 2
       };
 
       service.createBuilding(
@@ -55,7 +57,8 @@ describe('BuildingApiService Integration Tests', () => {
         [1, 2],
         '2023-01-01',
         'img1',
-        '1'
+        '1',
+        2
       ).subscribe(response => {
         expect(response).toEqual(mockProperty);
       });
@@ -75,7 +78,8 @@ describe('BuildingApiService Integration Tests', () => {
         [1],
         '2023-01-01',
         'img1',
-        '1'
+        '1',
+        2
       ).subscribe(
         () => fail('should have failed with server error'),
         (error) => {
@@ -100,7 +104,8 @@ describe('BuildingApiService Integration Tests', () => {
           primaryContractors: [1],
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
-          trustees: '1'
+          trustees: '1',
+          area: 2
         },
         {
           buildingUuid: '2',
@@ -111,7 +116,8 @@ describe('BuildingApiService Integration Tests', () => {
           primaryContractors: [2],
           latestInspectionDate: '2023-02-01',
           propertyImage: 'img2',
-          trustees: '2'
+          trustees: '2',
+          area: 2
         }
       ];
 
@@ -145,7 +151,8 @@ describe('BuildingApiService Integration Tests', () => {
         primaryContractors: [1],
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
-        trustees: '1'
+        trustees: '1',
+        area: 2
       };
 
       service.getBuildingById('1').subscribe(response => {
@@ -181,7 +188,8 @@ describe('BuildingApiService Integration Tests', () => {
         primaryContractors: [2],
         latestInspectionDate: '2023-06-01',
         propertyImage: 'img2',
-        trustees: '2'
+        trustees: '2',
+        area: 2
       };
 
       const expectedBody = {
@@ -215,7 +223,8 @@ describe('BuildingApiService Integration Tests', () => {
         primaryContractors: [1],
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
-        trustees: '1'
+        trustees: '1',
+        area: 2
       };
 
       service.updateBuilding(mockProperty, '1', '1').subscribe(
@@ -241,7 +250,8 @@ describe('BuildingApiService Integration Tests', () => {
         primaryContractors: [1],
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
-        trustees: '1'
+        trustees: '1',
+        area: 2
       };
 
       service.deleteBuiling('1').subscribe(response => {
@@ -278,7 +288,8 @@ describe('BuildingApiService Integration Tests', () => {
           primaryContractors: [1],
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
-          trustees: '1'
+          trustees: '1',
+          area: 2
         }
       ];
 
@@ -288,7 +299,7 @@ describe('BuildingApiService Integration Tests', () => {
 
       const req = httpMock.expectOne(`${url}/buildings/trustee/1`);
       expect(req.request.method).toBe('GET');
-      req.flush(mockProperties);
+      req.flush({buildings: mockProperties });
     });
 
     it('should return empty array when trustee has no buildings', () => {
@@ -297,7 +308,7 @@ describe('BuildingApiService Integration Tests', () => {
       });
 
       const req = httpMock.expectOne(`${url}/buildings/trustee/2`);
-      req.flush([]);
+      req.flush({buildings: []});
     });
   });
 
@@ -313,7 +324,8 @@ describe('BuildingApiService Integration Tests', () => {
           primaryContractors: [1],
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
-          trustees: '1'
+          trustees: '1',
+          area: 2
         }
       ];
 
@@ -350,7 +362,8 @@ describe('BuildingApiService Integration Tests', () => {
           primaryContractors: [1],
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
-          trustees: '1'
+          trustees: '1',
+          area: 2
         }
       ];
 

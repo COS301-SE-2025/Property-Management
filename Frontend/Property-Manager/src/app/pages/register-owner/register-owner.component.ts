@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   selector: 'app-register-owner',
   standalone: true,
   imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule],
-  templateUrl: `./register-owner.component.html`,
+  templateUrl: './register-owner.component.html',
   styles: ``,
 })
 export class RegisterOwnerComponent {

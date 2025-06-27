@@ -33,15 +33,17 @@ describe('InventoryItemApiService', () => {
           itemUuid: '1', 
           name: 'Chair', 
           unit: 'pcs', 
-          quantity: 10, 
-          buildingUuid: 'bldg1' 
+          quantityInStock: 10, 
+          buildingUuid: 'bldg1' ,
+          price: 50,
         },
         { 
           itemUuid: '2', 
           name: 'Table', 
           unit: 'pcs', 
-          quantity: 5, 
-          buildingUuid: 'bldg1' 
+          quantityInStock: 5, 
+          buildingUuid: 'bldg1',
+          price: 50, 
         }
       ];
 
@@ -88,8 +90,9 @@ describe('InventoryItemApiService', () => {
           itemUuid: '1', 
           name: 'Chair', 
           unit: 'pcs', 
-          quantity: 10, 
-          buildingUuid: 'bldg1' 
+          quantityInStock: 10, 
+          buildingUuid: 'bldg1',
+          price: 50, 
         }
       ];
 
@@ -124,8 +127,9 @@ describe('InventoryItemApiService', () => {
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 10, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 10, 
+        buildingUuid: 'bldg1',
+        price: 50
       };
 
       httpClientSpy.get.and.returnValue(of(mockItem));
@@ -160,19 +164,21 @@ describe('InventoryItemApiService', () => {
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 10, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 10, 
+        buildingUuid: 'bldg1',
+        price: 50 
       };
       const expectedBody = {
         name: 'Chair',
         unit: 'pcs',
-        quantity: 10,
-        buildingUuid: 'bldg1'
+        price: 10,
+        quantity: 50,
+        buildingUuid: 'bldg1',
       };
 
       httpClientSpy.post.and.returnValue(of(newItem));
 
-      service.addInventoryItem('Chair', 'pcs', 10, 'bldg1').subscribe({
+      service.addInventoryItem('Chair', 'pcs', 10, 50, 'bldg1').subscribe({
         next: (item) => {
           expect(item).toEqual(newItem);
           expect(httpClientSpy.post).toHaveBeenCalledWith(
@@ -188,7 +194,7 @@ describe('InventoryItemApiService', () => {
       const errorResponse = { status: 400, message: 'Validation error' };
       httpClientSpy.post.and.returnValue(throwError(() => errorResponse));
 
-      service.addInventoryItem('', 'pcs', -1, 'bldg1').subscribe({
+      service.addInventoryItem('', 'pcs', -1, 50, 'bldg1').subscribe({
         next: () => fail('expected error but got item'),
         error: (error) => {
           expect(error.status).toBe(400);
@@ -203,13 +209,15 @@ describe('InventoryItemApiService', () => {
         itemUuid: '1', 
         name: 'Chair Updated', 
         unit: 'pcs', 
-        quantity: 15, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 15, 
+        buildingUuid: 'bldg1',
+        price: 50 
       };
       const expectedBody = {
         name: 'Chair Updated',
         unit: 'pcs',
-        quantity: 15
+        quantity: 15,
+        price: 50 
       };
 
       httpClientSpy.put.and.returnValue(of(updatedItem));
@@ -231,8 +239,9 @@ describe('InventoryItemApiService', () => {
         itemUuid: 'unknown', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 10, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 10, 
+        buildingUuid: 'bldg1',
+        price: 50  
       };
       const errorResponse = { status: 404, message: 'Not Found' };
       httpClientSpy.put.and.returnValue(throwError(() => errorResponse));
@@ -246,14 +255,15 @@ describe('InventoryItemApiService', () => {
     });
   });
 
-  describe('updateInventoryItemQuantity', () => {
-    it('should increase item quantity', () => {
+  describe('updateInventoryItemquantityInStock', () => {
+    it('should increase item quantityInStock', () => {
       const updatedItem: Inventory = { 
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 15, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 15, 
+        buildingUuid: 'bldg1',
+        price: 50  
       };
       const expectedBody = {
         quantity: 5,
@@ -263,12 +273,12 @@ describe('InventoryItemApiService', () => {
       httpClientSpy.patch.and.returnValue(of(updatedItem));
 
       service.updateInventoryItemQuantity(
-        { ...updatedItem, quantity: 10 }, 
+        { ...updatedItem, quantityInStock: 10, price: 50 }, 
         5, 
         'add'
       ).subscribe({
         next: (item) => {
-          expect(item.quantity).toBe(15);
+          expect(item.quantityInStock).toBe(15);
           expect(httpClientSpy.patch).toHaveBeenCalledWith(
             `${url}/inventory/1/quantity`,
             expectedBody
@@ -278,35 +288,36 @@ describe('InventoryItemApiService', () => {
       });
     });
 
-    it('should decrease item quantity', () => {
+    it('should decrease item quantityInStock', () => {
       const updatedItem: Inventory = { 
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 5, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 5, 
+        buildingUuid: 'bldg1',
+        price: 50  
       };
 
       httpClientSpy.patch.and.returnValue(of(updatedItem));
 
       service.updateInventoryItemQuantity(
-        { ...updatedItem, quantity: 10 }, 
+        { ...updatedItem, quantityInStock: 10, price: 50 }, 
         5, 
         'subtract'
       ).subscribe({
         next: (item) => {
-          expect(item.quantity).toBe(5);
+          expect(item.quantityInStock).toBe(5);
         },
         error: () => fail('expected item but got error')
       });
     });
 
-    it('should handle invalid quantity operation', () => {
+    it('should handle invalid quantityInStock operation', () => {
       const errorResponse = { status: 400, message: 'Invalid operation' };
       httpClientSpy.patch.and.returnValue(throwError(() => errorResponse));
 
       service.updateInventoryItemQuantity(
-        { itemUuid: '1', name: 'Chair', unit: 'pcs', quantity: 10, buildingUuid: 'bldg1' }, 
+        { itemUuid: '1', name: 'Chair', unit: 'pcs', quantityInStock: 10, price: 50, buildingUuid: 'bldg1' }, 
         5, 
         'invalid-op'
       ).subscribe({
@@ -324,8 +335,9 @@ describe('InventoryItemApiService', () => {
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 10, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 10, 
+        buildingUuid: 'bldg1',
+        price: 50 
       };
 
       httpClientSpy.delete.and.returnValue(of(deletedItem));
@@ -346,7 +358,7 @@ describe('InventoryItemApiService', () => {
       httpClientSpy.delete.and.returnValue(throwError(() => errorResponse));
 
       service.deleteInventoryItem(
-        { itemUuid: 'unknown', name: 'Chair', unit: 'pcs', quantity: 10, buildingUuid: 'bldg1' }
+        { itemUuid: 'unknown', name: 'Chair', unit: 'pcs', quantityInStock: 10, price: 50, buildingUuid: 'bldg1' }
       ).subscribe({
         next: () => fail('expected error but got item'),
         error: (error) => {
@@ -362,7 +374,7 @@ describe('InventoryItemApiService', () => {
       httpClientSpy.post.and.returnValue(of({} as Inventory));
 
       // Test with null name
-      service.addInventoryItem(null as unknown as string, 'pcs', 10, 'bldg1').subscribe({
+      service.addInventoryItem(null as unknown as string, 'pcs', 10, 50, 'bldg1').subscribe({
         next: (response) => {
           expect(response).toBeDefined();
         },
@@ -370,7 +382,7 @@ describe('InventoryItemApiService', () => {
       });
 
       // Test with undefined buildingUuid
-      service.addInventoryItem('Chair', 'pcs', 10, undefined as unknown as string).subscribe({
+      service.addInventoryItem('Chair', 'pcs', 10, 50, undefined as unknown as string).subscribe({
         next: (response) => {
           expect(response).toBeDefined();
         },

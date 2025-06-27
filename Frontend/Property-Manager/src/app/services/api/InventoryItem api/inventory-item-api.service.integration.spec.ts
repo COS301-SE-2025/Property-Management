@@ -29,15 +29,17 @@ describe('InventoryItemApiService Integration Tests', () => {
           itemUuid: '1', 
           name: 'Chair', 
           unit: 'pcs', 
-          quantity: 10, 
-          buildingUuid: 'bldg1' 
+          quantityInStock: 10, 
+          buildingUuid: 'bldg1',
+          price: 50 
         },
         { 
           itemUuid: '2', 
           name: 'Table', 
           unit: 'pcs', 
-          quantity: 5, 
-          buildingUuid: 'bldg1' 
+          quantityInStock: 5, 
+          buildingUuid: 'bldg1',
+          price: 50 
         }
       ];
 
@@ -80,8 +82,9 @@ describe('InventoryItemApiService Integration Tests', () => {
           itemUuid: '1', 
           name: 'Chair', 
           unit: 'pcs', 
-          quantity: 10, 
-          buildingUuid: 'bldg1' 
+          quantityInStock: 10, 
+          buildingUuid: 'bldg1',
+          price: 50  
         }
       ];
 
@@ -110,8 +113,9 @@ describe('InventoryItemApiService Integration Tests', () => {
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 10, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 10, 
+        buildingUuid: 'bldg1',
+        price: 50  
       };
 
       service.getInventoryItemsById('1').subscribe(item => {
@@ -142,17 +146,19 @@ describe('InventoryItemApiService Integration Tests', () => {
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 10, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 10, 
+        buildingUuid: 'bldg1',
+        price: 50 
       };
       const expectedBody = {
         name: 'Chair',
         unit: 'pcs',
         quantity: 10,
-        buildingUuid: 'bldg1'
+        buildingUuid: 'bldg1',
+        price: 50 
       };
 
-      service.addInventoryItem('Chair', 'pcs', 10, 'bldg1').subscribe(item => {
+      service.addInventoryItem('Chair', 'pcs', 50, 10, 'bldg1').subscribe(item => {
         expect(item).toEqual(newItem);
       });
 
@@ -163,7 +169,7 @@ describe('InventoryItemApiService Integration Tests', () => {
     });
 
     it('should handle validation error when adding item', () => {
-      service.addInventoryItem('', 'pcs', -1, 'bldg1').subscribe(
+      service.addInventoryItem('', 'pcs', -1, 50, 'bldg1').subscribe(
         () => fail('should have failed with 400 error'),
         (error) => {
           expect(error.status).toBe(400);
@@ -181,13 +187,15 @@ describe('InventoryItemApiService Integration Tests', () => {
         itemUuid: '1', 
         name: 'Chair Updated', 
         unit: 'pcs', 
-        quantity: 15, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 15, 
+        buildingUuid: 'bldg1',
+        price: 50  
       };
       const expectedBody = {
         name: 'Chair Updated',
         unit: 'pcs',
-        quantity: 15
+        quantity: 15,
+        price: 50 
       };
 
       service.updateInventoryItem(updatedItem).subscribe(item => {
@@ -205,8 +213,9 @@ describe('InventoryItemApiService Integration Tests', () => {
         itemUuid: 'unknown', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 10, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 10, 
+        buildingUuid: 'bldg1',
+        price: 50  
       };
 
       service.updateInventoryItem(itemToUpdate).subscribe(
@@ -222,13 +231,14 @@ describe('InventoryItemApiService Integration Tests', () => {
   });
 
   describe('updateInventoryItemQuantity', () => {
-    it('should increase item quantity via PATCH', () => {
+    it('should increase item quantityInStock via PATCH', () => {
       const updatedItem: Inventory = { 
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 15, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 15, 
+        buildingUuid: 'bldg1',
+        price: 50  
       };
       const expectedBody = {
         quantity: 5,
@@ -236,11 +246,11 @@ describe('InventoryItemApiService Integration Tests', () => {
       };
 
       service.updateInventoryItemQuantity(
-        { ...updatedItem, quantity: 10 }, 
+        { ...updatedItem, quantityInStock: 10 }, 
         5, 
         'add'
       ).subscribe(item => {
-        expect(item.quantity).toBe(15);
+        expect(item.quantityInStock).toBe(15);
       });
 
       const req = httpMock.expectOne(`${url}/inventory/1/quantity`);
@@ -249,30 +259,31 @@ describe('InventoryItemApiService Integration Tests', () => {
       req.flush(updatedItem);
     });
 
-    it('should decrease item quantity via PATCH', () => {
+    it('should decrease item quantityInStock via PATCH', () => {
       const updatedItem: Inventory = { 
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 5, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 5, 
+        buildingUuid: 'bldg1',
+        price: 50  
       };
 
       service.updateInventoryItemQuantity(
-        { ...updatedItem, quantity: 10 }, 
+        { ...updatedItem, quantityInStock: 10 }, 
         5, 
         'subtract'
       ).subscribe(item => {
-        expect(item.quantity).toBe(5);
+        expect(item.quantityInStock).toBe(5);
       });
 
       const req = httpMock.expectOne(`${url}/inventory/1/quantity`);
       req.flush(updatedItem);
     });
 
-    it('should handle invalid quantity operation', () => {
+    it('should handle invalid quantityInStock operation', () => {
       service.updateInventoryItemQuantity(
-        { itemUuid: '1', name: 'Chair', unit: 'pcs', quantity: 10, buildingUuid: 'bldg1' }, 
+        { itemUuid: '1', name: 'Chair', unit: 'pcs', quantityInStock: 10, price: 50, buildingUuid: 'bldg1' }, 
         5, 
         'invalid-op'
       ).subscribe(
@@ -293,8 +304,9 @@ describe('InventoryItemApiService Integration Tests', () => {
         itemUuid: '1', 
         name: 'Chair', 
         unit: 'pcs', 
-        quantity: 10, 
-        buildingUuid: 'bldg1' 
+        quantityInStock: 10, 
+        buildingUuid: 'bldg1',
+        price: 50 
       };
 
       service.deleteInventoryItem(deletedItem).subscribe(item => {
@@ -308,7 +320,7 @@ describe('InventoryItemApiService Integration Tests', () => {
 
     it('should handle item not found during deletion', () => {
       service.deleteInventoryItem(
-        { itemUuid: 'unknown', name: 'Chair', unit: 'pcs', quantity: 10, buildingUuid: 'bldg1' }
+        { itemUuid: 'unknown', name: 'Chair', unit: 'pcs', quantityInStock: 10, price: 50, buildingUuid: 'bldg1' }
       ).subscribe(
         () => fail('should have failed with 404 error'),
         (error) => {

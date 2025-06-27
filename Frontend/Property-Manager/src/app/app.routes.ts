@@ -107,7 +107,7 @@ export const routes: Routes = [
   component: PublicContractorsComponent
 },
 {
-    path: 'contractor-profile',
+    path: 'contractor-prof',
     component: ContractorProfileComponent
 }
 ,

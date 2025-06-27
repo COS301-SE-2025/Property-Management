@@ -228,7 +228,7 @@ describe('InventoryUsageApiService Integration Tests', () => {
         expect(usages).toEqual(mockUsages);
       });
 
-      const req = httpMock.expectOne(`${url}/inventory-usage/by-itemitem1`);
+      const req = httpMock.expectOne(`${url}/inventory-usage/by-item/item1`);
       expect(req.request.method).toBe('GET');
       req.flush(mockUsages);
     });

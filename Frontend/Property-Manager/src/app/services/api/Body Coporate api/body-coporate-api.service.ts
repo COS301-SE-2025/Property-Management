@@ -5,7 +5,7 @@ import { Property } from '../../../models/property.model';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { ReserveFund } from '../../../models/reserveFund.model';
 import { BodyCoporate } from '../../../models/bodyCoporate.model';
-import { Contractor } from '../../../models/contractor.model';
+import { ContractorDetails } from '../../../models/contractorDetails.model';
 
 @Injectable({
   providedIn: 'root'
@@ -59,8 +59,33 @@ export class BodyCoporateApiService {
 
     return response;
   }
-  // getContractors(): Observable<Contractor>
+  //Get contractor ids from buildings then get actual contractors
+  // getContractorsLinkedToBuilding(buildingId: string, contractorId: string): String[]
+  // { 
+  //   let contractors: string[] = [];
+  //   this.http.get<Property[]>(`$${this.url}/buildings/${buildingId}`).pipe(
+  //     map((buildings) => {
+  //       console.log(buildings);
+  //       buildings.forEach((b) => {
+  //         contractors.push(b.primaryContractors);
+  //       });
+  //     })
+  //   );
+
+  //   return contractors;
+  // }
+  // getContractors(): Observable<ContractorDetails>
   // {
 
   // }
+  getAllPublicContractors(coporateId: string): Observable<ContractorDetails[]>
+  {
+    return this.http.get<ContractorDetails[]>(`${this.url}/api/contractors`).pipe(
+      map(contractor => {
+        return contractor.filter(c => {
+          return c.coporateUuid !== coporateId
+        });
+      })
+    );
+  }
 }

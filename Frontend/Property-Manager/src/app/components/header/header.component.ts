@@ -21,7 +21,7 @@ export class HeaderComponent {
   public items: MenuItem[] = [];
 
   public typeUser: string | null = null;
-  private routeMap: { [key: string]: { [key: string]: MenuItem[] }} = {
+  private routeMap: Record<string, Record<string, MenuItem[]>> = {
   'body coporate': {
     '/home': [
       { label: 'Home', route: '/home' }
@@ -107,7 +107,7 @@ export class HeaderComponent {
 
     this.typeUser = localStorage.getItem('typeUser');
 
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: any) => {
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
       this.updateBreadcrumbs(event.url);
     });
   }

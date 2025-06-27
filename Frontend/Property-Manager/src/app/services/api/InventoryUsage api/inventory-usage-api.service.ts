@@ -59,7 +59,7 @@ export class InventoryUsageApiService {
   }
   getUsageRecordsByItemId(itemId: string): Observable<InventoryUsage[]>
   {
-    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-item${itemId}`);
+    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-item/${itemId}`);
   }
 
   getUsageRecordsByTaskId(taskId: string): Observable<InventoryUsage[]>

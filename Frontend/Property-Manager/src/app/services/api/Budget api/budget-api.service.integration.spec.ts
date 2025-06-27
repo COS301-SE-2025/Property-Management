@@ -26,9 +26,10 @@ describe('BudgetApiService Integration Tests', () => {
         const mockDate = new Date('2025-01-01');
         const mockResponse: BuildingDetails = {
             budgetUuid: '1',
-            totalBudget: 100000,
             maintenanceBudget: 40000,
+            maintenanceSpent: 1000,
             inventoryBudget: 60000,
+            inventorySpent: 3000,
             approvalDate: mockDate,
             buildingUuid: 'bldg1'
         };
@@ -53,9 +54,10 @@ describe('BudgetApiService Integration Tests', () => {
     it('should retrieve a budget by id', () => {
         const mockResponse: BuildingDetails = {
             budgetUuid: '1',
-            totalBudget: 100000,
             maintenanceBudget: 40000,
+            maintenanceSpent: 1000,
             inventoryBudget: 60000,
+            inventorySpent: 3000,
             approvalDate: new Date('2025-01-01'),
             buildingUuid: 'bldg1'
         };
@@ -72,17 +74,19 @@ describe('BudgetApiService Integration Tests', () => {
         const mockResponse: BuildingDetails[] = [
             {
                 budgetUuid: '1',
-                totalBudget: 100000,
                 maintenanceBudget: 40000,
+                maintenanceSpent: 1000,
                 inventoryBudget: 60000,
+                inventorySpent: 3000,
                 approvalDate: new Date('2025-01-01'),
                 buildingUuid: 'bldg1'
-                },
-                {
+            },
+            {
                 budgetUuid: '2',
-                totalBudget: 150000,
-                maintenanceBudget: 50000,
-                inventoryBudget: 100000,
+                maintenanceBudget: 40000,
+                maintenanceSpent: 1000,
+                inventoryBudget: 60000,
+                inventorySpent: 3000,
                 approvalDate: new Date('2025-01-01'),
                 buildingUuid: 'bldg2'
             }
@@ -98,14 +102,15 @@ describe('BudgetApiService Integration Tests', () => {
         req.flush(mockResponse);
     });
     it('should retrieve budgets by building id', () => {
-        const mockResponse: BuildingDetails = {
+        const mockResponse: BuildingDetails[] = [{
             budgetUuid: '1',
-            totalBudget: 100000,
             maintenanceBudget: 40000,
+            maintenanceSpent: 1000,
             inventoryBudget: 60000,
+            inventorySpent: 3000,
             approvalDate: new Date('2025-01-01'),
             buildingUuid: 'bldg1'
-        };
+        }];
 
         service.getBudgetsByBuildingId('bldg1').subscribe(response => {
             expect(response).toEqual(mockResponse);
@@ -118,12 +123,13 @@ describe('BudgetApiService Integration Tests', () => {
     it('should retrieve budgets by year', () => {
         const mockResponse: BuildingDetails[] = [
             {
-            budgetUuid: '1',
-            totalBudget: 100000,
-            maintenanceBudget: 40000,
-            inventoryBudget: 60000,
-            approvalDate: new Date('2025-01-01'),
-            buildingUuid: 'bldg1'
+                budgetUuid: '1',
+                maintenanceBudget: 40000,
+                maintenanceSpent: 1000,
+                inventoryBudget: 60000,
+                inventorySpent: 3000,
+                approvalDate: new Date('2025-01-01'),
+                buildingUuid: 'bldg1'
             }
         ];
 
@@ -140,9 +146,10 @@ describe('BudgetApiService Integration Tests', () => {
         const mockResponse: BuildingDetails[] = [
             {
                 budgetUuid: '1',
-                totalBudget: 100000,
                 maintenanceBudget: 40000,
+                maintenanceSpent: 1000,
                 inventoryBudget: 60000,
+                inventorySpent: 3000,
                 approvalDate: new Date('2025-01-01'),
                 buildingUuid: 'bldg1'
             }
@@ -161,10 +168,12 @@ describe('BudgetApiService Integration Tests', () => {
         const mockDate = new Date('2025-01-01');
         const mockBudget: BuildingDetails = {
             budgetUuid: '1',
-            totalBudget: 120000,
-            maintenanceBudget: 50000,
-            inventoryBudget: 70000,
-            approvalDate: mockDate,
+            totalBudget: 100000,
+            maintenanceBudget: 40000,
+            maintenanceSpent: 1000,
+            inventoryBudget: 60000,
+            inventorySpent: 3000,
+            approvalDate: new Date('2025-01-01'),
             buildingUuid: 'bldg1'
         };
 
@@ -176,9 +185,11 @@ describe('BudgetApiService Integration Tests', () => {
         expect(req.request.method).toBe('PUT');
         expect(req.request.body).toEqual({
             year: 2025,
-            totalBudget: 120000,
-            maintenanceBudget: 50000,
-            inventoryBudget: 70000,
+            totalBudget: 100000,
+            maintenanceBudget: 40000,
+            maintenanceSpent: 1000,
+            inventoryBudget: 60000,
+            inventorySpent: 3000,
             approvalDate: mockDate,
             buildingUuid: 'bldg1'
         });
@@ -187,11 +198,12 @@ describe('BudgetApiService Integration Tests', () => {
     });
     it('should delete a budget', () => {
         const mockResponse: BuildingDetails = {
-            budgetUuid: '1',
-            totalBudget: 100000,
+           budgetUuid: '1',
             maintenanceBudget: 40000,
+            maintenanceSpent: 1000,
             inventoryBudget: 60000,
-            approvalDate: new Date('2023-01-01'),
+            inventorySpent: 3000,
+            approvalDate: new Date('2025-01-01'),
             buildingUuid: 'bldg1'
         };
 

@@ -1,9 +1,8 @@
 export interface Contractor{
-    contractorId: number;
+    uuid: string;
     name: string;
-    email: string;
-    phone: string;
+    status: boolean;
     apikey: string;
-    banned: boolean;
-    images?: string[];
+    email: string;
+    image?: string;
 }
