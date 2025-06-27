@@ -1,5 +1,5 @@
 <app-header></app-header>
-
+<p-toast></p-toast>
 
 <div class="min-h-screen p-8" [@fadeInStagger] [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
 
@@ -36,14 +36,14 @@
 
     <!-- File Upload -->
     <div class="card flex flex-col gap-6 mb-5 items-center justify-center">
-    <p-toast />
+    
     <p-fileupload #fu mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept=".pdf,image/*" maxFileSize="1000000" (onUpload)="onUpload($event)"  styleClass="custom-upload-button"/>
     <p-button label="Upload" (onClick)="fu.upload()" severity="secondary" />
 </div>
 
     <!-- Submit Button -->
     <button
-    
+      (click)="submitQuote()"
       label="Create Quotation"
       class="bg-yellow-300 text-black font-semibold text-lg px-16 py-3 ml-25 rounded shadow hover:bg-yellow-400 transition text-sm"
 
