@@ -8,6 +8,7 @@ import { BuildingDetails } from '../models/buildingDetails.model';
 import { TaskApiService } from './api/Task api/task-api.service';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
 import { Graph } from '../models/graph.model';
+import { ImageApiService } from './api/Image api/image-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class HousesService {
 
   private tempTrusteeId = 'b6785ed2-3230-4d55-8b83-660b63ca32f0';
 
-  constructor(private buildingApiService: BuildingApiService, private budgetApiService: BudgetApiService, private inventoryItemApiService: InventoryItemApiService, private taskApiService: TaskApiService) { }
+  constructor(private buildingApiService: BuildingApiService, private budgetApiService: BudgetApiService, private inventoryItemApiService: InventoryItemApiService, private taskApiService: TaskApiService, private imageApiService: ImageApiService) { }
 
   houses = signal<Property[]>([]);
   inventory = signal<Inventory[]>([]);
@@ -77,19 +78,35 @@ export class HousesService {
     }
 
     this.buildingApiService.getBuildingsByTrustee(this.tempTrusteeId).subscribe({
-      next: (house) => {
-        console.log(house);
+      next: (houses) => {
+        console.log(houses);
         
-        this.houses.set(house.map((h) => ({
-          ...h,
-          propertyImage: this.mockImages[Math.floor(Math.random() * this.mockImages.length)]
-        })));
-
+        houses.forEach(h => {
+          if(h.propertyImage)
+          {
+            this.imageApiService.getImage(h.propertyImage).subscribe(imageUrl => {
+              this.houses.update(currentHouses => [
+                ...currentHouses,
+                {
+                  ...h,
+                  propertyImage: imageUrl
+                }
+              ]);
+            });
+          }
+          else
+          {
+            this.houses.update(currentHouses => [
+              ...currentHouses,
+              h
+            ]);
+          }
+        });
       },
       error: (error) => {
         console.error("Error loading properties", error);
       }
-    })
+    });
   }
   async loadBudget(houseId: string){
 
