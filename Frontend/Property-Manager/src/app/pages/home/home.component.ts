@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit{
   constructor(private router: Router) {
 
     const typeUser = localStorage.getItem("typeUser");
-    if(typeUser !== null && typeUser === "body coporate")
+    if(typeUser !== null && typeUser === "bodyCoporate")
     {
       this.bcUser = true;
       console.log("bcUser active");

@@ -113,6 +113,7 @@ export class BodyCoporateService {
   constructor(private bodyCoporateApiService: BodyCoporateApiService){}
 
   async addToTask(task: MaintenanceTask): Promise<void> {
+    console.log(task);
     this.pendingTasks.update(tasks => [...tasks, task]);
   }
 
@@ -121,6 +122,8 @@ export class BodyCoporateService {
       const buildings = await firstValueFrom(
         this.bodyCoporateApiService.getBuildingsLinkedtoBC()
       );
+
+      console.log(buildings);
 
       const buildingUuids: string[] = buildings
         .map(b => b.buildingUuid)
@@ -131,6 +134,7 @@ export class BodyCoporateService {
           const tasks = await firstValueFrom(
             this.bodyCoporateApiService.getPendingTasks(uuid)
           );
+          console.log(tasks)
           tasks.forEach(task => this.addToTask(task));
         } catch (error) {
           console.error(`Failed to load tasks for building ${uuid}`, error);
@@ -147,12 +151,16 @@ export class BodyCoporateService {
       firstValueFrom(this.bodyCoporateApiService.getBodyCoporate())
     ]);
 
+    console.log(buildings);
+    console.log(bc);
+
     const reserveFunds = buildings
       .filter((building): building is typeof building & { area: number } => typeof building.area === 'number')
       .map(building => 
         this.bodyCoporateApiService.getAndCalculateReserveFund(
           bc, 
-          building.area
+          building.area,
+          building.name
         )
       );
 
