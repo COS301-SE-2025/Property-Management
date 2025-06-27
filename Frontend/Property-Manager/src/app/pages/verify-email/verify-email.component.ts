@@ -28,7 +28,7 @@ export class VerifyEmailComponent {
         this.username = storedUsername;
       }else {
         console.error('No username found for verification.');
-        this.router.navigate(['/register-body-corporate']);
+        this.router.navigate(['']);
       }
     
 
@@ -54,7 +54,8 @@ export class VerifyEmailComponent {
         const result = await this.authService.confirmBodyCoporateRegistration(this.username, this.verificationCode);
         console.log('Email verification successful:', result);
       }else if(this.userType === 'trustee') {
-        //add trustee implementation
+        const result = await this.authService.confirmTrusteeRegistration(this.username, this.verificationCode);
+        console.log('Email verification successful:', result);
       } else if(this.userType === 'contractor') {
         //add contractor implementation
       }else {

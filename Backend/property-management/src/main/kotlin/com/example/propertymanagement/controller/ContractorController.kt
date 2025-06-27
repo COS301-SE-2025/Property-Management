@@ -53,7 +53,7 @@ class ContractorController(
         val reg_number: String,
         val description: String,
         val services: String,
-        val coporate_uuid: UUID,
+        val corporate_uuid: UUID,
     )
 
     @PostMapping
@@ -119,7 +119,7 @@ class ContractorController(
             reg_number = "N/A",
             description = "N/A",
             services = "N/A",
-            corporate_uuid = "N/A",
+            corporate_uuid = UUID.randomUUID(),
         )
         return ResponseEntity.ok(
             mapOf(
@@ -132,9 +132,9 @@ class ContractorController(
     @PostMapping("/auth/confirm")
     fun confirm(
         @RequestBody request: ConfirmRegistrationRequest,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<Unit> {
         cognitoService.confirmRegistration(request.username, request.code)
-        return ResponseEntity.ok("Account confirmed.")
+        return ResponseEntity.ok().build()
     }
 
     @PostMapping("/auth/login")

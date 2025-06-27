@@ -55,21 +55,21 @@ export class LoginComponent {
       const trusteeTokens = await this.authService.trusteeLogin(this.email, this.password);
       localStorage.setItem('userType', 'trustee');
       console.log('Trustee logged in:', trusteeTokens);
-      this.router.navigate(['/trusteeHome']);
+      this.router.navigate(['/home']);
       return; 
     } catch (error) {
       console.warn('Trustee login failed, trying Contractor...');
     }
 
-    try {
-      const contractorTokens = await this.authService.contractorLogin(this.email, this.password);
-      localStorage.setItem('userType', 'contractor');
-      console.log('Contractor logged in:', contractorTokens);
-      this.router.navigate(['/contractorHome']);
-      return;
-    } catch (error) {
-      console.warn('Contractor login failed:', error);
-    }
+    // try {
+    //   const contractorTokens = await this.authService.contractorLogin(this.email, this.password);
+    //   localStorage.setItem('userType', 'contractor');
+    //   console.log('Contractor logged in:', contractorTokens);
+    //   this.router.navigate(['/contractorHome']);
+    //   return;
+    // } catch (error) {
+    //   console.warn('Contractor login failed:', error);
+    // }
 
     //all failed
     this.userError = true;

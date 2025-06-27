@@ -32,49 +32,53 @@ export class RegisterOwnerComponent {
     this.passwordVisible = !this.passwordVisible;
   }
 
-  // async register(): Promise<void> {
-  //   if (this.email.length === 0 || this.password.length === 0 || this.contactNumber.length === 0) {
-  //     this.emptyField = true;
-  //     return;
-  //   }
+async register(): Promise<void> {
+    if (!this.email || !this.contactNumber || !this.password) {
+      this.emptyField = true;
+      return;
+    }
 
-  //   this.userError = false;
-  //   this.serverError = false;
-  //   this.emptyField = false;
+    this.userError = false;
+    this.serverError = false;
+    this.emptyField = false;
 
-  //   try {
+    try {
+      const result = await this.authService.trusteeRegister(
+        this.email,
+        this.password,
+        this.contactNumber
+      );
 
-  //     const result = await this.authService.register(this.email, this.password, 'owner');
-  //     console.log(result.user.getUsername());
+    
+      sessionStorage.setItem('pendingUsername',result.username);
+      sessionStorage.setItem('userType', 'trustee');
+      console.log('Registration successful:', result);
 
-  //     const apikey = result?.userSub || result?.user?.getUsername() || '';
+    
+      
 
-  //     await this.apiService.registerTrustee(this.email, this.email, this.contactNumber, apikey).toPromise();
-
-  //     console.log('Successfully registered');
-
-  //     this.router.navigate(['/verifyEmail'], {
-  //         state: {
-  //             username: result.user.getUsername()
-  //         }
-  //     });
-  //   } catch (error: unknown) {
-  //     console.error('Registration error: ', error);
-  //     if (
-  //       typeof error === 'object' &&
-  //       error !== null &&
-  //       ('status' in error || 'code' in error)
-  //     ) {
-  //       const err = error as { status?: number; code?: string };
-  //       if (err.status === 400 || err.code === 'NotAuthorizedException') {
-  //         this.userError = true;
-  //       } else {
-  //         this.serverError = true;
-  //       }
-  //     } else {
-  //       this.serverError = true;
-  //     }
-  //     throw error;
-  //   }
-  // }
+      this.router.navigate(['/verifyEmail'], {
+        state: {
+          username: result.username
+        }
+      });
+    } catch (error: unknown) {
+      console.error('Registration error:', error);
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        ('status' in error || 'code' in error)
+      ) {
+        const err = error as { status?: number; code?: string };
+        if (err.status === 400 || err.code === 'NotAuthorizedException') {
+          this.userError = true;
+        } else {
+          this.serverError = true;
+        }
+      } else {
+        this.serverError = true;
+      }
+      throw error;
+    }
+  }
 }
