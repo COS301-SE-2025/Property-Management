@@ -55,6 +55,7 @@ class BuildingIntegrationTest {
         type: String = "Apartment",
         trusteeUuid: UUID = UUID.randomUUID(),
         area: Double = 100.0,
+         primaryContractor: UUID = UUID.randomUUID(),
         coporateUuid: UUID? = null,
     ): BuildingResponseDto {
         val createRequest =
@@ -63,7 +64,7 @@ class BuildingIntegrationTest {
                 address = "123 Test Lane",
                 type = type,
                 propertyValue = 1000000.0,
-                primaryContractors = arrayOf("1", "2"),
+                primaryContractor = primaryContractor,
                 latestInspectionDate = LocalDate.now(),
                 area = area,
                 trusteeUuid = trusteeUuid,
