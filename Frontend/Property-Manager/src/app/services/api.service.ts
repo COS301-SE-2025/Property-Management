@@ -123,20 +123,37 @@ export class ApiService {
     return this.http.get<Quote[]>(`${this.url}/quote`);
   }
 
-  addQuote(task_id: number, contractor_id: number, amount: number, submitted_on: Date, type:string ): Observable<Quote>
-  {
-    const quote = {
-      task_id: task_id,
-      contractor_id: contractor_id,
-      amount: amount,
-      submitted_on: submitted_on,
-      type: type
-    }
-    return this.http.post<Quote>(`${this.url}/quote`, quote);
-  }
+  addQuote(
+  t_uuid: string,
+  c_uuid: string,
+  submitted_on: Date,
+  status: string,
+  amount: number,
+  doc: string
+): Observable<Quote> {
+  const quote = {
+    t_uuid,
+    c_uuid,
+    submitted_on: submitted_on.toISOString(), 
+    status,
+    amount,
+    doc
+  };
+  return this.http.post<Quote>(`${this.url}/quote`, quote);
+}
+
 
   getQuoteById(id: number): Observable<Quote>
   {
     return this.http.get<Quote>(`${this.url}/quote/${id}`);
   }  
+
+  getMaintenanceTasks(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}/maintenance`);
+  }
+
+  getPresignedImageUrl(uuid: string): Observable<{ url: string }> {
+    return this.http.get<{ url: string }>(`${this.url}/images/presigned/${uuid}`);
+  }
+
 }
