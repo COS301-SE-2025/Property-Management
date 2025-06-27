@@ -6,6 +6,9 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DialogComponent } from '../../../components/dialog/dialog.component';
+import { BuildingDetails } from '../../../models/buildingDetails.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BudgetApiService } from '../../../services/api/Budget api/budget-api.service';
 
 @Component({
   selector: 'app-edit-budget-dialog',
@@ -15,13 +18,18 @@ import { DialogComponent } from '../../../components/dialog/dialog.component';
 })
 export class EditBudgetDialogComponent extends DialogComponent implements OnInit{
 
+  budget = input.required<BuildingDetails>();
   form!: FormGroup;
   updatedBudget = 0;
+  houseId = '';
 
   public budgetType = input.required<string>();
   public oldBudgetAmount = input.required<number>();
 
-  constructor(private fb: FormBuilder){ super()}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private budgetApiService: BudgetApiService){
+     super();
+     this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
+  }
 
   ngOnInit(): void {
       this.form = this.fb.group({
@@ -44,11 +52,36 @@ export class EditBudgetDialogComponent extends DialogComponent implements OnInit
   }
   onSubmit()
   {
-    //TODO: Implment logic to update budget
     if(this.form.valid)
     {
-      console.log("Budget updated")
-      this.closeDialog();
+      console.log("Updating budget");
+      const updateBudget = this.form.value.updatedBudget;
+      let inventoryBudget = 0;
+      let maintenanceBudget = 0;
+
+      if(this.budgetType() === 'inventory')
+      {
+        inventoryBudget = updateBudget;
+        maintenanceBudget = this.budget().maintenanceBudget;
+      }
+      else
+      {
+        maintenanceBudget = updateBudget;
+        inventoryBudget = this.budget().inventoryBudget;
+      }
+
+      this.budgetApiService.createBudget((inventoryBudget+maintenanceBudget), maintenanceBudget, inventoryBudget, new Date(), this.houseId).subscribe({
+        next: () => {
+          this.form.reset();
+          this.closeDialog();
+          this.router.navigate(['manageBudget', this.houseId]).then(() => {
+            window.location.reload();
+          });
+        },
+        error: (err) => {
+          console.error("Failed to update budget", err);
+        }
+      });
     }
   }
 

@@ -2,19 +2,19 @@
     <ng-template #title>Timeline</ng-template>
 
     <p-timeline [value]="timeline()">
-    <ng-template #content let-time>
-        {{ time.description }}
-    </ng-template>
-    <ng-template #marker let-time>
-        <div class="flex items-center justify-center w-6 h-6 rounded-full shadow-md bg-white-200">
-        <ng-container *ngIf="time.done; else pending">
-        <img src="assets/icons/task_done.svg" alt="Done" class="w-5 h-5" />
-        </ng-container>
-        <ng-template #pending>
-            <i class="pi pi-clock text-gray-400"></i>
+        <ng-template #content let-time>
+            {{ time.title }}
         </ng-template>
-    </div>
-    </ng-template>
+        <ng-template #marker let-time>
+            <div class="flex items-center justify-center w-6 h-6 rounded-full shadow-md bg-white-200">
+            <ng-container *ngIf="(time.status==='done'); else pending">
+            <img src="assets/icons/task_done.svg" alt="Done" class="w-5 h-5" />
+            </ng-container>
+            <ng-template #pending>
+                <i class="pi pi-clock text-gray-400"></i>
+            </ng-template>
+        </div>
+        </ng-template>
     </p-timeline>
 
     <div class = "mt-4">

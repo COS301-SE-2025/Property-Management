@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule],
+  imports: [CommonModule, BreadcrumbModule, RouterModule],
   templateUrl: `./header.component.html`,
   styles: ''
 })
@@ -14,6 +18,80 @@ export class HeaderComponent {
   public dropDownProfileOpen = false;
   public dropDownSettingsOpen = false;
   public isDarkMode = false;
+  public items: MenuItem[] = [];
+
+  public typeUser: string | null = null;
+  private routeMap: Record<string, Record<string, MenuItem[]>> = {
+  'body coporate': {
+    '/home': [
+      { label: 'Home', route: '/home' }
+    ],
+    '/bodyCoporate': [
+      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' }
+    ],
+    '/bodyCoporate/contractors': [
+      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate', route: '/bodyCoporate' },
+      { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' }
+    ],
+    '/bodyCoporate/publicContractors': [
+      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate', route: '/bodyCoporate' },
+      { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' }
+    ],
+    '/contractorDetails': [
+      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate', route: '/bodyCoporate' },
+      { label: 'Contractors', route: '/bodyCoporate/contractors' },
+      { label: 'Contractor Details', route: '/contractorDetails' }
+    ],
+    '/viewHouse': [
+      { label: 'Home', route: '/home' },
+      { label: 'View House', route: '/viewHouse' }
+    ],
+    '/manageBudget': [
+      { label: 'Home', route: '/home' },
+      { label: 'View House', route: '/viewHouse' },
+      { label: 'Manage Budget', route: '/manageBudget' }
+    ],
+    '/create-property': [
+      { label: 'Home', route: '/home' },
+      { label: 'Create Property', route: '/create-property' }
+    ]
+  },
+  'trustee': {
+    '/home': [
+      { label: 'Home', route: '/home' }
+    ],
+    '/viewHouse': [
+      { label: 'Home', route: '/home' },
+      { label: 'View House', route: '/viewHouse' }
+    ],
+    '/manageBudget': [
+      { label: 'Home', route: '/home' },
+      { label: 'View House', route: '/viewHouse' },
+      { label: 'Manage Budget', route: '/manageBudget' }
+    ]
+  },
+  'contractor': {
+    '/home': [
+      { label: 'Home', route: '/home' }
+    ],
+    '/contractorHome': [
+      { label: 'Home', route: '/home' },
+      { label: 'Contractor Dashboard', route: '/contractorHome' }
+    ],
+    '/contractor-profile': [
+      { label: 'Home', route: '/home' },
+      { label: 'Profile', route: '/contractor-profile' }
+    ],
+    '/quotation': [
+      { label: 'Home', route: '/home' },
+      { label: 'Quotations', route: '/quotation' }
+    ]
+  }
+  };
 
   constructor(private authService: AuthService, private router: Router){
     const saved = localStorage.getItem('darkMode');
@@ -24,9 +102,14 @@ export class HeaderComponent {
     else
     {
       this.isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      console.log(this.isDarkMode);
     }
     this.applyDarkMode();
+
+    this.typeUser = localStorage.getItem('typeUser');
+
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+      this.updateBreadcrumbs(event.url);
+    });
   }
 
   dropDownProfile()
@@ -43,14 +126,14 @@ export class HeaderComponent {
   signOut()
   {
     this.dropDownProfileOpen = false;
-    if(this.authService.logout())
-    {
-      this.router.navigate(['/login']);
-    }
-    else
-    {
-      console.error("couldnt log out");
-    } 
+    this.router.navigate(['/login']);
+    // if(this.authService.logout())
+    // {
+    // }
+    // else
+    // {
+    //   console.error("couldnt log out");
+    // } 
   }
 
   toggleDarkMode()
@@ -62,7 +145,6 @@ export class HeaderComponent {
   }
   private applyDarkMode()
   {
-    console.log("Applying dark mode:", this.isDarkMode);
     const root = document.documentElement;
     if(this.isDarkMode)
     {
@@ -72,5 +154,27 @@ export class HeaderComponent {
     {
       root.classList.remove('dark-theme');
     }
+  }
+  private updateBreadcrumbs(url: string): void {
+    if (!this.typeUser) return;
+
+    const baseUrl = url.split('?')[0].split('#')[0];
+    
+    const parameterlessUrl = baseUrl.split('/').slice(0, 2).join('/') || '/';
+
+    const userRoutes = this.routeMap[this.typeUser];
+    if (!userRoutes) return;
+
+    if (userRoutes[baseUrl]) {
+      this.items = [...userRoutes[baseUrl]];
+      return;
+    }
+
+    if (userRoutes[parameterlessUrl]) {
+      this.items = [...userRoutes[parameterlessUrl]];
+      return;
+    }
+
+    this.items = [{ label: 'Home', route: '/home' }];
   }
 }

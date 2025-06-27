@@ -26,4 +26,5 @@ data class Contractor(
     val reg_number: String? = null,
     val description: String? = null,
     val services: String? = null,
+    val corporate_uuid: UUID?= null,
 )

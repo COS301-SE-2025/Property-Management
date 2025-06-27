@@ -59,6 +59,13 @@ body {
   background: var(--dark-background);
   color: var(--text-color);
 }
+.dark-theme .bg-gray-50  {
+  background: var(--card-hover);
+  color: var(--text-color);
+}
+.dark-theme .bg-gray-50  p{
+  color: var(--text-color);
+}
 
 .dark-theme .p-datatable{
   background: var(--datatable-body-bg);
@@ -156,4 +163,9 @@ body {
 .dark-theme .p-listbox-option{
   background: var(--dialog-bg);
   color: var(--text-color);
+}
+
+.dark-theme .p-breadcrumb
+{
+  background: var(--dark-background);
 }

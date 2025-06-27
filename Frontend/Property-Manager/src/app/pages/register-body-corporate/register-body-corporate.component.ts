@@ -4,7 +4,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -30,8 +29,8 @@ import { Router } from '@angular/router';
           </p-floatlabel>
 
           <p-floatlabel variant="on">
-            <img *ngIf="!registrationNumber" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/telephone.svg" alt="">
-            <input class="w-full border rounded !bg-white" pInputText id="reg_number" [(ngModel)]="registrationNumber" autocomplete="off">
+            <img *ngIf="!contributionPerSqm" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/telephone.svg" alt="">
+            <input class="w-full border rounded !bg-white" pInputText id="contribution_per_sqm" [(ngModel)]="contributionPerSqm" autocomplete="off">
             <label class="pl-6" for="reg_number">Scheme Number</label>
           </p-floatlabel>
 
@@ -90,7 +89,7 @@ import { Router } from '@angular/router';
 })
 export class RegisterBodyCorporateComponent {
   public corporateName = '';
-  public registrationNumber = '';
+  public contributionPerSqm = '';
   public email = '';
   public contactNumber = '';
   public password = '';
@@ -101,7 +100,6 @@ export class RegisterBodyCorporateComponent {
   public serverError = false;
 
   constructor(
-    private apiService: ApiService,
     private authService: AuthService,
     private router: Router
   ) {}
@@ -111,7 +109,7 @@ export class RegisterBodyCorporateComponent {
   }
 
   async register(): Promise<void> {
-    if (!this.corporateName || !this.registrationNumber || !this.email || !this.contactNumber || !this.password) {
+    if (!this.corporateName || !this.contributionPerSqm || !this.email || !this.contactNumber || !this.password) {
       this.emptyField = true;
       return;
     }
@@ -121,20 +119,22 @@ export class RegisterBodyCorporateComponent {
     this.emptyField = false;
 
     try {
-      const result = await this.authService.register(this.email, this.password, 'bodyCorporate');
-      
-      // Add API call to register body corporate details
-    //   await this.apiService.registerBodyCorporate(
-    //     this.corporateName,
-    //     this.registrationNumber,
-    //     this.email,
-    //     this.contactNumber,
-    //     result.user.getUsername()
-    //   ).toPromise();
+      const result = await this.authService.bodyCoporateRegister(
+        this.corporateName,
+        parseFloat(this.contributionPerSqm),
+        this.email,
+        this.password,
+        undefined, // totalBudget is not used in the current implementation
+        this.contactNumber
+      );
+
+    
+
+      console.log('Registration successful:', result);
 
       this.router.navigate(['/verifyEmail'], {
         state: {
-          username: result.user.getUsername()
+          username: result.username
         }
       });
     } catch (error: unknown) {

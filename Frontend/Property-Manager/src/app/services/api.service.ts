@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Inventory } from '../models/inventory.model';
-import { Building } from '../models/building.model';
+// import { Building } from '../models/building.model';
 import { Budget } from '../models/budget.model';
 import { Contractor } from '../models/contractor.model';
 import { Quote } from '../models/quote.model';
@@ -41,10 +41,10 @@ export class ApiService {
     return this.http.post<Inventory>(`${this.url}/inventory`, item);
   }
 
-  getBuildings(): Observable<Building[]>
-  {
-    return this.http.get<Building[]>(`${this.url}/buildings`);
-  }
+  // getBuildings(): Observable<Building[]>
+  // {
+  //   return this.http.get<Building[]>(`${this.url}/buildings`);
+  // }
 
   getBudgets(id: number): Observable<Budget[]>
   {

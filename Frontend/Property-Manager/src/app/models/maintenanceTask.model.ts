@@ -1,19 +1,12 @@
-import { Contractor } from "./contractor.model";
-import { Inventory } from "./inventory.model";
-
 export interface MaintenanceTask{
-    description: string;
-    UnitNo: string;
-    cost: number;
-    DoneBy: Contractor
-    DoneOn: Date;
-    DueDate: Date;
+    uuid: string;
+    title: string;
+    des: string;
     status: string;
+    scheduled_date: Date;
     approved: boolean;
-    proofImages?: string[];
-    inventoryItemsUsed?: Inventory[];
-    ReviewScore?: number;
-    ReviewDescription?: string;
-    quotationPdf?: string;
-    numOfAssignedContractors: number;
+    b_uuid: string;
+    t_uuid: string;
+    img?: string[] | string; 
+    done?: boolean;
 }

@@ -6,6 +6,7 @@ import { StepThreeComponent } from './step-three.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { Contractor } from '../../models/contractor.model';
 import { ContractorService } from '../../services/contractor.service';
+import { ContractorDetails } from '../../models/contractorDetails.model';
 
 
 
@@ -20,7 +21,7 @@ import { ContractorService } from '../../services/contractor.service';
 
 export class ContractorProfileComponent implements OnInit {
 
-  contractor: Contractor = {
+  contractor: ContractorDetails = {
     name: '',
     contact_info: '',
     status: false,

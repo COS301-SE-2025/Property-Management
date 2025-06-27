@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { HeaderComponent } from "../../components/header/header.component";
 import { DrawerComponent } from '../../components/drawer/drawer.component';
@@ -6,11 +6,10 @@ import { PendingTaskCardComponent } from "./pending-task-card/pending-task-card.
 import { BodyCoporateService } from '../../services/body-coporate.service';
 import { LifeCycleCardComponent } from "./life-cycle-card/life-cycle-card.component";
 import { ReserveFundCardComponent } from "./reserve-fund-card/reserve-fund-card.component";
-import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenance-graph-card.component';
 
 @Component({
   selector: 'app-bc-home',
-  imports: [HeaderComponent, DrawerComponent, PendingTaskCardComponent, LifeCycleCardComponent, ReserveFundCardComponent, MaintenanceGraphCardComponent],
+  imports: [HeaderComponent, DrawerComponent, PendingTaskCardComponent, LifeCycleCardComponent, ReserveFundCardComponent],
   templateUrl: './bc-home.component.html',
   styles: ``,
   animations: [
@@ -28,8 +27,21 @@ import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenan
     ])
   ]
 })
-export class BcHomeComponent {
+export class BcHomeComponent implements OnInit{
 
   constructor(public bodyCoporateService: BodyCoporateService){}
+
+  async ngOnInit() {
+      try{
+        await Promise.all([
+          this.bodyCoporateService.loadFundContribution(),
+          this.bodyCoporateService.loadPendingTasks()
+        ]);
+      }
+      catch(error)
+      {
+        console.log("Error loading data:", error);
+      }
+  }
 
 }

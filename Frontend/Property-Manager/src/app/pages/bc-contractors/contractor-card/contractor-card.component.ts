@@ -17,7 +17,7 @@ export class ContractorCardComponent {
 
   contractor = input.required<ContractorDetails>();
 
-  viewContractorDetails(contractorId: number)
+  viewContractorDetails(contractorId: string)
   {
     const currentPath = this.router.url;
     const source = currentPath.includes('publicContractors') ? 'public' : 'trusted';

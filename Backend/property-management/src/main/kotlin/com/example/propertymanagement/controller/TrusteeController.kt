@@ -95,9 +95,9 @@ class TrusteeController(
     @PostMapping("/auth/confirm")
     fun confirm(
         @RequestBody request: ConfirmRegistrationRequest,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<Unit> {
         cognitoService.confirmRegistration(request.username, request.code)
-        return ResponseEntity.ok("Account confirmed.")
+        return ResponseEntity.ok().build()
     }
 
     @PostMapping("/auth/login")
