@@ -52,67 +52,60 @@ export class BodyCoporateService {
   //   ]
   // });
 
-  contractorDetails = signal<ContractorDetails[]>([]);
-
-  constructor(private bodyCoporateApiService: BodyCoporateApiService){}
-
-  async addToTask(task: MaintenanceTask): Promise<void> {
-    console.log(task);
-    this.pendingTasks.update(tasks => [...tasks, task]);
-  }
-
-  async loadPendingTasks(): Promise<void> {
-    try {
-      const buildings = await firstValueFrom(
-        this.bodyCoporateApiService.getBuildingsLinkedtoBC()
-      );
-
-      console.log(buildings);
-
-      const buildingUuids: string[] = buildings
-        .map(b => b.buildingUuid)
-        .filter((uuid): uuid is string => typeof uuid === 'string');
-
-      await Promise.all(buildingUuids.map(async uuid => {
-        try {
-          const tasks = await firstValueFrom(
-            this.bodyCoporateApiService.getPendingTasks(uuid)
-          );
-          console.log(tasks)
-          tasks.forEach(task => this.addToTask(task));
-        } catch (error) {
-          console.error(`Failed to load tasks for building ${uuid}`, error);
-        }
-      }));
-    } catch (error) {
-      console.error('Failed to load buildings', error);
-    }
-  }
-  async loadFundContribution(): Promise<void> {
-  try {
-    const [buildings, bc] = await Promise.all([
-      firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC()),
-      firstValueFrom(this.bodyCoporateApiService.getBodyCoporate())
-    ]);
-
-    console.log(buildings);
-    console.log(bc);
-
-    const reserveFunds = buildings
-      .filter((building): building is typeof building & { area: number } => typeof building.area === 'number')
-      .map(building => 
-        this.bodyCoporateApiService.getAndCalculateReserveFund(
-          bc, 
-          building.area,
-          building.name
-        )
-      );
-
-    this.fundContribution.set(reserveFunds);
-    
-  } catch (error) {
-    console.error('Failed to load fund contributions', error);
-    this.fundContribution.set([]);
-  }
-}
+  contractorDetails = signal<ContractorDetails[]>([
+    // {
+    //   contractorId: 1,
+    //   name: "ABC plumbing",
+    //   email: "abc_plumbing@gmail.com",
+    //   phone: "012334455",
+    //   apikey: "gtgrtghdrthbrdb",
+    //   banned: false,
+    //   images: ["assets/images/plumb.png"],
+    //   address: "123 Example Street, Hatfield, Pretoria, South Africa, 01800",
+    //   status: "Available for work",
+    //   licenseNum: 13245345,
+    //   descriptionAndSkills: "Everything plumbing",
+    //   services: "Plumbing",
+    //   certificates: "certificate.pdf",
+    //   licenses: "license_plumb.pdf",
+    //   projectHistory: "Worked on sinks, toilets, etc",
+    //   projectHistoryProof: "History.pdf" 
+    // },
+    // {
+    //   contractorId: 2,
+    //   name: "DC Electrical",
+    //   email: "dcElectric@example.com",
+    //   phone: "0672122132",
+    //   apikey: "gtgrtghdrthbrdb",
+    //   banned: false,
+    //   images: ["assets/images/electric.jpeg"],
+    //   address: "123 Example Street, Hatfield, Pretoria, South Africa, 01800",
+    //   status: "Available for work",
+    //   licenseNum: 13245345,
+    //   descriptionAndSkills: "Everything plumbing",
+    //   services: "Plumbing",
+    //   certificates: "certificate.pdf",
+    //   licenses: "license_plumb.pdf",
+    //   projectHistory: "Worked on sinks, toilets, etc",
+    //   projectHistoryProof: "History.pdf" 
+    // },
+    // {
+    //   contractorId: 3,
+    //   name: "Home Builder",
+    //   email: "HomeBuild@example.com",
+    //   phone: "0332452348",
+    //   apikey: "gtgrtghdrthbrdb",
+    //   banned: false,
+    //   images: ["assets/images/homeBuilder.png"],
+    //   address: "123 Example Street, Hatfield, Pretoria, South Africa, 01800",
+    //   status: "Available for work",
+    //   licenseNum: 13245345,
+    //   descriptionAndSkills: "Everything plumbing",
+    //   services: "Plumbing",
+    //   certificates: "certificate.pdf",
+    //   licenses: "license_plumb.pdf",
+    //   projectHistory: "Worked on sinks, toilets, etc",
+    //   projectHistoryProof: "History.pdf" 
+    // }
+  ])
 }

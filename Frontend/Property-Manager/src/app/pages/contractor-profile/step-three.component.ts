@@ -1,13 +1,20 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-step-three',
   standalone: true,
+  imports: [FormsModule],
   template: `
     <div class="profile-container">
       <div class="profile-card">
         <h2 class="profile-title">Project History</h2>
-        <textarea class="profile-textarea" placeholder="Provide a brief description of past projects"></textarea>
+        <textarea
+          class="profile-textarea"
+          placeholder="Provide a brief description of past projects"
+          [(ngModel)]="description"
+          name="description"
+        ></textarea>
         <div class="profile-upload-group">
           <label for="projDocs" class="profile-upload-label">
             <img src="https://img.icons8.com/ios/50/copy.png" alt="file upload" class="profile-upload-icon" />
@@ -24,7 +31,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
         </div>
         <div class="profile-actions">
           <button type="button" class="profile-btn-yellow" (click)="back.emit()">Back</button>
-          <button type="button" class="profile-btn-yellow" (click)="done.emit()">Done</button>
+          <button type="button" class="profile-btn-yellow" (click)="emitRelevantData()">Done</button>
         </div>
       </div>
     </div>
@@ -131,5 +138,11 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class StepThreeComponent {
   @Output() back = new EventEmitter<void>();
-  @Output() done = new EventEmitter<void>();
+  @Output() done = new EventEmitter<{ description: string }>();
+
+  description = '';
+
+  emitRelevantData() {
+    this.done.emit({ description: this.description });
+  }
 }

@@ -63,7 +63,7 @@ class BuildingIntegrationTest {
                 address = "123 Test Lane",
                 type = type,
                 propertyValue = 1000000.0,
-                primaryContractors = arrayOf(1, 2),
+                primaryContractors = arrayOf("1", "2"),
                 latestInspectionDate = LocalDate.now(),
                 area = area,
                 trusteeUuid = trusteeUuid,
