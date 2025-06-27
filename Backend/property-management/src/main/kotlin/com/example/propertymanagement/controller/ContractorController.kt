@@ -53,6 +53,7 @@ class ContractorController(
         val reg_number: String,
         val description: String,
         val services: String,
+        val coporate_uuid: UUID,
     )
 
     @PostMapping
@@ -72,6 +73,7 @@ class ContractorController(
             contractor.reg_number,
             contractor.description,
             contractor.services,
+            contractor.corporate_uuid,
         )
 
     @PutMapping("/{uuid}")
@@ -117,6 +119,7 @@ class ContractorController(
             reg_number = "N/A",
             description = "N/A",
             services = "N/A",
+            corporate_uuid = "N/A",
         )
         return ResponseEntity.ok(
             mapOf(
