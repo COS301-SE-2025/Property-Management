@@ -311,7 +311,7 @@ A contractor creates a new quote by clicking on a available project.
 
 ## 5. Domain Model
 
-![Domain model](images/301%20Domain.png)
+![Domain model](../images/Demo%202/Domain.png)
 
 ## 6. Architectural Requirements
 
