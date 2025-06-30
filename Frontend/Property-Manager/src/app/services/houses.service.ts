@@ -9,13 +9,13 @@ import { TaskApiService } from './api/Task api/task-api.service';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
 import { Graph } from '../models/graph.model';
 import { ImageApiService } from './api/Image api/image-api.service';
+import { getCookieValue } from '../../utils/cookie-utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HousesService {
 
-  private tempTrusteeId = 'b6785ed2-3230-4d55-8b83-660b63ca32f0';
 
   constructor(private buildingApiService: BuildingApiService, private budgetApiService: BudgetApiService, private inventoryItemApiService: InventoryItemApiService, private taskApiService: TaskApiService, private imageApiService: ImageApiService) { }
 
@@ -77,7 +77,10 @@ export class HousesService {
       return;
     }
 
-    this.buildingApiService.getBuildingsByTrustee(this.tempTrusteeId).subscribe({
+    //Get id from cookie
+    const userId = getCookieValue(document.cookie, 'trusteeId');
+
+    this.buildingApiService.getBuildingsByTrustee(userId).subscribe({
       next: (houses) => {
         console.log(houses);
         

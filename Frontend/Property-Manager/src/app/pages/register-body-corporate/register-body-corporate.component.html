@@ -16,12 +16,6 @@
           </p-floatlabel>
 
           <p-floatlabel variant="on">
-            <img *ngIf="!registrationNumber" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/telephone.svg" alt="">
-            <input class="w-full border rounded !bg-white" pInputText id="reg_number" [(ngModel)]="registrationNumber" autocomplete="off">
-            <label class="pl-6" for="reg_number">Scheme Number</label>
-          </p-floatlabel>
-
-          <p-floatlabel variant="on">
             <img *ngIf="!email" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/mail.svg" alt="">
             <input class="w-full border rounded !bg-white" pInputText id="email_label" [(ngModel)]="email" autocomplete="off">
             <label class="pl-6" for="email_label">Official Email Address</label>

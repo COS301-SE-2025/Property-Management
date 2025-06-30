@@ -46,9 +46,9 @@ export class HeaderComponent {
       { label: 'Contractors', route: '/bodyCoporate/contractors' },
       { label: 'Contractor Details', route: '/contractorDetails' }
     ],
-    '/viewHouse': [
+    '/viewHouse:/houseId': [
       { label: 'Home', route: '/home' },
-      { label: 'View House', route: '/viewHouse' }
+      { label: 'View House', route: null}
     ],
     '/manageBudget': [
       { label: 'Home', route: '/home' },
@@ -105,7 +105,7 @@ export class HeaderComponent {
     }
     this.applyDarkMode();
 
-    this.typeUser = localStorage.getItem('typeUser');
+    this.typeUser = localStorage.getItem('userType');
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
       this.updateBreadcrumbs(event.url);
@@ -126,14 +126,8 @@ export class HeaderComponent {
   signOut()
   {
     this.dropDownProfileOpen = false;
+    this.authService.logout();
     this.router.navigate(['/login']);
-    // if(this.authService.logout())
-    // {
-    // }
-    // else
-    // {
-    //   console.error("couldnt log out");
-    // } 
   }
 
   toggleDarkMode()
@@ -159,8 +153,9 @@ export class HeaderComponent {
     if (!this.typeUser) return;
 
     const baseUrl = url.split('?')[0].split('#')[0];
-    
-    const parameterlessUrl = baseUrl.split('/').slice(0, 2).join('/') || '/';
+    const pathParts = baseUrl.split('/').filter(part => part);
+
+    const houseId = pathParts[0] === 'viewHouse' || pathParts[0] === 'manageBudget' ? pathParts[1] : null;
 
     const userRoutes = this.routeMap[this.typeUser];
     if (!userRoutes) return;
@@ -170,8 +165,22 @@ export class HeaderComponent {
       return;
     }
 
-    if (userRoutes[parameterlessUrl]) {
-      this.items = [...userRoutes[parameterlessUrl]];
+    if(pathParts[0] === 'viewHouse' && houseId)
+    {
+      this.items = [
+        { label: 'Home', route: '/home' },
+        { label: 'View House', route: `/viewHouse/${houseId}` }
+      ];
+      return;
+    }
+
+    if(pathParts[0] === 'manageBudget' && houseId)
+    {
+      this.items = [
+        { label: 'Home', route: '/home' },
+        { label: 'View House', route: `/viewHouse/${houseId}` },
+        { label: 'Manage Budget', route: null },
+      ];
       return;
     }
 

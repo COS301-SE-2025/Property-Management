@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryItemApiService } from '../../../../services/api/InventoryItem api/inventory-item-api.service';
 import { BudgetApiService } from '../../../../services/api/Budget api/budget-api.service';
 import { BuildingDetails } from '../../../../models/buildingDetails.model';
+import { HousesService } from '../../../../services/houses.service';
 
 @Component({
   selector: 'app-inventory-add-dialog',
@@ -25,7 +26,7 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
   public addError = false;
 
 
-  constructor(private fb: FormBuilder, private inventoryItemApiService: InventoryItemApiService, private route: ActivatedRoute, private router: Router, private budgetApiService: BudgetApiService){ 
+  constructor(private fb: FormBuilder, private inventoryItemApiService: InventoryItemApiService, private route: ActivatedRoute, private router: Router, private budgetApiService: BudgetApiService, private housesService: HousesService){ 
     super() ;
     this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
   }
@@ -52,12 +53,16 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
       const quantity = this.form.value.quantity;
 
       this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, this.houseId).subscribe({
-        next: (response) => {
+        next: async (response) => {
           console.log(response);
 
-          this.getAndUpdateBudget((price*quantity));
+          await this.getAndUpdateBudget((price*quantity));
+          await this.housesService.loadInventory(this.houseId);
+          await this.housesService.loadBudget(this.houseId);
+          
           this.form.reset();
           this.closeDialog();
+          
           this.router.navigate(['viewHouse', this.houseId]).then(() => {
             window.location.reload();
           });
@@ -66,6 +71,10 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
           console.error("Failed to create inventory item", err);
         }
       });
+    }
+    else
+    {
+      console.log("couldnt add item");
     }
   }
   private async getAndUpdateBudget(overallPrice: number)

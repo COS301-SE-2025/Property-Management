@@ -15,7 +15,7 @@
         </div> -->
         <div class = "mb-6">
             <label for="timeline-dueDate" class="font-semibold block">Proposed due date</label>
-            <p-datepicker id="timeline-dueDate" formControlName="date" styleClass="w-75 p-3 h-12" [iconDisplay]="'input'" [showIcon]="true" size="small" required/>
+            <p-datepicker id="timeline-dueDate" formControlName="date" styleClass="w-75 p-3 h-12" [iconDisplay]="'input'" [showIcon]="true" size="small" [appendTo]="'body'" required/>
         </div>
         <div class="mb-6 text-center">
             <p class = "font-semibold text-red-500" *ngIf="addError">Error adding new task</p>

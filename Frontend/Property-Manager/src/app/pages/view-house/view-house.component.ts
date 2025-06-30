@@ -9,6 +9,7 @@ import { InventoryCardComponent } from "./inventory-card/inventory-card.componen
 import { BudgetCardComponent } from "./budget-card/budget-card.component";
 import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
 import { Property } from '../../models/property.model';
+import { ImageApiService } from '../../services/api/Image api/image-api.service';
 
 @Component({
   selector: 'app-view-house',
@@ -35,9 +36,10 @@ export class ViewHouseComponent implements OnInit{
   public findHouse = signal(false);
 
   constructor(private route: ActivatedRoute, public houseService: HousesService){
-    effect(() => {
+    effect(async () => {
       const houseId = this.route.snapshot.paramMap.get('houseId');
       const houses = this.houseService.houses();
+      console.log(houses);
 
       if(houseId && houses.length > 0)
       {
@@ -45,6 +47,7 @@ export class ViewHouseComponent implements OnInit{
 
         if(house)
         {
+          console.log(house);
           this.house.set(house);
         }
       }
@@ -61,6 +64,7 @@ export class ViewHouseComponent implements OnInit{
     
     try{
       await Promise.all([
+        this.houseService.loadHouses(),
         this.houseService.loadInventory(houseId),
         this.houseService.loadBudget(houseId),
         this.houseService.loadTasks(houseId)

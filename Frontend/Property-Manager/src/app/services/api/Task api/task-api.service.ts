@@ -21,9 +21,9 @@ export class TaskApiService {
       approved: approved,
       b_uuid: buildingId,
       t_uuid: trusteeId,
-      img: "2de5597f-981b-4de5-b2af-45703cc7c258"
+      img: "00000000-0000-0000-0000-000000000000",
+      c_uuid: "00000000-0000-0000-0000-000000000000"
     };
-    console.log(req);
 
     return this.http.post<MaintenanceTask>(`${this.url}/maintenance`, req);
   } 

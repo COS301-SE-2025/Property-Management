@@ -8,6 +8,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskApiService } from '../../../../services/api/Task api/task-api.service';
+import { getCookieValue } from '../../../../../utils/cookie-utils';
 
 @Component({
   selector: 'app-timeline-add-dialog',
@@ -18,8 +19,6 @@ import { TaskApiService } from '../../../../services/api/Task api/task-api.servi
 export class TimelineAddDialogComponent extends DialogComponent implements OnInit{
  form!: FormGroup;
  houseId = '';
-
- private tempTrusteeId = 'b6785ed2-3230-4d55-8b83-660b63ca32f0';
 
 //  public contractors = [];
  public addError = false;
@@ -45,10 +44,11 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
  async onSubmit() {
   if(this.form.valid)
   {
+    this.addError = false;
     console.log("Adding task");
     const cookie = document.cookie;
-    const userId = this.getCookieValue(cookie, 'userId');
-    console.log(userId)
+    const userId = getCookieValue(cookie, 'trusteeId');
+    console.log(userId);
 
     const name = this.form.value.name;
     const des = this.form.value.description;
@@ -65,25 +65,9 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       },
       error: (err) => {
         console.error("Failed to create task", err);
+        this.addError = true;
       }
     });
   }
- }
- private getCookieValue(cookieString: string, name: string): string {
-  const nameEQ = name + "=";
-  const cookies = cookieString.split(';');
-
-  for(let cookie of cookies)
-  {
-    while(cookie.charAt(0) === ' ')
-    {
-      cookie = cookie.substring(1);
-    }
-    if(cookie.indexOf(nameEQ) === 0)
-    {
-      return cookie.substring(nameEQ.length);
-    }
-  }
-  return "";
  }
 }

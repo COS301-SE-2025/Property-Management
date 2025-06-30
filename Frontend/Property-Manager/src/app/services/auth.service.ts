@@ -41,7 +41,7 @@ export class AuthService {
 
   private url = '/api';
 
-  constructor(private http: HttpClient, private router: Router){}
+  constructor(private http: HttpClient){}
 
   bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
   {
@@ -284,5 +284,22 @@ export class AuthService {
           error: (error) => reject(error)
         });
     });
+  }
+
+  logout()
+  {
+    localStorage.removeItem("userType");
+    localStorage.removeItem("trusteeID");
+    localStorage.removeItem("bodyCoporateID");
+    localStorage.removeItem("contractorID");
+
+    const deleteCookie = (name: string) => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    };
+
+    deleteCookie("idToken");
+    deleteCookie("bodyCoporateId");
+    deleteCookie("trusteeId");
+    deleteCookie("contractorId");
   }
 }
