@@ -1,5 +1,5 @@
 export interface Graph {
-    labels: Date[];
+    labels: Date[] | string[];
     datasets: [
         {
             label?: string;

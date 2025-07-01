@@ -23,7 +23,7 @@ export class HousesService {
   inventory = signal<Inventory[]>([]);
   budgets = signal<BuildingDetails>({} as BuildingDetails);
   timeline = signal<MaintenanceTask[]>([]);
-  budgetGraph = signal<Graph>;
+  budgetGraph = signal<Graph>({} as Graph);
   labels: Date[] = [];
 
   mockImages = [
@@ -118,9 +118,26 @@ export class HousesService {
         const firstElement = bulidingDetails[bulidingDetails.length-1];
         this.budgets.set(firstElement);
 
-        // const graphData = {
-        //   labels: firstElement.
-        // }
+        console.log(bulidingDetails);
+
+        const graphData: Graph = {
+          labels: bulidingDetails.map(item => {
+            const date = new Date(item.approvalDate);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}/${month}/${day}`;
+          }),
+          datasets: [{
+            data: bulidingDetails.map(item => item.totalBudget).filter((v): v is number => v !== undefined),
+            fill: false,
+            backgroundColor: 'rgba(255,227,114, 0.7)',
+            borderColor: 'rgb(255,227,114)',
+            tension: 0.1,
+            borderWidth: 2
+          }]
+        };
+        this.budgetGraph.set(graphData);
       }
     )
   }
