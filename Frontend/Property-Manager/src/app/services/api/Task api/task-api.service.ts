@@ -11,7 +11,7 @@ export class TaskApiService {
   private url = '/api';
   constructor(private http: HttpClient) { }
 
-  createTask(title: string, des: string, status: string, scheduledDate: Date, approved: boolean, buildingId: string, trusteeId: string): Observable<MaintenanceTask>
+  createTask(title: string, des: string, status: string, scheduledDate: Date, approved: boolean, buildingId: string, trusteeId: string, imgId: string, contractorId: string): Observable<MaintenanceTask>
   {
     const req = {
       title: title,
@@ -21,8 +21,8 @@ export class TaskApiService {
       approved: approved,
       b_uuid: buildingId,
       t_uuid: trusteeId,
-      img: "00000000-0000-0000-0000-000000000000",
-      c_uuid: "00000000-0000-0000-0000-000000000000"
+      img: imgId,
+      c_uuid: contractorId
     };
 
     return this.http.post<MaintenanceTask>(`${this.url}/maintenance`, req);

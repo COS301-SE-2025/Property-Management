@@ -24,4 +24,12 @@ export class ImageApiService{
       responseType: 'text'
     }); 
   }
+  uploadImage(file: File)
+  {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post('/api/images/upload', formData, {
+      responseType: 'text'
+    }).pipe( map(imageId => ({ imageId })));
+  }
 }
