@@ -22,6 +22,7 @@ import { ContractorDetails } from '../../models/contractorDetails.model';
 export class ContractorProfileComponent implements OnInit {
 
   contractor: ContractorDetails = {
+    uuid: '',
     name: '',
     contact_info: '',
     status: false,
