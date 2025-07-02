@@ -51,15 +51,15 @@
             <button (click)="register()" class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Register</button>
           </div>
 
-          <div *ngIf="emptyField || userError || serverError" class="pl-20">
+          <div *ngIf="emptyField || userError || serverError" class="flex flex-col justify-center items-center">
             <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">All fields are required</p>
             <p *ngIf="userError" class="text-red-500 py-1 font-semibold rounded">Registration failed</p>
             <p *ngIf="serverError" class="text-red-500 py-1 font-semibold rounded">Internal server error</p>
           </div>
 
-          <div class="text-center text-sm space-y-2">
+          <div class="text-center text-sm space-y-4">
             <a class="block" href="">Forgot password?</a>
-            <a class="font-semibold" href="/register-owner">Register as Owner?</a>
+            <a class="font-semibold" href="/registerHub">Create account?</a>
             <br>
             <a class="font-bold" href="/login">Login?</a>
           </div>

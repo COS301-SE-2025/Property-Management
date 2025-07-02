@@ -35,7 +35,7 @@ export class RegisterBodyCorporateComponent {
   }
 
   async register(): Promise<void> {
-    if (!this.corporateName || !this.contributionPerSqm || !this.email || !this.contactNumber || !this.password) {
+    if (!this.corporateName  || !this.email || !this.contactNumber || !this.password) {
       this.emptyField = true;
       return;
     }
@@ -44,10 +44,12 @@ export class RegisterBodyCorporateComponent {
     this.serverError = false;
     this.emptyField = false;
 
+    this.contactNumber = '+27' + this.contactNumber.substring(1);
+
     try {
       const result = await this.authService.bodyCoporateRegister(
         this.corporateName,
-        parseFloat(this.contributionPerSqm),
+        0,
         this.email,
         this.password,
         undefined, // totalBudget is not used in the current implementation
@@ -57,6 +59,8 @@ export class RegisterBodyCorporateComponent {
     
 
       console.log('Registration successful:', result);
+      sessionStorage.setItem('pendingUsername',result.username);
+      sessionStorage.setItem('userType', 'bodyCorporate');
 
       this.router.navigate(['/verifyEmail'], {
         state: {

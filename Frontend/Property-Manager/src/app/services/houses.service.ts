@@ -26,12 +26,6 @@ export class HousesService {
   budgetGraph = signal<Graph>({} as Graph);
   labels: Date[] = [];
 
-  mockImages = [
-    "assets/images/houseDemo.jpg",
-    "assets/images/houseDemo2.jpg",
-    "assets/images/houseDemo3.jpg"
-  ];
-
   addToHouses(house: Property)
   {
     this.houses.set([...this.houses(), house]);

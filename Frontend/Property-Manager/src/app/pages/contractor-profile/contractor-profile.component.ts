@@ -7,6 +7,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { Contractor } from '../../models/contractor.model';
 import { ContractorService } from '../../services/contractor.service';
 import { ContractorDetails } from '../../models/contractorDetails.model';
+import { getCookieValue } from '../../../utils/cookie-utils';
 
 
 
@@ -24,7 +25,7 @@ export class ContractorProfileComponent implements OnInit {
   contractor: ContractorDetails = {
     name: '',
     contact_info: '',
-    status: false,
+    status: true,
     apikey: '',
     email: '',
     phone: '',
@@ -41,18 +42,22 @@ export class ContractorProfileComponent implements OnInit {
   step = 1;
 
   submitProfile() {
-    this.contractorService.addContractor(this.contractor).subscribe({
+    const contractorId = getCookieValue(document.cookie, 'contractorId');
+    console.log(this.contractor);
+    console.log(contractorId);
+
+    this.contractorService.updateContractor(contractorId, this.contractor).subscribe({
       next: () => alert('Contractor created!'),
       error: (err) => alert('Error: ' + err.message)
     });
   }
 
   onFileSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files && input.files[0];
-  if (file) {
-    console.log('Selected file:', file.name);
-  }
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files[0];
+    if (file) {
+      console.log('Selected file:', file.name);
+    }
 }
 
 public isDarkMode = false;

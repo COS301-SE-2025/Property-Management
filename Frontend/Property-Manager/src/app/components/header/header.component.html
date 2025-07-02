@@ -34,13 +34,16 @@
             <img [src]= "isDarkMode? 'assets/icons/profile_gray.svg': 'assets/icons/profile.svg'" class="w-9 h-9" alt="">
         </button>
 
-        <div *ngIf="dropDownProfileOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-22 z-50">
-            <button (click)="signOut()" class= "block text-red-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
-            Sign out
-            </button>  
-            <button class= "block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer">
-            Help?
+        <div *ngIf="dropDownProfileOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-28 z-50">
+            <button *ngIf="isContractor" class="block text-yellow-500 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-400">
+                <a href="/contractor-prof">View profile</a>
+            </button>
+            <button class= "block text-yellow-300 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
+                Help?
             </button>          
+            <button (click)="signOut()" class= "block text-red-500 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200 border-b border-gray-200">
+                Sign out
+            </button>  
         </div>
 
         <div *ngIf="dropDownSettingsOpen" class= "absolute right-1 top-18 bg-white border rounded shadow-md w-38 z-50" [ngStyle]="{ 'background-color': 'var(--bg-color)'}">

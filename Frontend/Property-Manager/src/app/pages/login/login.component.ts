@@ -46,7 +46,7 @@ export class LoginComponent {
       localStorage.setItem('userType', 'bodyCorporate');
       localStorage.setItem('bodyCorpID', bodyCorpTokens.userId),
       console.log('Body Corporate logged in:', bodyCorpTokens);
-      this.router.navigate(['/home']);
+      this.router.navigate(['/bodyCoporate']);
       return;
     } catch (error) {
       console.warn('Body Corporate login failed, trying Trustee...', error);

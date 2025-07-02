@@ -49,6 +49,7 @@ export class VerifyEmailComponent {
     this.errorMessage = '';
 
     try {
+      console.log(this.userType);
       if(this.userType === 'bodyCorporate') {
         const result = await this.authService.confirmBodyCoporateRegistration(this.username, this.verificationCode);
         console.log('Email verification successful:', result);

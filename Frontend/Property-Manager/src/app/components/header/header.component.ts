@@ -19,10 +19,11 @@ export class HeaderComponent {
   public dropDownSettingsOpen = false;
   public isDarkMode = false;
   public items: MenuItem[] = [];
+  public isContractor = false; 
 
   public typeUser: string | null = null;
   private routeMap: Record<string, Record<string, MenuItem[]>> = {
-  'body coporate': {
+  'bodyCorporate': {
     '/home': [
       { label: 'Home', route: '/home' }
     ],
@@ -76,15 +77,15 @@ export class HeaderComponent {
   },
   'contractor': {
     '/home': [
-      { label: 'Home', route: '/home' }
+      { label: 'Home', route: '/contractorHome' }
     ],
     '/contractorHome': [
       { label: 'Home', route: '/home' },
       { label: 'Contractor Dashboard', route: '/contractorHome' }
     ],
-    '/contractor-profile': [
-      { label: 'Home', route: '/home' },
-      { label: 'Profile', route: '/contractor-profile' }
+    '/contractor-prof': [
+      { label: 'Home', route: '/contractorHome' },
+      { label: 'Profile', route: '/contractor-prof' }
     ],
     '/quotation': [
       { label: 'Home', route: '/home' },
@@ -95,6 +96,7 @@ export class HeaderComponent {
 
   constructor(private authService: AuthService, private router: Router){
     const saved = localStorage.getItem('darkMode');
+    
     if(saved !== null)
     {
       this.isDarkMode = saved === 'true';
@@ -106,6 +108,10 @@ export class HeaderComponent {
     this.applyDarkMode();
 
     this.typeUser = localStorage.getItem('userType');
+
+    this.isContractor = this.typeUser === 'contractor' ? true : false;
+
+    console.log(this.isContractor);
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
       this.updateBreadcrumbs(event.url);
