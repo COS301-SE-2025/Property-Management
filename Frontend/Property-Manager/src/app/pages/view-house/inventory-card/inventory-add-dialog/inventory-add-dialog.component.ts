@@ -25,7 +25,6 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
   public boughtOn = new Date();
   public addError = false;
 
-
   constructor(private fb: FormBuilder, private inventoryItemApiService: InventoryItemApiService, private route: ActivatedRoute, private router: Router, private budgetApiService: BudgetApiService, private housesService: HousesService){ 
     super() ;
     this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
@@ -81,21 +80,20 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
   {
     this.budgetApiService.getBudgetsByBuildingId(this.houseId).subscribe(
        (bulidingDetails: BuildingDetails[]) => {
-        const firstElement = bulidingDetails[0];
-        const firstElementID = bulidingDetails[0].budgetUuid;
-        console.log(overallPrice);
+        const element = bulidingDetails[bulidingDetails.length-1];
+        const elementID = element.budgetUuid;
 
         const newBudget: BuildingDetails = {
-          budgetUuid: firstElementID,
+          budgetUuid: elementID,
           buildingUuid: this.houseId,
           approvalDate: new Date(),
-          inventoryBudget: (firstElement.inventoryBudget-overallPrice),
+          inventoryBudget: (element.inventoryBudget-overallPrice),
           inventorySpent: overallPrice,
-          maintenanceBudget: firstElement.maintenanceBudget,
-          maintenanceSpent: firstElement.maintenanceSpent
+          maintenanceBudget: element.maintenanceBudget,
+          maintenanceSpent: element.maintenanceSpent
         };
         console.log(newBudget);
-        this.budgetApiService.updateBudget(firstElementID, newBudget).subscribe({
+        this.budgetApiService.updateBudget(elementID, newBudget).subscribe({
           next: (response) => {
             console.log("Updated budget", response);
           },

@@ -51,7 +51,6 @@ export class HousesService {
   }
 
   getHouseById(id: string): Property | undefined{
-    console.log(this.houses());
     return this.houses().find(house => house.buildingUuid === id);
   }
 
@@ -76,7 +75,6 @@ export class HousesService {
 
     this.buildingApiService.getBuildingsByTrustee(userId).subscribe({
       next: (houses) => {
-        console.log(houses);
         
         houses.forEach(h => {
           if(h.propertyImage)
@@ -175,5 +173,52 @@ export class HousesService {
         console.error("Error getting tasks", err);
       }
     });
+  }
+  async updateInventory(items: Inventory[])
+  {
+   const updatedItems = items.map(item => {
+    new Promise<void>((resolve, reject) => {
+
+      if(item.quantityInStock > 0)
+      {
+        this.inventoryItemApiService.updateInventoryItem(item).subscribe({
+          next: (updatedItem) => {
+            this.inventory.update(current => 
+              current.map(i => i.itemUuid === updatedItem.itemUuid ? updatedItem: i)
+            );
+            resolve();
+          },
+          error: (err) => {
+            console.error(`Error updating item ${item}`, err);
+            reject(err);
+          }
+        })
+      }
+      else
+      {
+        this.inventoryItemApiService.deleteInventoryItem(item).subscribe({
+          next: () => {
+            this.inventory.update(current => 
+              current.filter(i => i.itemUuid !== item.itemUuid)
+            );
+            resolve();
+          },
+          error: (err) => {
+            console.error("Error deleting item ${item}", err);
+            reject(err);
+          }
+        });
+      }
+    })
+   });
+
+   try{
+    await Promise.all(updatedItems);
+    return true;
+   }
+   catch(error){
+    console.error("Inventory items update failed", error);
+    return false;
+   }
   }
 }

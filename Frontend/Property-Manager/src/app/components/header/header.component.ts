@@ -111,8 +111,6 @@ export class HeaderComponent {
 
     this.isContractor = this.typeUser === 'contractor' ? true : false;
 
-    console.log(this.isContractor);
-
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
       this.updateBreadcrumbs(event.url);
     });
