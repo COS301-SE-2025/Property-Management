@@ -110,8 +110,6 @@ export class HousesService {
         const firstElement = bulidingDetails[bulidingDetails.length-1];
         this.budgets.set(firstElement);
 
-        console.log(bulidingDetails);
-
         const graphData: Graph = {
           labels: bulidingDetails.map(item => {
             const date = new Date(item.approvalDate);

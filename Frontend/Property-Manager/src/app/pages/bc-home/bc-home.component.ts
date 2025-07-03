@@ -6,10 +6,11 @@ import { PendingTaskCardComponent } from "./pending-task-card/pending-task-card.
 import { BodyCoporateService } from '../../services/body-coporate.service';
 import { LifeCycleCardComponent } from "./life-cycle-card/life-cycle-card.component";
 import { ReserveFundCardComponent } from "./reserve-fund-card/reserve-fund-card.component";
+import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenance-graph-card.component';
 
 @Component({
   selector: 'app-bc-home',
-  imports: [HeaderComponent, DrawerComponent, PendingTaskCardComponent, LifeCycleCardComponent, ReserveFundCardComponent],
+  imports: [HeaderComponent, DrawerComponent, PendingTaskCardComponent, LifeCycleCardComponent, ReserveFundCardComponent, MaintenanceGraphCardComponent],
   templateUrl: './bc-home.component.html',
   styles: ``,
   animations: [
@@ -35,7 +36,8 @@ export class BcHomeComponent implements OnInit{
       try{
         await Promise.all([
           this.bodyCoporateService.loadFundContribution(),
-          this.bodyCoporateService.loadPendingTasks()
+          this.bodyCoporateService.loadPendingTasks(),
+          this.bodyCoporateService.loadGraph()
         ]);
       }
       catch(error)
