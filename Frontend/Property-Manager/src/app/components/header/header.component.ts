@@ -80,7 +80,7 @@ export class HeaderComponent {
       { label: 'Home', route: '/contractorHome' }
     ],
     '/contractorHome': [
-      { label: 'Home', route: '/home' },
+      { label: 'Home', route: '/contractorHome' },
       { label: 'Contractor Dashboard', route: '/contractorHome' }
     ],
     '/contractor-prof': [
@@ -88,7 +88,7 @@ export class HeaderComponent {
       { label: 'Profile', route: '/contractor-prof' }
     ],
     '/quotation': [
-      { label: 'Home', route: '/home' },
+      { label: 'Home', route: '/contractorHome' },
       { label: 'Quotations', route: '/quotation' }
     ]
   }
