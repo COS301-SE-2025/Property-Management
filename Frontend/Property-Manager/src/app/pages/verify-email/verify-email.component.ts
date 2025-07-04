@@ -57,7 +57,8 @@ export class VerifyEmailComponent {
         const result = await this.authService.confirmTrusteeRegistration(this.username, this.verificationCode);
         console.log('Email verification successful:', result);
       } else if(this.userType === 'contractor') {
-        //add contractor implementation
+        const result = await this.authService.confirmContractorRegistration(this.username, this.verificationCode);
+        console.log('Email verification successful:', result);
       }else {
         console.error('Unknown user type:', this.userType);
         this.errorMessage = 'Invalid user type. Please register again.';
