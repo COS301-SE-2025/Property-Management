@@ -33,8 +33,8 @@ class ImageController(
 
     @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun upload(
-        @RequestParam file: MultipartFile,
-    ): ResponseEntity<String> {
+        @RequestParam("file") file: MultipartFile,
+    ): ResponseEntity<Map<String, String>> {
         val id = UUID.randomUUID().toString()
         val key = "uploads/$id-${file.originalFilename}"
 
@@ -51,7 +51,7 @@ class ImageController(
         val imageUrl = "https://$bucketName.s3.amazonaws.com/$key"
         imageRepository.save(ImageMeta(id = id, filename = file.originalFilename ?: "unknown", url = imageUrl))
 
-        return ResponseEntity.ok(id)
+        return ResponseEntity.ok(mapOf("imageKey" to id))
     }
 
     @GetMapping("/presigned/{id}")
