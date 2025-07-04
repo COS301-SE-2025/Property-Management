@@ -41,15 +41,18 @@ export class ContractorProfileComponent implements OnInit {
   step = 1;
 
   submitProfile() {
-    const contractorId = getCookieValue(document.cookie, 'contractorId');
-    console.log(this.contractor);
-    console.log(contractorId);
+  const contractorId = getCookieValue(document.cookie, 'contractorId');
+  console.log(this.contractor);
+  console.log(contractorId);
 
-    this.contractorService.updateContractor(contractorId, this.contractor).subscribe({
-      next: () => alert('Contractor created!'),
-      error: (err) => alert('Error: ' + err.message)
-    });
-  }
+  this.contractorService.updateContractor(contractorId, this.contractor).subscribe({
+    next: () => {
+      alert('Contractor created!');
+      localStorage.setItem('contractorProfileComplete', 'true'); 
+    },
+    error: (err) => alert('Error: ' + err.message)
+  });
+}
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
