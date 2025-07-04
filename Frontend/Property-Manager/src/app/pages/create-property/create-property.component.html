@@ -11,44 +11,25 @@
       'bg-#2b3036 border-white text-white': isDarkMode
     }"
   >
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-2 gap-4">
+      
+      <!-- LEFT SIDE -->
+      <div class="flex flex-col space-y-4">
+        
+        <div class="mb-8">
+          <p-floatlabel>
+            <input 
+              id="name" 
+              pInputText 
+              formControlName="name" 
+              class="w-full col-span-2" 
+              style="width: 91%;" 
+            />
+            <label for="name">Property Name *</label>
+          </p-floatlabel>
+        </div>
 
-      <div class="mb-8">
-        <p-floatlabel>
-          <input 
-            id="name" 
-            pInputText 
-            formControlName="name" 
-            class="w-full" 
-            [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
-            [style]="{ width: '100%' }"
-          />
-          <label for="name">Property Name *</label>
-        </p-floatlabel>
-        <small class="text-red-500" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
-          Property name is required.
-        </small>
-      </div>
-
-      <div class="mb-8">
-        <p-floatlabel>
-          <input 
-            id="type" 
-            pInputText 
-            formControlName="type" 
-            class="w-full"
-            [class.ng-invalid]="form.get('type')?.invalid && form.get('type')?.touched"
-            [style]="{ width: '100%' }"
-          />
-          <label for="type">Property Type *</label>
-        </p-floatlabel>
-        <small class="text-red-500" *ngIf="form.get('type')?.invalid && form.get('type')?.touched">
-          Property type is required.
-        </small>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div>
+        <div class="mb-8">
           <p-floatlabel>
             <input 
               id="area" 
@@ -57,18 +38,14 @@
               type="number" 
               min="0" 
               step="0.01" 
-              class="w-full"
-              [class.ng-invalid]="form.get('area')?.invalid && form.get('area')?.touched"
-              [style]="{ width: '100%' }"
+              class="w-full col-span-2" 
+              style="width: 91%;" 
             />
             <label for="area">Area (m²) *</label>
           </p-floatlabel>
-          <small class="text-red-500" *ngIf="form.get('area')?.invalid && form.get('area')?.touched">
-            Area is required and must be greater than 0.
-          </small>
         </div>
 
-        <div>
+        <div class="mb-8">
           <p-floatlabel>
             <input 
               id="propertyValue" 
@@ -77,138 +54,120 @@
               type="number" 
               min="0" 
               step="0.01" 
-              class="w-full"
-              [class.ng-invalid]="form.get('propertyValue')?.invalid && form.get('propertyValue')?.touched"
-              [style]="{ width: '100%' }"
+              class="w-full col-span-2" 
+              style="width: 91%;" 
             />
             <label for="propertyValue">Property Value *</label>
           </p-floatlabel>
-          <small class="text-red-500" *ngIf="form.get('propertyValue')?.invalid && form.get('propertyValue')?.touched">
-            Property value is required and must be greater than 0.
-          </small>
         </div>
+
+        <!-- Primary Contractor Dropdown Styled like Old Input -->
+        <div class="mb-8">
+          <label for="primaryContractor" class="block mb-1 font-medium">Primary Contractors *</label>
+          <p-dropdown 
+            id="primaryContractor" 
+            [options]="contractors" 
+            optionLabel="name" 
+            optionValue="uuid"
+            formControlName="primaryContractor"
+            [filter]="true" 
+            [showClear]="true" 
+            placeholder="Select a contractor"
+            class="w-full col-span-2"
+            [style]="{ width: '91%' }">
+            
+            <ng-template pTemplate="item" let-contractor>
+              <div class="flex items-center gap-2">
+                <img src="assets/images/contractor-logo.png" alt="Logo" class="w-5 h-5" />
+                <span>{{ contractor.name }} - {{ contractor.services }}</span>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="selectedItem" let-contractor>
+              <div class="flex items-center gap-2">
+                <img src="assets/images/contractor-logo.png" alt="Logo" class="w-5 h-5" *ngIf="contractor" />
+                <span *ngIf="contractor">{{ contractor.name }}</span>
+                <span *ngIf="!contractor">Select a contractor</span>
+              </div>
+            </ng-template>
+
+          </p-dropdown>
+        </div>
+
+        <div class="mb-8">
+          <div class="flex gap-4">
+            <p-floatlabel class="w-full">
+              <input id="address" pInputText formControlName="address" />
+              <label for="address">Street Address *</label>
+            </p-floatlabel>
+            <p-floatlabel class="w-full">
+              <input id="suburb" pInputText formControlName="suburb" />
+              <label for="suburb">Suburb</label>
+            </p-floatlabel>
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <div class="flex gap-4">
+            <p-floatlabel class="w-full">
+              <input id="city" pInputText formControlName="city" />
+              <label for="city">City</label>
+            </p-floatlabel>
+            <p-floatlabel class="w-full">
+              <input id="province" pInputText formControlName="province" />
+              <label for="province">Province</label>
+            </p-floatlabel>
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <div class="flex gap-4">
+            <p-floatlabel class="w-full">
+              <input id="type" pInputText formControlName="type" />
+              <label for="type">Type</label>
+            </p-floatlabel>
+            <p-floatlabel class="w-full">
+              <input id="bodyCorporate" pInputText formControlName="bodyCorporate" />
+              <label for="bodyCorporate">Invite members</label>
+            </p-floatlabel>
+          </div>
+        </div>
+
+        <div class="text-xs text-gray-500 mt-1 mb-8">
+          *Invite members: Enter one or more email addresses separated by commas to invite people to join the body corporate for this property.
+        </div>
+
       </div>
 
-      <div class="mb-8">
-        <label for="primaryContractor" class="block mb-2 font-medium">Primary Contractor *</label>
-        
-        <p-dropdown 
-          id="primaryContractor" 
-          [options]="contractors" 
-          optionLabel="name" 
-          optionValue="uuid"
-          formControlName="primaryContractor"
-          [filter]="true" 
-          [showClear]="true" 
-          placeholder="Select a contractor"
-          class="w-full"
-          [class.ng-invalid]="form.get('primaryContractor')?.invalid && form.get('primaryContractor')?.touched"
-          [style]="{ width: '100%' }">
+      <!-- RIGHT SIDE IMAGE UPLOAD WITH PREVIEW -->
+      <div class="flex flex-col items-center">
+        <div class="flex items-center justify-center border rounded bg-gray-50 w-94 h-68 relative">
+          <div class="w-full h-full flex items-center justify-center">
 
-          <ng-template pTemplate="item" let-contractor>
-            <div class="flex items-center gap-2">
-              <img src="assets/images/contractor-logo.png" alt="Logo" class="w-5 h-5" />
-              <span>{{ contractor.name }} - {{ contractor.services }}</span>
-            </div>
-          </ng-template>
-
-          <ng-template pTemplate="selectedItem" let-contractor>
-            <div class="flex items-center gap-2">
-              <img src="assets/images/contractor-logo.png" alt="Logo" class="w-5 h-5" *ngIf="contractor" />
-              <span *ngIf="contractor">{{ contractor.name }}</span>
-              <span *ngIf="!contractor">Select a contractor</span>
-            </div>
-          </ng-template>
-
-        </p-dropdown>
-        <small class="text-red-500" *ngIf="form.get('primaryContractor')?.invalid && form.get('primaryContractor')?.touched">
-          Primary contractor is required.
-        </small>
-      </div>
-
-      <div class="mb-8">
-        <p-floatlabel>
-          <input 
-            id="address" 
-            pInputText 
-            formControlName="address" 
-            class="w-full"
-            [class.ng-invalid]="form.get('address')?.invalid && form.get('address')?.touched"
-            [style]="{ width: '100%' }"
-          />
-          <label for="address">Street Address *</label>
-        </p-floatlabel>
-        <small class="text-red-500" *ngIf="form.get('address')?.invalid && form.get('address')?.touched">
-          Street address is required.
-        </small>
-      </div>
-
-      <!-- Suburb and City Row -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div>
-          <p-floatlabel>
-            <input 
-              id="suburb" 
-              pInputText 
-              formControlName="suburb" 
-              class="w-full"
-              [style]="{ width: '100%' }"
+            <!-- Show image preview if available, otherwise icon -->
+            <img 
+              *ngIf="imagePreview; else placeholderIcon" 
+              [src]="imagePreview" 
+              alt="Property Image" 
+              class="w-full h-full object-contain"
             />
-            <label for="suburb">Suburb</label>
-          </p-floatlabel>
+
+            <ng-template #placeholderIcon>
+              <img src="https://img.icons8.com/ios/50/image.png" alt="upload icon" class="w-10 h-10 opacity-50" />
+            </ng-template>
+
+          </div>
+          <input #fileInput id="image-upload" type="file" hidden (change)="onFileSelected($event)" />
         </div>
-
-        <div>
-          <p-floatlabel>
-            <input 
-              id="city" 
-              pInputText 
-              formControlName="city" 
-              class="w-full"
-              [style]="{ width: '100%' }"
-            />
-            <label for="city">City</label>
-          </p-floatlabel>
-        </div>
+        <button type="button" class="text-xs mt-2 px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow" (click)="fileInput.click()">
+          Upload Image
+        </button>
       </div>
 
-      <!-- Province -->
-      <div class="mb-8">
-        <p-floatlabel>
-          <input 
-            id="province" 
-            pInputText 
-            formControlName="province" 
-            class="w-full"
-            [style]="{ width: '100%' }"
-          />
-          <label for="province">Province</label>
-        </p-floatlabel>
-      </div>
-
-      <!-- Property Image Upload -->
-      <div class="mb-8">
-        <label class="block mb-2 font-medium">Property Image (optional)</label>
-        <input 
-          type="file" 
-          accept="image/*"
-          (change)="onFileSelected($event)"
-          class="w-full p-2 border border-gray-300 rounded-md"
-        />
-        <small class="text-gray-500">Supported formats: JPEG, PNG, GIF, WebP</small>
-      </div>
-
-      <!-- Error Message -->
-      <div *ngIf="submissionError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        {{ submissionError }}
-      </div>
-
-      <!-- Submit Button -->
-      <div class="flex justify-end">
-        <button 
-          type="submit" 
-          class="bg-yellow-400 text-black px-8 py-3 rounded-lg hover:bg-yellow-500 transition-colors font-medium flex items-center gap-2"
-          [disabled]="form.invalid || isSubmitting"
+      <!-- SUBMIT BUTTON -->
+      <div class="col-span-2 flex justify-end mt-0">
+        <button type="submit" [disabled]="form.invalid || isSubmitting" 
+          class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded font-semibold flex items-center gap-2"
           [class.opacity-50]="form.invalid || isSubmitting"
           [class.cursor-not-allowed]="form.invalid || isSubmitting">
           <span *ngIf="isSubmitting" class="animate-spin inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full"></span>

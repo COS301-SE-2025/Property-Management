@@ -8,7 +8,6 @@ import { DropdownModule } from 'primeng/dropdown';
 import { PropertyService } from '../../services/property.service'; 
 import { ContractorService } from '../../services/contractor.service';
 import { Contractor } from '../../models/contractor.model';
-import { TrusteeResponse } from '../../models/trusteeresponse.model';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -22,8 +21,8 @@ import { HttpClient } from '@angular/common/http';
 export class CreatePropertyComponent implements OnInit {
   form: ReturnType<FormBuilder['group']>;
   selectedImageFile: File | null = null;
+  imagePreview: string | null = null;  // <--- For live preview
 
-  trusteeId: number | null = null;
   trusteeUuid: string | null = null;
   coporateUuid: string | null = null;
 
@@ -54,15 +53,6 @@ export class CreatePropertyComponent implements OnInit {
     });
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files && input.files[0];
-    if (file) {
-      this.selectedImageFile = file;
-      this.form.patchValue({ image: file });
-    }
-  }
-
   ngOnInit(): void {
     this.isDarkMode = document.documentElement.classList.contains('dark-theme');
     this.getTrusteeInfo();
@@ -73,7 +63,6 @@ export class CreatePropertyComponent implements OnInit {
     this.contractorService.getAllContractors().subscribe({
       next: (data) => {
         this.contractors = data;
-        console.log('Loaded contractors:', data);
       },
       error: (err) => {
         console.error('Failed to load contractors:', err);
@@ -83,27 +72,34 @@ export class CreatePropertyComponent implements OnInit {
 
   getTrusteeInfo(): void {
     this.trusteeUuid = localStorage.getItem('trusteeID');
-
     if (!this.trusteeUuid) {
-      console.error('Trustee Uuid not found in localStorage.');
       this.submissionError = 'Authentication error: Please log in again.';
-      return;
     }
+  }
 
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files[0];
+    if (file) {
+      this.selectedImageFile = file;
+      this.form.patchValue({ image: file });
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   async onSubmit() {
-    if (!this.form.valid) {
-      console.log('Form is invalid:', this.form.errors);
+    if (this.form.invalid || !this.trusteeUuid) {
       Object.keys(this.form.controls).forEach(key => {
         this.form.get(key)?.markAsTouched();
       });
-      return;
-    }
-
-    if (!this.trusteeUuid) {
-      this.submissionError = 'Unable to create property: Trustee information is missing. Please try refreshing the page.';
-      console.error('Cannot create property without trusteeUuid');
+      if (!this.trusteeUuid) {
+        this.submissionError = 'Unable to create property: Trustee information is missing. Please refresh.';
+      }
       return;
     }
 
@@ -111,17 +107,13 @@ export class CreatePropertyComponent implements OnInit {
     this.submissionError = null;
 
     try {
-      console.log('Form values:', this.form.value);
       let propertyImageId: string | null = null;
 
-      // Upload image if selected
       if (this.selectedImageFile) {
         try {
           const uploadResult = await this.propertyService.uploadImage(this.selectedImageFile).toPromise();
           propertyImageId = uploadResult?.imageKey || null;
-          console.log('Image uploaded successfully:', propertyImageId);
         } catch (err) {
-          console.error('Image upload failed:', err);
           this.submissionError = 'Failed to upload image. Please try again.';
           this.isSubmitting = false;
           return;
@@ -129,8 +121,6 @@ export class CreatePropertyComponent implements OnInit {
       }
 
       const formValue = this.form.value;
-
-      // Construct the full address string
       const fullAddress = [
         formValue.address,
         formValue.suburb,
@@ -138,7 +128,6 @@ export class CreatePropertyComponent implements OnInit {
         formValue.province
       ].filter(part => part && part.trim()).join(', ');
 
-      // Build payload with proper types to match API
       const payload = {
         name: formValue.name,
         address: fullAddress,
@@ -146,38 +135,33 @@ export class CreatePropertyComponent implements OnInit {
         propertyValue: Number(formValue.propertyValue),
         primaryContractors: formValue.primaryContractor,
         latestInspectionDate: new Date().toISOString().split('T')[0],
-        trusteeUuid: this.trusteeUuid, // Now guaranteed to be non-null
+        trusteeUuid: this.trusteeUuid,
         propertyImageId: propertyImageId,
         coporateUuid: this.coporateUuid || null,
-        area: Number(formValue.area) // Ensure area is a number
+        area: Number(formValue.area)
       };
 
-      console.log('Payload to create property:', payload);
-
       this.propertyService.createProperty(payload).subscribe({
-        next: (response) => {
-          console.log('Property created successfully:', response);
+        next: () => {
           this.isSubmitting = false;
           this.router.navigate(['/home']);
         },
         error: (err) => {
-          console.error('Error creating property:', err);
           this.isSubmitting = false;
-          this.submissionError = 'Failed to create property. Please try again.';
-          
-          // More specific error handling
           if (err.status === 400) {
-            this.submissionError = 'Invalid data provided. Please check all fields.';
+            this.submissionError = 'Invalid data provided.';
           } else if (err.status === 404) {
-            this.submissionError = 'API endpoint not found. Please contact support.';
+            this.submissionError = 'API not found.';
           } else if (err.status === 500) {
-            this.submissionError = 'Server error. Please try again later.';
+            this.submissionError = 'Server error. Try again later.';
+          } else {
+            this.submissionError = 'Failed to create property. Please try again.';
           }
         }
       });
 
     } catch (error) {
-      console.error('Unexpected error during submission:', error);
+      console.error('Unexpected error:', error);
       this.submissionError = 'An unexpected error occurred. Please try again.';
       this.isSubmitting = false;
     }
