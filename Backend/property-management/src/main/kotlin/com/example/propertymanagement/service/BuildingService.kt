@@ -31,7 +31,7 @@ class BuildingService(
                 propertyValue = dto.propertyValue,
                 primaryContractor = dto.primaryContractor,
                 latestInspectionDate = dto.latestInspectionDate,
-                propertyImage = propertyImageUrl,
+                propertyImage = dto.propertyImageId,
                 trusteeUuid = dto.trusteeUuid,
                 area = dto.area!!,
                 coporateUuid = dto.coporateUuid,
