@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { FileUploadModule } from 'primeng/fileupload';
+import { FileUploadModule, FileSelectEvent } from 'primeng/fileupload';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskApiService } from '../../../../services/api/Task api/task-api.service';
@@ -50,7 +50,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
   this.form.reset();
   // this.contractors = [];
  }
- onFileSelect(event: any)
+ onFileSelect(event: FileSelectEvent)
  {
   if(event.files && event.files.length > 0)
   {
@@ -61,7 +61,6 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
   if(this.form.valid)
   {
     this.addError = false;
-    console.log("Adding task");
 
     let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
 

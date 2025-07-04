@@ -4,9 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { PropertyService } from '../../services/property.service';
 
 @Component({

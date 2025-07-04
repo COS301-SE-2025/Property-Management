@@ -9,7 +9,6 @@ import { InventoryCardComponent } from "./inventory-card/inventory-card.componen
 import { BudgetCardComponent } from "./budget-card/budget-card.component";
 import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
 import { Property } from '../../models/property.model';
-import { ImageApiService } from '../../services/api/Image api/image-api.service';
 
 @Component({
   selector: 'app-view-house',

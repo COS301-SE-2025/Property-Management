@@ -7,7 +7,6 @@ import { BodyCoporateApiService } from './api/Body Coporate api/body-coporate-ap
 import { firstValueFrom } from 'rxjs';
 import { getCookieValue } from '../../utils/cookie-utils';
 import { Graph } from '../models/graph.model';
-import { BuildingDetails } from '../models/buildingDetails.model';
 import { BudgetApiService } from './api/Budget api/budget-api.service';
 
 @Injectable({

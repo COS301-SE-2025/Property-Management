@@ -3,7 +3,7 @@ import { TableModule } from 'primeng/table';
 import { ListboxModule } from 'primeng/listbox';
 import { CommonModule } from '@angular/common';
 import { BodyCoporateService } from '../../../services/body-coporate.service';
-import { TaskDialogComponent } from '../../task-dialog/task-dialog.component';
+// import { TaskDialogComponent } from '../../task-dialog/task-dialog.component';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -30,17 +30,17 @@ export class ContractorDetailsComponent implements OnInit{
       this.publicContractor = source === 'public';
   }
 
-  @ViewChild('taskDialog') taskDialog!: TaskDialogComponent;
+  // @ViewChild('taskDialog') taskDialog!: TaskDialogComponent;
 
   getLengthOfTasks(): number
   {
     return this.maintenanceTasks.length;
   }
 
-  openTaskDialog(task: MaintenanceTask): void
-  {
-    this.taskDialog.openDialog(task);
-  }
+  // openTaskDialog(task: MaintenanceTask): void
+  // {
+  //   this.taskDialog.openDialog(task);
+  // }
 
   makePublicContractor(): void{
     this.publicContractor = true;

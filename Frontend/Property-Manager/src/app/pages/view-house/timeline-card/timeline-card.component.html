@@ -3,7 +3,7 @@
 
     <p-timeline [value]="timeline()">
         <ng-template #content let-time>
-            <div class="cursor-pointer hover:underline" (click)="openDetailsDialog(time)">
+            <div class="cursor-pointer hover:underline" tabindex="0" role="button" (click)="openDetailsDialog(time)" (keydown.enter)="openDetailsDialog(time)" (keydown.space)="openDetailsDialog(time)">
                 {{ time.title }}
             </div>
         </ng-template>

@@ -4,7 +4,6 @@ import { StepOneComponent } from './step-one.component';
 import { StepTwoComponent } from './step-two.component';
 import { StepThreeComponent } from './step-three.component';
 import { HeaderComponent } from '../../components/header/header.component';
-import { Contractor } from '../../models/contractor.model';
 import { ContractorService } from '../../services/contractor.service';
 import { ContractorDetails } from '../../models/contractorDetails.model';
 import { getCookieValue } from '../../../utils/cookie-utils';

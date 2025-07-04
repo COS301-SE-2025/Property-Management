@@ -142,7 +142,7 @@ export class InventoryCardComponent implements OnInit{
   }
   hasChanges(): boolean{
     return this.editingRows.some((edit, index) => {
-      edit && this.draftQuantities[index] !== this.originalQuantities[index]
+      return edit && this.draftQuantities[index] !== this.originalQuantities[index]
     });
   }
   resetState()
