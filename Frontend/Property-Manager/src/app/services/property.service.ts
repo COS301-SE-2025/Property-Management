@@ -9,7 +9,7 @@ export interface CreateBuildingPayload {
   address: string;
   type: string;
   propertyValue: number;
-  primaryContractors: string;
+  primaryContractor: string;
   latestInspectionDate: string;
   trusteeUuid: string;
   propertyImageId?: string | null;
@@ -22,7 +22,7 @@ export interface Building {
   address: string;
   type: string;
   propertyValue: number;
-  primaryContractors: string;
+  primaryContractor: string;
   latestInspectionDate: string;
   propertyImage: string | null;
   area: number;
@@ -49,7 +49,7 @@ export class PropertyService {
 
   uploadImage(file: File): Observable<ImageUploadResponse> {
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('file', file);
 
     console.log('Uploading image:', file.name);
     return this.http.post<ImageUploadResponse>(this.imageUploadUrl, formData,);

@@ -21,7 +21,7 @@ import { HttpClient } from '@angular/common/http';
 export class CreatePropertyComponent implements OnInit {
   form: ReturnType<FormBuilder['group']>;
   selectedImageFile: File | null = null;
-  imagePreview: string | null = null;  // <--- For live preview
+  imagePreview: string | null = null;
 
   trusteeUuid: string | null = null;
   coporateUuid: string | null = null;
@@ -62,6 +62,7 @@ export class CreatePropertyComponent implements OnInit {
   loadContractors(): void {
     this.contractorService.getAllContractors().subscribe({
       next: (data) => {
+        console.log('Contractors loaded from backend:', data);
         this.contractors = data;
       },
       error: (err) => {
@@ -72,6 +73,7 @@ export class CreatePropertyComponent implements OnInit {
 
   getTrusteeInfo(): void {
     this.trusteeUuid = localStorage.getItem('trusteeID');
+    console.log('Loaded trusteeUuid:', this.trusteeUuid);
     if (!this.trusteeUuid) {
       this.submissionError = 'Authentication error: Please log in again.';
     }
@@ -93,6 +95,9 @@ export class CreatePropertyComponent implements OnInit {
   }
 
   async onSubmit() {
+    console.log('Form Valid:', this.form.valid);
+    console.log('Raw Form Values:', this.form.value);
+
     if (this.form.invalid || !this.trusteeUuid) {
       Object.keys(this.form.controls).forEach(key => {
         this.form.get(key)?.markAsTouched();
@@ -100,6 +105,14 @@ export class CreatePropertyComponent implements OnInit {
       if (!this.trusteeUuid) {
         this.submissionError = 'Unable to create property: Trustee information is missing. Please refresh.';
       }
+      return;
+    }
+
+    const formValue = this.form.value;
+    console.log('Selected Primary Contractor UUID:', formValue.primaryContractor);
+
+    if (!formValue.primaryContractor) {
+      this.submissionError = 'Please select a Primary Contractor.';
       return;
     }
 
@@ -113,14 +126,15 @@ export class CreatePropertyComponent implements OnInit {
         try {
           const uploadResult = await this.propertyService.uploadImage(this.selectedImageFile).toPromise();
           propertyImageId = uploadResult?.imageKey || null;
+          console.log('Image uploaded, imageKey:', propertyImageId);
         } catch (err) {
+          console.error('Image upload failed:', err);
           this.submissionError = 'Failed to upload image. Please try again.';
           this.isSubmitting = false;
           return;
         }
       }
 
-      const formValue = this.form.value;
       const fullAddress = [
         formValue.address,
         formValue.suburb,
@@ -133,7 +147,7 @@ export class CreatePropertyComponent implements OnInit {
         address: fullAddress,
         type: formValue.type,
         propertyValue: Number(formValue.propertyValue),
-        primaryContractors: formValue.primaryContractor,
+        primaryContractor: formValue.primaryContractor,
         latestInspectionDate: new Date().toISOString().split('T')[0],
         trusteeUuid: this.trusteeUuid,
         propertyImageId: propertyImageId,
@@ -141,12 +155,16 @@ export class CreatePropertyComponent implements OnInit {
         area: Number(formValue.area)
       };
 
+      console.log('Final Payload Sent to Backend:', payload);
+
       this.propertyService.createProperty(payload).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('Property created successfully:', response);
           this.isSubmitting = false;
           this.router.navigate(['/home']);
         },
         error: (err) => {
+          console.error('Backend error response:', err);
           this.isSubmitting = false;
           if (err.status === 400) {
             this.submissionError = 'Invalid data provided.';
