@@ -70,20 +70,29 @@ export class HousesService {
       return 0;
     })
   }
-  async loadHouses(){
+  async loadHouses() {
 
-    if(this.houses().length > 0)
-    {
+    if (this.houses().length > 0) {
       return;
     }
 
-    this.buildingApiService.getBuildingsByTrustee(this.tempTrusteeId).subscribe({
-      next: (houses) => {
-        console.log(houses);
-        
-        houses.forEach(h => {
-          if(h.propertyImage)
-          {
+    const trusteeId = localStorage.getItem("trusteeID");
+    if (!trusteeId) {
+      console.error("No trustee ID found in localStorage.");
+      return;
+    }
+
+    this.buildingApiService.getBuildingsByTrustee(trusteeId).subscribe({
+      next: (response) => {
+        console.log("Full response from backend:", response);
+
+        if (!response || !Array.isArray(response.buildings)) {
+          console.error("Unexpected response structure:", response);
+          return;
+        }
+
+        response.buildings.forEach(h => {
+          if (h.propertyImage) {
             this.imageApiService.getImage(h.propertyImage).subscribe(imageUrl => {
               this.houses.update(currentHouses => [
                 ...currentHouses,
@@ -93,9 +102,7 @@ export class HousesService {
                 }
               ]);
             });
-          }
-          else
-          {
+          } else {
             this.houses.update(currentHouses => [
               ...currentHouses,
               h
@@ -108,6 +115,7 @@ export class HousesService {
       }
     });
   }
+
   async loadBudget(houseId: string){
 
     this.budgetApiService.getBudgetsByBuildingId(houseId).subscribe(

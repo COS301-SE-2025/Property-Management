@@ -77,7 +77,9 @@ class ImageController(
         val presignedRequest = s3Presigner.presignGetObject(presignRequest)
         val presignedUrl = presignedRequest.url().toString()
 
-        return ResponseEntity.ok(presignedUrl)
+        return ResponseEntity.ok()
+        .contentType(MediaType.TEXT_PLAIN)
+        .body(presignedUrl)
     }
 
     private fun extractKeyFromUrl(url: String): String {
