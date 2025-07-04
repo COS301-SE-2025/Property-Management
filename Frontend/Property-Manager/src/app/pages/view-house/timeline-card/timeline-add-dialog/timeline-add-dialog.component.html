@@ -9,13 +9,25 @@
             <label for="timeline-description" class="font-bold ml-10">Task description</label>
             <textarea id="timeline-description" class = "border rounded w-90 mx-auto h-20 px-2" formControlName = "description" required></textarea>
         </div>
-        <!-- <div class = "mb-6">
+        <div class = "mb-6">
             <label for="contractors" class="font-semibold block mb-2">Assigned contractors:</label>
-            <p-multiselect id="contractors" class = "border rounded w-75" formControlName="contractorName"/>
-        </div> -->
+            <p-multiselect id="contractors" [options]="contractors" optionLabel="name" optionValue="uuid" class="border rounded w-75" formControlName="contractorName"/>
+        </div>
+        <div class = "mb-6 mt-10">
+            <p class="font-bold pb-4">Upload picture of task for the contractors</p>
+            <p-fileupload 
+                #fileUpload name="file" 
+                mode="basic" 
+                chooseLabel="Choose" 
+                chooseIcon="pi pi-upload" 
+                accept="image/*" 
+                maxFileSize="1000000" 
+                (onSelect)="onFileSelect($event)" 
+            />
+        </div>
         <div class = "mb-6">
             <label for="timeline-dueDate" class="font-semibold block">Proposed due date</label>
-            <p-datepicker id="timeline-dueDate" formControlName="date" styleClass="w-75 p-3 h-12" [iconDisplay]="'input'" [showIcon]="true" size="small" required/>
+            <p-datepicker id="timeline-dueDate" formControlName="date" styleClass="w-75 p-3 h-12" [iconDisplay]="'input'" [showIcon]="true" size="small" [appendTo]="'body'" required/>
         </div>
         <div class="mb-6 text-center">
             <p class = "font-semibold text-red-500" *ngIf="addError">Error adding new task</p>

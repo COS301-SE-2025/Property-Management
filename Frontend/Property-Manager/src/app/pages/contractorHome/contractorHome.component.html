@@ -17,7 +17,7 @@
     <p-card [style]="{ height: '16rem', width: '13rem', overflow: 'hidden', backgroundColor: 'white' }">
       <ng-template #header>
         <img
-          [src]="task.imageUrl"
+          [src]="task.img"
           alt="Project Image"
           class="w-full h-40 object-cover"
         />
@@ -26,7 +26,7 @@
         <span class="text-black">{{ task.title || 'Untitled Task' }}</span>
       </ng-template>
       <ng-template #subtitle>
-        <span class="text-black">{{ task.description || 'No description' }}</span>
+        <span class="text-black">{{ task.des || 'No description' }}</span>
       </ng-template>
     </p-card>
   </a>

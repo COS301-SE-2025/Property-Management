@@ -15,6 +15,7 @@ import {
   query,
   stagger
 } from '@angular/animations';
+import { MaintenanceTask } from '../../models/maintenanceTask.model';
 
 @Component({
   selector: 'app-contractor-home',
@@ -36,7 +37,7 @@ import {
   ]
 })
 export class ContractorHomeComponent implements OnInit {
-  tasks: any[] = [];
+  tasks: MaintenanceTask[] = [];
 
   constructor(private api: ApiService) {}
 
@@ -44,8 +45,8 @@ export class ContractorHomeComponent implements OnInit {
     this.api.getMaintenanceTasks().subscribe({
       next: (tasks) => {
         const taskRequests = tasks.map(task => {
-          if (task.imageKey) {
-            return this.api.getPresignedImageUrl(task.imageKey).pipe(
+          if (task.img) {
+            return this.api.getPresignedImageUrl(task.img).pipe(
               map(res => ({
                 ...task,
                 imageUrl: res.url

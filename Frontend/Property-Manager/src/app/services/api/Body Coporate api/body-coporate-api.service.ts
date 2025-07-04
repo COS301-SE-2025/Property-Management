@@ -12,18 +12,16 @@ import { ContractorDetails } from '../../../models/contractorDetails.model';
 })
 export class BodyCoporateApiService {
 
-  private tempBcId = '9ada9a7c-2bd6-4106-bde5-7fa76f218093';
   private url = '/api';
 
   constructor(private http: HttpClient) { }
 
-  getBuildingsLinkedtoBC(): Observable<Property[]>
+  getBuildingsLinkedtoBC(bcId: string): Observable<Property[]>
   {
     return this.http.get<Property[]>(`${this.url}/buildings`).pipe(
       map(properties => { 
-        console.log(properties);
         return properties.filter(property => {
-          return property.coporateUuid === this.tempBcId;
+          return property.coporateUuid === bcId;
         })
       })
     );
@@ -32,16 +30,15 @@ export class BodyCoporateApiService {
   {
     return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`).pipe(
       map(tasks => {
-        console.log(tasks);
         return tasks.filter(task => {
           return task.b_uuid === buildingId && task.status.includes('pending')
         });
       })
     );
   }
-  getBodyCoporate(): Observable<BodyCoporate>
+  getBodyCoporate(bcId: string): Observable<BodyCoporate>
   {
-    return this.http.get<BodyCoporate>(`${this.url}/body-corporates/${this.tempBcId}`);
+    return this.http.get<BodyCoporate>(`${this.url}/body-corporates/${bcId}`);
   }
   getAndCalculateReserveFund(bc: BodyCoporate, floorArea: number, unitName: string): ReserveFund
   {
@@ -55,7 +52,6 @@ export class BodyCoporateApiService {
       annualContribution: contri,
       partipationQuota: quota
     };
-    console.log(response);
 
     return response;
   }
