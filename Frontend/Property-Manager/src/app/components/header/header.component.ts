@@ -24,26 +24,25 @@ export class HeaderComponent {
   public typeUser: string | null = null;
   private routeMap: Record<string, Record<string, MenuItem[]>> = {
   'bodyCorporate': {
-    '/home': [
-      { label: 'Home', route: '/home' }
-    ],
     '/bodyCoporate': [
-      { label: 'Home', route: '/home' },
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' }
+      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
+    ],
+    '/home': [
+      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
+      { label: 'Properties', route: '/home' },
     ],
     '/bodyCoporate/contractors': [
-      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
       { label: 'Body Corporate', route: '/bodyCoporate' },
       { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' }
     ],
     '/bodyCoporate/publicContractors': [
-      { label: 'Home', route: '/home' },
+      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
       { label: 'Body Corporate', route: '/bodyCoporate' },
       { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' }
     ],
     '/contractorDetails': [
-      { label: 'Home', route: '/home' },
-      { label: 'Body Corporate', route: '/bodyCoporate' },
+      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
       { label: 'Contractors', route: '/bodyCoporate/contractors' },
       { label: 'Contractor Details', route: '/contractorDetails' }
     ],

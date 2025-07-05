@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ApiService } from '../../services/api.service';
 import { forkJoin, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import {
   trigger,
   transition,
@@ -16,6 +16,7 @@ import {
   stagger
 } from '@angular/animations';
 import { MaintenanceTask } from '../../models/maintenanceTask.model';
+import { getCookieValue } from '../../../utils/cookie-utils';
 
 @Component({
   selector: 'app-contractor-home',
@@ -38,24 +39,35 @@ import { MaintenanceTask } from '../../models/maintenanceTask.model';
 })
 export class ContractorHomeComponent implements OnInit {
   tasks: MaintenanceTask[] = [];
+  contractorId = getCookieValue(document.cookie, 'contractorId');
 
   constructor(private api: ApiService) {}
 
   ngOnInit() {
     this.api.getMaintenanceTasks().subscribe({
       next: (tasks) => {
-        const taskRequests = tasks.map(task => {
-          if (task.img) {
+        console.log(tasks);
+        const filteredTasks = tasks.filter(task =>
+          !!task.c_uuid && task.c_uuid === this.contractorId
+        );
+
+        const taskRequests = filteredTasks.map(task => {
+          if(task.img){
             return this.api.getPresignedImageUrl(task.img).pipe(
-              map(res => ({
+              map(imageUrl => ({
                 ...task,
-                imageUrl: res.url
+                img: imageUrl || 'assets/images/default.jpg'
+              })) ,
+              catchError(() => of({
+                ...task,
+                img: 'assets/images/default.jpg'
               }))
             );
-          } else {
-            return of({
+          }
+          else{
+             return of({
               ...task,
-              imageUrl: 'assets/images/default.jpg'
+              img: 'assets/images/default.jpg'
             });
           }
         });
