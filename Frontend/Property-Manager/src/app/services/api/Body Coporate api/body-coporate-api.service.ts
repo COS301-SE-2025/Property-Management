@@ -79,15 +79,15 @@ export class BodyCoporateApiService {
   updateContractorDetails(contractor: ContractorDetails): Observable<ContractorDetails>
   {
     let imageId: string | undefined;
-    if(contractor.image)
+    if(contractor.img)
     {
-      const parts = contractor.image.split('uploads/');
+      const parts = contractor.img.split('uploads/');
       if(parts.length > 1)
       {
         imageId = parts[1].split('?')[0].split('-').slice(0, 5).join('-');
       }
     }
-    contractor.image = imageId;
+    contractor.img = imageId;
 
     return this.http.put<ContractorDetails>(`${this.url}/contractor/${contractor.uuid}`, contractor);
   }

@@ -173,20 +173,20 @@ export class BodyCoporateService {
 
       const contractorsWithImages = await Promise.all(
         contractors.map(async (c) => {
-          if(c.image) 
+          if(c.img) 
           {
             try{
-              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.image));
+              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.img));
               return { 
                 ...c, 
-                image: imageUrl
+                img: imageUrl
               };
             }
             catch(err){
               console.error("Error loading images", err);
               return {
                 ...c, 
-                image: ""
+                img: ""
               };
             }
           }
@@ -210,20 +210,20 @@ export class BodyCoporateService {
       );
       const contractorsWithImages = await Promise.all(
         contractors.map(async (c) => {
-          if(c.image) 
+          if(c.img) 
           {
             try{
-              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.image));
+              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.img));
               return { 
                 ...c, 
-                image: imageUrl
+                img: imageUrl
               };
             }
             catch(err){
               console.error("Error loading images", err);
               return {
                 ...c, 
-                image: ""
+                img: ""
               };
             }
           }

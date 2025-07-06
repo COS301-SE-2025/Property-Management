@@ -53,11 +53,11 @@ export class ContractorDetailsComponent implements OnInit{
           console.log(contractor);
 
           if (contractor) {
-            this.imageService.getImage(contractor.image ?? '').subscribe(i => {
+            this.imageService.getImage(contractor.img ?? '').subscribe(i => {
               this.currentContractor.set(contractor);
               const curr = this.currentContractor();
               if (curr) {
-                curr.image = i;
+                curr.img = i;
                 this.currentContractor.set(curr);
               }
             })
