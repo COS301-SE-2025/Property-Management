@@ -55,33 +55,40 @@ export class BodyCoporateApiService {
 
     return response;
   }
-  //Get contractor ids from buildings then get actual contractors
-  // getContractorsLinkedToBuilding(buildingId: string, contractorId: string): String[]
-  // { 
-  //   let contractors: string[] = [];
-  //   this.http.get<Property[]>(`$${this.url}/buildings/${buildingId}`).pipe(
-  //     map((buildings) => {
-  //       console.log(buildings);
-  //       buildings.forEach((b) => {
-  //         contractors.push(b.primaryContractors);
-  //       });
-  //     })
-  //   );
-
-  //   return contractors;
-  // }
-  // getContractors(): Observable<ContractorDetails>
-  // {
-
-  // }
   getAllPublicContractors(coporateId: string): Observable<ContractorDetails[]>
   {
-    return this.http.get<ContractorDetails[]>(`${this.url}/api/contractors`).pipe(
+    return this.http.get<ContractorDetails[]>(`${this.url}/contractor`).pipe(
       map(contractor => {
         return contractor.filter(c => {
-          return c.coporateUuid !== coporateId
+          return c.corporate_uuid !== coporateId
         });
       })
     );
+  }
+  getTrustedContractors(coporateId: string): Observable<ContractorDetails[]>
+  {
+    return this.http.get<ContractorDetails[]>(`${this.url}/contractor`).pipe(
+      map(contractor => {
+        console.log(contractor);
+        return contractor.filter(c => {
+          return c.corporate_uuid === coporateId
+        });
+      })
+    );
+  }
+  updateContractorDetails(contractor: ContractorDetails): Observable<ContractorDetails>
+  {
+    let imageId: string | undefined;
+    if(contractor.image)
+    {
+      const parts = contractor.image.split('uploads/');
+      if(parts.length > 1)
+      {
+        imageId = parts[1].split('?')[0].split('-').slice(0, 5).join('-');
+      }
+    }
+    contractor.image = imageId;
+
+    return this.http.put<ContractorDetails>(`${this.url}/contractor/${contractor.uuid}`, contractor);
   }
 }

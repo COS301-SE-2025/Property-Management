@@ -33,17 +33,15 @@ export class HeaderComponent {
     ],
     '/bodyCoporate/contractors': [
       { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
-      { label: 'Body Corporate', route: '/bodyCoporate' },
       { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' }
     ],
     '/bodyCoporate/publicContractors': [
       { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
-      { label: 'Body Corporate', route: '/bodyCoporate' },
       { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' }
     ],
     '/contractorDetails': [
       { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
-      { label: 'Contractors', route: '/bodyCoporate/contractors' },
+      { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' },
       { label: 'Contractor Details', route: '/contractorDetails' }
     ],
     '/viewHouse:/houseId': [
@@ -185,6 +183,30 @@ export class HeaderComponent {
         { label: 'Manage Budget', route: null },
       ];
       return;
+    }
+    if(pathParts[0] === 'contractorDetails' && pathParts.length >= 3)
+    {
+      const contractorType = pathParts[2];
+      if(this.typeUser === 'bodyCorporate')
+      {
+        if(contractorType === 'public')
+        {
+          this.items = [
+            { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
+            { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' },
+            { label: 'Contractor Details', route: null }
+          ];
+        }
+        else if(contractorType === 'trusted')
+        {
+          this.items = [
+            { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
+            { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' },
+            { label: 'Contractor Details', route: null }
+          ];
+        }
+        return;
+      }
     }
 
     this.items = [{ label: 'Home', route: '/home' }];
