@@ -153,7 +153,9 @@ export class ApiService {
     return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`);
   }
 
-  getPresignedImageUrl(uuid: string): Observable<{ url: string }> {
-    return this.http.get<{ url: string }>(`${this.url}/images/presigned/${uuid}`);
+  getPresignedImageUrl(uuid: string): Observable<string> {
+    return this.http.get(`${this.url}/images/presigned/${uuid}`, {
+      responseType: 'text'
+    });
   }
 }

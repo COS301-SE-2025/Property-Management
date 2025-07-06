@@ -21,6 +21,7 @@ import { ContractorProfileComponent } from './pages/contractor-profile/contracto
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
   {
@@ -32,118 +33,109 @@ export const routes: Routes = [
     path: 'login',
     pathMatch: 'full',
     component: LoginComponent
-},{
+  },
+  {
+    path: 'registerHub',
+    pathMatch: 'full',
+    component: RegisterHubComponent 
+  },
+  {
+     path: 'contractorRegister',
+     pathMatch: 'full',
+    component: ContractorRegisterComponent
+  },
+  {
     path: 'register-owner',
     pathMatch: 'full',
     component: RegisterOwnerComponent
   },
   {
+    path: 'register-body-corporate',
+    pathMatch: 'full',
+    component: RegisterBodyCorporateComponent
+  },
+  {
+    path: 'verifyEmail',
+    pathMatch: 'full',
+    component: VerifyEmailComponent
+  },
+  {
     path: 'home',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: HomeComponent
   },
   {
     path: 'viewHouse/:houseId',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: ViewHouseComponent
   },
   { path: 'create-property',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: CreatePropertyComponent
-  }
-,{
-     path: 'contractorRegister',
-     pathMatch: 'full',
-    component: ContractorRegisterComponent
-},
-{
-     path: 'contractorHome',
-     pathMatch: 'full',
+  },
+  {
+    path: 'manageBudget/:houseId',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: ManageBudgetComponent
+  },
+  {
+    path: 'contractorHome',
+    canActivate: [authGuard(['contractor'])],
+    pathMatch: 'full',
     component: ContractorHomeComponent
-},
-{
-     path: 'quotation',
-     pathMatch: 'full',
+  },
+  {
+    path: 'quotation',
+    canActivate: [authGuard(['contractor'])],
+    pathMatch: 'full',
     component: QuotationComponent
-},
-{
-  path: 'verifyEmail',
-  pathMatch: 'full',
-  component: VerifyEmailComponent
-},
-{
-  path: 'register-body-corporate',
-  pathMatch: 'full',
-  component: RegisterBodyCorporateComponent
-},
-{
-  path: 'manageBudget/:houseId',
-  pathMatch: 'full',
-  component: ManageBudgetComponent
-},
-{
-  path: 'registerHub',
-  pathMatch: 'full',
-  component: RegisterHubComponent 
-},
-{
-  path: 'bodyCoporate',
-  pathMatch: 'full',
-  component: BcHomeComponent
-},
-{
-  path: 'bodyCoporate/contractors',
-  pathMatch: 'full',
-  component: BcContractorsComponent
-},
-{
-  path: 'contractorDetails/:contractorId/:source',
-  pathMatch: 'full',
-  component: ContractorDetailsComponent
-},
-{
-  path: 'bodyCoporate/publicContractors',
-  pathMatch: 'full',
-  component: PublicContractorsComponent
-},
-{
-  path: 'contractor-prof',
-  component: ContractorProfileComponent
-}
-,
-{
-  path: 'landingPage',
-  pathMatch: 'full',
-  component: LandingPageComponent
-}
-,
-{
-  path: 'help',
-  pathMatch: 'full',
-  component: HelpComponent
-}
-,
-{
-  path: 'reset-password',
-  pathMatch: 'full',
-  component: ResetPasswordComponent
-}
-,
-{
-  path: 'landingPage',
-  pathMatch: 'full',
-  component: LandingPageComponent
-}
-,
-{
-  path: 'help',
-  pathMatch: 'full',
-  component: HelpComponent
-}
-,
-{
-  path: 'reset-password',
-  pathMatch: 'full',
-  component: ResetPasswordComponent
-}
+  },
+  {
+    path: 'contractor-prof',
+    canActivate: [authGuard(['contractor'])],
+    component: ContractorProfileComponent
+  },
+  {
+    path: 'bodyCoporate',
+    canActivate: [authGuard(['bodyCorporate'])],
+    pathMatch: 'full',
+    component: BcHomeComponent
+  },
+  {
+    path: 'bodyCoporate/contractors',
+    canActivate: [authGuard(['bodyCorporate'])],
+    pathMatch: 'full',
+    component: BcContractorsComponent
+  },
+  {
+    path: 'contractorDetails/:contractorId/:source',
+    canActivate: [authGuard(['bodyCorporate'])],
+    pathMatch: 'full',
+    component: ContractorDetailsComponent
+  },
+  {
+    path: 'bodyCoporate/publicContractors',
+    canActivate: [authGuard(['bodyCorporate'])],
+    pathMatch: 'full',
+    component: PublicContractorsComponent
+  },
+  {
+    path: 'landingPage',
+    pathMatch: 'full',
+    component: LandingPageComponent
+  },
+  {
+    path: 'help',
+    pathMatch: 'full',
+    component: HelpComponent
+  },
+  {
+    path: 'reset-password',
+    pathMatch: 'full',
+    component: ResetPasswordComponent
+  }
 ];

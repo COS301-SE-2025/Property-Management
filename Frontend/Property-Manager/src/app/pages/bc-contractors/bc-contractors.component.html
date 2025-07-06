@@ -9,7 +9,7 @@
 </div>
 
 <div class="flex flex-wrap justify-center gap-8 p-8">
-    @for (contractor of contractors; track contractor.uuid) 
+    @for (contractor of contractors(); track contractor.uuid) 
     {
         <app-contractor-card [contractor]="contractor"/>
     }

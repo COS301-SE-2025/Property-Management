@@ -4,10 +4,11 @@ import { LifeCycleCost } from '../models/lifeCycleCost.model';
 import { ContractorDetails } from '../models/contractorDetails.model';
 import { ReserveFund } from '../models/reserveFund.model';
 import { BodyCoporateApiService } from './api/Body Coporate api/body-coporate-api.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { getCookieValue } from '../../utils/cookie-utils';
 import { Graph } from '../models/graph.model';
 import { BudgetApiService } from './api/Budget api/budget-api.service';
+import { ImageApiService } from './api/Image api/image-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +48,7 @@ export class BodyCoporateService {
   bcId = '';
 
 
-  constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService){
+  constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService){
     this.bcId = getCookieValue(document.cookie, 'bodyCoporateId');
   }
 
@@ -160,5 +161,104 @@ export class BodyCoporateService {
    {
     console.error("Failed to load graph data", error);
    }
+  }
+  async loadTrustedContractors(): Promise<void>
+  {
+    this.contractorDetails.set([]);
+
+    try{
+      const contractors = await firstValueFrom(
+        this.bodyCoporateApiService.getTrustedContractors(this.bcId)
+      );
+
+      const contractorsWithImages = await Promise.all(
+        contractors.map(async (c) => {
+          if(c.img) 
+          {
+            try{
+              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.img));
+              return { 
+                ...c, 
+                img: imageUrl
+              };
+            }
+            catch(err){
+              console.error("Error loading images", err);
+              return {
+                ...c, 
+                img: ""
+              };
+            }
+          }
+          return c;
+        })
+      );
+
+      this.contractorDetails.set(contractorsWithImages);
+    }
+    catch(err){
+      console.error("Error loading trusted contractors", err);
+    }
+  } 
+  async loadPublicContractors(): Promise<void>
+  {
+    this.contractorDetails.set([]);
+
+    try{
+      const contractors = await firstValueFrom(
+        this.bodyCoporateApiService.getAllPublicContractors(this.bcId)
+      );
+      const contractorsWithImages = await Promise.all(
+        contractors.map(async (c) => {
+          if(c.img) 
+          {
+            try{
+              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.img));
+              return { 
+                ...c, 
+                img: imageUrl
+              };
+            }
+            catch(err){
+              console.error("Error loading images", err);
+              return {
+                ...c, 
+                img: ""
+              };
+            }
+          }
+          return c;
+        })
+      );
+
+      this.contractorDetails.set(contractorsWithImages);
+    }
+    catch(err) {
+      console.error("Error loading public contractors", err);
+    }
+  }
+  updateContractor(contractor: ContractorDetails): Observable<ContractorDetails>
+  {
+    return new Observable<ContractorDetails>((observer) => {
+      this.bodyCoporateApiService.updateContractorDetails(contractor).subscribe({
+        next: (updatedContractor) => {
+          this.contractorDetails.update(details => {
+            const index = details.findIndex(c => c.uuid === updatedContractor.uuid);
+            if (index !== -1) {
+              details[index] = updatedContractor;
+            } else {
+              details.push(updatedContractor);
+            }
+            return details;
+          });
+          observer.next(updatedContractor);
+          observer.complete();
+        },
+        error: (err) => {
+          console.error("Error updating contractor", err);
+          observer.error(err);
+        }
+      });
+    });
   }
 }
