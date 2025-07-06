@@ -37,6 +37,7 @@ class ContractorService(
                 description = update.description ?: existing.description,
                 services = update.services ?: existing.services,
                 corporate_uuid = update.corporate_uuid ?: existing.corporate_uuid,
+                img = update.img ?: existing.img,
             )
 
         return repository.save(updated)
@@ -61,6 +62,7 @@ class ContractorService(
         description: String,
         services: String,
         corporate_uuid: UUID,
+        img: UUID,
     ): Contractor {
         val newUser =
             Contractor(
@@ -77,6 +79,7 @@ class ContractorService(
                 description = description,
                 services = services,
                 corporate_uuid = corporate_uuid,
+                img = img,
             )
         return add(newUser)
     }
