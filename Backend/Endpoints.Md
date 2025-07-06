@@ -1147,8 +1147,11 @@ _All fields are optional; only include the ones you want to update._
   "postal_code": "0419",
   "reg_number": "23123123131",
   "description": "Good pipe layer",
-  "services": "Pipe laying"
+  "services": "Pipe laying",
+  "img": {UUID}
 }
+img refering to the images table for the uuid
+
 ```
 
 **Response Example (201 Created):**
@@ -1166,8 +1169,11 @@ _All fields are optional; only include the ones you want to update._
   "postal_code": "0419",
   "reg_number": "23123123131",
   "description": "Good pipe layer",
-  "services": "Pipe laying"
+  "services": "Pipe laying",
+  "img": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28"
 }
+
+img refering to the images table for the uuid
 ```
 
 ---
@@ -1191,7 +1197,8 @@ _All fields are optional; only include the ones you want to update._
     "postal_code": "0419",
     "reg_number": "23123123131",
     "description": "Good pipe layer",
-    "services": "Pipe laying"
+    "services": "Pipe laying",
+    "img": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
   }
 ]
 ```
@@ -1219,7 +1226,8 @@ _All fields are optional; only include the ones you want to update._
   "postal_code": "0419",
   "reg_number": "23123123131",
   "description": "Good pipe layer",
-  "services": "Pipe laying"
+  "services": "Pipe laying",
+  "img": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
 }
 
 # Contractor Authentication Endpoints
@@ -1321,7 +1329,8 @@ _All fields are optional; only include the ones you want to update._
   "postal_code": "0419",
   "reg_number": "23123123131",
   "description": "Good pipe layer",
-  "services": "Pipe laying"
+  "services": "Pipe laying",
+  "img": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
 }
 ```
 

@@ -27,6 +27,6 @@ data class Contractor(
     val description: String? = null,
     val services: String? = null,
     val corporate_uuid: UUID? = null,
-    @Column(name = "contractor_image")
+    @Column(name = "profile_image_uuid")
     val img: UUID? = null,
 )
