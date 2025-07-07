@@ -11,17 +11,22 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 export class StepOneComponent {
   @Output() next = new EventEmitter<{
     name: string;
-    contact_info: string;
+    // contact_info: string;
     email: string;
     phone: string;
+    address: string;
+    city: string;
+    suburb: string;
+    postalCode: string;
+    status: boolean;
   }>();
 
   form: FormGroup;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      name: ['', Validators.required, [Validators.required, Validators.minLength(2)]],
-      email: ['', Validators.required, Validators.email],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['',[Validators.required, Validators.email]],
       phone: ['', [Validators.pattern('^[0-9]{4,10}$')]],
       address: [''],
       city: [''],
@@ -32,11 +37,21 @@ export class StepOneComponent {
   }
 
   emitRelevantData() {
+
+    if(!this.form.valid){
+      this.form.markAllAsTouched();
+      return;
+    }
+
     this.next.emit({
       name: this.form.value.name,
-      contact_info: this.form.value.contact_info,
       email: this.form.value.email,
-      phone: this.form.value.phone
+      phone: this.form.value.phone,
+      address: this.form.value.address,
+      city: this.form.value.city,
+      suburb: this.form.value.suburb,
+      postalCode: this.form.value.postalCode,
+      status: true
     });
   }
 

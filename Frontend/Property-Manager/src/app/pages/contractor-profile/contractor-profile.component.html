@@ -22,9 +22,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
         <ng-container [ngSwitch]="step">
-          <app-step-one *ngSwitchCase="1" (next)="step = 2"></app-step-one>
-          <app-step-two *ngSwitchCase="2" (next)="step = 3" (back)="step = 1"></app-step-two>
-          <app-step-three *ngSwitchCase="3" (back)="step = 2" (done)="submitProfile()"></app-step-three>
+          <app-step-one *ngSwitchCase="1" (next)="onStepOneComplete($event)"></app-step-one>
+          <app-step-two *ngSwitchCase="2" (next)="onStepTwoComplete($event)" (back)="step = 1"></app-step-two>
+          <app-step-three *ngSwitchCase="3" (back)="step = 2" (done)="onStepThreeComplete($event)"></app-step-three>
         </ng-container>
       </div>
       <div *ngIf="step === 1" class="flex flex-col items-center justify-start gap-4 py-14">

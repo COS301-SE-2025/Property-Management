@@ -9,4 +9,5 @@ export interface ContractorDetails extends Contractor {
    services: string;
    img?: string;
    corporate_uuid?: string;
+   project_history?: string;
 }
