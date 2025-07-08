@@ -7,6 +7,14 @@ import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { filter } from 'rxjs';
 
+type UserType = 'contractor' | 'bodyCorporate' | 'trustee' | null;
+
+interface NavLink {
+  label: string;
+  route: string;
+  show: boolean;
+}
+
 @Component({
   selector: 'app-header',
   imports: [CommonModule, BreadcrumbModule, RouterModule],
@@ -93,6 +101,8 @@ export class HeaderComponent {
 
   constructor(private authService: AuthService, private router: Router){
     const saved = localStorage.getItem('darkMode');
+    this.userType = (localStorage.getItem('userType') as UserType) || null;
+    this.setNavLinks();
     
     if(saved !== null)
     {
@@ -210,5 +220,23 @@ export class HeaderComponent {
     }
 
     this.items = [{ label: 'Home', route: '/home' }];
+  }
+
+  userType: UserType = null;
+  navLinks: NavLink[] = [];
+
+  setNavLinks() {
+    let homeRoute = '/home';
+    if (this.userType === 'contractor') homeRoute = '/contractorHome';
+    if (this.userType === 'bodyCorporate') homeRoute = '/bodyCoporate';
+
+    this.navLinks = [
+      { label: 'Home', route: homeRoute, show: true },
+      { label: 'Properties', route: '/home', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' },
+      { label: 'Contractors', route: '/bodyCoporate/contractors', show: this.userType === 'bodyCorporate' },
+      { label: 'My Profile', route: '/contractor-prof', show: this.userType === 'contractor' },
+      { label: 'Dashboard', route: this.userType === 'contractor' ? '/contractorHome' : (this.userType === 'bodyCorporate' ? '/bodyCoporate' : '/home'), show: true },
+      { label: 'Help', route: '/help', show: true }
+    ];
   }
 }
