@@ -151,7 +151,6 @@ export class HousesService {
 
     this.inventoryItemApiService.getInventoryItemsByBuilding(houseId).subscribe({
       next: (inventory) => {
-       console.log(inventory);
        this.inventory.set(inventory);
       },
       error: (err) => {

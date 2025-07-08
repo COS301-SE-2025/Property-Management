@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { FileUploadModule, FileSelectEvent } from 'primeng/fileupload';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,9 +18,10 @@ import { ContractorDetails } from '../../../../models/contractorDetails.model';
 
 @Component({
   selector: 'app-timeline-add-dialog',
-  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, MultiSelectModule, FileUploadModule],
+  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, MultiSelectModule, FileUploadModule, ToastModule],
   templateUrl: './timeline-add-dialog.component.html',
-  styles: ``
+  styles: ``,
+  providers: [MessageService]
 })
 export class TimelineAddDialogComponent extends DialogComponent implements OnInit{
  form!: FormGroup;
@@ -28,7 +31,15 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
  public contractors: ContractorDetails[] | undefined = undefined;
  public addError = false;
 
- constructor(private fb: FormBuilder, private route : ActivatedRoute, private router: Router, private taskApiService: TaskApiService, private imageService: ImageApiService, private contractorService: ContractorApiService){
+ constructor(
+  private fb: FormBuilder, 
+  private route : ActivatedRoute, 
+  private router: Router, 
+  private taskApiService: TaskApiService, 
+  private imageService: ImageApiService, 
+  private contractorService: ContractorApiService,
+  private messageService: MessageService
+){
    super();
    this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
   }
@@ -75,6 +86,12 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       catch(err)
       {
         console.error("Image upload failed", err);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to upload image, please try again'
+        });
       }
     }
 
@@ -86,16 +103,22 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     const date = this.form.value.date;
     const contractorId = this.form.value.contractorName[0];
 
-    console.log(contractorId);
-
     this.taskApiService.createTask(name, des, "pending", date, false, this.houseId, userId, imageId, contractorId).subscribe({
-      next: (response) => {
-        console.log(response);
+      next: () => {
         this.form.reset();
         this.closeDialog();
-        this.router.navigate(['viewHouse', this.houseId]).then(() => {
-          window.location.reload();
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Task added successfully'
         });
+
+        setTimeout(() => {
+          this.router.navigate(['viewHouse', this.houseId]).then(() => {
+            window.location.reload();
+          });
+        }, 3000);
       },
       error: (err) => {
         console.error("Failed to create task", err);

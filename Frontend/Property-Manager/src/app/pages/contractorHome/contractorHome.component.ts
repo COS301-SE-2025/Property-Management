@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink} from '@angular/router';
@@ -13,8 +13,9 @@ import {
   stagger
 } from '@angular/animations';
 import { ApiService } from '../../services/api.service';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
+import { MaintenanceTask } from '../../models/maintenanceTask.model';
 
 @Component({
     selector: 'app-contractor-home',
@@ -36,48 +37,54 @@ import { forkJoin, of } from 'rxjs';
     ]
 })
 
-export class ContractorHomeComponent  {
+export class ContractorHomeComponent implements OnInit{
    
-tasks: any[] = [];
+  tasks: MaintenanceTask[] = [];
+  contractorId = localStorage.getItem('contractorID');
   constructor(private api: ApiService) {}
 
   ngOnInit() {
-  const contractorId = localStorage.getItem('contractorID');
 
-  if (!contractorId) {
-    console.warn('Contractor ID not found in localStorage.');
-    return;
-  }
+    if (!this.contractorId) {
+      console.warn('Contractor ID not found in localStorage.');
+      return;
+    }
 
-  this.api.getMaintenanceTasks().subscribe({
-    next: (tasks) => {
-      
-      const filteredTasks = tasks.filter(task => task.c_uuid === contractorId);
+    this.api.getMaintenanceTasks().subscribe({
+      next: (tasks) => {
+        
+        const filteredTasks = tasks.filter(task => 
+          task.c_uuid === this.contractorId
+        );
 
-      if (filteredTasks.length === 0) {
-        this.tasks = []; 
-        return;
-      }
-
-      const taskRequests = filteredTasks.map(task => {
-        if (task.img) {
-          return this.api.getPresignedImageUrl(task.img).pipe(
-  map((presignedUrl: string) => ({
-    ...task,
-    imageUrl: presignedUrl
-  }))
-);
-        } else {
-          return of({
-            ...task,
-            imageUrl: 'assets/images/default.jpg'
-          });
+        if (filteredTasks.length === 0) {
+          this.tasks = []; 
+          return;
         }
-      });
 
-        forkJoin(taskRequests).subscribe(taskList => {
-          this.tasks = taskList;
+        const taskRequests = filteredTasks.map(task => {
+          if (task.img) {
+            return this.api.getPresignedImageUrl(task.img).pipe(
+            map(imageUrl => ({
+              ...task,
+              img: imageUrl || 'assets/images/default.jpg'
+            })),
+            catchError(() => of({
+              ...task,
+              img: 'assets/images/default.jpg'
+            }))
+          );
+          } else {
+            return of({
+              ...task,
+              img: 'assets/images/default.jpg'
+            });
+          }
         });
+
+          forkJoin(taskRequests).subscribe(taskList => {
+            this.tasks = taskList;
+          });
       },
       error: err => console.error('Failed to load tasks', err)
     });

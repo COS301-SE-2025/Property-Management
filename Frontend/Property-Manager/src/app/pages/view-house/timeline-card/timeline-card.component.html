@@ -3,7 +3,7 @@
 
     <p-timeline [value]="timeline()">
         <ng-template #content let-time>
-            <div class="cursor-pointer hover:underline" tabindex="0" role="button" (click)="openDetailsDialog(time)" (keydown.enter)="openDetailsDialog(time)" (keydown.space)="openDetailsDialog(time)">
+            <div class="cursor-pointer hover:underline hover:translate-y-0.5 transition-transform duration-200" tabindex="0" role="button" (click)="openDetailsDialog(time)" (keydown.enter)="openDetailsDialog(time)" (keydown.space)="openDetailsDialog(time)">
                 {{ time.title }}
             </div>
         </ng-template>
@@ -22,7 +22,9 @@
     <app-timeline-details-dialog #taskDialog></app-timeline-details-dialog>
 
     <div class = "mt-7">
-        <button class = "cursor-pointer" (click)="timelineAddDialog.openDialog()"><img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory"></button>
+        <button class = "cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="timelineAddDialog.openDialog()">
+            <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
+        </button>
         <app-timeline-add-dialog #timelineAddDialog/>
     </div>
 </p-card>

@@ -3,6 +3,8 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { Inventory } from '../../../models/inventory.model';
 import { CommonModule } from '@angular/common';
@@ -14,9 +16,10 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-inventory-card',
-  imports: [CardModule, TableModule, CommonModule, InventoryAddDialogComponent, ButtonModule, FormsModule, InputNumberModule],
+  imports: [CardModule, TableModule, CommonModule, InventoryAddDialogComponent, ButtonModule, FormsModule, InputNumberModule, ToastModule],
   templateUrl: './inventory-card.component.html',
-  styles: ``
+  styles: ``,
+  providers: [MessageService]
 })
 export class InventoryCardComponent implements OnInit{
   
@@ -30,7 +33,7 @@ export class InventoryCardComponent implements OnInit{
   draftQuantities: number[] = [];
   originalQuantities: number[] = [];
 
-  constructor(private route: ActivatedRoute)
+  constructor(private route: ActivatedRoute, private messageService: MessageService)
   {
     this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
   }
@@ -99,9 +102,18 @@ export class InventoryCardComponent implements OnInit{
       console.log("Updating budget", overallPriceDiff)
       await this.getAndUpdateBudget(overallPriceDiff);
     }
+    //Toast
+    this.messageService.add({
+     severity: 'success',
+     summary: 'Success',
+     detail: 'Inventory updated successfully'
+    });
    }
    this.resetState();
-   window.location.reload();
+
+   setTimeout(() => {
+     window.location.reload();
+   }, 3000);
   }
   private async getAndUpdateBudget(overallPrice: number)
   {
@@ -121,11 +133,14 @@ export class InventoryCardComponent implements OnInit{
         };
         console.log(newBudget);
         this.budgetApiService.updateBudget(elementID, newBudget).subscribe({
-          next: (response) => {
-            console.log("Updated budget", response);
-          },
           error: (err) => {
             console.error("Couldnt update budget", err);
+
+            this.messageService.add({
+              severity: 'danger',
+              summary: 'Error',
+              detail: 'Failed to update inventory'
+            });
           }
         });
       }
