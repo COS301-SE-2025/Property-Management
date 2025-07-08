@@ -96,7 +96,7 @@ class BodyCorporateService(
                 accessToken = tokens.accessToken,
                 refreshToken = tokens.refreshToken,
                 userType = "BODY_CORPORATE",
-                userId = bodyCorporate.userId!!,
+                userId = bodyCorporate.corporateUuid.toString(),
             )
         } catch (e: Exception) {
             throw RuntimeException("Cognito login failed: ${e.message}", e)

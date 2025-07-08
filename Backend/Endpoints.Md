@@ -1147,8 +1147,11 @@ _All fields are optional; only include the ones you want to update._
   "postal_code": "0419",
   "reg_number": "23123123131",
   "description": "Good pipe layer",
-  "services": "Pipe laying"
+  "services": "Pipe laying",
+  "img": {UUID}
 }
+img refering to the images table for the uuid
+
 ```
 
 **Response Example (201 Created):**
@@ -1166,8 +1169,11 @@ _All fields are optional; only include the ones you want to update._
   "postal_code": "0419",
   "reg_number": "23123123131",
   "description": "Good pipe layer",
-  "services": "Pipe laying"
+  "services": "Pipe laying",
+  "img": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28"
 }
+
+img refering to the images table for the uuid
 ```
 
 ---
@@ -1191,7 +1197,8 @@ _All fields are optional; only include the ones you want to update._
     "postal_code": "0419",
     "reg_number": "23123123131",
     "description": "Good pipe layer",
-    "services": "Pipe laying"
+    "services": "Pipe laying",
+    "img": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
   }
 ]
 ```
@@ -1219,7 +1226,75 @@ _All fields are optional; only include the ones you want to update._
   "postal_code": "0419",
   "reg_number": "23123123131",
   "description": "Good pipe layer",
-  "services": "Pipe laying"
+  "services": "Pipe laying",
+  "img": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+}
+
+# Contractor Authentication Endpoints
+
+## Register a Contractor
+**POST** `/api/contractor/auth/register`
+
+**Request Body Example:**
+```json
+{
+  "email": "bagoki1587@asimarif.com",
+  "password": "Test@1234",
+  "contactNumber": "0672687235"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "message": "Registration successful, please verify your email.",
+  "username": "bagoki15871750943941252"
+}
+```
+
+> **Note:** Store the username for the next step (email confirmation).
+
+---
+
+## Confirm Email
+**POST** `/api/contractor/auth/confirm`
+
+**Request Body Example:**
+```json
+{
+  "username": "bagoki15871750941249379",
+  "code": "621074"
+}
+```
+
+**Response Example:**
+```json
+{
+  "message": "Account confirmed."
+}
+```
+
+---
+
+## Login
+**POST** `/api/contractor/auth/login`
+
+**Request Body Example:**
+```json
+{
+  "email": "bagoki1587@asimarif.com",
+  "password": "Test@1234"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "idToken": "[some long token]",
+  "accessToken": "[some long token]",
+  "refreshToken": "[some long token]",
+  "userType": "contractor",
+  "userId": "5b029df7-1e95-439e-89d9-bb2bdc4a3766"
 }
 ```
 
@@ -1254,7 +1329,8 @@ _All fields are optional; only include the ones you want to update._
   "postal_code": "0419",
   "reg_number": "23123123131",
   "description": "Good pipe layer",
-  "services": "Pipe laying"
+  "services": "Pipe laying",
+  "img": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
 }
 ```
 
@@ -1269,6 +1345,7 @@ _All fields are optional; only include the ones you want to update._
 **Response:**  
 - `204 No Content` if deleted  
 - `404 Not Found` if not found
+
 
 
 # Image Upload Endpoints
@@ -1642,3 +1719,135 @@ _All fields are optional; only include the ones you want to update._
 - `c_uuid`: Must reference an existing contractor UUID
 - `submitted_on`: Must be in ISO 8601 format (e.g., "2025-06-26T10:00:00.000+02:00")
 
+# Trustee Endpoints
+
+## Create a Trustee
+**POST** `/api/trustee`
+
+**Request Body Example:**
+```json
+{
+  "name": "Karabelo",
+  "apikey": "0210323-2313-123",
+  "email": "karabelotaole04@gmail.com",
+  "phone": "013456789",
+}
+```
+
+**Response Example (201 Created):**
+```json
+{
+  "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "name": "Karabelo",
+  "apikey": "0210323-2313-123",
+  "email": "karabelotaole04@gmail.com",
+  "phone": "013456789",
+}
+```
+
+---
+
+## Get All Trustees
+**GET** `/api/trustee`
+
+**Response Example:**
+```json
+[
+  {
+    "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "name": "Karabelo",
+    "apikey": "0210323-2313-123",
+    "email": "karabelotaole04@gmail.com",
+    "phone": "013456789",
+  }
+]
+```
+
+---
+
+## Get Trustee by UUID
+**GET** `/api/trustee/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the trustee
+
+**Response Example:**
+```json
+{
+  "uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "name": "Karabelo",
+  "apikey": "0210323-2313-123",
+  "email": "karabelotaole04@gmail.com",
+  "phone": "013456789",
+}
+```
+
+---
+
+# Trustee Authentication Endpoints
+
+## Register a Trustee
+**POST** `/api/trustee/auth/register`
+
+**Request Body Example:**
+```json
+{
+  "email": "bagoki1587@asimarif.com",
+  "password": "Test@1234",
+  "contactNumber": "0672687235"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "message": "Registration successful, please verify your email.",
+  "username": "bagoki15871750943941252"
+}
+```
+
+> **Note:** Store the username for the next step (email confirmation).
+
+---
+
+## Confirm Email
+**POST** `/api/trustee/auth/confirm`
+
+**Request Body Example:**
+```json
+{
+  "username": "bagoki15871750941249379",
+  "code": "621074"
+}
+```
+
+**Response Example:**
+```json
+{
+  "message": "Account confirmed."
+}
+```
+
+---
+
+## Login
+**POST** `/api/trustee/auth/login`
+
+**Request Body Example:**
+```json
+{
+  "email": "bagoki1587@asimarif.com",
+  "password": "Test@1234"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "idToken": "[some long token]",
+  "accessToken": "[some long token]",
+  "refreshToken": "[some long token]",
+  "userType": "trustee",
+  "userId": "5b029df7-1e95-439e-89d9-bb2bdc4a3766"
+}
+```

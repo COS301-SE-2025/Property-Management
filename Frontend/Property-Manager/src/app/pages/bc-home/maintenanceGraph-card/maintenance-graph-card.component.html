@@ -1,6 +1,13 @@
 <div class="shadow md">
-    <p-card styleClass = "h-[32rem] w-[58.5rem]">
+    <p-card>
         <ng-template #title>Budget over Time</ng-template>
-        <p-chart type="bar" [data]="bcData()" [options] = "getChartOptions()"/>
+        <div class="h-full w-full">
+            <p-chart 
+                type="bar" 
+                [data]="bcData()" 
+                [options] = "getChartOptions()"
+                style="width: 100%; height: 100%;"
+            />
+        </div>
     </p-card>
 </div>

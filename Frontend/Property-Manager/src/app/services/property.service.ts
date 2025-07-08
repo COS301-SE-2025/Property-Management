@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Property } from '../models/property.model';
 
 @Injectable({ providedIn: 'root' })
@@ -15,8 +15,10 @@ export class PropertyService {
   }
 
   uploadImage(file: File) {
-  const formData = new FormData();
-  formData.append('file', file);
-  return this.http.post<{ imageId: string }>('/api/images/upload', formData);
-}
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post('/api/images/upload', formData, {
+      responseType: 'text'
+    }).pipe( map(imageId => ({ imageId })));
+  }
 }

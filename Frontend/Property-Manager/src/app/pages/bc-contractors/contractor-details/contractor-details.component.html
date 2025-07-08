@@ -3,73 +3,70 @@
 <div class="flex flex-col justify-center items-center">
     <div class="border rounded-md mt-10 pl-20 pr-20 pb-4 pt-5 w-full max-w-6xl mx-auto">
         <div class = "flex flex-col items-center justify-center m-4">
-            <img [src]="contractorDetails.images?.[0]" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="">
-            <p class = "text-lg font-bold mt-4"> {{ contractorDetails.name }}</p>
+            <img [src]="currentContractor()?.img" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="">
+            <p class = "text-lg font-bold mt-4"> {{ currentContractor()?.name }}</p>
         </div>
 
         <span class="text-yellow-500 text-lg">Details</span>
         <p-table [value]="[1]" showGridlines [tableStyle]="{ 'min-width': '50rem'}">
             <ng-template pTemplate="body">
-                <tr>
-                    <td class="font-bold">Company name</td>
-                    <td>{{ contractorDetails.name }}</td>
-                </tr>
+
                 <tr>
                     <td class="font-bold">Email address</td>
-                    <td>{{ contractorDetails.email }}</td>
+                    <td>{{ currentContractor()?.email }}</td>
                 </tr>
                 <tr>
                     <td class="font-bold">Phone number</td>
-                    <td>{{ contractorDetails.phone | formatPhoneNumber }}</td>
+                    <td>{{ (currentContractor()?.phone ?? '') | formatPhoneNumber }}</td>
                 </tr>
                 <tr>
                     <td class="font-bold">Full address</td>
-                    <td>{{ contractorDetails.address }}</td>
-                </tr>
-                <tr>
-                    <td class="font-bold">Registration / License number</td>
-                    <td>{{ contractorDetails.licenseNum }}</td>
+                    <td>{{ currentContractor()?.address }}</td>
                 </tr>
                 <tr>
                     <td class="font-bold">Description & Skills</td>
-                    <td>{{ contractorDetails.descriptionAndSkills }}</td>
+                    <td>{{ currentContractor()?.description }}</td>
                 </tr>
                 <tr>
                     <td class="font-bold">Services</td>
-                    <td>{{ contractorDetails.services }}</td>
+                    <td>{{ currentContractor()?.services }}</td>
                 </tr>
                 <tr>
+                    <td class="font-bold">Registration number</td>
+                    <td>{{ currentContractor()?.reg_number }}</td>
+                </tr>
+                <!-- <tr>
                     <td class="font-bold">Certificates</td>
                     <td>
-                        <a [href]="contractorDetails.certificates" class="text-blue-500 hover:underline">
-                            {{ contractorDetails.certificates }}
+                        <a [href]="currentContractor.certificates" class="text-blue-500 hover:underline">
+                            {{ currentContractor.certificates }}
                         </a>
                     </td>
-                </tr>
-                <tr>
+                </tr> -->
+                <!-- <tr>
                     <td class="font-bold">Licenses</td>
                     <td>
-                        <a [href]="contractorDetails.licenses" class="text-blue-500 hover:underline">
-                            {{ contractorDetails.licenses }}
+                        <a [href]="currentContractor.licenses" class="text-blue-500 hover:underline">
+                            {{ currentContractor.licenses }}
                         </a>
                     </td>
-                </tr>
-                <tr>
+                </tr> -->
+                <!-- <tr>
                     <td class="font-bold">Project History</td>
-                    <td>{{ contractorDetails.projectHistory }}</td>
+                    <td>{{ currentContractor.projectHistory }}</td>
                 </tr>
                 <tr>
                     <td class="font-bold">Project History Records / Images </td>
                     <td>
-                        <a [href]="contractorDetails.projectHistoryProof" class="text-blue-500 hover:underline">
-                            {{ contractorDetails.projectHistoryProof }}
+                        <a [href]="currentContractor.projectHistoryProof" class="text-blue-500 hover:underline">
+                            {{ currentContractor.projectHistoryProof }}
                         </a>
                     </td>
-                </tr>
+                </tr> -->
             </ng-template>
         </p-table>
     </div>
-    @if(getLengthOfTasks() > 0 && !publicContractor)
+    <!-- @if(getLengthOfTasks() > 0 && !publicContractor)
     {
         <div class="mt-8 border rounded-md pt-6 pl-6 pb-6 pr-6 w-full max-w-6xl mx-auto mb-8 shadow-sm">
             <span class="text-yellow-500 text-lg">Previous work completed on your properties</span>
@@ -82,12 +79,11 @@
                 </ng-template>
             </p-listBox>
 
-            <app-task-dialog #taskDialog/>
-        </div>
-    }
+            <!-- <app-task-dialog #taskDialog/> -->
+        <!-- </div> -->
 
     @if(publicContractor)
     {
-        <button class="bg-black hover:bg-gray-500 text-white text-lg p-5 mb-8 rounded cursor-pointer mt-5" (click)="makeTrustedContractor()">Add as trusted contractor?</button>
+        <button class="bg-black hover:bg-gray-500 text-white text-lg p-3 mb-8 rounded cursor-pointer mt-10" (click)="makeTrustedContractor()">Add as trusted contractor?</button>
     }
 </div>

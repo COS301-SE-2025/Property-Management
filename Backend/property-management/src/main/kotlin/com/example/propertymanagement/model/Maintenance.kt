@@ -27,4 +27,6 @@ data class Maintenance(
     val img: UUID,
     @Column(name = "trustee_uuid")
     val t_uuid: UUID,
+    @Column(name = "contractor_uuid")
+    val c_uuid: UUID? = null,
 )

@@ -1,4 +1,5 @@
 @use "tailwindcss";
+@import "primeicons/primeicons.css";
 
 :root {
   --property-yellow: #FFE372;
@@ -57,6 +58,13 @@ body {
 
 .dark-theme .p-card{
   background: var(--dark-background);
+  color: var(--text-color);
+}
+.dark-theme .bg-gray-50  {
+  background: var(--card-hover);
+  color: var(--text-color);
+}
+.dark-theme .bg-gray-50  p{
   color: var(--text-color);
 }
 
@@ -156,4 +164,9 @@ body {
 .dark-theme .p-listbox-option{
   background: var(--dialog-bg);
   color: var(--text-color);
+}
+
+.dark-theme .p-breadcrumb
+{
+  background: var(--dark-background);
 }

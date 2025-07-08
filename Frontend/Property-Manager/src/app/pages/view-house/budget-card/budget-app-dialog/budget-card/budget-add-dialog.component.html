@@ -1,0 +1,27 @@
+<p-dialog header="Create new budget?" [style]="{ width: '30rem'}" [(visible)]="displayDialog" [modal]="true">
+    <span class="p-text-secondary block mb-8">Allocate budgets to inventory and maintenance tasks</span>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mx-auto max-w-lg">
+        <div class = "flex flex-col mb-3 gap-2">
+            <label for="inventory-budget" class="font-semibold">Inventory budget allocation</label>
+            <input id="inventory-budget" class="border rounded w-70 mx-auto px-2" type="number" formControlName="inventoryBudget" required>
+        </div>
+        <div class = "flex flex-col mt-8 mb-8 gap-4">
+            <label for="maintenance-budget" class="font-semibold">Maintenance budget allocation</label>
+            <input id="maintenance-budget" class = "border rounded w-70 mx-auto px-2" type="number" formControlName = "maintenanceBudget" required>
+        </div>
+        <div class="mb-6 text-center">
+            <p class = "font-semibold text-red-500" *ngIf="addError">Error creating budgets</p>
+        </div>
+        <div class = "flex justify-end mt-3">
+            <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer" (click)="closeDialog()">Cancel</button>
+            <button type="submit" 
+                class = "px-3 py-2 rounded cursor-pointer"
+                [class.bg-black]="form.valid"
+                [class.bg-gray-200]="!form.valid"
+                [class.text-white]="form.valid"
+                [disabled]="!form.valid">
+                Add item
+            </button>
+        </div>
+    </form>
+</p-dialog>

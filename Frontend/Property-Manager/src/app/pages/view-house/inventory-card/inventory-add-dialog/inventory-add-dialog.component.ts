@@ -5,6 +5,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { InventoryItemApiService } from '../../../../services/api/InventoryItem api/inventory-item-api.service';
+import { BudgetApiService } from '../../../../services/api/Budget api/budget-api.service';
+import { BuildingDetails } from '../../../../models/buildingDetails.model';
+import { HousesService } from '../../../../services/houses.service';
 
 @Component({
   selector: 'app-inventory-add-dialog',
@@ -15,15 +20,15 @@ import { DialogComponent } from '../../../../components/dialog/dialog.component'
 export class InventoryAddDialogComponent extends DialogComponent implements OnInit{
 
   form!: FormGroup;
+  houseId = '';
 
-  public name = '';
-  public price = 0;
-  public quantity = 0;
   public boughtOn = new Date();
   public addError = false;
 
-
-  constructor(private fb: FormBuilder){ super() }
+  constructor(private fb: FormBuilder, private inventoryItemApiService: InventoryItemApiService, private route: ActivatedRoute, private router: Router, private budgetApiService: BudgetApiService, private housesService: HousesService){ 
+    super() ;
+    this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
+  }
 
   ngOnInit(): void {
       this.form = this.fb.group({
@@ -38,12 +43,65 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     super.closeDialog();
     this.form.reset();
   }
-  onSubmit(): void{
-    //TODO: Implement the logic to add an inventory item
+ async onSubmit(){
+
     if(this.form.valid){
-      console.log("Inventory item added");
-      this.form.reset();
-      this.closeDialog();
+      console.log("Inventory item being added...");
+      const name = this.form.value.name;
+      const price = this.form.value.price;
+      const quantity = this.form.value.quantity;
+
+      this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, this.houseId).subscribe({
+        next: async (response) => {
+          console.log(response);
+
+          await this.getAndUpdateBudget((price*quantity));
+          await this.housesService.loadInventory(this.houseId);
+          await this.housesService.loadBudget(this.houseId);
+          
+          this.form.reset();
+          this.closeDialog();
+          
+          this.router.navigate(['viewHouse', this.houseId]).then(() => {
+            window.location.reload();
+          });
+        },
+        error: (err) => {
+          console.error("Failed to create inventory item", err);
+        }
+      });
     }
+    else
+    {
+      console.log("couldnt add item");
+    }
+  }
+  private async getAndUpdateBudget(overallPrice: number)
+  {
+    this.budgetApiService.getBudgetsByBuildingId(this.houseId).subscribe(
+       (bulidingDetails: BuildingDetails[]) => {
+        const element = bulidingDetails[bulidingDetails.length-1];
+        const elementID = element.budgetUuid;
+
+        const newBudget: BuildingDetails = {
+          budgetUuid: elementID,
+          buildingUuid: this.houseId,
+          approvalDate: new Date(),
+          inventoryBudget: (element.inventoryBudget-overallPrice),
+          inventorySpent: overallPrice,
+          maintenanceBudget: element.maintenanceBudget,
+          maintenanceSpent: element.maintenanceSpent
+        };
+        console.log(newBudget);
+        this.budgetApiService.updateBudget(elementID, newBudget).subscribe({
+          next: (response) => {
+            console.log("Updated budget", response);
+          },
+          error: (err) => {
+            console.error("Couldnt update budget", err);
+          }
+        });
+      }
+    )
   }
 }

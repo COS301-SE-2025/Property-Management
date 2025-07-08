@@ -4,10 +4,8 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { PropertyService } from '../../services/property.service'; 
-import { TrusteeResponse } from '../../models/trusteeresponse.model';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { PropertyService } from '../../services/property.service';
 
 @Component({
   selector: 'app-create-property',
@@ -20,7 +18,7 @@ export class CreatePropertyComponent implements OnInit {
   form: ReturnType<FormBuilder['group']>;
   selectedImageFile: File | null = null;
 
-  trusteeId: number | null = null;
+  trusteeId: string | null = null;
   trusteeUuid: string | null = null;
   coporateUuid: string | null = null;
 
@@ -28,7 +26,6 @@ export class CreatePropertyComponent implements OnInit {
     private fb: FormBuilder,
     private propertyService: PropertyService,
     private router: Router,
-    private http: HttpClient
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -56,27 +53,34 @@ export class CreatePropertyComponent implements OnInit {
 
   async ngOnInit() {
     this.isDarkMode = document.documentElement.classList.contains('dark-theme');
-    await this.fetchTrusteeAndCorporateInfo();
+    // await this.fetchTrusteeAndCorporateInfo();
+
+    this.trusteeUuid = localStorage.getItem("trusteeID");
+
+    if(!this.trusteeId)
+    {
+      this.coporateUuid = localStorage.getItem("bodyCoporateID");
+    }
   }
 
-async fetchTrusteeAndCorporateInfo() {
-  const email = localStorage.getItem('userEmail');
-  if (!email) {
-    console.error('User email not found in localStorage.');
-    return;
-  }
+// async fetchTrusteeAndCorporateInfo() {
+//   const email = localStorage.getItem('userEmail');
+//   if (!email) {
+//     console.error('User email not found in localStorage.');
+//     return;
+//   }
 
-  try {
-    const trustee = await this.http
-      .get<TrusteeResponse>(`/api/trustees/by-email/${encodeURIComponent(email)}`)
-      .toPromise();
-    this.trusteeId = trustee?.id ?? null;
-    this.trusteeUuid = trustee?.trusteeUuid ?? null;
-    this.coporateUuid = trustee?.coporateUuid ?? null;
-  } catch (err) {
-    console.error('Failed to fetch trustee info:', err);
-  }
-}
+//   try {
+//     const trustee = await this.http
+//       .get<TrusteeResponse>(`/api/trustees/by-email/${encodeURIComponent(email)}`)
+//       .toPromise();
+//     this.trusteeId = trustee?.id ?? null;
+//     this.trusteeUuid = trustee?.trusteeUuid ?? null;
+//     this.coporateUuid = trustee?.coporateUuid ?? null;
+//   } catch (err) {
+//     console.error('Failed to fetch trustee info:', err);
+//   }
+// }
 
   async onSubmit() {
     if (this.form.valid) {
@@ -86,10 +90,15 @@ async fetchTrusteeAndCorporateInfo() {
       if (this.selectedImageFile) {
         try {
           const uploadResult = await this.propertyService.uploadImage(this.selectedImageFile).toPromise();
+          console.log("uploaded image", uploadResult);
           propertyImage = uploadResult?.imageId;
         } catch (err) {
           console.error('Image upload failed', err);
         }
+      }
+      else
+      {
+        console.log("no file selected");
       }
 
       const formValue = this.form.value;
@@ -103,10 +112,10 @@ async fetchTrusteeAndCorporateInfo() {
           ? formValue.primaryContractors.split(',').map((id: string) => Number(id.trim()))
           : [],
         latestInspectionDate: new Date().toISOString().split('T')[0],
-        propertyImage: propertyImage ?? null,
-        trustees: this.trusteeId !== null ? [this.trusteeId] : [],
-        trusteeUuid: this.trusteeUuid,
-        coporateUuid: this.coporateUuid,
+        trustees: this.trusteeId !== null ? [String(this.trusteeId)] : [],
+        trusteeUuid: this.trusteeUuid ?? undefined,
+        coporateUuid: this.coporateUuid ?? undefined,
+        propertyImageId: propertyImage
       };
 
       this.propertyService.createProperty(payload).subscribe({

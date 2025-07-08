@@ -5,6 +5,32 @@
          <img src= "assets/images/logo.png" class="w-16 h-12 ml-8 " alt="logo">
     <p class = "font-medium text-xl">Property Manager</p>
 
+    <div class="flex gap-8 ml-12">
+        <a routerLink="/home" routerLinkActive="text-yellow-500" class="text-gray-700 hover:text-yellow-500 font-semibold transition">Home</a>
+        <a routerLink="/contractor-prof" routerLinkActive="text-yellow-500" class="text-gray-700 hover:text-yellow-500 font-semibold transition">My Profile</a>
+        <a routerLink="/help" routerLinkActive="text-yellow-500" class="text-gray-700 hover:text-yellow-500 font-semibold transition">Help</a>
+    </div>
+
+    <!--BreadCrumb-->
+    <div class="pl-5">
+        <p-breadcrumb class="max-w-full" [model]="items">
+            <ng-template #item let-item>
+                <ng-container *ngIf="item.route && !item.active; else elseBlock">
+                    <a [routerLink]="item.route" class="p-breadcrumb-item-link">
+                        <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
+                        <span class="text-primary font-semibold">{{ item.label }}</span>
+                    </a>
+                </ng-container>
+                <ng-template #elseBlock>
+                    <span class="text-color">
+                        <span *ngIf="item.icon" [ngClass]="item.icon"></span>
+                        {{ item.label }}
+                    </span>
+                </ng-template>
+            </ng-template>
+        </p-breadcrumb>
+    </div>
+
     <div class = "flex flex-row items-center ml-auto">
         <div class = "relative">
         <button class = "cursor-pointer pr-3" (click)="dropDownSettings()"> 
@@ -14,13 +40,16 @@
             <img [src]= "isDarkMode? 'assets/icons/profile_gray.svg': 'assets/icons/profile.svg'" class="w-9 h-9" alt="">
         </button>
 
-        <div *ngIf="dropDownProfileOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-22 z-50">
-            <button (click)="signOut()" class= "block text-red-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
-            Sign out
-            </button>  
-            <button class= "block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer">
-            Help?
+        <div *ngIf="dropDownProfileOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-28 z-50">
+            <button *ngIf="isContractor" class="block text-yellow-500 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-400">
+                <a href="/contractor-prof">View profile</a>
+            </button>
+            <button class= "block text-yellow-300 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
+                <a href="/help">Help?</a>
             </button>          
+            <button (click)="signOut()" class= "block text-red-500 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200 border-b border-gray-200">
+                Sign out
+            </button>  
         </div>
 
         <div *ngIf="dropDownSettingsOpen" class= "absolute right-1 top-18 bg-white border rounded shadow-md w-38 z-50" [ngStyle]="{ 'background-color': 'var(--bg-color)'}">

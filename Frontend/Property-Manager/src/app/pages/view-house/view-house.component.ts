@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, OnInit, signal } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../components/header/header.component";
 import { HousesService } from '../../services/houses.service';
 import { ActivatedRoute } from '@angular/router';
-import { House } from '../../models/house.model';
 import { CardModule } from 'primeng/card';
 import { InventoryCardComponent } from "./inventory-card/inventory-card.component";
 import { BudgetCardComponent } from "./budget-card/budget-card.component";
 import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
+import { Property } from '../../models/property.model';
 
 @Component({
   selector: 'app-view-house',
@@ -31,25 +31,49 @@ import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
   ]
 })
 export class ViewHouseComponent implements OnInit{
-  public house: House | undefined;
-  public findHouse = false;
+  public house = signal<Property | undefined>(undefined);
+  public findHouse = signal(false);
 
-  constructor(private route: ActivatedRoute, public houseService: HousesService){}
+  constructor(private route: ActivatedRoute, public houseService: HousesService){
+    effect(async () => {
+      const houseId = this.route.snapshot.paramMap.get('houseId');
+      const houses = this.houseService.houses();
+      console.log(houses);
 
-  ngOnInit()
+      if(houseId && houses.length > 0)
+      {
+        const house = this.houseService.getHouseById(houseId);
+
+        if(house)
+        {
+          console.log(house);
+          this.house.set(house);
+        }
+      }
+      else
+      {
+        this.findHouse.set(true);
+      }
+    });
+  }
+
+  async ngOnInit()
   {
-    this.findHouse = false;
-
+    const houseId = String(this.route.snapshot.paramMap.get('houseId'));
     
-    const houseId = Number(this.route.snapshot.paramMap.get('houseId'));
-    this.house = this.houseService.getHouseById(houseId);
+    try{
+      await Promise.all([
+        this.houseService.loadHouses(),
+        this.houseService.loadInventory(houseId),
+        this.houseService.loadBudget(houseId),
+        this.houseService.loadTasks(houseId)
 
-    this.houseService.loadInventory(houseId);
-    this.houseService.loadBudgetTimeline(houseId);
-
-    if(this.house === undefined)
+      ]);
+    }
+    catch(error)
     {
-      this.findHouse = true;
+      console.error("Error loading data:", error);
+      this.findHouse.set(true);
     }
   }
 }

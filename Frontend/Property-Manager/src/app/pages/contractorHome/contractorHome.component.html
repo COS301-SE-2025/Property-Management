@@ -1,55 +1,42 @@
-<app-header/>
+<app-header></app-header>
 
-    <div class="min-h-screen flex    bg-white relative p-4"[@fadeInStagger] [ngStyle]="{'background-color': 'var(--bg-color)', 'color': 'var(--text-color)'}">
+<div class="min-h-screen bg-white relative"
+    [@fadeInStagger]="true"
+    [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
 
-<div class="ml-25 mb-12 mt-6 animate-item">
-    <h2 class="text-3xl font-semibold font-lato text-black" [ngStyle]="{'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)'}">Available projects</h2>
-    <div class="w-60 h-1 bg-yellow-300 mt-2"></div>
+  <div clas="flex flex-col items center w-full">
+    <div class="mb-12 mt-8 ml-10 animate-item">
+      <h2 class="text-3xl font-semibold font-lato"
+          [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)' }">
+        Available Projects
+      </h2>
+      <div class="w-60 h-1 bg-yellow-300 mt-2"></div>
+    </div>
+    <div *ngIf="tasks.length > 0; else noTasks" class="flex flex-wrap gap-8 justify-center w-full">
+      <a *ngFor="let task of tasks" [routerLink]="['/quotation']" class="block animate-item">
+        <p-card [style]="{ height: '18.5rem', width: '15rem', overflow: 'hidden', backgroundColor: 'white' }">
+          <ng-template #header>
+            <img
+              [src]="task.img"
+              alt="Project Image"
+              class="w-full h-40 object-cover"
+            />
+          </ng-template>
+          <ng-template #title>
+            <span class="text-black">{{ task.title || 'Untitled Task' }}</span>
+          </ng-template>
+          <ng-template #subtitle>
+            <span class="text-black">{{ task.des || 'No description' }}</span>
+          </ng-template>
+        </p-card>
+      </a>
+    </div>
+    <ng-template #noTasks>
+      <div class="flex flex-col items-center justify-center w-full mt-20 text-center text-gray-400 animate-item">
+        <!-- <img src="assets/icons/empty-folder.svg" alt="No tasks" class="w-24 h-24 mb-4 opacity-60" /> -->
+        <p class="text-xl font-semibold mb-2">No projects available</p>
+        <p class="text-sm">Check back later or contact your admin for assistance.</p>
+      </div>
+    </ng-template>
   </div>
-
-  
-
-
-<div class="flex flex-wrap gap-8 pl-8 pt-30 justify-center animate-item">
-<a [routerLink]="['/quotation']" class="block">
-  <p-card [style]="{ height: '16rem', width: '13rem', overflow: 'hidden', backgroundColor: 'white' }">
-    <ng-template #header>
-      <img alt="Card" class="w-full h-40" src="assets/images/house1.jpg" />
-    </ng-template>
-    <ng-template #title>
-      <span class="text-black">Project A</span>
-    </ng-template>
-    <ng-template #subtitle>
-      <span class="text-black">Fix burst pipe</span>
-    </ng-template>
-    
-  </p-card>
-</a>
-<a [routerLink]="['/quotation']" class="block">
-  <p-card [style]="{ height: '16rem', width: '13rem', overflow: 'hidden', backgroundColor: 'white' }">
-    <ng-template #header>
-      <img alt="Card" class="w-full h-40" src="assets/images/house2.jpg" />
-    </ng-template>
-    <ng-template #title>
-      <span class="text-black">Project B</span>
-    </ng-template>
-    <ng-template #subtitle>
-      <span class="text-black">Fix broken toilet</span>
-    </ng-template>
-  </p-card>
-</a>
-<a [routerLink]="['/quotation']" class="block">
-  <p-card [style]="{ height: '16rem', width: '13rem', overflow: 'hidden', backgroundColor: 'white' }">
-    <ng-template #header>
-      <img alt="Card" class="w-full h-40" src="assets/images/house3.jpg" />
-    </ng-template>
-    <ng-template #title>
-      <span class="text-black">Project c</span>
-    </ng-template>
-    <ng-template #subtitle>
-      <span class="text-black"> Add landscapping</span>
-    </ng-template>
-  </p-card>
-</a>
-</div>
 </div>

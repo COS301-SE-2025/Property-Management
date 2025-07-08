@@ -1,9 +1,14 @@
 import { Injectable, signal } from '@angular/core';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
 import { LifeCycleCost } from '../models/lifeCycleCost.model';
-import { BuildingContribution } from '../models/buildingContribution.model';
-import { Graph } from '../models/graph.model';
 import { ContractorDetails } from '../models/contractorDetails.model';
+import { ReserveFund } from '../models/reserveFund.model';
+import { BodyCoporateApiService } from './api/Body Coporate api/body-coporate-api.service';
+import { firstValueFrom, Observable } from 'rxjs';
+import { getCookieValue } from '../../utils/cookie-utils';
+import { Graph } from '../models/graph.model';
+import { BudgetApiService } from './api/Budget api/budget-api.service';
+import { ImageApiService } from './api/Image api/image-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,102 +16,7 @@ import { ContractorDetails } from '../models/contractorDetails.model';
 export class BodyCoporateService {
 
   //Mock data
-  pendingTasks = signal<MaintenanceTask[]>([
-    {
-      description: 'Fixed sink leak',
-      UnitNo: "1",
-      cost: 1000,
-      DoneBy: {
-        contractorId: 1,
-        name: 'ABC Plumbing',
-        contact_info: '0123456789',
-        status: false,
-        apikey: 'abc123',
-        email: 'abc_plumbing@gmail.com',
-        phone: '0123456789',
-        address: '123 Example Street',
-        city: 'Pretoria',
-        postal_code: '01800',
-        reg_number: 'REG123',
-        description: 'General plumbing repairs',
-        services: 'Plumbing'
-      },
-      DoneOn: new Date('2025-06-11'),
-      DueDate: new Date('2025-06-11'),
-      status: "pending",
-      approved: true,
-      proofImages: ["assets/images/sinkMock1.jpg", "assets/images/sinkMock2.jpeg", "assets/images/sinkMock3.jpeg"],
-      inventoryItemsUsed:[
-        {
-          itemId: 4,
-          name: "Tap",
-          unit: "1",
-          quantityInStock: 1,
-          buildingId: 1,
-        },
-        {
-          itemId: 5,
-          name: "Silicon tube",
-          unit: "1",
-          quantityInStock: 1,
-          buildingId: 1,
-        }
-      ],
-      ReviewScore: 4,
-      ReviewDescription: "Very happy with the job",
-      numOfAssignedContractors: 2
-    },
-    {
-      description: 'Fixed light bulb',
-      UnitNo: "2",
-      cost: 200,
-      DoneBy: {
-        contractorId: 2,
-        name: 'XYZ Electricians',
-        contact_info: '0987654321',
-        status: false,
-        apikey: 'xyz456',
-        email: 'xyz_electrician@gmail.com',
-        phone: '0987654321',
-        address: '456 Example Avenue',
-        city: 'Pretoria',
-        postal_code: '01801',
-        reg_number: 'REG456',
-        description: 'Electrical repairs',
-        services: 'Electrical'
-      },
-      DoneOn: new Date('2024-05-28'),
-      DueDate: new Date('2024-05-28'),
-      status: "pending",
-      approved: true,
-      numOfAssignedContractors: 4
-    },
-    {
-      description: 'Repaint interior',
-      UnitNo: "3",
-      cost: 200,
-      DoneBy: {
-        contractorId: 3,
-        name: 'Home Builder',
-        contact_info: '0332452348',
-        status: false,
-        apikey: 'home789',
-        email: 'homebuilder@example.com',
-        phone: '0332452348',
-        address: '789 Example Road',
-        city: 'Pretoria',
-        postal_code: '01802',
-        reg_number: 'REG789',
-        description: 'Painting and building',
-        services: 'Painting'
-      },
-      DoneOn: new Date('2024-05-28'),
-      DueDate: new Date('2024-05-11'),
-      status: "pending",
-      approved: true,
-      numOfAssignedContractors: 3
-    }
-  ]);
+  pendingTasks = signal<MaintenanceTask[]>([]);
 
   lifeCycleCosts = signal<LifeCycleCost[]>([
     {
@@ -132,102 +42,223 @@ export class BodyCoporateService {
     }
   ]);
 
-  fundContribution = signal<BuildingContribution[]>([
-    {
-      buildingId: 1,
-      name: "Name 1",
-      address: "example 1 address",
-      UnitNo: "1",
-      floorArea: 100,
-      quota: 12,
-      annualContribution: 12000
-    },
-    {
-      buildingId: 2,
-      name: "Name 2",
-      address: "example 2 address",
-      UnitNo: "2",
-      floorArea: 67,
-      quota: 9,
-      annualContribution: 8000
-    },
-    {
-      buildingId: 3,
-      name: "Name 3",
-      address: "example 3 address",
-      UnitNo: "3",
-      floorArea: 145,
-      quota: 16,
-      annualContribution: 20000
-    }
-  ]);
+  fundContribution = signal<ReserveFund[]>([]);
+  maintenanceGraph = signal<Graph>({} as Graph);
+  contractorDetails = signal<ContractorDetails[]>([]);
+  bcId = '';
 
-  maintenanceGraph = signal<Graph>({
-    labels: [2020, 2021, 2022, 2023, 2024, 2025],
-    datasets:[
-      {
-        data: [130000, 110000, 85000, 160000, 220000, 180000],
-        backgroundColor: 'rgba(255,227,114, 0.7)',
-        borderColor: 'rgb(255,227,114)',
-        borderWidth: 1
-      }
-    ]
-  });
 
-  contractorDetails = signal<ContractorDetails[]>([
-    {
-      contractorId: 1,
-      name: "ABC plumbing",
-      email: "abc_plumbing@gmail.com",
-      phone: "012334455",
-      apikey: "gtgrtghdrthbrdb",
-      banned: false,
-      images: ["assets/images/plumb.png"],
-      address: "123 Example Street, Hatfield, Pretoria, South Africa, 01800",
-      status: "Available for work",
-      licenseNum: 13245345,
-      descriptionAndSkills: "Everything plumbing",
-      services: "Plumbing",
-      certificates: "certificate.pdf",
-      licenses: "license_plumb.pdf",
-      projectHistory: "Worked on sinks, toilets, etc",
-      projectHistoryProof: "History.pdf" 
-    },
-    {
-      contractorId: 2,
-      name: "DC Electrical",
-      email: "dcElectric@example.com",
-      phone: "0672122132",
-      apikey: "gtgrtghdrthbrdb",
-      banned: false,
-      images: ["assets/images/electric.jpeg"],
-      address: "123 Example Street, Hatfield, Pretoria, South Africa, 01800",
-      status: "Available for work",
-      licenseNum: 13245345,
-      descriptionAndSkills: "Everything plumbing",
-      services: "Plumbing",
-      certificates: "certificate.pdf",
-      licenses: "license_plumb.pdf",
-      projectHistory: "Worked on sinks, toilets, etc",
-      projectHistoryProof: "History.pdf" 
-    },
-    {
-      contractorId: 3,
-      name: "Home Builder",
-      email: "HomeBuild@example.com",
-      phone: "0332452348",
-      apikey: "gtgrtghdrthbrdb",
-      banned: false,
-      images: ["assets/images/homeBuilder.png"],
-      address: "123 Example Street, Hatfield, Pretoria, South Africa, 01800",
-      status: "Available for work",
-      licenseNum: 13245345,
-      descriptionAndSkills: "Everything plumbing",
-      services: "Plumbing",
-      certificates: "certificate.pdf",
-      licenses: "license_plumb.pdf",
-      projectHistory: "Worked on sinks, toilets, etc",
-      projectHistoryProof: "History.pdf" 
+  constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService){
+    this.bcId = getCookieValue(document.cookie, 'bodyCoporateId');
+  }
+
+  async addToTask(task: MaintenanceTask): Promise<void> {
+    this.pendingTasks.update(tasks => [...tasks, task]);
+  }
+
+  async loadPendingTasks(): Promise<void> {
+
+    try {
+      const buildings = await firstValueFrom(
+        this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)
+      );
+
+      const buildingUuids: string[] = buildings
+        .map(b => b.buildingUuid)
+        .filter((uuid): uuid is string => typeof uuid === 'string');
+
+      await Promise.all(buildingUuids.map(async uuid => {
+        try {
+          const tasks = await firstValueFrom(
+            this.bodyCoporateApiService.getPendingTasks(uuid)
+          );
+          tasks.forEach(task => this.addToTask(task));
+        } catch (error) {
+          console.error(`Failed to load tasks for building ${uuid}`, error);
+        }
+      }));
+    } catch (error) {
+      console.error('Failed to load buildings', error);
     }
-  ])
+  }
+  async loadFundContribution(): Promise<void> {
+
+    try {
+      const [buildings, bc] = await Promise.all([
+        firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)),
+        firstValueFrom(this.bodyCoporateApiService.getBodyCoporate(this.bcId))
+      ]);
+
+      const reserveFunds = buildings
+        .filter((building): building is typeof building & { area: number } => typeof building.area === 'number')
+        .map(building => 
+          this.bodyCoporateApiService.getAndCalculateReserveFund(
+            bc, 
+            building.area,
+            building.name
+          )
+        );
+
+      this.fundContribution.set(reserveFunds);
+      
+    } catch (error) {
+      console.error('Failed to load fund contributions', error);
+      this.fundContribution.set([]);
+    }
+  }
+  async loadGraph():Promise<void>
+  {
+   try{
+    const buildings = await firstValueFrom(
+      this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)
+    );
+
+    const budgetPromise = buildings
+      .filter((building): building is typeof building & { buildingUuid: string } => typeof building.buildingUuid === 'string')
+      .map(building => firstValueFrom(this.budgetApiService.getBudgetsByBuildingId(building.buildingUuid)));
+
+    const allBudgets = await Promise.all(budgetPromise);
+    const budgets = allBudgets.map(bud => {
+      if(!bud || bud.length === 0) return null;
+
+      //Get newest budget
+      const sorted = [...bud].sort((a, b) => 
+        new Date(b.approvalDate).getTime() - new Date(a.approvalDate).getTime()
+      );
+
+      return sorted[0];
+    }).filter(Boolean);
+
+    if(budgets.length > 0)
+    {
+      const yearData = budgets.reduce((acc: Record<number, number>, budget) => {
+        if(budget && budget.year && budget.totalBudget)
+        {
+          acc[budget.year] = (acc[budget.year] || 0) + budget.totalBudget;
+        }
+        return acc;
+      }, {});
+
+      const years = Object.keys(yearData).sort();
+      const allBudgets = years.map(year => yearData[parseInt(year)]);
+
+      const graphData: Graph = {
+        labels: years,
+        datasets: [
+          {
+            data: allBudgets,
+            backgroundColor: 'rgba(255,227,114, 0.7)',
+            borderColor: 'rgb(255,227,114)',
+            borderWidth: 1
+          }
+        ]
+      };
+
+      this.maintenanceGraph.set(graphData);
+    }
+   }
+   catch(error)
+   {
+    console.error("Failed to load graph data", error);
+   }
+  }
+  async loadTrustedContractors(): Promise<void>
+  {
+    this.contractorDetails.set([]);
+
+    try{
+      const contractors = await firstValueFrom(
+        this.bodyCoporateApiService.getTrustedContractors(this.bcId)
+      );
+
+      const contractorsWithImages = await Promise.all(
+        contractors.map(async (c) => {
+          if(c.img) 
+          {
+            try{
+              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.img));
+              return { 
+                ...c, 
+                img: imageUrl
+              };
+            }
+            catch(err){
+              console.error("Error loading images", err);
+              return {
+                ...c, 
+                img: ""
+              };
+            }
+          }
+          return c;
+        })
+      );
+
+      this.contractorDetails.set(contractorsWithImages);
+    }
+    catch(err){
+      console.error("Error loading trusted contractors", err);
+    }
+  } 
+  async loadPublicContractors(): Promise<void>
+  {
+    this.contractorDetails.set([]);
+
+    try{
+      const contractors = await firstValueFrom(
+        this.bodyCoporateApiService.getAllPublicContractors(this.bcId)
+      );
+      const contractorsWithImages = await Promise.all(
+        contractors.map(async (c) => {
+          if(c.img) 
+          {
+            try{
+              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.img));
+              return { 
+                ...c, 
+                img: imageUrl
+              };
+            }
+            catch(err){
+              console.error("Error loading images", err);
+              return {
+                ...c, 
+                img: ""
+              };
+            }
+          }
+          return c;
+        })
+      );
+
+      this.contractorDetails.set(contractorsWithImages);
+    }
+    catch(err) {
+      console.error("Error loading public contractors", err);
+    }
+  }
+  updateContractor(contractor: ContractorDetails): Observable<ContractorDetails>
+  {
+    return new Observable<ContractorDetails>((observer) => {
+      this.bodyCoporateApiService.updateContractorDetails(contractor).subscribe({
+        next: (updatedContractor) => {
+          this.contractorDetails.update(details => {
+            const index = details.findIndex(c => c.uuid === updatedContractor.uuid);
+            if (index !== -1) {
+              details[index] = updatedContractor;
+            } else {
+              details.push(updatedContractor);
+            }
+            return details;
+          });
+          observer.next(updatedContractor);
+          observer.complete();
+        },
+        error: (err) => {
+          console.error("Error updating contractor", err);
+          observer.error(err);
+        }
+      });
+    });
+  }
 }

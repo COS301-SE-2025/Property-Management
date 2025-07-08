@@ -3,7 +3,7 @@
     <ng-template #title>Inventory Budget</ng-template>
     <div class = "flex items-center justify-center gap-2">
         <p class ="font-semibold mt-2">Remaining Allocated budget: </p>
-        <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ budget()[1].budgetAmount | formatAmount }}</p>
+        <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ (budget().inventoryBudget - budget().inventorySpent) | formatAmount }}</p>
     </div>
 
     <p class=" pb-2 pt-8 pr-85">Inventory expenditure</p>
@@ -16,9 +16,6 @@
             <th pSortableColumn="quantityInStock">
                 Quantity <p-sortIcon field="quantityInStock"/>
             </th>
-            <th pSortableColumn="boughtDate">
-                Last bought <p-sortIcon field="boughtDate"/>
-            </th>
             <th pSortableColumn="price">
                 Price <p-sortIcon field="price"/>
             </th>
@@ -28,8 +25,7 @@
         <tr>
             <td>{{ inventory.name }}</td>
             <td>{{ inventory.quantityInStock }}</td>
-            <td>{{ inventory.boughtDate | formatDate }}</td>
-            <td>R {{ inventory.price}}</td>
+            <td>R {{ inventory.price }}</td>
         </tr>
         </ng-template>
     </p-table>
@@ -38,6 +34,6 @@
     <button class = "cursor-pointer pt-6" (click)="editBudgetDialog.openDialog()">
         <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
     </button>
-    <app-edit-budget-dialog #editBudgetDialog [budgetType]="'inventory'" [oldBudgetAmount]="budget()[1].budgetAmount"></app-edit-budget-dialog>
+    <app-edit-budget-dialog #editBudgetDialog [budgetType]="'inventory'" [oldBudgetAmount]="budget().inventoryBudget" [budget]="budget()"></app-edit-budget-dialog>
     </p-card>
 </div>

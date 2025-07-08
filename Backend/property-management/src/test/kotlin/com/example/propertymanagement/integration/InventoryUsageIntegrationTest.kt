@@ -65,7 +65,7 @@ class InventoryUsageIntegrationTest {
                 address = "456 Test Ave",
                 type = "Warehouse",
                 propertyValue = 200000.0,
-                primaryContractors = arrayOf(1),
+                primaryContractor = UUID.randomUUID(),
                 latestInspectionDate = LocalDate.of(2024, 2, 2),
                 area = 2000.0,
                 trusteeUuid = UUID.randomUUID(),
@@ -85,6 +85,7 @@ class InventoryUsageIntegrationTest {
                 unit = "pcs",
                 quantity = 100,
                 buildingUuid = buildingUuid,
+                price = 10.0.toBigDecimal(),
             )
         val itemResponse =
             restTemplate.postForEntity(
