@@ -32,6 +32,11 @@ export class StepOneComponent {
   }
 
   emitRelevantData() {
+    if(!this.form.valid){
+      this.form.markAllAsTouched();
+      return;
+    }
+
     this.next.emit({
       name: this.form.value.name,
       contact_info: this.form.value.contact_info,

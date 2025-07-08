@@ -5,6 +5,12 @@
          <img src= "assets/images/logo.png" class="w-16 h-12 ml-8 " alt="logo">
     <p class = "font-medium text-xl">Property Manager</p>
 
+    <div class="flex gap-8 ml-12">
+        <a routerLink="/home" routerLinkActive="text-yellow-500" class="text-gray-700 hover:text-yellow-500 font-semibold transition">Home</a>
+        <a routerLink="/contractor-prof" routerLinkActive="text-yellow-500" class="text-gray-700 hover:text-yellow-500 font-semibold transition">My Profile</a>
+        <a routerLink="/help" routerLinkActive="text-yellow-500" class="text-gray-700 hover:text-yellow-500 font-semibold transition">Help</a>
+    </div>
+
     <!--BreadCrumb-->
     <div class="pl-5">
         <p-breadcrumb class="max-w-full" [model]="items">
