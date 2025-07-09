@@ -28,6 +28,7 @@ export class HeaderComponent {
   public isDarkMode = false;
   public items: MenuItem[] = [];
   public isContractor = false; 
+  public isBodyCorporate = false; 
 
   public typeUser: string | null = null;
   private routeMap: Record<string, Record<string, MenuItem[]>> = {
@@ -117,6 +118,7 @@ export class HeaderComponent {
     this.typeUser = localStorage.getItem('userType');
 
     this.isContractor = this.typeUser === 'contractor' ? true : false;
+    this.isBodyCorporate = this.typeUser === 'bodyCorporate' ? true : false;
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
       this.updateBreadcrumbs(event.url);

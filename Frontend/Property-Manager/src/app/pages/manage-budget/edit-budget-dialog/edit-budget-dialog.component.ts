@@ -3,6 +3,8 @@ import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { SliderModule } from 'primeng/slider';
 import { CommonModule } from '@angular/common';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DialogComponent } from '../../../components/dialog/dialog.component';
@@ -12,9 +14,10 @@ import { BudgetApiService } from '../../../services/api/Budget api/budget-api.se
 
 @Component({
   selector: 'app-edit-budget-dialog',
-  imports: [DialogModule, FloatLabelModule, ReactiveFormsModule, CommonModule, SliderModule, FormsModule],
+  imports: [DialogModule, FloatLabelModule, ReactiveFormsModule, CommonModule, SliderModule, FormsModule, ToastModule],
   templateUrl: './edit-budget-dialog.component.html',
-  styles: ``
+  styles: ``,
+  providers: [MessageService]
 })
 export class EditBudgetDialogComponent extends DialogComponent implements OnInit{
 
@@ -26,7 +29,13 @@ export class EditBudgetDialogComponent extends DialogComponent implements OnInit
   public budgetType = input.required<string>();
   public oldBudgetAmount = input.required<number>();
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private budgetApiService: BudgetApiService){
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private budgetApiService: BudgetApiService,
+    private messageService: MessageService
+  ){
      super();
      this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
   }
@@ -54,7 +63,6 @@ export class EditBudgetDialogComponent extends DialogComponent implements OnInit
   {
     if(this.form.valid)
     {
-      console.log("Updating budget");
       const updateBudget = this.form.value.updatedBudget;
       let inventoryBudget = 0;
       let maintenanceBudget = 0;
@@ -74,12 +82,27 @@ export class EditBudgetDialogComponent extends DialogComponent implements OnInit
         next: () => {
           this.form.reset();
           this.closeDialog();
-          this.router.navigate(['manageBudget', this.houseId]).then(() => {
-            window.location.reload();
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Budget updated successfully'
           });
+
+          setTimeout(() => {
+            this.router.navigate(['manageBudget', this.houseId]).then(() => {
+              window.location.reload();
+            });
+          }, 2500);
         },
         error: (err) => {
           console.error("Failed to update budget", err);
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update budget',
+          })
         }
       });
     }

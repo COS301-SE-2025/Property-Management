@@ -1,3 +1,4 @@
+<p-toast [showTransformOptions]="'300ms'" [showTransformOptions]="'translateX(100%)'" [hideTransformOptions]="'150ms'" [hideTransformOptions]="'translateX(100%)'"></p-toast>
 <p-dialog header="Add new inventory item?" [style]="{ width: '30rem'}" [(visible)]="displayDialog" [modal]="true">
     <span class="p-text-secondary block mb-8">Add new item and update budget.</span>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -18,7 +19,7 @@
             <p-datepicker id="inventory-boughtOn" formControlName="boughtOn" [iconDisplay]="'input'" [showIcon]="true" size="small" [appendTo]="'body'"/>
         </div>
         <div>
-            <p class = "font-semibold text-red-500 ml-35" *ngIf="addError">Error adding inventory item</p>
+            <p class = "font-semibold text-red-500 ml-35" *ngIf="addError">Please fill all required fields correctly</p>
         </div>
         <div class = "flex justify-end mt-3">
             <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer" (click)="closeDialog()">Cancel</button>

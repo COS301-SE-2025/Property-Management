@@ -4,6 +4,8 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryItemApiService } from '../../../../services/api/InventoryItem api/inventory-item-api.service';
@@ -13,9 +15,10 @@ import { HousesService } from '../../../../services/houses.service';
 
 @Component({
   selector: 'app-inventory-add-dialog',
-  imports: [DialogModule, CommonModule, ReactiveFormsModule, DatePickerModule],
+  imports: [DialogModule, CommonModule, ReactiveFormsModule, DatePickerModule, ToastModule],
   templateUrl: './inventory-add-dialog.component.html',
-  styles: ``
+  styles: ``,
+  providers: [MessageService]
 })
 export class InventoryAddDialogComponent extends DialogComponent implements OnInit{
 
@@ -25,7 +28,15 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
   public boughtOn = new Date();
   public addError = false;
 
-  constructor(private fb: FormBuilder, private inventoryItemApiService: InventoryItemApiService, private route: ActivatedRoute, private router: Router, private budgetApiService: BudgetApiService, private housesService: HousesService){ 
+  constructor(
+    private fb: FormBuilder,
+    private inventoryItemApiService: InventoryItemApiService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private budgetApiService: BudgetApiService, 
+    private housesService: HousesService,
+    private messageService: MessageService
+  ){ 
     super() ;
     this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
   }
@@ -61,19 +72,35 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
           
           this.form.reset();
           this.closeDialog();
-          
-          this.router.navigate(['viewHouse', this.houseId]).then(() => {
-            window.location.reload();
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Inventory item added successfully'
           });
+          
+          setTimeout(() => {
+            this.router.navigate(['viewHouse', this.houseId]).then(() => {
+              window.location.reload();
+            });
+          }, 5000);
         },
         error: (err) => {
           console.error("Failed to create inventory item", err);
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to add inventory item',
+          })
         }
       });
     }
     else
     {
       console.log("couldnt add item");
+
+      this.addError = true;
     }
   }
   private async getAndUpdateBudget(overallPrice: number)

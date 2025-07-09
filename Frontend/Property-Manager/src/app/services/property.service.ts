@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import { Property } from '../models/property.model';
-
+import { Observable } from 'rxjs';
 
 export interface CreateBuildingPayload {
   name: string;
@@ -47,12 +45,9 @@ export class PropertyService {
     return this.http.post<Building>(this.apiUrl, data); 
   }
 
-  uploadImage(file: File) {
+  uploadImage(file: File): Observable<ImageUploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post('/api/images/upload', formData, {
-      responseType: 'text'
-    }).pipe( map(imageId => ({ imageId })));
-
+    return this.http.post<ImageUploadResponse>(this.imageUploadUrl, formData);
   }
 }

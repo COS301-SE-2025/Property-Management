@@ -263,7 +263,7 @@ describe('BuildingApiService', () => {
 
       httpClientSpy.delete.and.returnValue(of(mockProperty));
 
-      service.deleteBuiling('1').subscribe({
+      service.deleteBuilding('1').subscribe({
         next: (response) => {
           expect(response).toEqual(mockProperty);
           expect(httpClientSpy.delete).toHaveBeenCalledWith(
@@ -278,7 +278,7 @@ describe('BuildingApiService', () => {
       const errorResponse = { status: 500, message: 'Server error' };
       httpClientSpy.delete.and.returnValue(throwError(() => errorResponse));
 
-      service.deleteBuiling('1').subscribe({
+      service.deleteBuilding('1').subscribe({
         next: () => fail('expected error but got success'),
         error: (error) => {
           expect(error).toEqual(errorResponse);
@@ -304,11 +304,12 @@ describe('BuildingApiService', () => {
         }
       ];
 
-      httpClientSpy.get.and.returnValue(of({buildings: mockProperties}));
+      const mockResponse = { trusteeUuid: '1', buildings: mockProperties };
+      httpClientSpy.get.and.returnValue(of(mockResponse));
 
       service.getBuildingsByTrustee('1').subscribe({
         next: (response) => {
-          expect(response).toEqual(mockProperties);
+          expect(response).toEqual(mockResponse);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
             `${url}/buildings/trustee/1`
           );
@@ -318,11 +319,12 @@ describe('BuildingApiService', () => {
     });
 
     it('should return empty array when no buildings found for trustee', () => {
-      httpClientSpy.get.and.returnValue(of({buildings: []}));
+      const mockResponse = { trusteeUuid: '2', buildings: [] };
+      httpClientSpy.get.and.returnValue(of(mockResponse));
 
       service.getBuildingsByTrustee('2').subscribe({
         next: (response) => {
-          expect(response.length).toBe(0);
+          expect(response).toEqual(mockResponse);
         },
         error: () => fail('expected success but got error')
       });

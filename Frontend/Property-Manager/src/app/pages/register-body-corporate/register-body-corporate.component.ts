@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register-body-corporate',
@@ -24,6 +25,7 @@ export class RegisterBodyCorporateComponent {
   public emptyField = false;
   public userError = false;
   public serverError = false;
+  public errorMessage = '';
 
   constructor(
     private authService: AuthService,
@@ -35,55 +37,60 @@ export class RegisterBodyCorporateComponent {
   }
 
   async register(): Promise<void> {
-    if (!this.corporateName  || !this.email || !this.contactNumber || !this.password) {
+    if (!this.corporateName || !this.contributionPerSqm || !this.email || !this.contactNumber || !this.password) {
       this.emptyField = true;
+      return;
+    }
+
+    const contributionPerSqmValue = parseFloat(this.contributionPerSqm);
+    if (isNaN(contributionPerSqmValue) || contributionPerSqmValue <= 0) {
+      this.userError = true;
       return;
     }
 
     this.userError = false;
     this.serverError = false;
     this.emptyField = false;
+    this.errorMessage = '';
 
-    this.contactNumber = '+27' + this.contactNumber.substring(1);
+    let normalizedContactNumber = this.contactNumber;
+    if (normalizedContactNumber.startsWith('0')) {
+      normalizedContactNumber = '+27' + normalizedContactNumber.substring(1);
+    } else if (!normalizedContactNumber.startsWith('+27')) {
+      normalizedContactNumber = '+27' + normalizedContactNumber;
+    }
 
     try {
       const result = await this.authService.bodyCoporateRegister(
         this.corporateName,
-        0,
+        contributionPerSqmValue,
         this.email,
         this.password,
-        undefined, // totalBudget is not used in the current implementation
-        this.contactNumber
+        undefined, // totalBudget
+        normalizedContactNumber
       );
 
-    
-
       console.log('Registration successful:', result);
-      sessionStorage.setItem('pendingUsername',result.username);
+      sessionStorage.setItem('pendingUsername', result.username);
       sessionStorage.setItem('userType', 'bodyCorporate');
 
       this.router.navigate(['/verifyEmail'], {
-        state: {
-          username: result.username
-        }
+        state: { username: result.username }
       });
     } catch (error: unknown) {
       console.error('Registration error:', error);
-      if (
-        typeof error === 'object' &&
-        error !== null &&
-        ('status' in error || 'code' in error)
-      ) {
-        const err = error as { status?: number; code?: string };
-        if (err.status === 400 || err.code === 'NotAuthorizedException') {
+      
+      if (error instanceof HttpErrorResponse) {
+        this.errorMessage = error.error?.message || error.message || 'Registration failed. Please try again later.';
+        if (error.status === 400 || error.error?.code === 'NotAuthorizedException') {
           this.userError = true;
         } else {
           this.serverError = true;
         }
-      } else {
+      }else {
+        this.errorMessage = 'An unexpected error occurred.';
         this.serverError = true;
       }
-      throw error;
     }
   }
 }

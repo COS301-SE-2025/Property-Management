@@ -38,14 +38,11 @@ export class ManageBudgetComponent implements OnInit {
   constructor(public houseService: HousesService, private route: ActivatedRoute) {
     effect(() => {
       const houseId = this.route.snapshot.paramMap.get('houseId');
-      console.log(houseId);
       const houses = this.houseService.houses();
-      console.log(houses);
 
       if(houseId && houses.length > 0)
       {
         const house = this.houseService.getHouseById(houseId);
-        console.log(house);
 
         if(house)
         {
