@@ -254,7 +254,7 @@ describe('BuildingApiService Integration Tests', () => {
         area: 2
       };
 
-      service.deleteBuiling('1').subscribe(response => {
+      service.deleteBuilding('1').subscribe(response => {
         expect(response).toEqual(mockProperty);
       });
 
@@ -264,7 +264,7 @@ describe('BuildingApiService Integration Tests', () => {
     });
 
     it('should handle error when deletion fails', () => {
-      service.deleteBuiling('1').subscribe(
+      service.deleteBuilding('1').subscribe(
         () => fail('should have failed with 500 error'),
         (error) => {
           expect(error.status).toBe(500);
@@ -293,8 +293,10 @@ describe('BuildingApiService Integration Tests', () => {
         }
       ];
 
+      const mockResponse = { trusteeUuid: '1', buildings: mockProperties };
+
       service.getBuildingsByTrustee('1').subscribe(response => {
-        expect(response).toEqual(mockProperties);
+        expect(response).toEqual(mockResponse);
       });
 
       const req = httpMock.expectOne(`${url}/buildings/trustee/1`);
@@ -303,8 +305,10 @@ describe('BuildingApiService Integration Tests', () => {
     });
 
     it('should return empty array when trustee has no buildings', () => {
+      const mockResponse = { trusteeUuid: '2', buildings: [] };
+
       service.getBuildingsByTrustee('2').subscribe(response => {
-        expect(response).toEqual([]);
+        expect(response).toEqual(mockResponse)
       });
 
       const req = httpMock.expectOne(`${url}/buildings/trustee/2`);

@@ -66,7 +66,6 @@ export class BuildingApiService {
   }
 
   getBuildingsByTrustee(trusteeId: string): Observable<{ trusteeUuid: string; buildings: Property[] }> {
-    // Fixed this line to use this.url instead of this.baseUrl
     return this.http.get<{ trusteeUuid: string; buildings: Property[] }>(`${this.url}/buildings/trustee/${trusteeId}`);
   }
 
