@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CreatePropertyComponent } from './create-property.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router'; 
+import { of } from 'rxjs'; 
 
 describe('CreatePropertyComponent', () => {
   let component: CreatePropertyComponent;
@@ -10,7 +12,12 @@ describe('CreatePropertyComponent', () => {
   beforeEach(async () => {
     localStorage.setItem('userEmail', 'test@example.com');
     await TestBed.configureTestingModule({
-      imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule]
+      imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule],
+      providers: [{
+        provide: ActivatedRoute,
+        useValue: { params: of({})},
+        snapshot: {}
+      }]
     })
     .compileComponents();
 
@@ -38,7 +45,8 @@ describe('CreatePropertyComponent', () => {
       area: 100,
       address: '123 Main St',
       type: 'Apartment',
-      propertyValue: 1000000
+      propertyValue: 1000000,
+      primaryContractor: '1'
     });
     expect(component.form.valid).toBeTrue();
   });
@@ -49,7 +57,7 @@ describe('CreatePropertyComponent', () => {
       target: { files: [file] }
     } as unknown as Event;
     component.onFileSelected(event);
-    expect(component.form.value.image).toBe(file);
+    expect(component.form.value.image).toEqual(file);
   });
 
   it('should log form value on submit if form is valid', () => {
@@ -59,7 +67,8 @@ describe('CreatePropertyComponent', () => {
       area: 100,
       address: '123 Main St',
       type: 'Apartment',
-      propertyValue: 1000000
+      propertyValue: 1000000,
+      primaryContractor: '1'
     });
     component.onSubmit();
 

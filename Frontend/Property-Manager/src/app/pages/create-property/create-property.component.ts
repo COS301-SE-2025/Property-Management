@@ -83,6 +83,7 @@ export class CreatePropertyComponent implements OnInit {
     const file = input.files?.[0] ?? null;
     if (file) {
       this.selectedImageFile = file;
+      this.form.patchValue({image: file});
       const reader = new FileReader();
       reader.onload = () => this.imagePreview = reader.result as string;
       reader.readAsDataURL(file);
