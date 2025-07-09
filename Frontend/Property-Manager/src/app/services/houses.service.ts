@@ -63,10 +63,9 @@ export class HousesService {
       return 0;
     })
   }
-  async loadHouses(){
+  async loadHouses() {
 
-    if(this.houses().length > 0)
-    {
+    if (this.houses().length > 0) {
       return;
     }
 
@@ -88,9 +87,7 @@ export class HousesService {
                 }
               ]);
             });
-          }
-          else
-          {
+          } else {
             this.houses.update(currentHouses => [
               ...currentHouses,
               h
@@ -103,6 +100,7 @@ export class HousesService {
       }
     });
   }
+
   async loadBudget(houseId: string){
 
     this.budgetApiService.getBudgetsByBuildingId(houseId).subscribe(

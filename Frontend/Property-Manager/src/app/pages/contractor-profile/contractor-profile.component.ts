@@ -22,6 +22,7 @@ import { getCookieValue } from '../../../utils/cookie-utils';
 export class ContractorProfileComponent implements OnInit {
 
   contractor: ContractorDetails = {
+    uuid: '',
     name: '',
     contact_info: '',
     status: true,
