@@ -30,7 +30,6 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/body-corporates")
-@CrossOrigin(origins = ["*"])
 class BodyCorporateController(
     private val bodyCorporateService: BodyCorporateService,
 ) {

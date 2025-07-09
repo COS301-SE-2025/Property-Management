@@ -28,7 +28,6 @@ export interface trusteeRegisterResponse {
 
 export interface contractorRegisterResponse {
   email: string;
-  cognitoUserId: string;
   username: string;
 }
 
@@ -109,10 +108,10 @@ export class AuthService {
 
     const req = {
       corporateName,
-      contributionPerSqm,
+      contributionPerSqm : Number(contributionPerSqm.toFixed(2)),
       email,
       password,
-      totalBudget,
+      totalBudget: totalBudget ? Number(totalBudget.toFixed(2)) : undefined,
       contactNumber
     };
 
