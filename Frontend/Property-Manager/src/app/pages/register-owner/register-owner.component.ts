@@ -54,9 +54,6 @@ async register(): Promise<void> {
       sessionStorage.setItem('userType', 'trustee');
       console.log('Registration successful:', result);
 
-    
-      
-
       this.router.navigate(['/verifyEmail'], {
         state: {
           username: result.username

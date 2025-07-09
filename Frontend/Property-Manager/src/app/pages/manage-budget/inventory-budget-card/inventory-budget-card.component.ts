@@ -23,7 +23,7 @@ export class InventoryBudgetCardComponent {
   getMaintenanceTotal(): number {
     let total = 0;
     this.inventory().forEach((item) => {
-      total += item.price !== undefined ? item.price : 0;
+      total += item.price * item.quantityInStock;
     });
     return total;
   }

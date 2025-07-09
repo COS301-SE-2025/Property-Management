@@ -4,12 +4,8 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { DropdownModule } from 'primeng/dropdown';
-import { PropertyService } from '../../services/property.service'; 
-import { ContractorService } from '../../services/contractor.service';
-import { Contractor } from '../../models/contractor.model';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { PropertyService } from '../../services/property.service';
 
 @Component({
   selector: 'app-create-property',
@@ -23,6 +19,8 @@ export class CreatePropertyComponent implements OnInit {
   selectedImageFile: File | null = null;
   imagePreview: string | null = null;
 
+
+  trusteeId: string | null = null;
   trusteeUuid: string | null = null;
   coporateUuid: string | null = null;
 
@@ -36,7 +34,6 @@ export class CreatePropertyComponent implements OnInit {
     private propertyService: PropertyService,
     private contractorService: ContractorService,
     private router: Router,
-    private http: HttpClient
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -94,22 +91,36 @@ export class CreatePropertyComponent implements OnInit {
     }
   }
 
-  async onSubmit() {
-    console.log('Form Valid:', this.form.valid);
-    console.log('Raw Form Values:', this.form.value);
+  async ngOnInit() {
+    this.isDarkMode = document.documentElement.classList.contains('dark-theme');
+    // await this.fetchTrusteeAndCorporateInfo();
 
-    if (this.form.invalid || !this.trusteeUuid) {
-      Object.keys(this.form.controls).forEach(key => {
-        this.form.get(key)?.markAsTouched();
-      });
-      if (!this.trusteeUuid) {
-        this.submissionError = 'Unable to create property: Trustee information is missing. Please refresh.';
-      }
-      return;
+    this.trusteeUuid = localStorage.getItem("trusteeID");
+
+    if(!this.trusteeId)
+    {
+      this.coporateUuid = localStorage.getItem("bodyCoporateID");
     }
+  }
 
-    const formValue = this.form.value;
-    console.log('Selected Primary Contractor UUID:', formValue.primaryContractor);
+// async fetchTrusteeAndCorporateInfo() {
+//   const email = localStorage.getItem('userEmail');
+//   if (!email) {
+//     console.error('User email not found in localStorage.');
+//     return;
+//   }
+
+//   try {
+//     const trustee = await this.http
+//       .get<TrusteeResponse>(`/api/trustees/by-email/${encodeURIComponent(email)}`)
+//       .toPromise();
+//     this.trusteeId = trustee?.id ?? null;
+//     this.trusteeUuid = trustee?.trusteeUuid ?? null;
+//     this.coporateUuid = trustee?.coporateUuid ?? null;
+//   } catch (err) {
+//     console.error('Failed to fetch trustee info:', err);
+//   }
+// }
 
     if (!formValue.primaryContractor) {
       this.submissionError = 'Please select a Primary Contractor.';
@@ -125,14 +136,18 @@ export class CreatePropertyComponent implements OnInit {
       if (this.selectedImageFile) {
         try {
           const uploadResult = await this.propertyService.uploadImage(this.selectedImageFile).toPromise();
-          propertyImageId = uploadResult?.imageKey || null;
-          console.log('Image uploaded, imageKey:', propertyImageId);
+          console.log("uploaded image", uploadResult);
+          propertyImage = uploadResult?.imageId;
         } catch (err) {
           console.error('Image upload failed:', err);
           this.submissionError = 'Failed to upload image. Please try again.';
           this.isSubmitting = false;
           return;
         }
+      }
+      else
+      {
+        console.log("no file selected");
       }
 
       const fullAddress = [
@@ -149,10 +164,10 @@ export class CreatePropertyComponent implements OnInit {
         propertyValue: Number(formValue.propertyValue),
         primaryContractor: formValue.primaryContractor,
         latestInspectionDate: new Date().toISOString().split('T')[0],
-        trusteeUuid: this.trusteeUuid,
-        propertyImageId: propertyImageId,
-        coporateUuid: this.coporateUuid || null,
-        area: Number(formValue.area)
+        trustees: this.trusteeId !== null ? [String(this.trusteeId)] : [],
+        trusteeUuid: this.trusteeUuid ?? undefined,
+        coporateUuid: this.coporateUuid ?? undefined,
+        propertyImageId: propertyImage
       };
 
       console.log('Final Payload Sent to Backend:', payload);
