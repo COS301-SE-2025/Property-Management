@@ -22,8 +22,13 @@
       border-radius: 6px;
       width: 100%;
       font-size: 1rem;
-      color: #888;
+      color: #111;
       font-weight: 500;
+
+      &::placeholder {
+        color: #888 !important; 
+        opacity: 1; 
+      }
     }
 
     .row {
@@ -86,4 +91,8 @@
       }
     }
   }
+}
+
+.dark-theme .card form input {
+  color: #fff; 
 }

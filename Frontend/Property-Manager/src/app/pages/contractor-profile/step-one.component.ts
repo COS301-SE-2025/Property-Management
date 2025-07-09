@@ -20,8 +20,8 @@ export class StepOneComponent {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      name: ['', Validators.required, [Validators.required, Validators.minLength(2)]],
-      email: ['', Validators.required, Validators.email],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.pattern('^[0-9]{4,10}$')]],
       address: [''],
       city: [''],
@@ -32,10 +32,10 @@ export class StepOneComponent {
   }
 
   emitRelevantData() {
-    if(!this.form.valid){
-      this.form.markAllAsTouched();
-      return;
-    }
+    // if(!this.form.valid){
+    //   this.form.markAllAsTouched();
+    //   return;
+    // }
 
     this.next.emit({
       name: this.form.value.name,
