@@ -23,6 +23,7 @@ export class ContractorProfileComponent implements OnInit {
   public isDarkMode = false;
 
   contractor: ContractorDetails = {
+    uuid: '',
     name: '',
     contact_info: '',
     status: true,

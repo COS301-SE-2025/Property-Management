@@ -3,6 +3,7 @@
 <div class="px-10 py-8">
   <h2 class="text-2xl font-bold mb-2">Create New Property</h2>
   <div class="h-1 w-64 bg-yellow-400 mb-6"></div>
+
   <div
     [ngClass]="{
       'border rounded-lg p-12 shadow-sm max-w-6xl mx-auto': true,
@@ -11,36 +12,91 @@
     }"
   >
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-2 gap-4">
+
       <div class="flex flex-col space-y-4">
+        
         <div class="mb-8">
           <p-floatlabel>
-            <input id="name" pInputText formControlName="name" class="w-full col-span-2" style="width: 91%;" />
-            <label for="name">Property Name</label>
+            <input 
+              id="name" 
+              pInputText 
+              formControlName="name" 
+              class="w-full col-span-2" 
+              style="width: 91%;" 
+            />
+            <label for="name">Property Name *</label>
           </p-floatlabel>
         </div>
+
         <div class="mb-8">
           <p-floatlabel>
-            <input id="area" pInputText formControlName="area" type="number" min="0" step="0.01" class="w-full col-span-2" style="width: 91%;" />
-            <label for="area">Area of the Property (m²)</label>
+            <input 
+              id="area" 
+              pInputText 
+              formControlName="area" 
+              type="number" 
+              min="0" 
+              step="0.01" 
+              class="w-full col-span-2" 
+              style="width: 91%;" 
+            />
+            <label for="area">Area (m²) *</label>
           </p-floatlabel>
         </div>
+
         <div class="mb-8">
           <p-floatlabel>
-            <input id="propertyValue" pInputText formControlName="propertyValue" type="number" min="0" step="0.01" class="w-full col-span-2" style="width: 91%;" />
-            <label for="propertyValue">Property Value</label>
+            <input 
+              id="propertyValue" 
+              pInputText 
+              formControlName="propertyValue" 
+              type="number" 
+              min="0" 
+              step="0.01" 
+              class="w-full col-span-2" 
+              style="width: 91%;" 
+            />
+            <label for="propertyValue">Property Value *</label>
           </p-floatlabel>
         </div>
+
         <div class="mb-8">
-          <p-floatlabel>
-            <input id="primaryContractors" pInputText formControlName="primaryContractors" class="w-full col-span-2" style="width: 91%;" />
-            <label for="primaryContractors">Primary Contractors </label>
-          </p-floatlabel>
+          <label for="primaryContractor" class="block mb-1 font-medium">Primary Contractors *</label>
+          <p-dropdown 
+            id="primaryContractor" 
+            [options]="contractors" 
+            optionLabel="name" 
+            optionValue="uuid"
+            formControlName="primaryContractor"
+            [filter]="true" 
+            [showClear]="true" 
+            placeholder="Select a contractor"
+            class="w-full col-span-2"
+            [style]="{ width: '91%' }">
+            
+            <ng-template pTemplate="item" let-contractor>
+              <div class="flex items-center gap-2">
+                <img src="assets/images/contractor-logo.png" alt="Logo" class="w-5 h-5" />
+                <span>{{ contractor.name }} - {{ contractor.services }}</span>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="selectedItem" let-contractor>
+              <div class="flex items-center gap-2">
+                <img src="assets/images/contractor-logo.png" alt="Logo" class="w-5 h-5" *ngIf="contractor" />
+                <span *ngIf="contractor">{{ contractor.name }}</span>
+                <span *ngIf="!contractor">Select a contractor</span>
+              </div>
+            </ng-template>
+
+          </p-dropdown>
         </div>
+
         <div class="mb-8">
           <div class="flex gap-4">
             <p-floatlabel class="w-full">
               <input id="address" pInputText formControlName="address" />
-              <label for="address">Street Address</label>
+              <label for="address">Street Address *</label>
             </p-floatlabel>
             <p-floatlabel class="w-full">
               <input id="suburb" pInputText formControlName="suburb" />
@@ -48,6 +104,7 @@
             </p-floatlabel>
           </div>
         </div>
+
         <div class="mb-8">
           <div class="flex gap-4">
             <p-floatlabel class="w-full">
@@ -60,6 +117,7 @@
             </p-floatlabel>
           </div>
         </div>
+
         <div class="mb-8">
           <div class="flex gap-4">
             <p-floatlabel class="w-full">
@@ -72,22 +130,46 @@
             </p-floatlabel>
           </div>
         </div>
+
         <div class="text-xs text-gray-500 mt-1 mb-8">
           *Invite members: Enter one or more email addresses separated by commas to invite people to join the body corporate for this property.
         </div>
+
       </div>
+
       <div class="flex flex-col items-center">
-        <div class="flex items-center justify-center border rounded bg-gray-50 w-94 h-68">
+        <div class="flex items-center justify-center border rounded bg-gray-50 w-94 h-68 relative">
           <div class="w-full h-full flex items-center justify-center">
-            <img src="https://img.icons8.com/ios/50/image.png" alt="upload icon" class="w-10 h-10 opacity-50" />
+
+            <img 
+              *ngIf="imagePreview; else placeholderIcon" 
+              [src]="imagePreview" 
+              alt="Property Image" 
+              class="w-full h-full object-contain"
+            />
+
+            <ng-template #placeholderIcon>
+              <img src="https://img.icons8.com/ios/50/image.png" alt="upload icon" class="w-10 h-10 opacity-50" />
+            </ng-template>
+
           </div>
           <input #fileInput id="image-upload" type="file" hidden (change)="onFileSelected($event)" />
         </div>
-        <button type="button" class="text-xs mt-2 px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow" (click)="fileInput.click()">Upload Image</button>
+        <button type="button" class="text-xs mt-2 px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow" (click)="fileInput.click()">
+          Upload Image
+        </button>
       </div>
+
       <div class="col-span-2 flex justify-end mt-0">
-        <button type="submit" [disabled]="form.invalid" class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded font-semibold">Create Property</button>
+        <button type="submit" [disabled]="form.invalid || isSubmitting" 
+          class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded font-semibold flex items-center gap-2"
+          [class.opacity-50]="form.invalid || isSubmitting"
+          [class.cursor-not-allowed]="form.invalid || isSubmitting">
+          <span *ngIf="isSubmitting" class="animate-spin inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full"></span>
+          {{ isSubmitting ? 'Creating...' : 'Create Property' }}
+        </button>
       </div>
+
     </form>
   </div>
 </div>

@@ -5,6 +5,17 @@
          <img src= "assets/images/logo.png" class="w-16 h-12 ml-8 " alt="logo">
     <p class = "font-medium text-xl">Property Manager</p>
 
+    <div class="flex gap-8 ml-12">
+  <ng-container *ngFor="let link of navLinks">
+    <a *ngIf="link.show"
+       [routerLink]="link.route"
+       routerLinkActive="text-yellow-500"
+       class="text-gray-700 hover:text-yellow-500 font-semibold transition">
+      {{ link.label }}
+    </a>
+  </ng-container>
+</div>
+
     <!--BreadCrumb-->
     <div class="pl-5">
         <p-breadcrumb class="max-w-full" [model]="items">

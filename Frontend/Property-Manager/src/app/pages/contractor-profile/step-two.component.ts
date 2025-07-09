@@ -78,7 +78,7 @@ export class StepTwoComponent {
       // postal_code: ['', Validators.required],
       reg_number: ['', Validators.required],
       // contractorId: [''],
-      descriptionSkills: ['', Validators.required],
+      description: ['', Validators.required],
       services: ['', Validators.required]
     });
   }
