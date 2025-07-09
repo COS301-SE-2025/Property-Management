@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register-body-corporate',
@@ -24,6 +25,7 @@ export class RegisterBodyCorporateComponent {
   public emptyField = false;
   public userError = false;
   public serverError = false;
+  public errorMessage = '';
 
   constructor(
     private authService: AuthService,
@@ -49,8 +51,8 @@ export class RegisterBodyCorporateComponent {
     this.userError = false;
     this.serverError = false;
     this.emptyField = false;
+    this.errorMessage = '';
 
-    // Normalize phone number
     let normalizedContactNumber = this.contactNumber;
     if (normalizedContactNumber.startsWith('0')) {
       normalizedContactNumber = '+27' + normalizedContactNumber.substring(1);
@@ -75,14 +77,20 @@ export class RegisterBodyCorporateComponent {
       this.router.navigate(['/verifyEmail'], {
         state: { username: result.username }
       });
-    } catch (error: any) {
-      console.error('Registration error:', error.response?.data || error.message);
-      if (error.status === 400 || error.code === 'NotAuthorizedException') {
-        this.userError = true;
-      } else {
+    } catch (error: unknown) {
+      console.error('Registration error:', error);
+      
+      if (error instanceof HttpErrorResponse) {
+        this.errorMessage = error.error?.message || error.message || 'Registration failed. Please try again later.';
+        if (error.status === 400 || error.error?.code === 'NotAuthorizedException') {
+          this.userError = true;
+        } else {
+          this.serverError = true;
+        }
+      }else {
+        this.errorMessage = 'An unexpected error occurred.';
         this.serverError = true;
       }
-      throw error;
     }
   }
 }
