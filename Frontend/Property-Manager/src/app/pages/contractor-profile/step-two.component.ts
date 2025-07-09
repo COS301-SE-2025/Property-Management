@@ -60,10 +60,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 })
 export class StepTwoComponent {
   @Output() next = new EventEmitter<{
-    address: string;
-    city: string;
-    postal_code: string;
+    // address: string;
+    // city: string;
+    // postal_code: string;
     reg_number: string;
+    description: string;
+    services: string;
   }>();
   @Output() back = new EventEmitter<void>();
 
@@ -71,9 +73,9 @@ export class StepTwoComponent {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      address: ['', Validators.required],
-      city: ['', Validators.required],
-      postal_code: ['', Validators.required],
+      // address: ['', Validators.required],
+      // city: ['', Validators.required],
+      // postal_code: ['', Validators.required],
       reg_number: ['', Validators.required],
       // contractorId: [''],
       description: ['', Validators.required],
@@ -82,16 +84,18 @@ export class StepTwoComponent {
   }
 
   emitRelevantData() {
-    if(this.form.valid){
+    if(!this.form.valid){
       this.form.markAllAsTouched();
       return;
     }
 
     this.next.emit({
-      address: this.form.value.address,
-      city: this.form.value.city,
-      postal_code: this.form.value.postal_code,
-      reg_number: this.form.value.reg_number
+      // address: this.form.value.address,
+      // city: this.form.value.city,
+      // postal_code: this.form.value.postal_code,
+      reg_number: this.form.value.reg_number,
+      description: this.form.value.descriptionSkills,
+      services: this.form.value.services
     });
   }
 }

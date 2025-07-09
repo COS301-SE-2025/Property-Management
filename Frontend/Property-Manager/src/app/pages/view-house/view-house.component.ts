@@ -38,7 +38,6 @@ export class ViewHouseComponent implements OnInit{
     effect(async () => {
       const houseId = this.route.snapshot.paramMap.get('houseId');
       const houses = this.houseService.houses();
-      console.log(houses);
 
       if(houseId && houses.length > 0)
       {
@@ -46,7 +45,6 @@ export class ViewHouseComponent implements OnInit{
 
         if(house)
         {
-          console.log(house);
           this.house.set(house);
         }
       }

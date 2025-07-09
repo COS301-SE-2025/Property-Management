@@ -17,12 +17,12 @@
                 <p class = "mt-1">R {{ (budget().maintenanceBudget-budget().maintenanceSpent) | formatAmount }}</p>
             </div>
         </div>
-        <div class="mt-4">
+        <div class="mt-4 hover:translate-y-2 transition-transform duration-200">
             <button class="bg-black text-white px-3 py-1.5 rounded cursor-pointer" (click)="RouteToManageBudget()">Manage budget</button>
         </div>
     }
     @else {
-        <div class="mt-4">
+        <div class="mt-4 hover:translate-y-2 transition-transform duration-200">
             <button class="bg-black text-white px-3 py-1.5 rounded cursor-pointer" (click)="budgetAppDialog.openDialog()">Create budget</button>
             <app-budget-add-dialog #budgetAppDialog/>
         </div>
