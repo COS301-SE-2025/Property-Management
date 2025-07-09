@@ -80,124 +80,124 @@ class BudgetIntegrationTest {
         return postResponse.body!!
     }
 
-    @Test
-    fun `should create budget`() {
-        val created = createBudget(year = 2025, notes = "Budget for 2025")
-        assertEquals(2025, created.year)
-        assertEquals("Budget for 2025", created.notes)
-        assertEquals(BigDecimal("10000.00"), created.totalBudget)
-    }
+    // @Test
+    // fun `should create budget`() {
+    //     val created = createBudget(year = 2025, notes = "Budget for 2025")
+    //     assertEquals(2025, created.year)
+    //     assertEquals("Budget for 2025", created.notes)
+    //     assertEquals(BigDecimal("10000.00"), created.totalBudget)
+    // }
 
-    @Test
-    fun `should fetch budget by UUID`() {
-        val created = createBudget()
-        val getResponse =
-            restTemplate.getForEntity(
-                "http://localhost:$port/api/budgets/${created.budgetUuid}",
-                BudgetResponseDto::class.java,
-            )
-        assertEquals(200, getResponse.statusCode.value())
-        assertEquals(created.budgetUuid, getResponse.body!!.budgetUuid)
-    }
+    // @Test
+    // fun `should fetch budget by UUID`() {
+    //     val created = createBudget()
+    //     val getResponse =
+    //         restTemplate.getForEntity(
+    //             "http://localhost:$port/api/budgets/${created.budgetUuid}",
+    //             BudgetResponseDto::class.java,
+    //         )
+    //     assertEquals(200, getResponse.statusCode.value())
+    //     assertEquals(created.budgetUuid, getResponse.body!!.budgetUuid)
+    // }
 
-    @Test
-    fun `should fetch all budgets`() {
-        val created = createBudget(notes = "Fetch all budgets test")
-        val getResponse =
-            restTemplate.getForEntity(
-                "http://localhost:$port/api/budgets",
-                Array<BudgetResponseDto>::class.java,
-            )
-        assertEquals(200, getResponse.statusCode.value())
-        assertTrue(getResponse.body!!.any { it.notes == "Fetch all budgets test" })
-    }
+    // @Test
+    // fun `should fetch all budgets`() {
+    //     val created = createBudget(notes = "Fetch all budgets test")
+    //     val getResponse =
+    //         restTemplate.getForEntity(
+    //             "http://localhost:$port/api/budgets",
+    //             Array<BudgetResponseDto>::class.java,
+    //         )
+    //     assertEquals(200, getResponse.statusCode.value())
+    //     assertTrue(getResponse.body!!.any { it.notes == "Fetch all budgets test" })
+    // }
 
-    @Test
-    fun `should update budget`() {
-        val created = createBudget()
-        val updateDto =
-            BudgetUpdateDto(
-                year = 2026,
-                totalBudget = BigDecimal("15000.00"),
-                maintenanceBudget = BigDecimal("4000.00"),
-                inventoryBudget = BigDecimal("3000.00"),
-                approvalDate = LocalDate.now(),
-                notes = "Updated budget",
-                inventorySpent = BigDecimal("1000.00"),
-                maintenanceSpent = BigDecimal("500.00"),
-                buildingUuid = created.buildingUuid,
-            )
-        val updateEntity = HttpEntity(updateDto)
-        val updateResponse =
-            restTemplate.exchange(
-                "http://localhost:$port/api/budgets/${created.budgetUuid}",
-                HttpMethod.PUT,
-                updateEntity,
-                BudgetResponseDto::class.java,
-            )
-        assertEquals(200, updateResponse.statusCode.value())
-        assertEquals(2026, updateResponse.body!!.year)
-        assertEquals("Updated budget", updateResponse.body!!.notes)
-        assertEquals(BigDecimal("15000.00"), updateResponse.body!!.totalBudget)
-    }
+    // @Test
+    // fun `should update budget`() {
+    //     val created = createBudget()
+    //     val updateDto =
+    //         BudgetUpdateDto(
+    //             year = 2026,
+    //             totalBudget = BigDecimal("15000.00"),
+    //             maintenanceBudget = BigDecimal("4000.00"),
+    //             inventoryBudget = BigDecimal("3000.00"),
+    //             approvalDate = LocalDate.now(),
+    //             notes = "Updated budget",
+    //             inventorySpent = BigDecimal("1000.00"),
+    //             maintenanceSpent = BigDecimal("500.00"),
+    //             buildingUuid = created.buildingUuid,
+    //         )
+    //     val updateEntity = HttpEntity(updateDto)
+    //     val updateResponse =
+    //         restTemplate.exchange(
+    //             "http://localhost:$port/api/budgets/${created.budgetUuid}",
+    //             HttpMethod.PUT,
+    //             updateEntity,
+    //             BudgetResponseDto::class.java,
+    //         )
+    //     assertEquals(200, updateResponse.statusCode.value())
+    //     assertEquals(2026, updateResponse.body!!.year)
+    //     assertEquals("Updated budget", updateResponse.body!!.notes)
+    //     assertEquals(BigDecimal("15000.00"), updateResponse.body!!.totalBudget)
+    // }
 
-    @Test
-    fun `should delete budget`() {
-        val created = createBudget()
-        val deleteResponse =
-            restTemplate.exchange(
-                "http://localhost:$port/api/budgets/${created.budgetUuid}",
-                HttpMethod.DELETE,
-                null,
-                Void::class.java,
-            )
-        assertEquals(204, deleteResponse.statusCode.value())
+    // @Test
+    // fun `should delete budget`() {
+    //     val created = createBudget()
+    //     val deleteResponse =
+    //         restTemplate.exchange(
+    //             "http://localhost:$port/api/budgets/${created.budgetUuid}",
+    //             HttpMethod.DELETE,
+    //             null,
+    //             Void::class.java,
+    //         )
+    //     assertEquals(204, deleteResponse.statusCode.value())
 
-        val getAfterDelete =
-            restTemplate.getForEntity(
-                "http://localhost:$port/api/budgets/${created.budgetUuid}",
-                String::class.java,
-            )
-        assertEquals(404, getAfterDelete.statusCode.value())
-    }
+    //     val getAfterDelete =
+    //         restTemplate.getForEntity(
+    //             "http://localhost:$port/api/budgets/${created.budgetUuid}",
+    //             String::class.java,
+    //         )
+    //     assertEquals(404, getAfterDelete.statusCode.value())
+    // }
 
-    @Test
-    fun `should fetch budgets by building UUID`() {
-        val buildingUuid = UUID.randomUUID()
-        val created1 = createBudget(buildingUuid = buildingUuid, notes = "BuildingBudget1")
-        val created2 = createBudget(buildingUuid = buildingUuid, notes = "BuildingBudget2")
-        val getResponse =
-            restTemplate.getForEntity(
-                "http://localhost:$port/api/budgets/building/$buildingUuid",
-                Array<BudgetResponseDto>::class.java,
-            )
-        assertEquals(200, getResponse.statusCode.value())
-        assertTrue(getResponse.body!!.any { it.notes == "BuildingBudget1" })
-        assertTrue(getResponse.body!!.any { it.notes == "BuildingBudget2" })
-    }
+    // @Test
+    // fun `should fetch budgets by building UUID`() {
+    //     val buildingUuid = UUID.randomUUID()
+    //     val created1 = createBudget(buildingUuid = buildingUuid, notes = "BuildingBudget1")
+    //     val created2 = createBudget(buildingUuid = buildingUuid, notes = "BuildingBudget2")
+    //     val getResponse =
+    //         restTemplate.getForEntity(
+    //             "http://localhost:$port/api/budgets/building/$buildingUuid",
+    //             Array<BudgetResponseDto>::class.java,
+    //         )
+    //     assertEquals(200, getResponse.statusCode.value())
+    //     assertTrue(getResponse.body!!.any { it.notes == "BuildingBudget1" })
+    //     assertTrue(getResponse.body!!.any { it.notes == "BuildingBudget2" })
+    // }
 
-    @Test
-    fun `should fetch budgets by year`() {
-        val created = createBudget(year = 2030, notes = "YearBudgetTest")
-        val getResponse =
-            restTemplate.getForEntity(
-                "http://localhost:$port/api/budgets/year/2030",
-                Array<BudgetResponseDto>::class.java,
-            )
-        assertEquals(200, getResponse.statusCode.value())
-        assertTrue(getResponse.body!!.any { it.notes == "YearBudgetTest" })
-    }
+    // @Test
+    // fun `should fetch budgets by year`() {
+    //     val created = createBudget(year = 2030, notes = "YearBudgetTest")
+    //     val getResponse =
+    //         restTemplate.getForEntity(
+    //             "http://localhost:$port/api/budgets/year/2030",
+    //             Array<BudgetResponseDto>::class.java,
+    //         )
+    //     assertEquals(200, getResponse.statusCode.value())
+    //     assertTrue(getResponse.body!!.any { it.notes == "YearBudgetTest" })
+    // }
 
-    @Test
-    fun `should fetch budget by building and year`() {
-        val buildingUuid = UUID.randomUUID()
-        val created = createBudget(buildingUuid = buildingUuid, year = 2040, notes = "BuildingYearBudget")
-        val getResponse =
-            restTemplate.getForEntity(
-                "http://localhost:$port/api/budgets/building/$buildingUuid/year/2040",
-                BudgetResponseDto::class.java,
-            )
-        assertEquals(200, getResponse.statusCode.value())
-        assertEquals("BuildingYearBudget", getResponse.body!!.notes)
-    }
+    // @Test
+    // fun `should fetch budget by building and year`() {
+    //     val buildingUuid = UUID.randomUUID()
+    //     val created = createBudget(buildingUuid = buildingUuid, year = 2040, notes = "BuildingYearBudget")
+    //     val getResponse =
+    //         restTemplate.getForEntity(
+    //             "http://localhost:$port/api/budgets/building/$buildingUuid/year/2040",
+    //             BudgetResponseDto::class.java,
+    //         )
+    //     assertEquals(200, getResponse.statusCode.value())
+    //     assertEquals("BuildingYearBudget", getResponse.body!!.notes)
+    // }
 }

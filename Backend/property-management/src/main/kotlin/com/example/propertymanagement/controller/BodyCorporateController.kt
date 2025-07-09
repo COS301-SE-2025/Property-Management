@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
 import java.util.UUID
+import org.slf4j.LoggerFactory
 
 @RestController
 @RequestMapping("/api/body-corporates")
@@ -34,31 +35,29 @@ import java.util.UUID
 class BodyCorporateController(
     private val bodyCorporateService: BodyCorporateService,
 ) {
-    @PostMapping("/register")
-    fun registerBodyCorporate(
-        @Valid @RequestBody request: CreateBodyCorporateRequest,
-    ): ResponseEntity<BodyCorporateRegistrationResponse> {
+    private val logger = LoggerFactory.getLogger(BodyCorporateController::class.java)
+
+   @PostMapping("/register")
+    fun registerBodyCorporate(@Valid @RequestBody request: CreateBodyCorporateRequest): ResponseEntity<BodyCorporateRegistrationResponse> {
         val response = bodyCorporateService.registerBodyCorporate(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
     @PostMapping("/confirm-registration")
-    fun confirmRegistration(
-        @Valid @RequestBody request: ConfirmRegistrationRequest,
-    ): ResponseEntity<Map<String, String>> =
-        try {
-            bodyCorporateService.confirmRegistration(request)
+    fun confirmRegistration(@Valid @RequestBody request: ConfirmRegistrationRequest): ResponseEntity<Map<String, String>> {
+        val success = bodyCorporateService.confirmRegistration(request)
+        return if (success) {
             ResponseEntity.ok(mapOf("message" to "Registration confirmed successfully"))
-        } catch (e: Exception) {
-            ResponseEntity.badRequest().body(mapOf("error" to (e.message ?: "Confirmation failed")))
+        } else {
+            ResponseEntity.badRequest().body(mapOf("error" to "Confirmation failed"))
         }
+    }
 
     @PostMapping("/login")
-    fun login(
-        @Valid @RequestBody request: LoginRequest,
-    ): ResponseEntity<LoginResponse> {
+    fun login(@Valid @RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
         val response = bodyCorporateService.login(request)
-        return ResponseEntity.ok(response)
+        return if (response != null) ResponseEntity.ok(response)
+        else ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
     }
 
     @GetMapping
@@ -68,90 +67,59 @@ class BodyCorporateController(
         @RequestParam(defaultValue = "corporateName") sortBy: String,
         @RequestParam(defaultValue = "asc") sortDirection: String,
     ): ResponseEntity<Page<BodyCorporateResponse>> {
-        val sort =
-            if (sortDirection.lowercase() == "desc") {
-                Sort.by(sortBy).descending()
-            } else {
-                Sort.by(sortBy).ascending()
-            }
+        val sort = if (sortDirection.lowercase() == "desc") Sort.by(sortBy).descending()
+                   else Sort.by(sortBy).ascending()
 
         val pageable: Pageable = PageRequest.of(page, size, sort)
         val bodyCorporates = bodyCorporateService.getAllBodyCorporates(pageable)
         return ResponseEntity.ok(bodyCorporates)
     }
 
-    @GetMapping("/{id}")
-    fun getBodyCorporateById(
-        @PathVariable id: UUID,
-    ): ResponseEntity<BodyCorporateResponse> =
-        try {
-            val bodyCorporate = bodyCorporateService.getBodyCorporateById(id)
-            ResponseEntity.ok(bodyCorporate)
-        } catch (e: NoSuchElementException) {
-            ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(null)
-        }
+   @GetMapping("/{id}")
+    fun getBodyCorporateById(@PathVariable id: UUID): ResponseEntity<BodyCorporateResponse> {
+        val result = bodyCorporateService.getBodyCorporateById(id)
+        return if (result != null) ResponseEntity.ok(result)
+        else ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    }
 
     @GetMapping("/email/{email}")
-    fun getBodyCorporateByEmail(
-        @PathVariable email: String,
-    ): ResponseEntity<BodyCorporateResponse> =
-        try {
-            val bodyCorporate = bodyCorporateService.getBodyCorporateByEmail(email)
-            ResponseEntity.ok(bodyCorporate)
-        } catch (e: NoSuchElementException) {
-            ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(null)
-        }
+    fun getBodyCorporateByEmail(@PathVariable email: String): ResponseEntity<BodyCorporateResponse> {
+        val result = bodyCorporateService.getBodyCorporateByEmail(email)
+        return if (result != null) ResponseEntity.ok(result)
+        else ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    }
 
-    @GetMapping("/user/{userId}")
-    fun getBodyCorporateByUserId(
-        @PathVariable userId: String,
-    ): ResponseEntity<BodyCorporateResponse> =
-        try {
-            val bodyCorporate = bodyCorporateService.getBodyCorporateByUserId(userId)
-            ResponseEntity.ok(bodyCorporate)
-        } catch (e: NoSuchElementException) {
-            ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(null)
-        }
+   @GetMapping("/user/{userId}")
+    fun getBodyCorporateByUserId(@PathVariable userId: String): ResponseEntity<BodyCorporateResponse> {
+        val result = bodyCorporateService.getBodyCorporateByUserId(userId)
+        return if (result != null) ResponseEntity.ok(result)
+        else ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    }
 
     @PutMapping("/{id}")
     fun updateBodyCorporate(
         @PathVariable id: UUID,
         @Valid @RequestBody request: UpdateBodyCorporateRequest,
-    ): ResponseEntity<BodyCorporateResponse> =
-        try {
-            val updatedBodyCorporate = bodyCorporateService.updateBodyCorporate(id, request)
-            ResponseEntity.ok(updatedBodyCorporate)
-        } catch (e: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity.badRequest().body(null)
-        }
+    ): ResponseEntity<BodyCorporateResponse> {
+        val updated = bodyCorporateService.updateBodyCorporate(id, request)
+        return if (updated != null) ResponseEntity.ok(updated)
+        else ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    }
 
     @DeleteMapping("/{id}")
-    fun deleteBodyCorporate(
-        @PathVariable id: UUID,
-    ): ResponseEntity<Map<String, String>> =
-        try {
-            bodyCorporateService.deleteBodyCorporate(id)
+    fun deleteBodyCorporate(@PathVariable id: UUID): ResponseEntity<Map<String, String>> {
+        val deleted = bodyCorporateService.deleteBodyCorporate(id)
+        return if (deleted) {
             ResponseEntity.ok(mapOf("message" to "Body corporate deleted successfully"))
-        } catch (e: NoSuchElementException) {
-            ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(mapOf("error" to (e.message ?: "Body corporate not found")))
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to "Body corporate not found"))
         }
+    }
 
     @GetMapping("/search")
-    fun searchBodyCorporatesByName(
-        @RequestParam name: String,
-    ): ResponseEntity<List<BodyCorporateResponse>> {
-        val bodyCorporates = bodyCorporateService.searchBodyCorporatesByName(name)
-        return ResponseEntity.ok(bodyCorporates)
+    fun searchBodyCorporatesByName(@RequestParam name: String): ResponseEntity<List<BodyCorporateResponse>> {
+        val results = bodyCorporateService.searchBodyCorporatesByName(name)
+        return ResponseEntity.ok(results)
     }
 
     @GetMapping("/filter/contribution")
@@ -159,25 +127,19 @@ class BodyCorporateController(
         @RequestParam minContribution: BigDecimal,
         @RequestParam maxContribution: BigDecimal,
     ): ResponseEntity<List<BodyCorporateResponse>> {
-        val bodyCorporates =
-            bodyCorporateService.getBodyCorporatesByContributionRange(
-                minContribution,
-                maxContribution,
-            )
-        return ResponseEntity.ok(bodyCorporates)
+        val results = bodyCorporateService.getBodyCorporatesByContributionRange(minContribution, maxContribution)
+        return ResponseEntity.ok(results)
     }
 
     @GetMapping("/filter/budget")
-    fun getBodyCorporatesByMinimumBudget(
-        @RequestParam minBudget: BigDecimal,
-    ): ResponseEntity<List<BodyCorporateResponse>> {
-        val bodyCorporates = bodyCorporateService.getBodyCorporatesByMinimumBudget(minBudget)
-        return ResponseEntity.ok(bodyCorporates)
+    fun getBodyCorporatesByMinimumBudget(@RequestParam minBudget: BigDecimal): ResponseEntity<List<BodyCorporateResponse>> {
+        val results = bodyCorporateService.getBodyCorporatesByMinimumBudget(minBudget)
+        return ResponseEntity.ok(results)
     }
 
     @GetMapping("/statistics")
     fun getBodyCorporateStatistics(): ResponseEntity<BodyCorporateService.BodyCorporateStatistics> {
-        val statistics = bodyCorporateService.getBodyCorporateStatistics()
-        return ResponseEntity.ok(statistics)
+        val stats = bodyCorporateService.getBodyCorporateStatistics()
+        return ResponseEntity.ok(stats)
     }
 }

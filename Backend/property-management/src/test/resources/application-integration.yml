@@ -1,20 +1,30 @@
-database:
-  url: jdbc:postgresql://localhost:5432/test_db
-  username: test_user
-  password: test_password
-  driver-class-name: org.postgresql.Driver
-
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/test_db
-    username: test_user
-    password: test_password
+    url: jdbc:postgresql://localhost:5432/property_management_test
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: true
+        
+  flyway:
+    enabled: false
+
+# Test AWS configuration
+aws:
+  accessKeyId: test-access-key
+  secretAccessKey: test-secret-key
+  region: us-east-1
+  bucket-name: test-bucket
 
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicTypeRegistry: TRACE
+    com.example.propertymanagement: DEBUG
+    org.testcontainers: INFO

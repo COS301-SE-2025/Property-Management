@@ -22,73 +22,58 @@ class BodyCorporateService(
     private val bodyCorporateRepository: BodyCorporateRepository,
     private val cognitoService: CognitoService,
 ) {
-    @Transactional
     fun registerBodyCorporate(request: CreateBodyCorporateRequest): BodyCorporateRegistrationResponse {
         if (bodyCorporateRepository.existsByEmail(request.email)) {
             throw IllegalArgumentException("Email already exists")
         }
 
-        // Generate a unique username (before @ + timestamp)
         val username = request.email.substringBefore("@") + "_" + System.currentTimeMillis()
 
-        val attributes =
-            mutableMapOf<String, String>().apply {
-                put("email", request.email)
-                put("given_name", username) // Use the generated username as given_name
-                request.contactNumber?.let { put("phone_number", it) }
-            }
+        val attributes = mutableMapOf(
+            "email" to request.email,
+            "given_name" to username
+        ).apply {
+            request.contactNumber?.let { put("phone_number", it) }
+        }
 
-        val cognitoUserId =
-            try {
-                cognitoService.signUp(
-                    username = username,
-                    password = request.password,
-                    attributes = attributes,
-                )
-            } catch (e: Exception) {
-                throw RuntimeException("Failed to create Cognito user: ${e.message}", e)
-            }
+        val cognitoUserId = cognitoService.signUp(
+            username = username,
+            password = request.password,
+            attributes = attributes
+        )
 
-        val bodyCorporate =
-            BodyCorporate(
-                corporateName = request.corporateName,
-                contributionPerSqm = request.contributionPerSqm,
-                totalBudget = request.totalBudget,
-                email = request.email,
-                userId = cognitoUserId,
-                username = username, // Save username
-            )
+        val bodyCorporate = BodyCorporate(
+            corporateName = request.corporateName,
+            contributionPerSqm = request.contributionPerSqm,
+            totalBudget = request.totalBudget,
+            email = request.email,
+            userId = cognitoUserId,
+            username = username,
+        )
 
-        val savedBodyCorporate =
-            try {
-                bodyCorporateRepository.save(bodyCorporate)
-            } catch (e: Exception) {
-                throw RuntimeException("Failed to save body corporate: ${e.message}", e)
-            }
+        val saved = bodyCorporateRepository.save(bodyCorporate)
 
         return BodyCorporateRegistrationResponse(
-            corporateUuid = savedBodyCorporate.corporateUuid,
-            corporateName = savedBodyCorporate.corporateName,
-            email = savedBodyCorporate.email!!,
+            corporateUuid = saved.corporateUuid,
+            corporateName = saved.corporateName,
+            email = saved.email!!,
             cognitoUserId = cognitoUserId,
-            username = username, // <-- Add this line
+            username = username,
             emailVerificationRequired = true,
         )
     }
 
-    fun confirmRegistration(request: ConfirmRegistrationRequest) {
-        try {
+    fun confirmRegistration(request: ConfirmRegistrationRequest): Boolean {
+        return try {
             cognitoService.confirmRegistration(request.username, request.code)
-        } catch (e: Exception) {
-            throw RuntimeException("Failed to confirm registration: ${e.message}", e)
+            true
+        } catch (_: Exception) {
+            false
         }
     }
 
-    fun login(request: LoginRequest): LoginResponse {
-        val bodyCorporate =
-            bodyCorporateRepository.findByEmail(request.email)
-                ?: throw IllegalArgumentException("Body corporate not found")
-
+    fun login(request: LoginRequest): LoginResponse? {
+        val bodyCorporate = bodyCorporateRepository.findByEmail(request.email) ?: return null
         return try {
             val tokens = cognitoService.login(bodyCorporate.username!!, request.password)
             LoginResponse(
@@ -98,123 +83,87 @@ class BodyCorporateService(
                 userType = "BODY_CORPORATE",
                 userId = bodyCorporate.corporateUuid.toString(),
             )
-        } catch (e: Exception) {
-            throw RuntimeException("Cognito login failed: ${e.message}", e)
+        } catch (_: Exception) {
+            null
         }
     }
 
-    @Transactional(readOnly = true)
-    fun getAllBodyCorporates(pageable: Pageable): Page<BodyCorporateResponse> =
-        bodyCorporateRepository
-            .findAll(pageable)
-            .map { it.toResponse() }
-
-    @Transactional(readOnly = true)
-    fun getBodyCorporateById(id: UUID): BodyCorporateResponse {
-        val bodyCorporate =
-            bodyCorporateRepository
-                .findById(id)
-                .orElseThrow { NoSuchElementException("Body corporate not found with id: $id") }
-        return bodyCorporate.toResponse()
+    fun getAllBodyCorporates(pageable: Pageable): Page<BodyCorporateResponse> {
+        return bodyCorporateRepository.findAll(pageable).map { it.toResponse() }
     }
 
-    @Transactional(readOnly = true)
-    fun getBodyCorporateByEmail(email: String): BodyCorporateResponse {
-        val bodyCorporate =
-            bodyCorporateRepository.findByEmail(email)
-                ?: throw NoSuchElementException("Body corporate not found with email: $email")
-        return bodyCorporate.toResponse()
+    fun getBodyCorporateById(id: UUID): BodyCorporateResponse? {
+        return bodyCorporateRepository.findById(id).map { it.toResponse() }.orElse(null)
     }
 
-    @Transactional(readOnly = true)
-    fun getBodyCorporateByUserId(userId: String): BodyCorporateResponse {
-        val bodyCorporate =
-            bodyCorporateRepository.findByUserId(userId)
-                ?: throw NoSuchElementException("Body corporate not found with userId: $userId")
-        return bodyCorporate.toResponse()
+    fun getBodyCorporateByEmail(email: String): BodyCorporateResponse? {
+        return bodyCorporateRepository.findByEmail(email)?.toResponse()
     }
 
-    fun updateBodyCorporate(
-        id: UUID,
-        request: UpdateBodyCorporateRequest,
-    ): BodyCorporateResponse {
-        val existingBodyCorporate =
-            bodyCorporateRepository
-                .findById(id)
-                .orElseThrow { NoSuchElementException("Body corporate not found with id: $id") }
+    fun getBodyCorporateByUserId(userId: String): BodyCorporateResponse? {
+        return bodyCorporateRepository.findByUserId(userId)?.toResponse()
+    }
 
-        // Check if email is being updated and if it already exists
+    fun updateBodyCorporate(id: UUID, request: UpdateBodyCorporateRequest): BodyCorporateResponse? {
+        val existing = bodyCorporateRepository.findById(id).orElse(null) ?: return null
+
         request.email?.let { newEmail ->
-            if (newEmail != existingBodyCorporate.email && bodyCorporateRepository.existsByEmail(newEmail)) {
-                throw IllegalArgumentException("Email already exists")
+            if (newEmail != existing.email && bodyCorporateRepository.existsByEmail(newEmail)) {
+                return null
             }
         }
 
-        val updatedBodyCorporate =
-            existingBodyCorporate.copy(
-                corporateName = request.corporateName ?: existingBodyCorporate.corporateName,
-                contributionPerSqm = request.contributionPerSqm ?: existingBodyCorporate.contributionPerSqm,
-                totalBudget = request.totalBudget ?: existingBodyCorporate.totalBudget,
-                email = request.email ?: existingBodyCorporate.email,
-            )
+        val updated = existing.copy(
+            corporateName = request.corporateName ?: existing.corporateName,
+            contributionPerSqm = request.contributionPerSqm ?: existing.contributionPerSqm,
+            totalBudget = request.totalBudget ?: existing.totalBudget,
+            email = request.email ?: existing.email,
+        )
 
-        return bodyCorporateRepository.save(updatedBodyCorporate).toResponse()
+        return bodyCorporateRepository.save(updated).toResponse()
     }
 
-    fun deleteBodyCorporate(id: UUID) {
-        val bodyCorporate =
-            bodyCorporateRepository
-                .findById(id)
-                .orElseThrow { NoSuchElementException("Body corporate not found with id: $id") }
-
-        bodyCorporateRepository.delete(bodyCorporate)
+    fun deleteBodyCorporate(id: UUID): Boolean {
+        val bodyCorporate = bodyCorporateRepository.findById(id)
+        return if (bodyCorporate.isPresent) {
+            bodyCorporateRepository.delete(bodyCorporate.get())
+            true
+        } else {
+            false
+        }
     }
 
-    @Transactional(readOnly = true)
-    fun searchBodyCorporatesByName(name: String): List<BodyCorporateResponse> =
-        bodyCorporateRepository
-            .findByCorporateNameContainingIgnoreCase(name)
-            .map { it.toResponse() }
+    fun searchBodyCorporatesByName(name: String): List<BodyCorporateResponse> {
+        return bodyCorporateRepository.findByCorporateNameContainingIgnoreCase(name).map { it.toResponse() }
+    }
 
-    @Transactional(readOnly = true)
-    fun getBodyCorporatesByContributionRange(
-        minContribution: BigDecimal,
-        maxContribution: BigDecimal,
-    ): List<BodyCorporateResponse> =
-        bodyCorporateRepository
-            .findByContributionPerSqmBetween(minContribution, maxContribution)
-            .map { it.toResponse() }
+    fun getBodyCorporatesByContributionRange(min: BigDecimal, max: BigDecimal): List<BodyCorporateResponse> {
+        return bodyCorporateRepository.findByContributionPerSqmBetween(min, max).map { it.toResponse() }
+    }
 
-    @Transactional(readOnly = true)
-    fun getBodyCorporatesByMinimumBudget(minBudget: BigDecimal): List<BodyCorporateResponse> =
-        bodyCorporateRepository
-            .findByTotalBudgetGreaterThanEqual(minBudget)
-            .map { it.toResponse() }
+    fun getBodyCorporatesByMinimumBudget(minBudget: BigDecimal): List<BodyCorporateResponse> {
+        return bodyCorporateRepository.findByTotalBudgetGreaterThanEqual(minBudget).map { it.toResponse() }
+    }
 
-    @Transactional(readOnly = true)
     fun getBodyCorporateStatistics(): BodyCorporateStatistics {
-        val totalCount = bodyCorporateRepository.countAllBodyCorporates()
-        val totalBudget = bodyCorporateRepository.sumAllTotalBudgets() ?: BigDecimal.ZERO
-
-        return BodyCorporateStatistics(
-            totalBodyCorporates = totalCount,
-            totalCombinedBudget = totalBudget,
-        )
+        val count = bodyCorporateRepository.countAllBodyCorporates()
+        val total = bodyCorporateRepository.sumAllTotalBudgets() ?: BigDecimal.ZERO
+        return BodyCorporateStatistics(count, total)
     }
 
-    private fun BodyCorporate.toResponse(): BodyCorporateResponse =
-        BodyCorporateResponse(
-            corporateUuid = this.corporateUuid,
-            corporateName = this.corporateName,
-            contributionPerSqm = this.contributionPerSqm,
-            totalBudget = this.totalBudget,
-            email = this.email,
-            userId = this.userId,
-            username = this.username,
-        )
+    private fun BodyCorporate.toResponse(): BodyCorporateResponse = BodyCorporateResponse(
+        corporateUuid = this.corporateUuid,
+        corporateName = this.corporateName,
+        contributionPerSqm = this.contributionPerSqm,
+        totalBudget = this.totalBudget,
+        email = this.email,
+        userId = this.userId,
+        username = this.username,
+    )
 
     data class BodyCorporateStatistics(
         val totalBodyCorporates: Long,
         val totalCombinedBudget: BigDecimal,
     )
 }
+
