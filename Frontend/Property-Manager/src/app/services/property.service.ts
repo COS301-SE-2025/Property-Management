@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import { Property } from '../models/property.model';
-
+import { Observable } from 'rxjs';
 
 export interface CreateBuildingPayload {
   name: string;

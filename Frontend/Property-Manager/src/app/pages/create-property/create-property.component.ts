@@ -6,9 +6,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
 import { Router } from '@angular/router';
-import { PropertyService, CreateBuildingPayload } from '../../services/property.service';
+import { PropertyService, CreateBuildingPayload, ImageUploadResponse } from '../../services/property.service';
 import { ContractorService } from '../../services/contractor.service';
 import { Contractor } from '../../models/contractor.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-property',
@@ -73,7 +74,7 @@ export class CreatePropertyComponent implements OnInit {
   loadContractors(): void {
     this.contractorService.getAllContractors().subscribe({
       next: (data: Contractor[]) => this.contractors = data,
-      error: (err: any) => console.error('Failed to load contractors:', err)
+      error: (err: HttpErrorResponse) => console.error('Failed to load contractors:', err)
     });
   }
 
@@ -103,14 +104,12 @@ export class CreatePropertyComponent implements OnInit {
     this.isSubmitting = true;
     this.submissionError = null;
 
-    // 1) Upload image if selected
     let propertyImageId: string | null = null;
     if (this.selectedImageFile) {
       try {
         const uploadResult = await this.propertyService.uploadImage(this.selectedImageFile).toPromise();
-        // backend returns { "imageKey": "..." }
-        propertyImageId = (uploadResult as any).imageKey;
-      } catch (err) {
+        propertyImageId = (uploadResult as ImageUploadResponse).imageKey;
+      } catch (err: unknown) {
         console.error('Image upload failed:', err);
         this.submissionError = 'Failed to upload image.';
         this.isSubmitting = false;
@@ -150,7 +149,7 @@ export class CreatePropertyComponent implements OnInit {
         this.isSubmitting = false;
         this.router.navigate(['/home']);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Error creating property:', err);
         this.submissionError =
           err.status === 400 ? 'Invalid data.' :
