@@ -75,7 +75,7 @@ export class HousesService {
     this.buildingApiService.getBuildingsByTrustee(userId).subscribe({
       next: (houses) => {
         
-        houses.forEach(h => {
+        houses.buildings.forEach(h => {
           if(h.propertyImage)
           {
             this.imageApiService.getImage(h.propertyImage).subscribe(imageUrl => {
