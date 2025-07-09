@@ -301,7 +301,7 @@ describe('BuildingApiService Integration Tests', () => {
 
       const req = httpMock.expectOne(`${url}/buildings/trustee/1`);
       expect(req.request.method).toBe('GET');
-      req.flush({buildings: mockProperties });
+      req.flush({trusteeUuid: '1', buildings: mockProperties });
     });
 
     it('should return empty array when trustee has no buildings', () => {
@@ -312,7 +312,7 @@ describe('BuildingApiService Integration Tests', () => {
       });
 
       const req = httpMock.expectOne(`${url}/buildings/trustee/2`);
-      req.flush({buildings: []});
+      req.flush({trusteeUuid: '2', buildings: []});
     });
   });
 
