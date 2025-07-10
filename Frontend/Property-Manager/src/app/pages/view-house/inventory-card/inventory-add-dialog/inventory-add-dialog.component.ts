@@ -57,14 +57,12 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
  async onSubmit(){
 
     if(this.form.valid){
-      console.log("Inventory item being added...");
       const name = this.form.value.name;
       const price = this.form.value.price;
       const quantity = this.form.value.quantity;
 
       this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, this.houseId).subscribe({
-        next: async (response) => {
-          console.log(response);
+        next: async () => {
 
           await this.getAndUpdateBudget((price*quantity));
           await this.housesService.loadInventory(this.houseId);
@@ -98,8 +96,6 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     }
     else
     {
-      console.log("couldnt add item");
-
       this.addError = true;
     }
   }
@@ -119,13 +115,15 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
           maintenanceBudget: element.maintenanceBudget,
           maintenanceSpent: element.maintenanceSpent
         };
-        console.log(newBudget);
         this.budgetApiService.updateBudget(elementID, newBudget).subscribe({
-          next: (response) => {
-            console.log("Updated budget", response);
-          },
           error: (err) => {
             console.error("Couldnt update budget", err);
+            
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to add inventory item',
+            })
           }
         });
       }
