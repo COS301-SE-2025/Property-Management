@@ -5,6 +5,17 @@
          <img src= "assets/images/logo.png" class="w-16 h-12 ml-8 " alt="logo">
     <p class = "font-medium text-xl">Property Manager</p>
 
+    <div class="flex gap-8 ml-12">
+  <ng-container *ngFor="let link of navLinks">
+    <a *ngIf="link.show"
+       [routerLink]="link.route"
+       routerLinkActive="text-yellow-500"
+       class="text-gray-700 hover:text-yellow-500 font-semibold transition">
+      {{ link.label }}
+    </a>
+  </ng-container>
+</div>
+
     <!--BreadCrumb-->
     <div class="pl-5">
         <p-breadcrumb class="max-w-full" [model]="items">
@@ -26,7 +37,11 @@
     </div>
 
     <div class = "flex flex-row items-center ml-auto">
-        <div class = "relative">
+        <div class = "relative flex">
+            <!-- <div *ngIf ="isBodyCorporate" class="mr-4 space-x-4 mt-1.25">
+                <a class="text-yellow-500" href="/home">View properties</a>
+                <a class="text-yellow-500" href="/bodyCoporate/contractors">View contractors</a>
+            </div> -->
         <button class = "cursor-pointer pr-3" (click)="dropDownSettings()"> 
             <img [src]= "isDarkMode? 'assets/icons/settings_gray.svg': 'assets/icons/settings.svg'" class="w-9 h-9" alt=""> 
         </button>
@@ -34,13 +49,16 @@
             <img [src]= "isDarkMode? 'assets/icons/profile_gray.svg': 'assets/icons/profile.svg'" class="w-9 h-9" alt="">
         </button>
 
-        <div *ngIf="dropDownProfileOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-22 z-50">
-            <button (click)="signOut()" class= "block text-red-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
-            Sign out
-            </button>  
-            <button class= "block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer">
-            Help?
+        <div *ngIf="dropDownProfileOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-28 z-50">
+            <button *ngIf="isContractor" class="block text-yellow-500 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-400">
+                <a href="/contractor-prof">View profile</a>
+            </button>
+            <button class= "block text-yellow-300 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
+                <a href="/help">Help?</a>
             </button>          
+            <button (click)="signOut()" class= "block text-red-500 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200 border-b border-gray-200">
+                Sign out
+            </button>  
         </div>
 
         <div *ngIf="dropDownSettingsOpen" class= "absolute right-1 top-18 bg-white border rounded shadow-md w-38 z-50" [ngStyle]="{ 'background-color': 'var(--bg-color)'}">

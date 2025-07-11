@@ -12,7 +12,9 @@
 <div class = "flex flex-wrap justify-center gap-8 p-8">
     @for (house of houses(); track  house.buildingUuid)
     {
-    <app-house-card [house]="house"/>
+        <div class="hover:translate-y-2 transition-transform duration-200 hover:shadow-lg">
+            <app-house-card [house]="house"/>
+        </div>
     }
     <button (click)="RouteToCreateProperty()" class = "cursor-pointer">
     <img class= "w-16 h-16" src= "assets/icons/add_circle.svg" alt="">

@@ -1,51 +1,11 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-step-two',
   standalone: true,
   imports: [ReactiveFormsModule],
-  template: `
-  <div class="form-container max-w-6xl mx-auto w-full">
-    <form [formGroup]="form">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-6 pr-16">
-        <div class="flex flex-col gap-4">
-          <input type="text" formControlName="reg_number" placeholder="Registration Number" class="input" />
-          <input type="text" formControlName="contractorId" placeholder="Contractor ID" class="input" />
-          <div>
-            <label for="descriptionSkills" class="font-semibold block mb-1">Description & Skills</label>
-            <textarea id="descriptionSkills" rows="4" placeholder="Enter a brief description of your area of expertise" class="input resize-none" formControlName="descriptionSkills"></textarea>
-          </div>
-          <div>
-            <label for="service" class="font-semibold block mb-1">Services</label>
-            <textarea id="service" rows="4" placeholder="Enter primary services and secondary services (if any)" class="input resize-none" formControlName="services"></textarea>
-          </div>
-        </div>
-        <div class="flex flex-col gap-4">
-          <label for="certs" class="file-label">
-            <img src="https://img.icons8.com/ios/50/document--v1.png" alt="document upload" class="w-5 h-5 mr-2 opacity-70" />
-            Attach Certifications
-          </label>
-          <input id="certs" type="file" hidden />
-          <label for="licenses" class="file-label">
-            <img src="https://img.icons8.com/ios/50/document--v1.png" alt="document upload" class="w-5 h-5 mr-2 opacity-70" />
-            Attach Licences
-          </label>
-          <input id="licenses" type="file" hidden />
-          <label for="ids" class="file-label">
-            <img src="https://img.icons8.com/ios/50/document--v1.png" alt="document upload" class="w-5 h-5 mr-2 opacity-70" />
-            Attach ID
-          </label>
-          <input id="ids" type="file" hidden />
-        </div>
-      </div>
-      <div class="flex justify-end gap-4">
-        <button type="button" class="btn-yellow" (click)="back.emit()">Back</button>
-        <button type="button" class="btn-yellow" (click)="emitRelevantData()">Next</button>
-      </div>
-    </form>
-  </div>
-  `,
+  templateUrl: 'step-two.component.html',
   styles: [`
 .form-container {
   border: 2px solid #ccc;
@@ -100,10 +60,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 })
 export class StepTwoComponent {
   @Output() next = new EventEmitter<{
-    address: string;
-    city: string;
-    postal_code: string;
+    // address: string;
+    // city: string;
+    // postal_code: string;
     reg_number: string;
+    description: string;
+    services: string;
   }>();
   @Output() back = new EventEmitter<void>();
 
@@ -111,22 +73,29 @@ export class StepTwoComponent {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      address: [''],
-      city: [''],
-      postal_code: [''],
-      reg_number: [''],
-      contractorId: [''],
-      descriptionSkills: [''],
-      services: ['']
+      // address: ['', Validators.required],
+      // city: ['', Validators.required],
+      // postal_code: ['', Validators.required],
+      reg_number: ['', Validators.required],
+      // contractorId: [''],
+      description: ['', Validators.required],
+      services: ['', Validators.required]
     });
   }
 
   emitRelevantData() {
+    if(!this.form.valid){
+      this.form.markAllAsTouched();
+      return;
+    }
+
     this.next.emit({
-      address: this.form.value.address,
-      city: this.form.value.city,
-      postal_code: this.form.value.postal_code,
-      reg_number: this.form.value.reg_number
+      // address: this.form.value.address,
+      // city: this.form.value.city,
+      // postal_code: this.form.value.postal_code,
+      reg_number: this.form.value.reg_number,
+      description: this.form.value.descriptionSkills,
+      services: this.form.value.services
     });
   }
 }

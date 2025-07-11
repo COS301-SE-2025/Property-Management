@@ -22,7 +22,6 @@ export class HomeComponent implements OnInit{
     if(typeUser !== null && typeUser === "bodyCoporate")
     {
       this.bcUser = true;
-      console.log("bcUser active");
     }
   }
 

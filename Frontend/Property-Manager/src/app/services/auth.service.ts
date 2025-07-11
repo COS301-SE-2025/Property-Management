@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 
@@ -29,7 +28,6 @@ export interface trusteeRegisterResponse {
 
 export interface contractorRegisterResponse {
   email: string;
-  cognitoUserId: string;
   username: string;
 }
 
@@ -41,7 +39,7 @@ export class AuthService {
 
   private url = '/api';
 
-  constructor(private http: HttpClient, private router: Router){}
+  constructor(private http: HttpClient){}
 
   bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
   {
@@ -110,10 +108,10 @@ export class AuthService {
 
     const req = {
       corporateName,
-      contributionPerSqm,
+      contributionPerSqm : Number(contributionPerSqm.toFixed(2)),
       email,
       password,
-      totalBudget,
+      totalBudget: totalBudget ? Number(totalBudget.toFixed(2)) : undefined,
       contactNumber
     };
 
@@ -284,5 +282,22 @@ export class AuthService {
           error: (error) => reject(error)
         });
     });
+  }
+
+  logout()
+  {
+    localStorage.removeItem("userType");
+    localStorage.removeItem("trusteeID");
+    localStorage.removeItem("bodyCoporateID");
+    localStorage.removeItem("contractorID");
+
+    const deleteCookie = (name: string) => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    };
+
+    deleteCookie("idToken");
+    deleteCookie("bodyCoporateId");
+    deleteCookie("trusteeId");
+    deleteCookie("contractorId");
   }
 }

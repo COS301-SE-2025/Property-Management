@@ -22,22 +22,41 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
         <ng-container [ngSwitch]="step">
-          <app-step-one *ngSwitchCase="1" (next)="step = 2"></app-step-one>
-          <app-step-two *ngSwitchCase="2" (next)="step = 3" (back)="step = 1"></app-step-two>
-          <app-step-three *ngSwitchCase="3" (back)="step = 2" (done)="submitProfile()"></app-step-three>
+          <app-step-one *ngSwitchCase="1" (next)="onStepOneComplete($event)"></app-step-one>
+          <app-step-two *ngSwitchCase="2" (next)="onStepTwoComplete($event)" (back)="step = 1"></app-step-two>
+          <app-step-three *ngSwitchCase="3" (back)="step = 2" (done)="onStepThreeComplete($event)"></app-step-three>
         </ng-container>
       </div>
       <div *ngIf="step === 1" class="flex flex-col items-center justify-start gap-4 py-14">
-        <div class="w-72 h-48 rounded-xl bg-gray-100 border flex items-center justify-center shadow-sm">
-          <img src="https://img.icons8.com/ios/50/image.png" alt="upload icon" class="w-16 h-16 opacity-50" />
+        <p class="font-semibold">Upload a Profile Image</p>
+        <div class="w-72 h-48 rounded-xl bg-gray-100 border flex items-center justify-center shadow-sm overflow-hidden">
+          <ng-container *ngIf="imagePreviewUrl && !imageError; else placeholder">
+            <img [src]="imagePreviewUrl" alt="Profile image" class="w-full h-full object-cover" />
+          </ng-container>
+          <ng-template #placeholder>
+            <img src="https://img.icons8.com/ios/50/image.png" alt="upload icon" class="w-16 h-16 opacity-50" />
+          </ng-template>
         </div>
-        <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
-        <button
-          type="button"
-          class="text-xs px-4 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow"
-          (click)="fileInput.click()"
-        >
-          Upload Image
-        </button>
+        <p *ngIf="imageError" class="text-red-500 py-1 font-semibold">Failed to load or upload image</p>
+        <div class="flex gap-2">
+          <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
+          <button
+            type="button"
+            class="text-xs px-4 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow"
+            (click)="fileInput.click()"
+          >
+            Upload Image
+          </button>
+          <button
+            *ngIf="imagePreviewUrl || contractor.img"
+            type="button"
+            class="text-xs px-4 py-2 rounded bg-red-400 hover:bg-red-500 text-white font-semibold shadow"
+            (click)="resetImage()"
+          >
+            Remove Image
+          </button>
+        </div>
       </div>
     </div>
+  </div>
+</div>

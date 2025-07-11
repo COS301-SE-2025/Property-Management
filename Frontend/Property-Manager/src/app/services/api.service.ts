@@ -7,6 +7,7 @@ import { Budget } from '../models/budget.model';
 import { Contractor } from '../models/contractor.model';
 import { Quote } from '../models/quote.model';
 import { BuildingDetails } from '../models/buildingDetails.model';
+import { MaintenanceTask } from '../models/maintenanceTask.model';
 
 export interface Trustee {
   trustee_id?: number;
@@ -148,11 +149,13 @@ export class ApiService {
     return this.http.get<Quote>(`${this.url}/quote/${id}`);
   }  
 
-  getMaintenanceTasks(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}/maintenance`);
+  getMaintenanceTasks(): Observable<MaintenanceTask[]> {
+    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`);
   }
 
-  getPresignedImageUrl(uuid: string): Observable<{ url: string }> {
-    return this.http.get<{ url: string }>(`${this.url}/images/presigned/${uuid}`);
+  getPresignedImageUrl(uuid: string): Observable<string> {
+    return this.http.get(`${this.url}/images/presigned/${uuid}`, {
+      responseType: 'text'
+    });
   }
 }

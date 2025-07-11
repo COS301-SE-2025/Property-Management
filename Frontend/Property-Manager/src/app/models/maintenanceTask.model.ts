@@ -7,6 +7,7 @@ export interface MaintenanceTask{
     approved: boolean;
     b_uuid: string;
     t_uuid: string;
-    img?: string[] | string; 
+    c_uuid?: string;
+    img?: string; 
     done?: boolean;
 }

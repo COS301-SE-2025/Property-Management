@@ -7,6 +7,7 @@ export interface ContractorDetails extends Contractor {
    reg_number: string;
    description: string;
    services: string;
-   image?: string;
-   coporateUuid?: string;
+   img?: string;
+   corporate_uuid?: string;
+   project_history?: string;
 }

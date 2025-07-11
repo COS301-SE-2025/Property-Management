@@ -27,7 +27,6 @@ export class BudgetCardComponent implements OnInit{
   }
 
   async ngOnInit() {
-    console.log("Checking for budget");
     this.hasBudget = await this.isExistingBudget();
   }
 

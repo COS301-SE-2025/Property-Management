@@ -28,7 +28,7 @@ export class InventoryUsageApiService {
     return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage?page=${page}&size=${size}`);
   }
 
-  getInventoryUsageById(usageId: string)
+  getInventoryUsageById(usageId: string): Observable<InventoryUsage>
   {
     return this.http.get<InventoryUsage>(`${this.url}/inventory-usage/${usageId}`);
   }

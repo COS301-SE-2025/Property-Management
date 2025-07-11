@@ -5,51 +5,29 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
   selector: 'app-step-one',
   standalone: true,
   imports: [ReactiveFormsModule],
-  template: `
-    <div class="card">
-      <form [formGroup]="form">
-        <h3>Enter Details Below:</h3>
-        <input type="text" formControlName="name" placeholder="Full Name / Company Name" />
-        <input type="text" formControlName="contact_info" placeholder="Contact Info" />
-        <input type="email" formControlName="email" placeholder="Email Address" />
-        <input type="text" formControlName="phone" placeholder="Phone Number" />
-        <input type="text" formControlName="address" placeholder="Address" />
-        <div class="row">
-          <input type="text" formControlName="city" placeholder="City" />
-          <input type="text" formControlName="suburb" placeholder="Suburb" />
-        </div>
-        <input type="text" formControlName="postalCode" placeholder="Postal Code" />
-        <div class="flex gap-4 items-end">
-          <input type="text" formControlName="status" placeholder="Status" class="flex-1" />
-          <button
-            type="button"
-            class="text-sm px-12 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow"
-            (click)="emitRelevantData()"
-          >
-            Next
-          </button>
-        </div>
-      </form>
-    </div>
-  `,
+  templateUrl: './step-one.component.html',
   styleUrls: ['./step-one.component.scss']
 })
 export class StepOneComponent {
   @Output() next = new EventEmitter<{
     name: string;
-    contact_info: string;
+    // contact_info: string;
     email: string;
     phone: string;
+    address: string;
+    city: string;
+    suburb: string;
+    postalCode: string;
+    status: boolean;
   }>();
 
   form: FormGroup;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      contact_info: [''],
-      email: ['', Validators.required],
-      phone: [''],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['',[Validators.required, Validators.email]],
+      phone: ['', [Validators.pattern('^[0-9]{4,10}$')]],
       address: [''],
       city: [''],
       suburb: [''],
@@ -59,11 +37,21 @@ export class StepOneComponent {
   }
 
   emitRelevantData() {
+
+    if(!this.form.valid){
+      this.form.markAllAsTouched();
+      return;
+    }
+
     this.next.emit({
       name: this.form.value.name,
-      contact_info: this.form.value.contact_info,
       email: this.form.value.email,
-      phone: this.form.value.phone
+      phone: this.form.value.phone,
+      address: this.form.value.address,
+      city: this.form.value.city,
+      suburb: this.form.value.suburb,
+      postalCode: this.form.value.postalCode,
+      status: true
     });
   }
 

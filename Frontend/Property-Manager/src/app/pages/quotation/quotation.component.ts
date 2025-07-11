@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -55,15 +55,15 @@ interface FileUploadEvent {
   ]
 })
 
-export class QuotationComponent {
+export class QuotationComponent implements OnInit{
   IssueDate = '';
   expirationDate = '';
   quoteNo = '';
   totalAmount = '';
 
-  contractorId: string = ''; 
-  taskId: string = ''; 
-  type: string = 'Started';
+  contractorId = ''; 
+  taskId = ''; 
+  type = 'Started';
 
   constructor(
   private messageService: MessageService,
@@ -118,7 +118,7 @@ export class QuotationComponent {
       Number(this.totalAmount),
       this.quoteNo
     ).subscribe({
-      next: (res) => {
+      next: () => {
         this.messageService.add({
           severity: 'success',
           summary: 'Quote Created',

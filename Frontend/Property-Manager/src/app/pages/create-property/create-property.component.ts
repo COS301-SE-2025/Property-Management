@@ -1,124 +1,164 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { PropertyService } from '../../services/property.service'; 
-import { TrusteeResponse } from '../../models/trusteeresponse.model';
+import { DropdownModule } from 'primeng/dropdown';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { PropertyService, CreateBuildingPayload, ImageUploadResponse } from '../../services/property.service';
+import { ContractorService } from '../../services/contractor.service';
+import { Contractor } from '../../models/contractor.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-property',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HeaderComponent, InputTextModule, FloatLabelModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HeaderComponent,
+    InputTextModule,
+    FloatLabelModule,
+    DropdownModule
+  ],
   templateUrl: './create-property.component.html',
   styles: [],
 })
 export class CreatePropertyComponent implements OnInit {
-  form: ReturnType<FormBuilder['group']>;
-  selectedImageFile: File | null = null;
+  form!: FormGroup;
 
-  trusteeId: number | null = null;
+  selectedImageFile: File | null = null;
+  imagePreview: string | null = null;
+
   trusteeUuid: string | null = null;
   coporateUuid: string | null = null;
+
+  contractors: Contractor[] = [];
+  isDarkMode = false;
+  isSubmitting = false;
+  submissionError: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private propertyService: PropertyService,
+    private contractorService: ContractorService,
     private router: Router,
-    private http: HttpClient
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
       area: ['', [Validators.required, Validators.min(0)]],
+      propertyValue: ['', [Validators.required, Validators.min(0)]],
       address: ['', Validators.required],
       suburb: [''],
       city: [''],
       province: [''],
       type: ['', Validators.required],
-      propertyValue: ['', Validators.required],
-      primaryContractors: [''],
+      primaryContractor: ['', Validators.required],
       bodyCorporate: [''],
       image: [null],
     });
   }
 
-  onFileSelected(event: Event) {
+  ngOnInit(): void {
+    this.isDarkMode = document.documentElement.classList.contains('dark-theme');
+    this.trusteeUuid = localStorage.getItem('trusteeID');
+    this.coporateUuid = localStorage.getItem('bodyCoporateID');
+    if (!this.trusteeUuid) {
+      this.submissionError = 'Authentication error: Please log in again.';
+    }
+    this.loadContractors();
+  }
+
+  loadContractors(): void {
+    this.contractorService.getAllContractors().subscribe({
+      next: (data: Contractor[]) => this.contractors = data,
+      error: (err: HttpErrorResponse) => console.error('Failed to load contractors:', err)
+    });
+  }
+
+  onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files && input.files[0];
+    const file = input.files?.[0] ?? null;
     if (file) {
       this.selectedImageFile = file;
-      this.form.patchValue({ image: file });
+      this.form.patchValue({image: file});
+      const reader = new FileReader();
+      reader.onload = () => this.imagePreview = reader.result as string;
+      reader.readAsDataURL(file);
     }
   }
 
-  async ngOnInit() {
-    this.isDarkMode = document.documentElement.classList.contains('dark-theme');
-    await this.fetchTrusteeAndCorporateInfo();
-  }
+  async onSubmit(): Promise<void> {
+    if (this.form.invalid) {
+      this.submissionError = 'Please fill all required fields.';
+      return;
+    }
 
-async fetchTrusteeAndCorporateInfo() {
-  const email = localStorage.getItem('userEmail');
-  if (!email) {
-    console.error('User email not found in localStorage.');
-    return;
-  }
+    const formValue = this.form.value;
+    if (!formValue.primaryContractor) {
+      this.submissionError = 'Please select a Primary Contractor.';
+      return;
+    }
 
-  try {
-    const trustee = await this.http
-      .get<TrusteeResponse>(`/api/trustees/by-email/${encodeURIComponent(email)}`)
-      .toPromise();
-    this.trusteeId = trustee?.id ?? null;
-    this.trusteeUuid = trustee?.trusteeUuid ?? null;
-    this.coporateUuid = trustee?.coporateUuid ?? null;
-  } catch (err) {
-    console.error('Failed to fetch trustee info:', err);
-  }
-}
+    this.isSubmitting = true;
+    this.submissionError = null;
 
-  async onSubmit() {
-    if (this.form.valid) {
-      console.log(this.form.value);
-      let propertyImage = null;
-
-      if (this.selectedImageFile) {
-        try {
-          const uploadResult = await this.propertyService.uploadImage(this.selectedImageFile).toPromise();
-          propertyImage = uploadResult?.imageId;
-        } catch (err) {
-          console.error('Image upload failed', err);
-        }
+    let propertyImageId: string | null = null;
+    if (this.selectedImageFile) {
+      try {
+        const uploadResult = await this.propertyService.uploadImage(this.selectedImageFile).toPromise();
+        propertyImageId = (uploadResult as ImageUploadResponse).imageKey;
+      } catch (err: unknown) {
+        console.error('Image upload failed:', err);
+        this.submissionError = 'Failed to upload image.';
+        this.isSubmitting = false;
+        return;
       }
-
-      const formValue = this.form.value;
-      const payload = {
-        name: formValue.name,
-        address: formValue.address,
-        type: formValue.type,
-        propertyValue: Number(formValue.propertyValue),
-        area: Number(formValue.area),
-        primaryContractors: formValue.primaryContractors
-          ? formValue.primaryContractors.split(',').map((id: string) => Number(id.trim()))
-          : [],
-        latestInspectionDate: new Date().toISOString().split('T')[0],
-        propertyImage: propertyImage ?? null,
-        trustees: this.trusteeId !== null ? [String(this.trusteeId)] : [],
-        trusteeUuid: this.trusteeUuid ?? undefined,
-        coporateUuid: this.coporateUuid ?? undefined,
-      };
-
-      this.propertyService.createProperty(payload).subscribe({
-        next: () => {
-          this.router.navigate(['/home']);
-        },
-        error: (err) => {
-          console.error('Error creating property:', err);
-        }
-      });
     }
-  }
 
-  public isDarkMode = false;
+    // 2) Compose full address
+    const fullAddress = [
+      formValue.address,
+      formValue.suburb,
+      formValue.city,
+      formValue.province
+    ]
+      .filter(part => part && part.trim())
+      .join(', ');
+
+    // 3) Build payload
+    const payload: CreateBuildingPayload = {
+      name: formValue.name as string,
+      address: fullAddress,
+      type: formValue.type as string,
+      propertyValue: Number(formValue.propertyValue),
+      primaryContractor: formValue.primaryContractor,
+      latestInspectionDate: new Date().toISOString().split('T')[0],
+      trusteeUuid: this.trusteeUuid as string,
+      coporateUuid: this.coporateUuid ?? null,
+      propertyImageId: propertyImageId,
+      area: Number(formValue.area)
+    };
+
+    console.log('Payload:', payload);
+
+    // 4) Send request
+    this.propertyService.createProperty(payload).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.router.navigate(['/home']);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error creating property:', err);
+        this.submissionError =
+          err.status === 400 ? 'Invalid data.' :
+          err.status === 404 ? 'Not found.' :
+          err.status === 500 ? 'Server error.' :
+          'Failed to create property.';
+        this.isSubmitting = false;
+      }
+    });
+  }
 }

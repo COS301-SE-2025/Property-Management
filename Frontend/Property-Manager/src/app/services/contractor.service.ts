@@ -7,7 +7,7 @@ import { Contractor } from '../models/contractor.model';
   providedIn: 'root'
 })
 export class ContractorService {
-  private apiUrl = '/api/contractor';
+  private apiUrl = 'http://localhost:8080/api/contractor';
 
   constructor(private http: HttpClient) {}
 
@@ -16,6 +16,7 @@ export class ContractorService {
   }
 
   getAllContractors(): Observable<Contractor[]> {
+    console.log('GET', this.apiUrl);
     return this.http.get<Contractor[]>(this.apiUrl);
   }
 
