@@ -1,0 +1,100 @@
+name: Mobile App CI
+
+on:
+  workflow_call:
+  push:
+      branches: [mobile-app]
+  pull_request:
+      branches: [mobile-app]
+
+jobs:
+    lint:
+        runs-on: ubuntu-22.04
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Cache node_modules
+              uses: actions/cache@v3
+              with:
+                path: mobile-app/PropertyManager/node_modules
+                key: npm-${{ hashFiles('mobile-app/PropertyManager/package-lock.json') }}
+                restore-keys: |
+                  npm-
+
+            - name: Install dependencies
+              run: npm ci
+              working-directory: mobile-app/PropertyManager
+
+            - name: Lint code
+              run: npm run lint
+              working-directory: mobile-app/PropertyManager
+        
+    audit:
+      runs-on: ubuntu-22.04
+      needs: lint
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Cache node_modules
+          uses: actions/cache@v3
+          with:
+              path: mobile-app/PropertyManager/node_modules
+              key: npm-${{ hashFiles('mobile-app/PropertyManager/package-lock.json') }}
+              restore-keys: |
+                npm-
+            
+        - name: Install dependencies
+          run: npm ci
+          working-directory: mobile-app/PropertyManager 
+
+        - name: Audit packages
+          run: npm audit || [ $? -eq 1 ] || exit $?
+          working-directory: mobile-app/PropertyManager
+          
+        - name: Fail on critical vulnerabilites 
+          run: npm audit --audit-level=critical
+          working-directory: mobile-app/PropertyManager
+        
+    build:
+        runs-on: ubuntu-22.04
+        needs: audit
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Cache node_modules
+              uses: actions/cache@v3
+              with:
+                path: mobile-app/PropertyManager/node_modules
+                key: npm-${{ hashFiles('mobile-app/PropertyManager/package-lock.json') }}
+                restore-keys: |
+                  npm-
+
+            - name: Install dependencies
+              run: npm ci
+              working-directory: mobile-app/PropertyManager
+
+            - name: Build Angular website
+              run: npm run build
+              working-directory: mobile-app/PropertyManager
+      
+    test:
+      runs-on: ubuntu-22.04
+      needs: build
+      steps:
+          - uses: actions/checkout@v3
+
+          - name: Cache node_modules
+            uses: actions/cache@v3
+            with:
+                path: mobile-app/PropertyManager/node_modules
+                key: npm-${{ hashFiles('mobile-app/PropertyManager/package-lock.json') }}
+                restore-keys: |
+                  npm-
+
+          - name: Install dependencies
+            run: npm ci
+            working-directory: mobile-app/PropertyManager
+
+          - name: Run unit and integration tests
+            run: npm run test -- --watch=false --browsers=ChromeHeadlessCI
+            working-directory: mobile-app/PropertyManager
