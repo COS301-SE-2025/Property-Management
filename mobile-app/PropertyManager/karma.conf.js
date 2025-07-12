@@ -33,11 +33,23 @@ module.exports = function (config) {
       ]
     },
     reporters: ['progress', 'kjhtml'],
+    browsers: ['ChromeHeadlessCI'],
+    customLaunchers:{
+      ChromeHeadlessCI:{
+        base: 'ChromeHeadless',
+        flags: [
+          '--no-sandbox',
+          '--disable-gpu',
+          '--disable-dev-shm-usage',
+          '--disable-software-rasterizer',
+          '--remote-debugging-port=9222'
+        ]
+      }
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
     singleRun: false,
     restartOnFileChange: true
   });
