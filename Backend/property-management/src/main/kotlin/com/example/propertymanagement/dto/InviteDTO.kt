@@ -8,5 +8,5 @@ data class InviteDTO(
     val trusteeUuid: UUID,
     val coporateUuid: UUID,
     val status: String? = null,
-    val invitedOn: Date? = null
+    val invitedOn: Date? = null,
 )

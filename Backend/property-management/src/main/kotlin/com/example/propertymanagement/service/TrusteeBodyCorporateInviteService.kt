@@ -8,34 +8,36 @@ import java.util.UUID
 
 @Service
 class TrusteeBodyCorporateInviteService(
-    private val inviteRepository: TrusteeBodyCorporateInviteRepository
+    private val inviteRepository: TrusteeBodyCorporateInviteRepository,
 ) {
-
     fun createInvite(dto: InviteDTO): InviteDTO {
-        val entity = TrusteeBodyCorporateInvite(
-            trusteeUuid = dto.trusteeUuid,
-            coporateUuid = dto.coporateUuid
-        )
+        val entity =
+            TrusteeBodyCorporateInvite(
+                trusteeUuid = dto.trusteeUuid,
+                coporateUuid = dto.coporateUuid,
+            )
         return inviteRepository.save(entity).toDTO()
     }
 
-    fun getInviteById(inviteUuid: UUID): InviteDTO? =
-        inviteRepository.findById(inviteUuid).orElse(null)?.toDTO()
+    fun getInviteById(inviteUuid: UUID): InviteDTO? = inviteRepository.findById(inviteUuid).orElse(null)?.toDTO()
 
-    fun getInvitesForTrustee(trusteeUuid: UUID): List<InviteDTO> =
-        inviteRepository.findAllByTrusteeUuid(trusteeUuid).map { it.toDTO() }
+    fun getInvitesForTrustee(trusteeUuid: UUID): List<InviteDTO> = inviteRepository.findAllByTrusteeUuid(trusteeUuid).map { it.toDTO() }
 
-    fun updateInviteStatus(inviteUuid: UUID, status: String): InviteDTO? {
+    fun updateInviteStatus(
+        inviteUuid: UUID,
+        status: String,
+    ): InviteDTO? {
         val invite = inviteRepository.findById(inviteUuid).orElse(null) ?: return null
         val updated = invite.copy(status = status)
         return inviteRepository.save(updated).toDTO()
     }
 }
 
-fun TrusteeBodyCorporateInvite.toDTO() = InviteDTO(
-    inviteUuid = this.inviteUuid,
-    trusteeUuid = this.trusteeUuid,
-    coporateUuid = this.coporateUuid,
-    status = this.status,
-    invitedOn = this.invitedOn
-)
+fun TrusteeBodyCorporateInvite.toDTO() =
+    InviteDTO(
+        inviteUuid = this.inviteUuid,
+        trusteeUuid = this.trusteeUuid,
+        coporateUuid = this.coporateUuid,
+        status = this.status,
+        invitedOn = this.invitedOn,
+    )
