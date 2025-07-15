@@ -2,7 +2,6 @@ package com.example.propertymanagement.model
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.util.Date
@@ -12,7 +11,6 @@ import java.util.UUID
 @Table(name = "trustee_bodycoporate_invite")
 data class TrusteeBodyCorporateInvite(
     @Id
-    @GeneratedValue
     @Column(name = "invite_uuid", columnDefinition = "uuid")
     val inviteUuid: UUID = UUID.randomUUID(),
     @Column(name = "trustee_uuid", nullable = false, columnDefinition = "uuid")

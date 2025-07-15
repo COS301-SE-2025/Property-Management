@@ -13,6 +13,7 @@ class TrusteeBodyCorporateInviteService(
     fun createInvite(dto: InviteDTO): InviteDTO {
         val entity =
             TrusteeBodyCorporateInvite(
+                inviteUuid = UUID.randomUUID(),
                 trusteeUuid = dto.trusteeUuid,
                 coporateUuid = dto.coporateUuid,
             )
