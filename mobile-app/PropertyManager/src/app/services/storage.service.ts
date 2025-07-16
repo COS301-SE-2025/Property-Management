@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 
 @Injectable({
@@ -6,8 +6,9 @@ import { Storage } from '@ionic/storage-angular';
 })
 export class StorageService {
   private _storage: Storage | null = null;
+  private storage = inject(Storage);
 
-  constructor(private storage: Storage) {
+  constructor() {
     this.init();
   }
 

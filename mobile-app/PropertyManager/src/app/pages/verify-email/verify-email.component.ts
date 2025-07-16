@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -20,7 +20,11 @@ export class VerifyEmailComponent implements OnInit{
   public emptyField = false;
   public errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router, private storage: StorageService) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private storage = inject(StorageService);
+
+  constructor() {}
 
   async ngOnInit() {
     const storedUsername = await this.storage.get('pendingUsername');

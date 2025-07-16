@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StorageService } from './storage.service';
 
@@ -39,7 +39,10 @@ export class AuthService {
 
   private url = '/api';
 
-  constructor(private http: HttpClient, private storage: StorageService){}
+  private http = inject(HttpClient);
+  private storage = inject(StorageService);
+
+  constructor(){}
 
   trusteeLogin(email: string, password: string): Promise<AuthTokens>
   {

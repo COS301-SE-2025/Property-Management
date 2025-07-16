@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonInput, IonItem} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +20,10 @@ export class LoginComponent{
   public userError = false;
   public serverError = false;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  constructor() { }
 
   togglePassword()
   {

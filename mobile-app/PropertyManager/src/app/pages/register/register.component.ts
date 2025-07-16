@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonInput, IonItem} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +21,11 @@ export class RegisterComponent {
   public userError = false;
   public serverError = false;
 
-  constructor(private authService: AuthService, private router: Router, private storage: StorageService) { }
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private storage = inject(StorageService);
+
+  constructor() { }
 
   togglePassword()
   {
