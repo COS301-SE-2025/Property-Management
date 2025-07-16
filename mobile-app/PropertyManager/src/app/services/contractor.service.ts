@@ -1,13 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Contractor } from '../../models/contractor.model';
 
 @Injectable({ providedIn: 'root' })
 export class ContractorService {
+  private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8080/api/contractor';
-
-  constructor(private http: HttpClient) {}
 
   addContractor(contractor: Omit<Contractor, 'contractorId'>): Observable<Contractor> {
     return this.http.post<Contractor>(this.apiUrl, contractor);

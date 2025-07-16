@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -35,10 +35,9 @@ export interface ImageUploadResponse {
 
 @Injectable({ providedIn: 'root' })
 export class PropertyService {
+  private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8080/api/buildings';
   private imageUploadUrl = 'http://localhost:8080/api/images/upload';
-
-  constructor(private http: HttpClient) {}
 
   createProperty(data: CreateBuildingPayload): Observable<Building> {
     return this.http.post<Building>(this.apiUrl, data); 
