@@ -21,5 +21,9 @@ export const routes: Routes = [
     {
         path: 'verifyEmail',
         loadComponent: () => import('./pages/verify-email/verify-email.component').then(m => m.VerifyEmailComponent)
+    },
+    {
+        path: 'create-property',
+        loadComponent: () => import('./pages/create-property/create-property.component').then(m => m.CreatePropertyComponent)
     }
 ];
