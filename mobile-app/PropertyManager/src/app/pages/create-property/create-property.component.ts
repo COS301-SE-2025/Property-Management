@@ -11,7 +11,8 @@ import { Contractor } from '../../../models/contractor.model';
   selector: 'app-create-property',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, IonicModule],
-  templateUrl: './create-property.component.html'
+  templateUrl: './create-property.component.html',
+  styleUrls: ['./create-property.component.scss']
 })
 export class CreatePropertyComponent implements OnInit {
   form: FormGroup;
