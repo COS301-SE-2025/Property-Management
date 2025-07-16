@@ -30,13 +30,12 @@ export class VerifyEmailComponent {
         this.router.navigate(['']);
       }
     
-
-   if (storedUserType) {
-        this.userType = storedUserType;
-      } else {
-        console.error('No user type found.');
-        this.router.navigate(['/register-body-corporate']);
-      }
+    if (storedUserType) {
+      this.userType = storedUserType;
+    } else {
+      console.error('No user type found.');
+      this.router.navigate(['/register-body-corporate']);
+    }
   }
 
   async sendCode(): Promise<void> {

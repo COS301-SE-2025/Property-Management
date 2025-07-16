@@ -3,5 +3,6 @@
   "integrations": {
     "capacitor": {}
   },
-  "type": "angular-standalone"
+  "type": "angular-standalone",
+  "proxyConfig": "proxy.conf.json"
 }

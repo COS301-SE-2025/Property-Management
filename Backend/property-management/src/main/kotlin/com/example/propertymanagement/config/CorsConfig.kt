@@ -12,6 +12,7 @@ class CorsConfig : WebMvcConfigurer {
         registry
             .addMapping("/api/**")
             .allowedOrigins("http://localhost:4200")
+            .allowedOrigins("http://localhost:8100")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
             // .allowCredentials(true)

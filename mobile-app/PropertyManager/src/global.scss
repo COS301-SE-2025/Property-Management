@@ -1,3 +1,8 @@
+@import 'tailwindcss/base';
+
+@import 'tailwindcss/components';
+
+@import 'tailwindcss/utilities';
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
@@ -35,3 +40,11 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+:root {
+  --property-yellow: #FFE372;
+}
+
+.propertyYellow-bg {
+  background-color: var(--property-yellow);
+}

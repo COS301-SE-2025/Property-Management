@@ -63,24 +63,23 @@ export class LoginComponent {
     }
 
     try {
-  const contractorTokens = await this.authService.contractorLogin(this.email, this.password);
-  localStorage.setItem('userType', 'contractor');
-  localStorage.setItem('contractorID', contractorTokens.userId);
-  console.log('Contractor logged in:', contractorTokens);
+      const contractorTokens = await this.authService.contractorLogin(this.email, this.password);
+      localStorage.setItem('userType', 'contractor');
+      localStorage.setItem('contractorID', contractorTokens.userId);
+      console.log('Contractor logged in:', contractorTokens);
 
-  const profileComplete = localStorage.getItem('contractorProfileComplete');
-  if (profileComplete === 'true') {
-    this.router.navigate(['/contractorHome']);
-  } else {
-    this.router.navigate(['/contractor-prof']);
+      const profileComplete = localStorage.getItem('contractorProfileComplete');
+      if (profileComplete === 'true') {
+        this.router.navigate(['/contractorHome']);
+      } else {
+        this.router.navigate(['/contractor-prof']);
+      }
+      return;
+  } catch (error) {
+    console.warn('Contractor login failed:', error);
   }
-  return;
-} catch (error) {
-  console.warn('Contractor login failed:', error);
-}
 
     //all failed
     this.userError = true;
-
   }
 }
