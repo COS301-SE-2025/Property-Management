@@ -9,5 +9,17 @@ export const routes: Routes = [
     {
         path: 'login',
         loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) 
+    },
+    {
+        path: 'registerTrustee',
+        loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent)
+    },
+    {
+        path: 'registerHub',
+        loadComponent: () => import('./pages/register-hub/register-hub.component').then(m => m.RegisterHubComponent)
+    },
+    {
+        path: 'verifyEmail',
+        loadComponent: () => import('./pages/verify-email/verify-email.component').then(m => m.VerifyEmailComponent)
     }
 ];

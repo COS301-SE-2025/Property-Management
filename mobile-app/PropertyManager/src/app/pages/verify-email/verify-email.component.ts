@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { AuthService } from 'src/app/services/auth.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-verify-email',
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './verify-email.component.html',
   styles: ``
 })
-export class VerifyEmailComponent {
+export class VerifyEmailComponent implements OnInit{
 
   public verificationCode = '';
   public username = '';
@@ -19,27 +20,24 @@ export class VerifyEmailComponent {
   public emptyField = false;
   public errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) {
-    const storedUsername = sessionStorage.getItem('pendingUsername');
-    const storedUserType = sessionStorage.getItem('userType');
-    
-    if (storedUsername) {
-        this.username = storedUsername;
-      }else {
-        console.error('No username found for verification.');
-        this.router.navigate(['']);
-      }
-    
-    if (storedUserType) {
+  constructor(private authService: AuthService, private router: Router, private storage: StorageService) {}
+
+  async ngOnInit() {
+    const storedUsername = await this.storage.get('pendingUsername');
+    const storedUserType = await this.storage.get('userType');
+
+    if(storedUsername && storedUserType){
+      this.username = storedUsername;
       this.userType = storedUserType;
-    } else {
-      console.error('No user type found.');
-      this.router.navigate(['/register-body-corporate']);
+    }
+    else{
+      console.error('No username or user type found for verification.');
+      this.router.navigate(['']);
     }
   }
 
-  async sendCode(): Promise<void> {
-    if(!this.verificationCode) {
+  async sendCode(): Promise<void>{
+    if(!this.verificationCode){
       this.emptyField = true;
       return;
     }
@@ -48,11 +46,8 @@ export class VerifyEmailComponent {
     this.errorMessage = '';
 
     try {
-      console.log(this.userType);
-      if(this.userType === 'bodyCorporate') {
-        const result = await this.authService.confirmBodyCoporateRegistration(this.username, this.verificationCode);
-        console.log('Email verification successful:', result);
-      }else if(this.userType === 'trustee') {
+
+      if(this.userType === 'trustee') {
         const result = await this.authService.confirmTrusteeRegistration(this.username, this.verificationCode);
         console.log('Email verification successful:', result);
       } else if(this.userType === 'contractor') {
@@ -64,8 +59,8 @@ export class VerifyEmailComponent {
         return;
       }
 
-      sessionStorage.removeItem('pendingUsername');
-      sessionStorage.removeItem('userType');
+      this.storage.remove('pendingUsername');
+      this.storage.remove('userType');
       this.router.navigate(['/login']);
 
     } catch (error) {

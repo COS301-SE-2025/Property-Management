@@ -4,7 +4,7 @@
   </div>
 
   <div class="text-center space-y-4 propertyYellow-bg px-5 py-3">
-    <p class="text-xl font-bold">Sign in</p>
+    <p class="text-md font-bold">Create an account as a trustee</p>
 
     <ion-item>
       <img class = "relative right-0.5 mr-2 h-5 w-5 pointer-events-none" src="assets/icons/mail.svg" alt="">
@@ -26,7 +26,7 @@
     </ion-item>
 
     <div class = "pl-25 hover:translate-y-2 transition-transform duration-200">
-        <button (click)="login()" class = "bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Login</button>
+        <button (click)="register()" class = "bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Create account</button>
     </div>
 
     <div *ngIf="emptyField || userError || serverError" class="pl-20">
@@ -35,9 +35,9 @@
       <p *ngIf="serverError" class="text-red-500 py-1 font-semibold rounded">Internal server error</p>
     </div>
 
-    <div class = "text-sm space-y-2">
-        <a class = "block hover:underline" href="">Forgot password?</a>
-        <a class = "font-semibold hover:underline" href = "/registerHub">Create Account?</a>
+    <div class = "text-sm space-y-5">
+        <a class="block" href = "/login">Sign in</a>
+        <a class = "font-semibold" href = "/registerHub">Create Account?</a>
     </div>
   </div>
 </div>
