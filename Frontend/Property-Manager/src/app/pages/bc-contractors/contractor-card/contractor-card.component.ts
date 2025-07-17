@@ -1,8 +1,8 @@
 import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
-import { BodyCoporateService } from '../../../services/body-coporate.service';
-import { ContractorDetails } from '../../../models/contractorDetails.model';
+import { BodyCoporateService } from 'shared';
+import { ContractorDetails } from 'shared';
 
 @Component({
   selector: 'app-contractor-card',

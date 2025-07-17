@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 // import { BudgetService } from '../../../services/budget.service';
-import { Graph } from '../../../models/graph.model';
+import { Graph } from 'shared';
 import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { ChangeDetectionStrategy } from '@angular/core';

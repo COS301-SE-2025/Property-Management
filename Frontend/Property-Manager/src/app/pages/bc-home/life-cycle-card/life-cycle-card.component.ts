@@ -2,8 +2,8 @@ import { Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
-import { BodyCoporateService } from '../../../services/body-coporate.service';
-import { LifeCycleCost } from '../../../models/lifeCycleCost.model';
+import { BodyCoporateService } from 'shared';
+import { LifeCycleCost } from 'shared';
 import { FormatAmountPipe } from "../../../pipes/format-amount.pipe";
 import { AddCostDialogComponent } from "./add-cost-dialog/add-cost-dialog.component";
 

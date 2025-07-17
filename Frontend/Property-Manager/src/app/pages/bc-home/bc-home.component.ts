@@ -3,7 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { HeaderComponent } from "../../components/header/header.component";
 // import { DrawerComponent } from '../../components/drawer/drawer.component';
 import { PendingTaskCardComponent } from "./pending-task-card/pending-task-card.component";
-import { BodyCoporateService } from '../../services/body-coporate.service';
+import { BodyCoporateService } from 'shared';
 import { LifeCycleCardComponent } from "./life-cycle-card/life-cycle-card.component";
 import { ReserveFundCardComponent } from "./reserve-fund-card/reserve-fund-card.component";
 import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenance-graph-card.component';

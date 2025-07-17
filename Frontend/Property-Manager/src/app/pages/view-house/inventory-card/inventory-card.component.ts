@@ -6,12 +6,12 @@ import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { Inventory } from '../../../models/inventory.model';
+import { Inventory } from 'shared';
 import { CommonModule } from '@angular/common';
-import { HousesService } from '../../../services/houses.service';
+import { HousesService } from 'shared';
 import { InventoryAddDialogComponent } from "./inventory-add-dialog/inventory-add-dialog.component";
-import { BudgetApiService } from '../../../services/api/Budget api/budget-api.service';
-import { BuildingDetails } from '../../../models/buildingDetails.model';
+import { BudgetApiService } from 'shared';
+import { BuildingDetails } from 'shared';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

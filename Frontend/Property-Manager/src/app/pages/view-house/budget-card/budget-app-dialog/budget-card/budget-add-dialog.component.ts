@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { DialogComponent } from '../../../../../components/dialog/dialog.component';
-import { BudgetApiService } from '../../../../../services/api/Budget api/budget-api.service';
+import { BudgetApiService } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

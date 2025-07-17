@@ -8,10 +8,10 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { InventoryItemApiService } from '../../../../services/api/InventoryItem api/inventory-item-api.service';
-import { BudgetApiService } from '../../../../services/api/Budget api/budget-api.service';
-import { BuildingDetails } from '../../../../models/buildingDetails.model';
-import { HousesService } from '../../../../services/houses.service';
+import { InventoryItemApiService } from 'shared';
+import { BudgetApiService } from 'shared';
+import { BuildingDetails } from 'shared';
+import { HousesService } from 'shared';
 
 @Component({
   selector: 'app-inventory-add-dialog',

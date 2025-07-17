@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HeaderComponent } from "../../components/header/header.component";
 import { DrawerComponent } from "../../components/drawer/drawer.component";
-import { BodyCoporateService } from '../../services/body-coporate.service';
+import { BodyCoporateService } from 'shared';
 import { ContractorCardComponent } from './contractor-card/contractor-card.component';
 import { Router } from '@angular/router';
 

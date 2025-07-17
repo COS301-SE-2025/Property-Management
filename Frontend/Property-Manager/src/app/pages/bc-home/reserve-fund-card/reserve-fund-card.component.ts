@@ -2,9 +2,9 @@ import { Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
-import { BodyCoporateService } from '../../../services/body-coporate.service';
+import { BodyCoporateService } from 'shared';
 import { FormatAmountPipe } from "../../../pipes/format-amount.pipe";
-import { ReserveFund } from '../../../models/reserveFund.model';
+import { ReserveFund } from 'shared';
 
 @Component({
   selector: 'app-reserve-fund-card',

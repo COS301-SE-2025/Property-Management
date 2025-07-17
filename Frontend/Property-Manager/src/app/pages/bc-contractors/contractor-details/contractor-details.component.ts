@@ -4,16 +4,16 @@ import { ListboxModule } from 'primeng/listbox';
 import { CommonModule } from '@angular/common';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { BodyCoporateService } from '../../../services/body-coporate.service';
+import { BodyCoporateService } from 'shared';
 // import { TaskDialogComponent } from '../../task-dialog/task-dialog.component';
 // import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../../../components/header/header.component';
-import { ContractorDetails } from '../../../models/contractorDetails.model';
+import { ContractorDetails } from 'shared';
 import { FormatPhoneNumberPipe } from "../../../pipes/format-phone-number.pipe";
-import { getCookieValue } from '../../../../utils/cookie-utils';
-import { ContractorApiService } from '../../../services/api/Contractor api/contractor-api.service';
-import { ImageApiService } from '../../../services/api/Image api/image-api.service';
+import { getCookieValue } from 'shared';
+import { ContractorApiService } from 'shared';
+import { ImageApiService } from 'shared';
 
 @Component({
   selector: 'app-contractor-details',

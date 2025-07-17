@@ -1,8 +1,8 @@
 import { Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
-import { BodyCoporateService } from '../../../services/body-coporate.service';
-import { MaintenanceTask } from '../../../models/maintenanceTask.model';
+import { BodyCoporateService } from 'shared';
+import { MaintenanceTask } from 'shared';
 import { FormatDatePipe } from "../../../pipes/format-date.pipe";
 
 @Component({

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegisterOwnerComponent } from './register-owner.component';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from 'shared';
 import { FormsModule } from '@angular/forms';
 // import { CognitoUser } from 'amazon-cognito-identity-js';
 import { HttpClientTestingModule } from '@angular/common/http/testing';

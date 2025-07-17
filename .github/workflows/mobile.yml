@@ -16,18 +16,18 @@ jobs:
             - name: Cache node_modules
               uses: actions/cache@v3
               with:
-                path: mobile-app/PropertyManager/node_modules
-                key: npm-${{ hashFiles('mobile-app/PropertyManager/package-lock.json') }}
+                path: Frontend/mobile-app/PropertyManager/node_modules
+                key: npm-${{ hashFiles('Frontend/mobile-app/PropertyManager/package-lock.json') }}
                 restore-keys: |
                   npm-
 
             - name: Install dependencies
               run: npm ci
-              working-directory: mobile-app/PropertyManager
+              working-directory: Frontend/
 
             - name: Lint code
               run: npm run lint
-              working-directory: mobile-app/PropertyManager
+              working-directory: Frontend/mobile-app/PropertyManager
         
     audit:
       runs-on: ubuntu-22.04
@@ -38,44 +38,66 @@ jobs:
         - name: Cache node_modules
           uses: actions/cache@v3
           with:
-              path: mobile-app/PropertyManager/node_modules
-              key: npm-${{ hashFiles('mobile-app/PropertyManager/package-lock.json') }}
+              path: Frontend/node_modules
+              key: npm-${{ hashFiles('Frontend/package-lock.json') }}
               restore-keys: |
                 npm-
             
         - name: Install dependencies
           run: npm ci
-          working-directory: mobile-app/PropertyManager 
+          working-directory: Frontend/
 
         - name: Audit packages
           run: npm audit || [ $? -eq 1 ] || exit $?
-          working-directory: mobile-app/PropertyManager
+          working-directory: Frontend/
           
         - name: Fail on critical vulnerabilites 
           run: npm audit --audit-level=critical
-          working-directory: mobile-app/PropertyManager
+          working-directory: Frontend/
+
+    build-library:
+      runs-on: ubuntu-22.04
+      needs: audit
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Cache node_modules
+          uses: actions/cache@v3
+          with:
+            path: Frontend/node_modules
+            key: npm-${{ hashFiles('Frontend/package-lock.json') }}
+            restore-keys: |
+              npm-
+
+        - name: Install dependencies
+          run: npm ci
+          working-directory: Frontend
+
+        - name: Build shared library
+          run: npm run build shared
+          working-directory: Frontend
         
     build:
         runs-on: ubuntu-22.04
-        needs: audit
+        needs: [audit, build-library]
         steps:
             - uses: actions/checkout@v3
 
             - name: Cache node_modules
               uses: actions/cache@v3
               with:
-                path: mobile-app/PropertyManager/node_modules
-                key: npm-${{ hashFiles('mobile-app/PropertyManager/package-lock.json') }}
+                path: Frontend/node_modules
+                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
                 restore-keys: |
                   npm-
 
             - name: Install dependencies
               run: npm ci
-              working-directory: mobile-app/PropertyManager
+              working-directory: Frontend/
 
             - name: Build Angular website
               run: npm run build
-              working-directory: mobile-app/PropertyManager
+              working-directory: Frontend/mobile-app/PropertyManager
       
     test:
       runs-on: ubuntu-22.04
@@ -86,15 +108,15 @@ jobs:
           - name: Cache node_modules
             uses: actions/cache@v3
             with:
-                path: mobile-app/PropertyManager/node_modules
-                key: npm-${{ hashFiles('mobile-app/PropertyManager/package-lock.json') }}
+                path: Frontend/node_modules
+                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
                 restore-keys: |
                   npm-
 
           - name: Install dependencies
             run: npm ci
-            working-directory: mobile-app/PropertyManager
+            working-directory: Frontend/
 
           - name: Run unit and integration tests
             run: npm run test -- --watch=false --browsers=ChromeHeadlessCI
-            working-directory: mobile-app/PropertyManager
+            working-directory: Frontend/mobile-app/PropertyManager

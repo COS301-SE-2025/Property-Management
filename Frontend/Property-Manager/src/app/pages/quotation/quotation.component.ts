@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
-import { ApiService } from '../../services/api.service'; 
+import { ApiService } from 'shared'; 
 import { HeaderComponent } from "../../components/header/header.component";
 
 import { DatePicker } from 'primeng/datepicker';

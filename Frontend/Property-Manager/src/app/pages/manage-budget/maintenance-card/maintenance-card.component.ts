@@ -4,10 +4,10 @@ import { TableModule } from 'primeng/table';
 // import { FormatDatePipe } from "../../../pipes/format-date.pipe";
 import { FormatAmountPipe } from "../../../pipes/format-amount.pipe";
 import { EditBudgetDialogComponent } from "../edit-budget-dialog/edit-budget-dialog.component";
-import { MaintenanceTask } from '../../../models/maintenanceTask.model';
+import { MaintenanceTask } from 'shared';
 // import { TaskDialogComponent } from '../../task-dialog/task-dialog.component';
-import { BuildingDetails } from '../../../models/buildingDetails.model';
-import { HousesService } from '../../../services/houses.service';
+import { BuildingDetails } from 'shared';
+import { HousesService } from 'shared';
 
 @Component({
   selector: 'app-maintenance-card',

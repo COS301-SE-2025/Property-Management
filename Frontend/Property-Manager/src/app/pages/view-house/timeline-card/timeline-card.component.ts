@@ -1,10 +1,10 @@
 import { Component, inject, input, ViewChild } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TimelineModule } from 'primeng/timeline';
-import { HousesService } from '../../../services/houses.service';
+import { HousesService } from 'shared';
 import { CommonModule } from '@angular/common';
 import { TimelineAddDialogComponent } from './timeline-add-dialog/timeline-add-dialog.component';
-import { MaintenanceTask } from '../../../models/maintenanceTask.model';
+import { MaintenanceTask } from 'shared';
 import { TimelineDetailsDialogComponent } from './timeline-details-dialog/timeline-details-dialog.component';
 
 @Component({

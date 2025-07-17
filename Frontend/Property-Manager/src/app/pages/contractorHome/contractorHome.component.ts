@@ -12,10 +12,10 @@ import {
   query,
   stagger
 } from '@angular/animations';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from 'shared';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
-import { MaintenanceTask } from '../../models/maintenanceTask.model';
+import { MaintenanceTask } from 'shared';
 
 @Component({
     selector: 'app-contractor-home',

@@ -8,9 +8,9 @@ import { MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DialogComponent } from '../../../components/dialog/dialog.component';
-import { BuildingDetails } from '../../../models/buildingDetails.model';
+import { BuildingDetails } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BudgetApiService } from '../../../services/api/Budget api/budget-api.service';
+import { BudgetApiService } from 'shared';
 
 @Component({
   selector: 'app-edit-budget-dialog',

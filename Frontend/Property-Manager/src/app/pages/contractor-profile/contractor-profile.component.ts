@@ -4,10 +4,10 @@ import { StepOneComponent } from './step-one.component';
 import { StepTwoComponent } from './step-two.component';
 import { StepThreeComponent } from './step-three.component';
 import { HeaderComponent } from '../../components/header/header.component';
-import { ContractorService } from '../../services/contractor.service';
-import { ContractorDetails } from '../../models/contractorDetails.model';
-import { getCookieValue } from '../../../utils/cookie-utils';
-import { ImageApiService } from '../../services/api/Image api/image-api.service';
+import { ContractorService } from 'shared';
+import { ContractorDetails } from 'shared';
+import { getCookieValue } from 'shared';
+import { ImageApiService } from 'shared';
 import { Router } from '@angular/router';
 
 @Component({
