@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
-import { HousesService } from '../../services/houses.service';
+import { HousesService } from 'shared';
 import { Router } from '@angular/router';
 import { DrawerComponent } from "../../components/drawer/drawer.component";
 

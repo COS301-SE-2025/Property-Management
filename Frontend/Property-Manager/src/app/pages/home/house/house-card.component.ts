@@ -1,9 +1,9 @@
 import { Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
-import { HousesService } from '../../../services/houses.service';
+import { HousesService } from 'shared';
 import { Router } from '@angular/router';
-import { Property } from '../../../models/property.model';
+import { Property } from 'shared';
 
 @Component({
   selector: 'app-house-card',

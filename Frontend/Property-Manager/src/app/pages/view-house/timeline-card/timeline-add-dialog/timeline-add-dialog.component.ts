@@ -10,11 +10,11 @@ import { MessageService } from 'primeng/api';
 import { FileUploadModule, FileSelectEvent } from 'primeng/fileupload';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TaskApiService } from '../../../../services/api/Task api/task-api.service';
-import { getCookieValue } from '../../../../../utils/cookie-utils';
-import { ImageApiService } from '../../../../services/api/Image api/image-api.service';
-import { ContractorApiService } from '../../../../services/api/Contractor api/contractor-api.service';
-import { ContractorDetails } from '../../../../models/contractorDetails.model';
+import { TaskApiService } from 'shared';
+import { getCookieValue } from 'shared';
+import { ImageApiService } from 'shared';
+import { ContractorApiService } from 'shared';
+import { ContractorDetails } from 'shared';
 
 @Component({
   selector: 'app-timeline-add-dialog',

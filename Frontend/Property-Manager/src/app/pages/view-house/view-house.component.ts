@@ -2,13 +2,13 @@ import { Component, effect, OnInit, signal } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../components/header/header.component";
-import { HousesService } from '../../services/houses.service';
+import { HousesService } from 'shared';
 import { ActivatedRoute } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InventoryCardComponent } from "./inventory-card/inventory-card.component";
 import { BudgetCardComponent } from "./budget-card/budget-card.component";
 import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
-import { Property } from '../../models/property.model';
+import { Property } from 'shared';
 
 @Component({
   selector: 'app-view-house',

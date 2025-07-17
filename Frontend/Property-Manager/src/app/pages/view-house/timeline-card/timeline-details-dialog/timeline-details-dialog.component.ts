@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
-import { MaintenanceTask } from '../../../../models/maintenanceTask.model';
-import { ImageApiService } from '../../../../services/api/Image api/image-api.service';
-import { ContractorApiService } from '../../../../services/api/Contractor api/contractor-api.service';
-import { ContractorDetails } from '../../../../models/contractorDetails.model';
+import { MaintenanceTask } from 'shared';
+import { ImageApiService } from 'shared';
+import { ContractorApiService } from 'shared';
+import { ContractorDetails } from 'shared';
 
 @Component({
   selector: 'app-timeline-details-dialog',

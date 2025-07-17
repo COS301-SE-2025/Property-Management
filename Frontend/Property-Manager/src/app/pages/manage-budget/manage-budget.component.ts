@@ -5,8 +5,8 @@ import { HeaderComponent } from "../../components/header/header.component";
 import { GraphCardComponent } from './graph-card/graph-card.component';
 import { InventoryBudgetCardComponent } from './inventory-budget-card/inventory-budget-card.component';
 import { MaintenanceCardComponent } from "./maintenance-card/maintenance-card.component";
-import { HousesService } from '../../services/houses.service';
-import { Property } from '../../models/property.model';
+import { HousesService } from 'shared';
+import { Property } from 'shared';
 import { ActivatedRoute } from '@angular/router';
 
 

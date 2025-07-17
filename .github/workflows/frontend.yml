@@ -16,8 +16,8 @@ jobs:
             - name: Cache node_modules
               uses: actions/cache@v3
               with:
-                path: Frontend/Property-Manager/node_modules
-                key: npm-${{ hashFiles('Frontend/Property-Manager/package-lock.json') }}
+                path: Frontend/node_modules
+                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
                 restore-keys: |
                   npm-
 
@@ -38,8 +38,8 @@ jobs:
         - name: Cache node_modules
           uses: actions/cache@v3
           with:
-              path: Frontend/Property-Manager/node_modules
-              key: npm-${{ hashFiles('Frontend/Property-Manager/package-lock.json') }}
+              path: Frontend/node_modules
+              key: npm-${{ hashFiles('Frontend/package-lock.json') }}
               restore-keys: |
                 npm-
             
@@ -54,28 +54,49 @@ jobs:
         - name: Fail on critical vulnerabilites 
           run: npm audit --audit-level=critical
           working-directory: Frontend/Property-Manager
+
+    build-library:
+      runs-on: ubuntu-22.04
+      steps:
+        - uses: actions/checkout@v3
         
+        - name: Cache node_modules
+          uses: actions/cache@v3
+          with:
+            path: Frontend/node_modules
+            key: npm-${{ hashFiles('Frontend/package-lock.json') }}
+            restore-keys: |
+              npm-
+
+        - name: Install dependencies
+          run: npm ci
+          working-directory: Frontend
+
+        - name: Build shared library
+          run: npm run build shared
+          working-directory: Frontend
+
     build:
         runs-on: ubuntu-22.04
-        needs: audit
+        needs: [audit, build-library]
         steps:
             - uses: actions/checkout@v3
 
             - name: Cache node_modules
               uses: actions/cache@v3
               with:
-                path: Frontend/Property-Manager/node_modules
-                key: npm-${{ hashFiles('Frontend/Property-Manager/package-lock.json') }}
+                path: Frontend/node_modules
+                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
                 restore-keys: |
                   npm-
 
             - name: Install dependencies
               run: npm ci
-              working-directory: Frontend/Property-Manager
+              working-directory: Frontend
 
             - name: Build Angular website
-              run: npm run build
-              working-directory: Frontend/Property-Manager
+              run: npm run build property-manager
+              working-directory: Frontend
       
     test:
       runs-on: ubuntu-22.04
@@ -86,15 +107,15 @@ jobs:
           - name: Cache node_modules
             uses: actions/cache@v3
             with:
-                path: Frontend/Property-Manager/node_modules
-                key: npm-${{ hashFiles('Frontend/Property-Manager/package-lock.json') }}
+                path: Frontend/node_modules
+                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
                 restore-keys: |
                   npm-
 
           - name: Install dependencies
             run: npm ci
-            working-directory: Frontend/Property-Manager
+            working-directory: Frontend
 
           - name: Run unit and integration tests
-            run: npm run test -- --watch=false --browsers=ChromeHeadlessCI
-            working-directory: Frontend/Property-Manager
+            run: npm run test property-manager -- --watch=false --browsers=ChromeHeadlessCI
+            working-directory: Frontend

@@ -1,8 +1,0 @@
-{
-  "name": "PropertyManager",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone",
-  "proxyConfig": "proxy.conf.json"
-}

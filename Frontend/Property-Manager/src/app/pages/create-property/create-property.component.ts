@@ -6,9 +6,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
 import { Router } from '@angular/router';
-import { PropertyService, CreateBuildingPayload, ImageUploadResponse } from '../../services/property.service';
-import { ContractorService } from '../../services/contractor.service';
-import { Contractor } from '../../models/contractor.model';
+import { PropertyService, CreateBuildingPayload, ImageUploadResponse } from 'shared';
+import { ContractorService } from 'shared';
+import { Contractor } from 'shared';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

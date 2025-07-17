@@ -3,9 +3,9 @@ import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HousesService } from '../../../services/houses.service';
+import { HousesService } from 'shared';
 import { FormatAmountPipe } from "../../../pipes/format-amount.pipe";
-import { BuildingDetails } from '../../../models/buildingDetails.model';
+import { BuildingDetails } from 'shared';
 import { BudgetAddDialogComponent } from './budget-app-dialog/budget-card/budget-add-dialog.component';
 
 @Component({

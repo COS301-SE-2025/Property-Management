@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from 'shared';
 import { NavigationEnd, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
