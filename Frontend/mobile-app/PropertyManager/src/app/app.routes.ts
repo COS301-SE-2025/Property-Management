@@ -25,5 +25,9 @@ export const routes: Routes = [
     {
         path: 'home',
         loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
+    },
+    {
+        path: 'create-property',
+        loadComponent: () => import('./pages/create-property/create-property.component').then(m => m.CreatePropertyComponent)
     }
 ];
