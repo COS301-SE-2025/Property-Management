@@ -57,6 +57,7 @@ jobs:
 
     build-library:
       runs-on: ubuntu-22.04
+      needs: audit
       steps:
         - uses: actions/checkout@v3
 

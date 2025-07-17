@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from "src/app/components/tab/tab.component";
 
@@ -8,10 +8,8 @@ import { TabComponent } from "src/app/components/tab/tab.component";
   templateUrl: './home.component.html',
   styles: ``
 })
-export class HomeComponent  implements OnInit {
+export class HomeComponent{
 
   constructor() { }
-
-  ngOnInit() {}
 
 }
