@@ -23,7 +23,7 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
-              working-directory: Frontend/Property-Manager
+              working-directory: Frontend/
 
             - name: Lint code
               run: npm run lint
@@ -45,18 +45,19 @@ jobs:
             
         - name: Install dependencies
           run: npm ci
-          working-directory: Frontend/Property-Manager 
+          working-directory: Frontend/
 
         - name: Audit packages
           run: npm audit || [ $? -eq 1 ] || exit $?
-          working-directory: Frontend/Property-Manager
+          working-directory: Frontend/
           
         - name: Fail on critical vulnerabilites 
           run: npm audit --audit-level=critical
-          working-directory: Frontend/Property-Manager
+          working-directory: Frontend/
 
     build-library:
       runs-on: ubuntu-22.04
+      needs: audit
       steps:
         - uses: actions/checkout@v3
         

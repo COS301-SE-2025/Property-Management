@@ -23,7 +23,7 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
-              working-directory: Frontend/mobile-app/PropertyManager
+              working-directory: Frontend/
 
             - name: Lint code
               run: npm run lint
@@ -38,28 +38,36 @@ jobs:
         - name: Cache node_modules
           uses: actions/cache@v3
           with:
-              path: Frontend/mobile-app/PropertyManager/node_modules
-              key: npm-${{ hashFiles('Frontend/mobile-app/PropertyManager/package-lock.json') }}
+              path: Frontend/node_modules
+              key: npm-${{ hashFiles('Frontend/package-lock.json') }}
               restore-keys: |
                 npm-
             
         - name: Install dependencies
           run: npm ci
-          working-directory: Frontend/mobile-app/PropertyManager 
+          working-directory: Frontend/
 
         - name: Audit packages
           run: npm audit || [ $? -eq 1 ] || exit $?
-          working-directory: Frontend/mobile-app/PropertyManager
+          working-directory: Frontend/
           
         - name: Fail on critical vulnerabilites 
           run: npm audit --audit-level=critical
-          working-directory: Frontend/mobile-app/PropertyManager
+          working-directory: Frontend/
 
     build-library:
       runs-on: ubuntu-22.04
       needs: audit
       steps:
         - uses: actions/checkout@v3
+
+        - name: Cache node_modules
+          uses: actions/cache@v3
+          with:
+            path: Frontend/node_modules
+            key: npm-${{ hashFiles('Frontend/package-lock.json') }}
+            restore-keys: |
+              npm-
 
         - name: Install dependencies
           run: npm ci
@@ -78,14 +86,14 @@ jobs:
             - name: Cache node_modules
               uses: actions/cache@v3
               with:
-                path: mobile-app/PropertyManager/node_modules
-                key: npm-${{ hashFiles('mobile-app/PropertyManager/package-lock.json') }}
+                path: Frontend/node_modules
+                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
                 restore-keys: |
                   npm-
 
             - name: Install dependencies
               run: npm ci
-              working-directory: Frontend/mobile-app/PropertyManager
+              working-directory: Frontend/
 
             - name: Build Angular website
               run: npm run build
@@ -100,14 +108,14 @@ jobs:
           - name: Cache node_modules
             uses: actions/cache@v3
             with:
-                path: Frontend/mobile-app/PropertyManager/node_modules
-                key: npm-${{ hashFiles('Frontend/mobile-app/PropertyManager/package-lock.json') }}
+                path: Frontend/node_modules
+                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
                 restore-keys: |
                   npm-
 
           - name: Install dependencies
             run: npm ci
-            working-directory: Frontend/mobile-app/PropertyManager
+            working-directory: Frontend/
 
           - name: Run unit and integration tests
             run: npm run test -- --watch=false --browsers=ChromeHeadlessCI
