@@ -17,6 +17,7 @@ export * from './services/api/Image api/image-api.service';
 export * from './services/api/InventoryItem api/inventory-item-api.service';
 export * from './services/api/InventoryUsage api/inventory-usage-api.service';
 export * from './services/api/Task api/task-api.service';
+export * from './services/storiage.service';
 
 //Models
 export * from './models/bodyCoporate.model';

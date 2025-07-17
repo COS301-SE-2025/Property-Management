@@ -161,8 +161,8 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "mobile-app/PropertyManager/src/**/*.ts",
-              "mobile-app/PropertyManager/src/**/*.html"
+              "mobile-app/src/**/*.ts",
+              "mobile-app/src/**/*.html"
             ]
           }
         }

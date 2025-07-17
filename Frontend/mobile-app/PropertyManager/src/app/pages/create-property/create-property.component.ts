@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { PropertyService } from '../../services/property.service';
-import { ContractorService } from '../../services/contractor.service';
-import { Contractor } from '../../../models/contractor.model';
+import { PropertyService } from 'shared';
+import { ContractorService } from 'shared';
+import { Contractor } from 'shared';
 
 @Component({
   selector: 'app-create-property',

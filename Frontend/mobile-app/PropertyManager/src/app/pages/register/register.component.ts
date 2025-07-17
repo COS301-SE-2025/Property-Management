@@ -2,9 +2,9 @@ import { Component, inject } from '@angular/core';
 import { IonInput, IonItem} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'shared';
 import { Router } from '@angular/router';
-import { StorageService } from 'src/app/services/storage.service';
+import { StorageService } from 'shared';
 
 @Component({
   selector: 'app-register',
