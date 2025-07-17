@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreatePropertyComponent } from './create-property.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ContractorService } from '../../services/contractor.service';
-import { PropertyService } from '../../services/property.service';
+import { ContractorService } from 'shared';
+import { PropertyService } from 'shared';
 import { of, throwError } from 'rxjs';
 
 describe('CreatePropertyComponent (Mobile)', () => {
@@ -121,24 +121,25 @@ describe('CreatePropertyComponent (Mobile)', () => {
     address: '123 Main St',
     type: 'Apartment',
     propertyValue: 1000000,
+    latestInspectionDate: '2025/07/17',
     area: 100,
     primaryContractor: '1',
     bodyCorporate: '',
-    image: null
+    propertyImage: null,
+    trusteeUuid: '1'
   }));
 
   component.form.patchValue({
     name: 'Test Property',
-    area: 100,
-    propertyValue: 1000000,
     address: '123 Main St',
-    suburb: '',
-    city: '',
-    province: '',
     type: 'Apartment',
+    propertyValue: 1000000,
+    latestInspectionDate: '2025/07/17',
+    area: 100,
     primaryContractor: '1',
     bodyCorporate: '',
-    image: null
+    propertyImage: null,
+    trusteeUuid: '1'
   });
 
   await component.onSubmit();

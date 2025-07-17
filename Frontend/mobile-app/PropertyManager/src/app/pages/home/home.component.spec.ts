@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-
+import { ActivatedRoute } from '@angular/router';
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
@@ -9,8 +9,15 @@ describe('HomeComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ HomeComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [HomeComponent, IonicModule.forRoot()],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { data: {}, params: {}, queryParams: {}}
+          }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
