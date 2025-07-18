@@ -1,3 +1,9 @@
-<p>
-  house works!
-</p>
+<div class = "shadow-md rounded-lg border text-center w-60">
+  <ion-item>
+    <button (click)="viewHouse(house().buildingUuid!)" class="w-full">
+        <img [src] = "house().propertyImage" class="mx-auto object-cover w-40 h-28 rounded-md" alt="" rel="preconnect">
+        <p class = "text-lg font-bold mt-3"> {{ house().name }}</p>
+        <p class = "text-gray-600 mb-3 truncate"> {{ house().address }}</p>
+    </button>
+  </ion-item>
+</div>

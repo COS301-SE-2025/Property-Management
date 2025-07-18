@@ -66,7 +66,7 @@
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "angular-eslint": "^19.0.0",
-    "autoprefixer": "^10.4.17",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.27.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.2.1",
@@ -80,8 +80,8 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^19.1.0",
     "ngx-tailwind": "^4.0.0",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.3",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
     "typescript": "~5.8.2"
   },
   "prettier": {

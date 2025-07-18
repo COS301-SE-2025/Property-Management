@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { IonInput, IonItem} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from 'shared';
+import { AuthMobileService } from 'shared';
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,7 +20,7 @@ export class LoginComponent{
   public userError = false;
   public serverError = false;
 
-  private authService = inject(AuthService);
+  private authService = inject(AuthMobileService);
   private router = inject(Router);
 
   constructor() { }

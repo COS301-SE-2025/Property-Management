@@ -5,6 +5,7 @@
 //Services
 export * from './services/api.service';
 export * from './services/auth.service';
+export * from './services/authMobile.service';
 export * from './services/body-coporate.service'
 export * from './services/contractor.service';
 export * from './services/houses.service';
@@ -17,7 +18,7 @@ export * from './services/api/Image api/image-api.service';
 export * from './services/api/InventoryItem api/inventory-item-api.service';
 export * from './services/api/InventoryUsage api/inventory-usage-api.service';
 export * from './services/api/Task api/task-api.service';
-export * from './services/storiage.service';
+export * from './services/storage.service';
 
 //Models
 export * from './models/bodyCoporate.model';
