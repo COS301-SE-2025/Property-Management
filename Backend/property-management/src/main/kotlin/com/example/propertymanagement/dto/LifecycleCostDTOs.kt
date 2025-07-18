@@ -9,7 +9,7 @@ data class CreateLifecycleCostRequest(
     val description: String?,
     val condition: String?,
     val timeframe: String?,
-    val estimatedCost: BigDecimal?
+    val estimatedCost: BigDecimal?,
 )
 
 data class UpdateLifecycleCostRequest(
@@ -17,7 +17,7 @@ data class UpdateLifecycleCostRequest(
     val description: String?,
     val condition: String?,
     val timeframe: String?,
-    val estimatedCost: BigDecimal?
+    val estimatedCost: BigDecimal?,
 )
 
 data class LifecycleCostResponse(
@@ -27,5 +27,5 @@ data class LifecycleCostResponse(
     val description: String?,
     val condition: String?,
     val timeframe: String?,
-    val estimatedCost: BigDecimal?
+    val estimatedCost: BigDecimal?,
 )

@@ -13,17 +13,13 @@ data class LifecycleCost(
     @Id
     @Column(name = "cost_uuid", columnDefinition = "uuid")
     val costUuid: UUID = UUID.randomUUID(),
-
     @Column(name = "coporate_uuid", columnDefinition = "uuid", nullable = false)
     val coporateUuid: UUID,
-
     @Column(nullable = false)
     val type: String,
-
     val description: String?,
     val condition: String?,
     val timeframe: String?,
-
     @Column(name = "estimated_cost", precision = 10, scale = 2)
-    val estimatedCost: BigDecimal?
+    val estimatedCost: BigDecimal?,
 )
