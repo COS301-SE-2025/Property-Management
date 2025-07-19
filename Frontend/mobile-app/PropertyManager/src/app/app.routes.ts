@@ -33,5 +33,9 @@ export const routes: Routes = [
     {
         path: 'view-house/:houseId',
         loadComponent: () => import('./pages/view-house/view-house.component').then(m => m.ViewHouseComponent)
+    },
+    {
+        path: 'manage-budget/:houseId',
+        loadComponent: () => import('./pages/manage-budget/manage-budget.component').then(m => m.ManageBudgetComponent)
     }
 ];

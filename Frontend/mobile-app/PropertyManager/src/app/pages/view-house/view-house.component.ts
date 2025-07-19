@@ -66,7 +66,6 @@ export class ViewHouseComponent  implements OnInit {
 
   async ngOnInit() {
     let id = await this.storage.get('trusteeId');
-    console.log(id);
 
     if(!id)
     {

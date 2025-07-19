@@ -1,0 +1,50 @@
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Maintenance budget</ion-card-title>
+      <ion-card-subtitle>
+        <div class="flex items-center justify-center gap-2">
+            <p class="font-semibold mt-2">Remaining Allocated budget: </p>
+            <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ (budget().maintenanceBudget-budget().maintenanceSpent)| formatAmount}}</p>
+        </div>
+      </ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="flex flex-col justify-center items-center">
+
+        <!-- <p class="pb-2 pt-8 pr-85">Maintenance expenditure</p> -->
+        <!-- <p-table [value]="maintenance()" selectionMode="single" (onRowSelect)="showMaintenanceDetailsDialog($event.data)" [tableStyle]="{ 'min-width': '22rem' }">
+            <ng-template #header>
+            <tr>
+                <th pSortableColumn="description">
+                    Description <p-sortIcon field="description"/>
+                </th>
+                <th pSortableColumn="cost">
+                    Cost <p-sortIcon field="cost"/>
+                </th>
+                <th pSortableColumn="DoneBy.name">
+                    Done by <p-sortIcon field="DoneBy.name"/>
+                </th>
+                <th pSortableColumn="DoneOn">
+                    Date <p-sortIcon field="DoneOn"/>
+                </th>
+            </tr>
+            </ng-template>
+            <ng-template #body let-maintain>
+            <tr [pSelectableRow]="maintain">
+                <td>{{ maintain.description }}</td>
+                <td>R {{ maintain.cost }}</td>
+                <td>{{ maintain.DoneBy.name}}</td>
+                <td>{{ maintain.DoneOn | formatDate }}</td>
+            </tr>
+            </ng-template>
+        </p-table> -->
+        <!-- <app-task-dialog #taskDialog/> -->
+        <!-- <p class = "font-semibold pt-3">Total: R {{ getMaintenanceTotal() }}</p> -->
+        <button class = "cursor-pointer pt-6">
+            <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
+        </button>
+        <!-- <app-edit-budget-dialog #editBudgetDialog [budgetType]="'maintainence'" [oldBudgetAmount]="budget().maintenanceBudget" [budget]="budget()"></app-edit-budget-dialog> -->
+      </div>
+    </ion-card-content>
+  </ion-card>

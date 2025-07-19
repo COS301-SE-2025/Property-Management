@@ -1,0 +1,47 @@
+  <ion-card>
+
+    <ion-card-header>
+      <ion-card-title>Inventory Budget</ion-card-title>
+      <ion-card-subtitle>
+        <div class = "flex items-center justify-center gap-2">
+            <p class ="font-semibold mt-2">Remaining Allocated budget: </p>
+            <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ (budget().inventoryBudget - budget().inventorySpent) | formatAmount }}</p>
+        </div>
+      </ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="flex flex-col items-center justify-center">
+
+        <p>Inventory expenditure</p>
+        <p-table [value] = "inventory()">
+            <ng-template #header>
+            <tr>
+                <th pSortableColumn="name">
+                    Description <p-sortIcon field="name"/>
+                </th>
+                <th pSortableColumn="quantityInStock">
+                    Quantity <p-sortIcon field="quantityInStock"/>
+                </th>
+                <th pSortableColumn="price">
+                    Price <p-sortIcon field="price"/>
+                </th>
+            </tr>
+            </ng-template>
+            <ng-template #body let-inventory>
+            <tr>
+                <td>{{ inventory.name }}</td>
+                <td>{{ inventory.quantityInStock }}</td>
+                <td>R {{ inventory.price }}</td>
+            </tr>
+            </ng-template>
+        </p-table>
+    
+        <!-- <button class = "cursor-pointer pt-6" (click)="editBudgetDialog.openDialog()">
+            <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
+        </button> -->
+        <!-- <app-edit-budget-dialog #editBudgetDialog [budgetType]="'inventory'" [oldBudgetAmount]="budget().inventoryBudget" [budget]="budget()"></app-edit-budget-dialog> -->
+        <p class = "pt-3">Total: R {{ getMaintenanceTotal() }}</p>
+      </div>
+    </ion-card-content>
+</ion-card>
