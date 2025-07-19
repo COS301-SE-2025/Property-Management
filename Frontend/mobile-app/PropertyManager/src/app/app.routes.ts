@@ -29,5 +29,9 @@ export const routes: Routes = [
     {
         path: 'create-property',
         loadComponent: () => import('./pages/create-property/create-property.component').then(m => m.CreatePropertyComponent)
+    },
+    {
+        path: 'view-house/:houseId',
+        loadComponent: () => import('./pages/view-house/view-house.component').then(m => m.ViewHouseComponent)
     }
 ];

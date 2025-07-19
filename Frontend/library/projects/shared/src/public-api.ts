@@ -37,3 +37,8 @@ export * from './models/reserveFund.model';
 
 //Utils
 export * from './utils/cookie-utils';
+
+//Pipes
+export * from './pipes/format-amount.pipe';
+export * from './pipes/format-date.pipe';
+export * from './pipes/format-phone-number.pipe';

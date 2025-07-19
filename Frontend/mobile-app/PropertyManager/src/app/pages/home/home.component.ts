@@ -27,7 +27,7 @@ export class HomeComponent{
   {
     const id = await this.storage.get('trusteeId');
     // await this.storage.set("trusteeId", id);
-    this.houseService.loadHouses();
+    this.houseService.loadHouses(id);
   }
 
   RouteToCreateProperty()

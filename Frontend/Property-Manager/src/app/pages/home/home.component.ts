@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
-import { HousesService } from 'shared';
+import { getCookieValue, HousesService } from 'shared';
 import { Router } from '@angular/router';
 import { DrawerComponent } from "../../components/drawer/drawer.component";
 
@@ -26,7 +26,8 @@ export class HomeComponent implements OnInit{
   }
 
   ngOnInit(){
-    this.houseService.loadHouses();
+    const id = getCookieValue(document.cookie, 'trusteeId');
+    this.houseService.loadHouses(id);
   }
 
   private houseService = inject(HousesService);

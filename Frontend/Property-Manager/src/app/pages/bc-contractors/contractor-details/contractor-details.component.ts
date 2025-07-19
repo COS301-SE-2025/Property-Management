@@ -10,7 +10,7 @@ import { BodyCoporateService } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../../../components/header/header.component';
 import { ContractorDetails } from 'shared';
-import { FormatPhoneNumberPipe } from "../../../pipes/format-phone-number.pipe";
+import { FormatPhoneNumberPipe } from "shared";
 import { getCookieValue } from 'shared';
 import { ContractorApiService } from 'shared';
 import { ImageApiService } from 'shared';

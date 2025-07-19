@@ -5,7 +5,7 @@ import { HeaderComponent } from "../../components/header/header.component";
 import { GraphCardComponent } from './graph-card/graph-card.component';
 import { InventoryBudgetCardComponent } from './inventory-budget-card/inventory-budget-card.component';
 import { MaintenanceCardComponent } from "./maintenance-card/maintenance-card.component";
-import { HousesService } from 'shared';
+import { getCookieValue, HousesService } from 'shared';
 import { Property } from 'shared';
 import { ActivatedRoute } from '@angular/router';
 
@@ -58,11 +58,12 @@ export class ManageBudgetComponent implements OnInit {
 
   async ngOnInit(){
    const houseId = String(this.route.snapshot.paramMap.get('houseId'));
+   const id = getCookieValue(document.cookie, 'trusteeId');
    this.loading.set(true);
 
    try{
     await Promise.all([
-      this.houseService.loadHouses(),
+      this.houseService.loadHouses(id),
       this.houseService.loadInventory(houseId),
       this.houseService.loadBudget(houseId),
       this.houseService.loadTasks(houseId)

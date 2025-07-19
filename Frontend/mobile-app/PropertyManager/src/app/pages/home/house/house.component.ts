@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   selector: 'app-house',
   templateUrl: './house.component.html',
   styles: ``,
-  imports: [IonCardContent, IonCard, IonItem],
+  imports: [IonItem],
 })
 export class HouseComponent {
 
@@ -19,6 +19,6 @@ export class HouseComponent {
   
   viewHouse(houseId: string)
   {
-    this.router.navigate(['viewHouse', houseId]);
+    this.router.navigate(['view-house', houseId]);
   }
 }

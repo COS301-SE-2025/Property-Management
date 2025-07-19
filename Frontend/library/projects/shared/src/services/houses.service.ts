@@ -63,16 +63,13 @@ export class HousesService {
       return 0;
     })
   }
-  async loadHouses() {
+  async loadHouses(trusteeId: string) {
 
     if (this.houses().length > 0) {
       return;
     }
 
-    //Get id from cookie
-    const userId = getCookieValue(document.cookie, 'trusteeId');
-
-    this.buildingApiService.getBuildingsByTrustee(userId).subscribe({
+    this.buildingApiService.getBuildingsByTrustee(trusteeId).subscribe({
       next: (houses) => {
         
         houses.buildings.forEach(h => {

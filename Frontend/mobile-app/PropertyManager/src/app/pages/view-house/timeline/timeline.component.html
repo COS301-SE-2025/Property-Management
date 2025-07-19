@@ -1,0 +1,36 @@
+<ion-card>
+    <ion-card-header>
+      <ion-card-title>Timeline</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <p-timeline [value]="timeline()" align="alternate">
+          <ng-template #content let-time>
+              <div class="cursor-pointer hover:underline hover:translate-y-0.5 transition-transform duration-200" tabindex="0" role="button" (click)="openDetailsDialog(time)" (keydown.enter)="openDetailsDialog(time)" (keydown.space)="openDetailsDialog(time)">
+                  {{ time.title }}
+              </div>
+          </ng-template>
+          <ng-template #marker let-time>
+              <div class="flex items-center justify-center w-6 h-6 rounded-full shadow-md bg-white-200">
+                  <ng-container *ngIf="(time.status==='done'); else pending">
+                      <img src="assets/icons/task_done.svg" alt="Done" class="w-5 h-5" />
+                  </ng-container>
+                  <ng-template #pending>
+                      <i class="pi pi-clock text-gray-800"></i>
+                  </ng-template>
+              </div>
+          </ng-template>
+      </p-timeline>
+  
+      <!-- <app-timeline-details-dialog #taskDialog></app-timeline-details-dialog> -->
+  
+      <div class = "mt-5 flex flex-col justify-center items-center">
+          <button>
+              <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
+          </button>
+          <!-- <app-timeline-add-dialog #timelineAddDialog/> -->
+      </div>
+
+    </ion-card-content>
+
+</ion-card>
