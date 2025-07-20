@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { IonInput, IonItem} from '@ionic/angular/standalone';
+import { IonInput, IonItem, IonInputPasswordToggle} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthMobileService } from 'shared';
@@ -7,14 +7,13 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, IonInput, IonItem],
+  imports: [CommonModule, FormsModule, IonInput, IonItem, IonInputPasswordToggle],
   templateUrl: './login.component.html',
   styles: ``,
 })
 export class LoginComponent{
   public email = "";
   public password = "";
-  public passwordVisible = false;
 
   public emptyField = false;
   public userError = false;
@@ -25,10 +24,6 @@ export class LoginComponent{
 
   constructor() { }
 
-  togglePassword()
-  {
-    this.passwordVisible = !this.passwordVisible;
-  }
   async login(): Promise<void>
   {
     if(this.email.length === 0 || this.password.length === 0)

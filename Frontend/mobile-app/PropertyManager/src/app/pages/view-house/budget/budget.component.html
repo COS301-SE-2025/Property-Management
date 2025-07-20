@@ -1,9 +1,9 @@
 <ion-card>
     <ion-card-header>
       <ion-card-title>Budgets</ion-card-title>
-      <ion-card-subtitle>
+      <ion-card-subtitle *ngIf="hasBudget">
         Overall Allocated Budget:
-        <p class = "text-yellow-500 font-semibold mt-2 text-lg text-center">R {{ calculateTotalBudget() | formatAmount }}</p> 
+        <p *ngIf="hasBudget" class = "text-yellow-500 font-semibold mt-2 text-lg text-center">R {{ calculateTotalBudget() | formatAmount }}</p> 
       </ion-card-subtitle> 
     </ion-card-header>
 
@@ -23,13 +23,13 @@
               </div>
           </div>
           <div class="mt-4 flex flex-col justify-center items-center">
-              <button class="bg-yellow-300 text-white px-3 py-1.5 rounded" (click)="RouteToManageBudget()">Manage budget</button>
+              <button class="bg-yellow-400 text-black px-3 py-1.5 rounded" (click)="RouteToManageBudget()">Manage budget</button>
           </div>
       }
       @else {
-          <div class="mt-4">
-              <button class="bg-black text-white px-3 py-1.5 rounded cursor-pointer hover:translate-y-2 transition-transform duration-200">Create budget</button>
-              <!-- <app-budget-add-dialog #budgetAppDialog/> -->
+          <div class="mt-t flex flex-col justify-center items-center">
+              <button class="bg-yellow-400 text-black px-3 py-1.5 rounded cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="budgetModal.openModal()">Create budget</button>
+              <app-create-budget #budgetModal/>
           </div>
       }
     </ion-card-content>

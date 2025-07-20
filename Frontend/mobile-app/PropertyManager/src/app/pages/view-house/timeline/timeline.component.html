@@ -6,7 +6,7 @@
     <ion-card-content>
       <p-timeline [value]="timeline()" align="alternate">
           <ng-template #content let-time>
-              <div class="cursor-pointer hover:underline hover:translate-y-0.5 transition-transform duration-200" tabindex="0" role="button" (click)="openDetailsDialog(time)" (keydown.enter)="openDetailsDialog(time)" (keydown.space)="openDetailsDialog(time)">
+              <div tabindex="0" role="button" (click)="openDetailsDialog(time)" (keydown.enter)="openDetailsDialog(time)" (keydown.space)="openDetailsDialog(time)">
                   {{ time.title }}
               </div>
           </ng-template>
@@ -25,12 +25,10 @@
       <!-- <app-timeline-details-dialog #taskDialog></app-timeline-details-dialog> -->
   
       <div class = "mt-5 flex flex-col justify-center items-center">
-          <button>
+          <button (click)="timelineAdd.openModal()">
               <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
           </button>
-          <!-- <app-timeline-add-dialog #timelineAddDialog/> -->
+          <app-add-timeline #timelineAdd/>
       </div>
-
     </ion-card-content>
-
 </ion-card>

@@ -1,5 +1,5 @@
 import { Component, inject, input, OnInit } from '@angular/core';
-import { IonCard, IonCardTitle, IonCardHeader, IonButton, ToastController, IonContent, IonIcon, IonCardContent } from "@ionic/angular/standalone";
+import { IonCard, IonCardTitle, IonCardHeader, IonButton, ToastController, IonIcon, IonCardContent } from "@ionic/angular/standalone";
 import { BudgetApiService, BuildingDetails, HousesService, Inventory } from 'shared';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -8,12 +8,13 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { addIcons } from 'ionicons';
 import { addOutline, removeOutline, checkmarkOutline, closeOutline  } from 'ionicons/icons';
+import { AddInventoryComponent } from './add-inventory/add-inventory.component';
 
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styles: ``,
-  imports: [IonButton, IonCardHeader, IonCardTitle, IonCard, FormsModule, CommonModule, TableModule, IonIcon, IonCardContent],
+  imports: [IonButton, IonCardHeader, IonCardTitle, IonCard, FormsModule, CommonModule, TableModule, IonIcon, IonCardContent, AddInventoryComponent],
 })
 export class InventoryComponent  implements OnInit {
 

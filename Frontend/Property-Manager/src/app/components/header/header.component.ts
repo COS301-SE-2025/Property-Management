@@ -38,7 +38,6 @@ export class HeaderComponent {
     ],
     '/home': [
       { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
-      { label: 'Properties', route: '/home' },
     ],
     '/bodyCoporate/contractors': [
       { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
@@ -54,29 +53,21 @@ export class HeaderComponent {
       { label: 'Contractor Details', route: '/contractorDetails' }
     ],
     '/viewHouse:/houseId': [
-      { label: 'Home', route: '/home' },
       { label: 'View House', route: null}
     ],
     '/manageBudget': [
-      { label: 'Home', route: '/home' },
       { label: 'View House', route: '/viewHouse' },
       { label: 'Manage Budget', route: '/manageBudget' }
     ],
     '/create-property': [
-      { label: 'Home', route: '/home' },
       { label: 'Create Property', route: '/create-property' }
     ]
   },
   'trustee': {
-    '/home': [
-      { label: 'Home', route: '/home' }
-    ],
     '/viewHouse': [
-      { label: 'Home', route: '/home' },
       { label: 'View House', route: '/viewHouse' }
     ],
     '/manageBudget': [
-      { label: 'Home', route: '/home' },
       { label: 'View House', route: '/viewHouse' },
       { label: 'Manage Budget', route: '/manageBudget' }
     ]
@@ -181,7 +172,6 @@ export class HeaderComponent {
     if(pathParts[0] === 'viewHouse' && houseId)
     {
       this.items = [
-        { label: 'Home', route: '/home' },
         { label: 'View House', route: `/viewHouse/${houseId}` }
       ];
       return;
@@ -190,7 +180,6 @@ export class HeaderComponent {
     if(pathParts[0] === 'manageBudget' && houseId)
     {
       this.items = [
-        { label: 'Home', route: '/home' },
         { label: 'View House', route: `/viewHouse/${houseId}` },
         { label: 'Manage Budget', route: null },
       ];
@@ -220,8 +209,6 @@ export class HeaderComponent {
         return;
       }
     }
-
-    this.items = [{ label: 'Home', route: '/home' }];
   }
 
   userType: UserType = null;

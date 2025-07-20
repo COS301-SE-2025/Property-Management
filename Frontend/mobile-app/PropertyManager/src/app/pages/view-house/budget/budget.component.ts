@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { BuildingDetails, HousesService, FormatAmountPipe } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CreateBudgetComponent } from './create-budget/create-budget.component';
 
 @Component({
   selector: 'app-budget',
-  imports: [IonCardContent, IonCardHeader, IonCard, CommonModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, FormatAmountPipe, IonCardSubtitle],
+  imports: [IonCardContent, IonCardHeader, IonCard, CommonModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, FormatAmountPipe, IonCardSubtitle, CreateBudgetComponent],
   templateUrl: './budget.component.html',
   styles: ``,
 })

@@ -67,10 +67,10 @@
         </div>
     }
     <div class = "mt-2 flex flex-col justify-center items-center">
-      <button>
+      <button (click)="inventoryAddDialog.openModal()">
         <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
       </button>
-      <!-- <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog> -->
+      <app-add-inventory #inventoryAddDialog/>
     </div>
   </ion-card-content>
 </ion-card>

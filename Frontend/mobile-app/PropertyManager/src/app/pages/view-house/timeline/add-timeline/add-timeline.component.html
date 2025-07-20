@@ -1,0 +1,60 @@
+<ion-modal [isOpen]="displayModal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="closeModal()">Cancel</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form [formGroup]="form" (ngSubmit)="confirm()">
+        <div class="flex flex-col justify-center items-center mt-4 space-y-2">
+          <p class="text-gray-700 pl-2 pb-2">Add new item and update budget</p>
+          <ion-item>
+            <ion-input
+              label="Task name"
+              labelPlacement="stacked"
+              formControlName="name"
+            ></ion-input>
+            <p class="text-red-500" *ngIf="form.get('name')?.hasError('required') && form.get('inventoryName')?.touched">Field is required</p>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              label="Task description"
+              labelPlacement="stacked"
+              formControlName="description"
+            ></ion-input>
+            <p class="text-red-500" *ngIf="form.get('description')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
+          </ion-item>
+          <ion-item>
+            <ion-select label="Assigned contractors" [multiple]="true" formControlName="contractorName">
+              @for(contractor of contractors; track contractor.uuid)
+              {
+                <ion-select-option [value]="contractor.uuid">{{ contractor.name }}</ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              label="Proposed due date"
+              labelPlacement="stacked"
+              formControlName="date"
+              type="date"
+            ></ion-input>
+            <p class="text-red-500" *ngIf="form.get('date')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
+          </ion-item>
+          <div class="pt-4 flex flex-col justify-center items-center">
+            <p>Take image of the task</p>
+            <ion-button (click)="capturePhoto()" fill="clear">
+              <ion-icon name="camera-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
