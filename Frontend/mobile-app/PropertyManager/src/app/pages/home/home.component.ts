@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +14,7 @@ import { HouseComponent } from './house/house.component';
   templateUrl: './home.component.html',
   styles: ``
 })
-export class HomeComponent{
+export class HomeComponent implements OnInit{
 
   private houseService = inject(HousesService);
   houses = this.houseService.houses;

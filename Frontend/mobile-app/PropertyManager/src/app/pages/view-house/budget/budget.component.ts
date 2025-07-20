@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonCardSubtitle } from "@ionic/angular/standalone";
 import { CommonModule } from '@angular/common';
 import { BuildingDetails, HousesService, FormatAmountPipe } from 'shared';
@@ -12,7 +12,7 @@ import { CreateBudgetComponent } from './create-budget/create-budget.component';
   templateUrl: './budget.component.html',
   styles: ``,
 })
-export class BudgetComponent  implements OnInit {
+export class BudgetComponent  implements OnInit, OnDestroy{
 
   private paramSub!: Subscription;
   houseService = inject(HousesService);

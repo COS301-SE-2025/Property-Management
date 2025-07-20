@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { IonCard, IonCardTitle, IonCardHeader, IonButton, ToastController, IonIcon, IonCardContent } from "@ionic/angular/standalone";
 import { BudgetApiService, BuildingDetails, HousesService, Inventory } from 'shared';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +16,7 @@ import { AddInventoryComponent } from './add-inventory/add-inventory.component';
   styles: ``,
   imports: [IonButton, IonCardHeader, IonCardTitle, IonCard, FormsModule, CommonModule, TableModule, IonIcon, IonCardContent, AddInventoryComponent],
 })
-export class InventoryComponent  implements OnInit {
+export class InventoryComponent  implements OnInit, OnDestroy {
 
   houseService = inject(HousesService);
   budgetApiService = inject(BudgetApiService);
