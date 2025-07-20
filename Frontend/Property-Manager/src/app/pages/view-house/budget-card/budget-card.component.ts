@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HousesService } from 'shared';
-import { FormatAmountPipe } from "../../../pipes/format-amount.pipe";
+import { FormatAmountPipe } from "shared";
 import { BuildingDetails } from 'shared';
 import { BudgetAddDialogComponent } from './budget-app-dialog/budget-card/budget-add-dialog.component';
 

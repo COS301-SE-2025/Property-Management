@@ -7,7 +7,7 @@
             <p>Description: {{ task?.des }}</p>
         </div>
         <div class="font-semibold pb-3">
-            <p>Due Date: {{ task?.scheduled_date }}</p>
+            <p>Due Date: {{ (task?.scheduled_date ?? '') | formatDate }}</p>
         </div>
         <div class="font-semibold pb-3">
             <p>Assigned contractor: {{ contractor?.name }}</p>

@@ -95,7 +95,7 @@ jobs:
               run: npm ci
               working-directory: Frontend/
 
-            - name: Build Angular website
+            - name: Build ionic project
               run: npm run build
               working-directory: Frontend/mobile-app/PropertyManager
       

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { BodyCoporateService } from 'shared';
-import { FormatAmountPipe } from "../../../pipes/format-amount.pipe";
+import { FormatAmountPipe } from "shared";
 import { ReserveFund } from 'shared';
 
 @Component({

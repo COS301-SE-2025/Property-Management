@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { BodyCoporateService } from 'shared';
 import { MaintenanceTask } from 'shared';
-import { FormatDatePipe } from "../../../pipes/format-date.pipe";
+import { FormatDatePipe } from "shared";
 
 @Component({
   selector: 'app-pending-task-card',

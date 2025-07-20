@@ -4,7 +4,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
-
+import Aura from '@primeng/themes/aura'; 
+import { providePrimeNG } from 'primeng/config';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -12,6 +13,12 @@ export const appConfig: ApplicationConfig = {
         provideZoneChangeDetection({ eventCoalescing: true }), 
         provideRouter(routes),
         provideAnimationsAsync(),
-        importProvidersFrom(IonicStorageModule.forRoot())
+        importProvidersFrom(IonicStorageModule.forRoot()),
+        providePrimeNG({
+            theme: {
+                preset: Aura
+            }
+        }),
+        provideHttpClient(),
     ]
 };

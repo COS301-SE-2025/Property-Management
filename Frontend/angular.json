@@ -54,6 +54,7 @@
           "options": {
             "outputPath": "dist/mobile-app",
             "index": "mobile-app/PropertyManager/src/index.html",
+            "postcssConfig": "mobile-app/PropertyManager/postcss.config.js",
             "polyfills": [
               "mobile-app/PropertyManager/src/polyfills.ts"
             ],

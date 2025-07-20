@@ -53,7 +53,11 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     });
 
     //Get contractors
-    this.contractors = await this.contractorService.getAllContractors().toPromise();
+    this.contractorService.getAllContractors().subscribe({
+      next: (response) => {
+        this.contractors = response;
+      }
+    });
  }
 
  override closeDialog(): void{

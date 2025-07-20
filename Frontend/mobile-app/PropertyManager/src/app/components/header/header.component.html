@@ -1,5 +1,11 @@
 <div class = "flex flex-col mt-2">
-  <p class="font-medium text-xl">Property Manager</p>
-
+  <div class="flex justify-between items-center">
+    <p class="font-medium text-xl">Property Manager</p>
+  
+    <ion-breadcrumbs>
+      <ion-breadcrumb *ngIf="houseId && (isManageBudget() || isViewHouse())" href="/view-house/{{ houseId }}">View</ion-breadcrumb>
+      <ion-breadcrumb *ngIf="houseId && isManageBudget()" href="/manage-budget/{{ houseId }}">Budget</ion-breadcrumb>
+    </ion-breadcrumbs>
+  </div>
   <div class="propertyYellow-bg h-3 w-full"></div>
 </div>

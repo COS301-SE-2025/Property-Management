@@ -2,7 +2,7 @@ import { Component, effect, OnInit, signal } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../components/header/header.component";
-import { HousesService } from 'shared';
+import { getCookieValue, HousesService } from 'shared';
 import { ActivatedRoute } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InventoryCardComponent } from "./inventory-card/inventory-card.component";
@@ -57,11 +57,17 @@ export class ViewHouseComponent implements OnInit{
 
   async ngOnInit()
   {
+    let id = getCookieValue(document.cookie, 'trusteeId');
+
+    if(!id)
+    {
+      id = getCookieValue(document.cookie, 'bodyCorporateId');
+    }
     const houseId = String(this.route.snapshot.paramMap.get('houseId'));
     
     try{
       await Promise.all([
-        this.houseService.loadHouses(),
+        this.houseService.loadHouses(id),
         this.houseService.loadInventory(houseId),
         this.houseService.loadBudget(houseId),
         this.houseService.loadTasks(houseId)

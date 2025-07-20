@@ -2,7 +2,7 @@ import { Component, inject, input } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 // import { FormatDatePipe } from "../../../pipes/format-date.pipe";
-import { FormatAmountPipe } from "../../../pipes/format-amount.pipe";
+import { FormatAmountPipe } from "shared";
 import { EditBudgetDialogComponent } from "../edit-budget-dialog/edit-budget-dialog.component";
 import { MaintenanceTask } from 'shared';
 // import { TaskDialogComponent } from '../../task-dialog/task-dialog.component';

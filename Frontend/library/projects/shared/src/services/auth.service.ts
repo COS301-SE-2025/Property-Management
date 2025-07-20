@@ -1,36 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
-
-export interface AuthTokens {
-  idToken: string;
-  accessToken: string;
-  refreshToken: string;
-  userType: string;
-  userId: string;
-}
-
-export interface BodyCoporateRegisterResponse {
-  corporateUuid: string;
-  corporateName: string;
-  email: string;
-  cognitoUserId: string;
-  username: string;
-  emailVerificationRequired: boolean;
-}
-
-export interface trusteeRegisterResponse {
-  email: string;
-  cognitoUserId: string;
-  username: string;
-}
-
-export interface contractorRegisterResponse {
-  email: string;
-  username: string;
-}
-
+import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
 
 @Injectable({
   providedIn: 'root'

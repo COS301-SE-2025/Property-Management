@@ -41,7 +41,6 @@ export class BudgetAddDialogComponent extends DialogComponent implements OnInit{
 
     if(this.form.valid)
     {
-      console.log("Submitting...")
       const inventoryBudget = this.form.value.inventoryBudget;
       const maintenanceBudget = this.form.value.maintenanceBudget;
       const totalBudget = inventoryBudget + maintenanceBudget;

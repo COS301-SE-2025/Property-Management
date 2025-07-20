@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
-import { MaintenanceTask } from 'shared';
+import { MaintenanceTask, FormatDatePipe } from 'shared';
 import { ImageApiService } from 'shared';
 import { ContractorApiService } from 'shared';
 import { ContractorDetails } from 'shared';
 
 @Component({
   selector: 'app-timeline-details-dialog',
-  imports: [DialogModule, CommonModule],
+  imports: [DialogModule, CommonModule, FormatDatePipe],
   templateUrl: './timeline-details-dialog.component.html',
   styles: ``
 })

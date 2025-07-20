@@ -11,6 +11,7 @@
       <ion-input 
         placeholder="Enter email address"
         [(ngModel)]="email"
+        type="email"
       ></ion-input>
     </ion-item>
     <ion-item>
@@ -18,11 +19,9 @@
       <ion-input
        placeholder="Enter password"
        [(ngModel)]="password"
-       [type]="passwordVisible ? 'text' : 'password'"
-      ></ion-input>
-      <button type = "button" (click)="togglePassword()">
-          <img class = "absolute top-3.5 right-2 h-5 w-5" [src]= "passwordVisible ? 'assets/icons/visibility.svg' :'assets/icons/visibility_off.svg'" alt="">
-      </button>
+      >
+      <ion-input-password-toggle slot="end" color="dark"></ion-input-password-toggle>
+    </ion-input>
     </ion-item>
 
     <div class="pb-2 pt-1">
