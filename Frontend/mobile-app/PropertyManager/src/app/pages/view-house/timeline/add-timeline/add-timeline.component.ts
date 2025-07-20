@@ -67,8 +67,6 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   async capturePhoto(){
     try{
       const photo = await this.photoService.takePhoto();
-
-
       if(photo.base64String)
       {
         const blob = this.base64ToBlob(photo.base64String, `image/$(photo.format)`);

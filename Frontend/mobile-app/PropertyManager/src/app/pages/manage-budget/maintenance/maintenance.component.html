@@ -41,10 +41,10 @@
         </p-table> -->
         <!-- <app-task-dialog #taskDialog/> -->
         <!-- <p class = "font-semibold pt-3">Total: R {{ getMaintenanceTotal() }}</p> -->
-        <button class = "cursor-pointer pt-6">
+        <button class = "cursor-pointer pt-6" (click)="editBudget.openModal()">
             <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
         </button>
-        <!-- <app-edit-budget-dialog #editBudgetDialog [budgetType]="'maintainence'" [oldBudgetAmount]="budget().maintenanceBudget" [budget]="budget()"></app-edit-budget-dialog> -->
+        <app-edit-budget #editBudget [budgetType]="'maintainence'" [oldBudgetAmount]="budget().maintenanceBudget" [budget]="budget()"></app-edit-budget>
       </div>
     </ion-card-content>
   </ion-card>

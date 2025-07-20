@@ -1,5 +1,14 @@
-<p-dialog header="Pending task" [style]="{ width: '30rem'}" [(visible)]="displayDialog" [modal]="true">
-    <div class="flex flex-col gap-2 justify-center items-center">
+<ion-modal [isOpen]="displayModal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="closeModal()">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div class="flex flex-col justify-center items-center gap-2 mt-4">
         <div class="font-bold pb-3">
             <p>Task: {{ task?.title }}</p>
         </div>
@@ -19,9 +28,7 @@
                 <p>No image available</p>
             </ng-template>
         </div>
-        <div class="flex justify-end mt-3">
-            <button class="bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer" (click)="closeDialog()">Close</button>
-            <button class="px-3 py-2 rounded cursor-pointer bg-black">Start voting</button>
-        </div>
-    </div>
-</p-dialog>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

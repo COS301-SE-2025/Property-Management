@@ -37,10 +37,10 @@
             </ng-template>
         </p-table>
     
-        <!-- <button class = "cursor-pointer pt-6" (click)="editBudgetDialog.openDialog()">
+        <button class = "cursor-pointer pt-6" (click)="editBudget.openModal()">
             <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
-        </button> -->
-        <!-- <app-edit-budget-dialog #editBudgetDialog [budgetType]="'inventory'" [oldBudgetAmount]="budget().inventoryBudget" [budget]="budget()"></app-edit-budget-dialog> -->
+        </button>
+        <app-edit-budget #editBudget [budgetType]="'inventory'" [oldBudgetAmount]="budget().inventoryBudget" [budget]="budget()"></app-edit-budget>
         <p class = "pt-3">Total: R {{ getMaintenanceTotal() }}</p>
       </div>
     </ion-card-content>

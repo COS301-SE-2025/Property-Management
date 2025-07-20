@@ -1,13 +1,14 @@
 import { Component, inject, input } from '@angular/core';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from "@ionic/angular/standalone";
 import { TableModule } from 'primeng/table';
+import { EditBudgetComponent } from '../edit-budget/edit-budget.component';
 import { BuildingDetails, FormatAmountPipe, HousesService, MaintenanceTask } from "shared";
 
 @Component({
   selector: 'app-maintenance',
   templateUrl: './maintenance.component.html',
   styles: ``,
-  imports: [IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, TableModule, FormatAmountPipe],
+  imports: [IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, TableModule, FormatAmountPipe, EditBudgetComponent],
 })
 export class MaintenanceComponent {
 
@@ -22,7 +23,6 @@ export class MaintenanceComponent {
       console.error("Invalid maintenance data");
       return;
     }
-    console.log("Inside show details", maintenance);
 
     //TODO: Implement dialog
     // this.taskDialog.openDialog(maintenance);

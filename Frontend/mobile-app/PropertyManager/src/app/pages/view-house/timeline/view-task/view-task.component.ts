@@ -1,41 +1,38 @@
 import { Component } from '@angular/core';
-import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
-import { DialogComponent } from '../../../../components/dialog/dialog.component';
-import { MaintenanceTask, FormatDatePipe } from 'shared';
-import { ImageApiService } from 'shared';
-import { ContractorApiService } from 'shared';
-import { ContractorDetails } from 'shared';
+import { IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent } from "@ionic/angular/standalone";
+import { ContractorApiService, ContractorDetails, ImageApiService, MaintenanceTask, FormatDatePipe } from 'shared';
+import { ModalComponent } from 'src/app/components/modal/modal.component';
 
 @Component({
-  selector: 'app-timeline-details-dialog',
-  imports: [DialogModule, CommonModule, FormatDatePipe],
-  templateUrl: './timeline-details-dialog.component.html',
-  styles: ``
+  selector: 'app-view-task',
+  imports: [IonContent, IonButton, IonModal, IonHeader, IonToolbar, IonButtons, FormatDatePipe, CommonModule],
+  templateUrl: './view-task.component.html',
+  styles: ``,
 })
-export class TimelineDetailsDialogComponent extends DialogComponent{
+export class ViewTaskComponent extends ModalComponent{
+
   task: MaintenanceTask | undefined;
   imageUrl: string | undefined = undefined;
   contractor: ContractorDetails | undefined;
-
-  constructor(private imageService: ImageApiService, private contractorService: ContractorApiService){
+  
+  constructor(private imageService: ImageApiService, private contractorService: ContractorApiService) {
     super();
-  }
+   }
 
-  override openDialog(task?: MaintenanceTask): void {
+  override openModal(task?: MaintenanceTask): void {
     this.task = task;
     this.getImages();
     this.getContractor();
-    super.openDialog();
+    super.openModal();
   }
-
-  override closeDialog(): void {
+  override closeModal(): void {
     this.task = undefined;
-    super.closeDialog();
+    super.closeModal();
   }
-
   async getImages()
   {
+    console.log(this.task);
     if (this.task?.img) {
       this.imageUrl = await this.imageService.getImage(this.task.img).toPromise();
     } else {
