@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonButton, IonItem, IonIcon, IonList, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
+import { IonContent, IonButton, IonItem, IonIcon, IonList, IonLabel, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { StorageService } from 'shared';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from 'src/app/components/tab/tab.component';
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-profile',
   imports: [
-    IonIcon, IonItem, IonButton, HeaderComponent, TabComponent, IonContent, IonList, IonSelect, IonSelectOption
+    IonIcon, IonItem, IonButton, IonLabel, HeaderComponent, TabComponent, IonContent, IonList, IonSelect, IonSelectOption
   ],
   templateUrl: './profile.component.html',
   styles: ``,
@@ -24,7 +24,6 @@ export class ProfileComponent  implements OnInit {
   }
 
   async ngOnInit() {
-    // Theme
     const theme = await this.storage.get('theme');
     if (!theme) {
       await this.storage.set('theme', 'light');
@@ -34,7 +33,6 @@ export class ProfileComponent  implements OnInit {
     }
     this.applyTheme();
 
-    // Font size
     const font = await this.storage.get('fontSize');
     this.fontSize = font || 'normal';
     this.applyFontSize();
@@ -46,16 +44,21 @@ export class ProfileComponent  implements OnInit {
     this.applyTheme();
   }
 
-  applyTheme() {
-    const root = document.documentElement;
-    if (this.darkMode) {
-      root.classList.add('dark-theme');
-      root.classList.remove('light-theme');
-    } else {
-      root.classList.add('light-theme');
-      root.classList.remove('dark-theme');
-    }
+applyTheme() {
+  const root = document.documentElement;
+  const body = document.body;
+  if (this.darkMode) {
+    root.classList.add('dark-theme');
+    root.classList.remove('light-theme');
+    body.classList.add('dark-theme');
+    body.classList.remove('light-theme');
+  } else {
+    root.classList.add('light-theme');
+    root.classList.remove('dark-theme');
+    body.classList.add('light-theme');
+    body.classList.remove('dark-theme');
   }
+}
 
   async changeFontSize(size: string) {
     this.fontSize = size;
@@ -63,11 +66,14 @@ export class ProfileComponent  implements OnInit {
     this.applyFontSize();
   }
 
-  applyFontSize() {
-    const root = document.documentElement;
-    root.classList.remove('font-normal', 'font-large', 'font-small');
-    root.classList.add(`font-${this.fontSize}`);
-  }
+applyFontSize() {
+  const root = document.documentElement;
+  const body = document.body;
+  root.classList.remove('font-normal', 'font-large', 'font-small');
+  root.classList.add(`font-${this.fontSize}`);
+  body.classList.remove('font-normal', 'font-large', 'font-small');
+  body.classList.add(`font-${this.fontSize}`);
+}
 
   async signOut() {
     await this.storage.clear();

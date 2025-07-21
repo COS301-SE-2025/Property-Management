@@ -60,13 +60,12 @@ app-tab {
   height: 60px; 
 }
 
-/* Add to styles.scss or your global stylesheet */
 .light-theme {
   --background: #fff;
   --text-color: #222;
 }
 .dark-theme {
-  --background: #222;
+  --background: #444444;
   --text-color: #fff;
 }
 .font-normal {
