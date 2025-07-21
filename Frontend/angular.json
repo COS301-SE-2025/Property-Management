@@ -185,6 +185,7 @@
           "options": {
             "outputPath": "dist/property-manager",
             "index": "property-manager/src/index.html",
+            
             "browser": "property-manager/src/main.ts",
             "polyfills": [
               "zone.js"
