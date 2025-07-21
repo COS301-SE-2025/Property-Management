@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TabComponent } from 'src/app/components/tab/tab.component';
 import { IonicModule } from '@ionic/angular';
 import { PropertyService } from 'shared';
 import { ContractorService } from 'shared';
@@ -10,7 +11,7 @@ import { Contractor } from 'shared';
 @Component({
   selector: 'app-create-property',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent ],
   templateUrl: './create-property.component.html',
   styleUrls: ['./create-property.component.scss']
 })
