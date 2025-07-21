@@ -59,3 +59,26 @@ app-tab {
   z-index: 100;
   height: 60px; 
 }
+
+/* Add to styles.scss or your global stylesheet */
+.light-theme {
+  --background: #fff;
+  --text-color: #222;
+}
+.dark-theme {
+  --background: #222;
+  --text-color: #fff;
+}
+.font-normal {
+  font-size: 1rem;
+}
+.font-large {
+  font-size: 1.25rem;
+}
+.font-small {
+  font-size: 0.85rem;
+}
+body, ion-content {
+  background: var(--background);
+  color: var(--text-color);
+}
