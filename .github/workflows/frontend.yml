@@ -26,7 +26,7 @@ jobs:
               working-directory: Frontend/
 
             - name: Lint code
-              run: ng lint property-manager
+              run: npm run lint property-manager
               working-directory: Frontend/Property-Manager
         
     audit:
@@ -120,3 +120,6 @@ jobs:
           - name: Run unit and integration tests
             run: npm run test property-manager -- --watch=false --browsers=ChromeHeadlessCI
             working-directory: Frontend
+    
+    mobile-run:
+      uses: ./.github/workflows/mobile.yml
