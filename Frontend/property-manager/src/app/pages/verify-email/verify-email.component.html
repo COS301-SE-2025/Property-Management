@@ -1,0 +1,26 @@
+<div class = "flex w-full justify-center items-center h-screen bg-gray-100">
+    <div class = "flex w-[700px] h-[400px] shadow-lg rounded overflow-hidden border">
+        <div class = "w-2/6 bg-white flex flex-col items-center justify-center p-6 border-r">
+            <img class = "h-24 mb-4" src="assets/images/logo.png" alt="App logo">
+            <p class = "font-semibold text-lg">Property Manager</p>
+        </div>
+
+        <div class = "w-4/6 propertyYellow-bg p-8 flex flex-col justify-center">
+            <p class = "text-center text-xl font-semibold mb-2">A verification code has been sent to email address. Enter the code here to verify your account </p>
+            <div class="mb-8 mt-8">
+                <label for="on_label">Enter Verification Code</label>
+                <input class="w-full border rounded bg-white" pInputText id="on_label" [(ngModel)]="verificationCode" autocomplete="off">
+            </div>
+
+            <div *ngIf="emptyField">
+                <p class="text-red-300">Invalid code sent, please try again</p>
+            </div>
+
+            <div>
+                <button (click)="sendCode()" class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800 w-full">
+                    Send Verification code
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+<app-header />
+
+<div class="px-10 py-8">
+  <h2 class="text-2xl font-bold mb-2">Contractor Profile</h2>
+  <div class="h-1 w-64 bg-yellow-400 mb-6"></div>
+
+  <div class="flex justify-center mb-8 space-x-4">
+    <span class="w-4 h-4 rounded-full" [ngClass]="{ 'bg-yellow-400': step === 1, 'bg-gray-300': step !== 1 }"></span>
+    <span class="w-4 h-4 rounded-full" [ngClass]="{ 'bg-yellow-400': step === 2, 'bg-gray-300': step !== 2 }"></span>
+    <span class="w-4 h-4 rounded-full" [ngClass]="{ 'bg-yellow-400': step === 3, 'bg-gray-300': step !== 3 }"></span>
+  </div>
+
+  <div
+    [ngClass]="{
+      'border rounded-lg p-12 shadow-sm max-w-6xl mx-auto': true,
+      'bg-#3d444d border-black text-white': step === 1 && !isDarkMode,
+      'bg-#2b3036 border-black text-white': step === 1 && isDarkMode,
+      'border-gray-200': step !== 1 && !isDarkMode,
+      'border-gray-700': step !== 1 && isDarkMode
+    }"
+  >
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div>
+        <ng-container [ngSwitch]="step">
+          <app-step-one *ngSwitchCase="1" (next)="onStepOneComplete($event)"></app-step-one>
+          <app-step-two *ngSwitchCase="2" (next)="onStepTwoComplete($event)" (back)="step = 1"></app-step-two>
+          <app-step-three *ngSwitchCase="3" (back)="step = 2" (done)="onStepThreeComplete($event)"></app-step-three>
+        </ng-container>
+      </div>
+      <div *ngIf="step === 1" class="flex flex-col items-center justify-start gap-4 py-14">
+        <p class="font-semibold">Upload a Profile Image</p>
+        <div class="w-72 h-48 rounded-xl bg-gray-100 border flex items-center justify-center shadow-sm overflow-hidden">
+          <ng-container *ngIf="imagePreviewUrl && !imageError; else placeholder">
+            <img [src]="imagePreviewUrl" alt="Profile image" class="w-full h-full object-cover" />
+          </ng-container>
+          <ng-template #placeholder>
+            <img src="https://img.icons8.com/ios/50/image.png" alt="upload icon" class="w-16 h-16 opacity-50" />
+          </ng-template>
+        </div>
+        <p *ngIf="imageError" class="text-red-500 py-1 font-semibold">Failed to load or upload image</p>
+        <div class="flex gap-2">
+          <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
+          <button
+            type="button"
+            class="text-xs px-4 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow"
+            (click)="fileInput.click()"
+          >
+            Upload Image
+          </button>
+          <button
+            *ngIf="imagePreviewUrl || contractor.img"
+            type="button"
+            class="text-xs px-4 py-2 rounded bg-red-400 hover:bg-red-500 text-white font-semibold shadow"
+            (click)="resetImage()"
+          >
+            Remove Image
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

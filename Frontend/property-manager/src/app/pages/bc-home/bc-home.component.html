@@ -1,0 +1,15 @@
+<app-header/>
+
+<!-- <div>
+    <button class = "mt-4 ml-2 cursor-pointer" (click)="openDrawer.openDrawer()"><img src="assets/icons/sideDrawer_button.svg" alt="Open drawer" class="w-9 h-9"></button>
+    <app-drawer #openDrawer/>
+</div> -->
+
+<div class="flex flex-col items-center justify-center pb-10 pl-5 pr-5 mt-30">
+    <div [@floatUp] class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <app-pending-task-card class="shadow-md" [tasks]="bodyCoporateService.pendingTasks()"/>
+        <app-life-cycle-card class="shadow-md" [costs]="bodyCoporateService.lifeCycleCosts()"/>
+        <app-reserve-fund-card class="shadow-md" [schedule]="bodyCoporateService.fundContribution()"/>
+        <app-maintenance-graph-card [bcData]="bodyCoporateService.maintenanceGraph()"/>
+    </div>
+</div>
