@@ -37,5 +37,9 @@ export const routes: Routes = [
     {
         path: 'manage-budget/:houseId',
         loadComponent: () => import('./pages/manage-budget/manage-budget.component').then(m => m.ManageBudgetComponent)
+    },
+    {
+        path: 'profile',
+        loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent)
     }
 ];

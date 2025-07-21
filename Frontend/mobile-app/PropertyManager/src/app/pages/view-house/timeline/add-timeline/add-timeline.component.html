@@ -52,6 +52,14 @@
             <ion-button (click)="capturePhoto()" fill="clear">
               <ion-icon name="camera-outline"></ion-icon>
             </ion-button>
+
+            <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
+              <p class="mb-2">Preview</p>
+              <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
+              <ion-button (click)="deletePhoto()" fill="clear" color="dark">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
           </div>
         </div>
       </form>

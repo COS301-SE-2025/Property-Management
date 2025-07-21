@@ -21,9 +21,9 @@
         <div class="font-semibold pb-3">
             <p>Assigned contractor: {{ contractor?.name }}</p>
         </div>
-        <div class="pb-3">
-            <p>Task image: </p>
-            <img [src]="imageUrl" alt="image of task" *ngIf="imageUrl; else noImg">
+        <div class="pb-3 flex flex-col justify-center items-center">
+            <p class="pb-2">Task image: </p>
+            <img [src]="imageUrl" alt="image of task" *ngIf="imageUrl; else noImg" class="max-w-xs max-h-40 rounded-md">
             <ng-template #noImg>
                 <p>No image available</p>
             </ng-template>
