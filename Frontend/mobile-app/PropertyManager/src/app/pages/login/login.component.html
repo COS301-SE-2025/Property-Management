@@ -28,7 +28,7 @@
         <button (click)="login()" class = "bg-black text-white px-5 py-2 rounded font-semibold text-md">Login</button>
     </div>
 
-    <div *ngIf="emptyField || userError || serverError" class="pl-20">
+    <div *ngIf="emptyField || userError || serverError">
       <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">Email or password missing</p>
       <p *ngIf="userError" class="text-red-500 py-1 font-semibold rounded">Email or password incorrect</p>
       <p *ngIf="serverError" class="text-red-500 py-1 font-semibold rounded">Internal server error</p>

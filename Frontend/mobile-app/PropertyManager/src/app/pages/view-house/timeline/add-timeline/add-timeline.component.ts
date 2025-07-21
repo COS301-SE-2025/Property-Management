@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TaskApiService, ImageApiService, ContractorApiService, ContractorDetails, StorageService } from 'shared';
 import { usePhoto } from 'src/composables/usePhoto';
 import { addIcons } from 'ionicons';
-import { cameraOutline } from 'ionicons/icons';
+import { cameraOutline, trashOutline } from 'ionicons/icons';
 
 
 @Component({
@@ -21,7 +21,8 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   form!: FormGroup;
   houseId = '';
   selectedFile: File | null = null;
-
+  
+  public capturedPhoto: string | null = null;
   public contractors: ContractorDetails[] | undefined = undefined;
 
   private photoService = usePhoto();
@@ -37,7 +38,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   ) {
     super();
 
-    addIcons({ cameraOutline });
+    addIcons({ cameraOutline, trashOutline });
   }
 
   async ngOnInit() {
@@ -69,6 +70,8 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
       const photo = await this.photoService.takePhoto();
       if(photo.base64String)
       {
+        this.capturedPhoto = `data:image/${photo.format};base64,${photo.base64String}`;
+
         const blob = this.base64ToBlob(photo.base64String, `image/$(photo.format)`);
         this.selectedFile = new File([blob], `captured_${Date.now()}.${photo.format}`, {
           type: `image/${photo.format}`
@@ -142,5 +145,10 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
         }
       });
     }
+  }
+  deletePhoto()
+  {
+    this.capturedPhoto = null;
+    this.selectedFile = null;
   }
 }
