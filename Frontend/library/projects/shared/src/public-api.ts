@@ -19,6 +19,7 @@ export * from './services/api/InventoryItem api/inventory-item-api.service';
 export * from './services/api/InventoryUsage api/inventory-usage-api.service';
 export * from './services/api/Task api/task-api.service';
 export * from './services/storage.service';
+export * from './services/voting.service';
 
 //Models
 export * from './models/bodyCoporate.model';

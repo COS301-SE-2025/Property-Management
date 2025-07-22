@@ -1,12 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HeaderComponent } from "../../../components/header/header.component";
-import { DrawerComponent } from "../../../components/drawer/drawer.component";
 import { ContractorCardComponent } from "../contractor-card/contractor-card.component";
 import { BodyCoporateService } from 'shared';
 
 @Component({
   selector: 'app-public-contractors',
-  imports: [HeaderComponent, DrawerComponent, ContractorCardComponent],
+  imports: [HeaderComponent, ContractorCardComponent],
   templateUrl: './public-contractors.component.html',
   styles: ``
 })

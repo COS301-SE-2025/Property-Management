@@ -4,26 +4,16 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
 import { getCookieValue, HousesService } from 'shared';
 import { Router } from '@angular/router';
-import { DrawerComponent } from "../../components/drawer/drawer.component";
 
 @Component({
   selector: 'app-home',
-  imports: [HeaderComponent, HouseCardComponent, CommonModule, DrawerComponent],
+  imports: [HeaderComponent, HouseCardComponent, CommonModule],
   templateUrl: './home.component.html',
   styles: ``
 })
 export class HomeComponent implements OnInit{
 
-  public bcUser = false;
-
-  constructor(private router: Router) {
-
-    const typeUser = localStorage.getItem("typeUser");
-    if(typeUser !== null && typeUser === "bodyCoporate")
-    {
-      this.bcUser = true;
-    }
-  }
+  constructor(private router: Router) {}
 
   ngOnInit(){
     const id = getCookieValue(document.cookie, 'trusteeId');

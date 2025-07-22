@@ -22,6 +22,8 @@ import { LandingPageComponent } from './pages/LandingPage/LandingPage.component'
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { authGuard } from './auth.guard';
+import { VotingComponent } from './pages/voting/voting.component';
+import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
 
 export const routes: Routes = [
   {
@@ -81,6 +83,18 @@ export const routes: Routes = [
     canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: ManageBudgetComponent
+  },
+  {
+    path: 'voting',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: VotingComponent
+  },
+  {
+    path:'voting/:taskId',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: VotingDetailsComponent
   },
   {
     path: 'contractorHome',

@@ -42,8 +42,7 @@ export class LoginComponent {
     this.serverError = false;
 
     try {
-      const bodyCorpTokens = await this.authService.bodyCoporateLogin(this.email, this.password);
-      localStorage.setItem('bodyCorpID', bodyCorpTokens.userId);
+      await this.authService.bodyCoporateLogin(this.email, this.password);
       this.router.navigate(['/bodyCoporate']);
       return;
     } catch (error) {
@@ -51,9 +50,7 @@ export class LoginComponent {
     }
 
     try {
-      const trusteeTokens = await this.authService.trusteeLogin(this.email, this.password);
-      localStorage.setItem('trusteeID', trusteeTokens.userId);
-      console.log('Trustee logged in:', trusteeTokens);
+      await this.authService.trusteeLogin(this.email, this.password);
       this.router.navigate(['/home']);
       return; 
     } catch (error) {
@@ -61,9 +58,7 @@ export class LoginComponent {
     }
 
     try {
-      const contractorTokens = await this.authService.contractorLogin(this.email, this.password);
-      localStorage.setItem('contractorID', contractorTokens.userId);
-      console.log('Contractor logged in:', contractorTokens);
+      await this.authService.contractorLogin(this.email, this.password);
 
       // contractorProfileComplete is still checked in localStorage, 
       // but userType is now determined from the Cognito token

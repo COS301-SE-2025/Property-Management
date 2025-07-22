@@ -135,19 +135,38 @@ body {
   color: var(--text-color-secondary);
 }
 
-.dark-theme .p-datepicker-panel {
-  background-color: #333;
-  color: var(--text-color);
-  border-color: var(--surface-border);
+.dark-theme .p-datepicker-panel{
+  background-color: var(--datatable-border);
 }
-.dark-theme .p-datepicker-input {
-  background-color: #333;
+
+.dark-theme .p-datepicker-header{
+  background: var(--datatable-border);
+}
+.dark-theme .p-datepicker-day{
   color: var(--text-color);
 }
 
-.dark-theme .p-datepicker-header {
-  background: #2d2d2d;
+.dark-theme .p-datepicker-month{
+  color: var(--text-color);
 }
+.dark-theme .p-datepicker-year{
+  color: var(--text-color);
+}
+
+.dark-theme .p-datepicker-select-month{
+  color: var(--text-color);
+}
+.dark-theme .p-datepicker-select-year{
+  color: var(--text-color);
+}
+.dark-theme .p-datepicker-decade{
+  color: var(--text-color);
+}
+
+.dark-theme .p-datepicker-weekday {
+  color: var(--text-color); 
+}
+
 
 .dark-theme .p-dialog button {
   background-color: #444;

@@ -87,7 +87,10 @@ export class HousesService {
           } else {
             this.houses.update(currentHouses => [
               ...currentHouses,
-              h
+              {
+                ...h,
+                propertyImage: 'assets/images/no_image.png'
+              }
             ]);
           }
         });

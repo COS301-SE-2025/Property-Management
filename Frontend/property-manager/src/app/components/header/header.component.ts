@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService } from 'shared';
@@ -29,6 +29,9 @@ export class HeaderComponent {
   public items: MenuItem[] = [];
   public isContractor = false; 
   public isBodyCorporate = false; 
+
+  @ViewChild('profileDropDown') profileDropDown!: ElementRef;
+  @ViewChild('settingsDropDown') settingsDropDown!: ElementRef;
 
   private routeMap: Record<string, Record<string, MenuItem[]>> = {
   'bodyCorporate': {
@@ -93,7 +96,7 @@ export class HeaderComponent {
   userType: UserType = null;
   navLinks: NavLink[] = [];
 
-  constructor(private authService: AuthService, private router: Router){
+  constructor(private authService: AuthService, private router: Router, private elementRef: ElementRef){
     const saved = localStorage.getItem('darkMode');
 
     this.userType = this.authService.getUserType() as UserType;
@@ -120,13 +123,34 @@ export class HeaderComponent {
 
   dropDownProfile()
   {
+    console.log('opening profile');
     this.dropDownSettingsOpen = false;
-    this.dropDownProfileOpen = !this.dropDownProfileOpen;
+
+    setTimeout(() => {
+      this.dropDownProfileOpen = !this.dropDownProfileOpen;
+    }, 0);
   }
   dropDownSettings()
   {
+    console.log("opening settings");
     this.dropDownProfileOpen = false;
-    this.dropDownSettingsOpen = !this.dropDownSettingsOpen;
+
+    setTimeout(() => {
+      this.dropDownSettingsOpen = !this.dropDownSettingsOpen;
+    }, 0);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent)
+  {
+    const target = event.target as HTMLElement;
+
+    const clickedInside = this.elementRef.nativeElement.contains(target);
+    if(!clickedInside)
+    {
+      this.dropDownProfileOpen = false;
+      this.dropDownSettingsOpen = false;
+    }
   }
 
   signOut()
@@ -149,10 +173,12 @@ export class HeaderComponent {
     if(this.isDarkMode)
     {
       root.classList.add('dark-theme');
+      root.classList.add('dark');
     }
     else
     {
       root.classList.remove('dark-theme');
+      root.classList.remove('dark');
     }
   }
   private updateBreadcrumbs(url: string): void {
@@ -218,13 +244,19 @@ export class HeaderComponent {
     if (this.userType === 'contractor') homeRoute = '/contractorHome';
     if (this.userType === 'bodyCorporate') homeRoute = '/bodyCoporate';
 
+    console.log(this.userType);
+
     this.navLinks = [
       { label: 'Home', route: homeRoute, show: true },
-      { label: 'Properties', route: '/home', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' },
+      { label: 'Properties', route: '/home', show: this.userType === 'bodyCorporate'},
+      { label: 'Voting', route:'/voting', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' },
       { label: 'Contractors', route: '/bodyCoporate/contractors', show: this.userType === 'bodyCorporate' },
       { label: 'My Profile', route: '/contractor-prof', show: this.userType === 'contractor' },
-      { label: 'Dashboard', route: this.userType === 'contractor' ? '/contractorHome' : (this.userType === 'bodyCorporate' ? '/bodyCoporate' : '/home'), show: true },
-      { label: 'Help', route: '/help', show: true }
+      { 
+        label: 'Dashboard', 
+        route: this.userType === 'contractor' ? '/contractorHome' : '/bodyCoporate', 
+        show: this.userType === 'contractor' || this.userType === 'bodyCorporate' 
+      }
     ];
   }
 }
