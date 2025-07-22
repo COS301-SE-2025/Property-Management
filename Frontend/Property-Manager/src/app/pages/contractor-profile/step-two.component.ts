@@ -84,10 +84,10 @@ export class StepTwoComponent {
   }
 
   emitRelevantData() {
-    if(!this.form.valid){
-      this.form.markAllAsTouched();
-      return;
-    }
+    // if(!this.form.valid){
+    //   this.form.markAllAsTouched();
+    //   return;
+    // }
 
     this.next.emit({
       // address: this.form.value.address,
