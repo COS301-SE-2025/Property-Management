@@ -24,6 +24,9 @@ class TrusteeBodyCorporateInviteService(
 
     fun getInvitesForTrustee(trusteeUuid: UUID): List<InviteDTO> = inviteRepository.findAllByTrusteeUuid(trusteeUuid).map { it.toDTO() }
 
+    fun getAcceptedTrusteesForBodyCorporate(coporateUuid: UUID): List<InviteDTO> =
+        inviteRepository.findAllByCoporateUuidAndStatus(coporateUuid, "ACCEPTED").map { it.toDTO() }
+
     fun updateInviteStatus(
         inviteUuid: UUID,
         status: String,
