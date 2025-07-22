@@ -30,7 +30,6 @@ export class HeaderComponent {
   public isContractor = false; 
   public isBodyCorporate = false; 
 
-  public typeUser: string | null = null;
   private routeMap: Record<string, Record<string, MenuItem[]>> = {
   'bodyCorporate': {
     '/bodyCoporate': [
@@ -91,11 +90,15 @@ export class HeaderComponent {
   }
   };
 
+  userType: UserType = null;
+  navLinks: NavLink[] = [];
+
   constructor(private authService: AuthService, private router: Router){
     const saved = localStorage.getItem('darkMode');
-    this.userType = (localStorage.getItem('userType') as UserType) || null;
+
+    this.userType = this.authService.getUserType() as UserType;
     this.setNavLinks();
-    
+
     if(saved !== null)
     {
       this.isDarkMode = saved === 'true';
@@ -106,10 +109,9 @@ export class HeaderComponent {
     }
     this.applyDarkMode();
 
-    this.typeUser = localStorage.getItem('userType');
 
-    this.isContractor = this.typeUser === 'contractor' ? true : false;
-    this.isBodyCorporate = this.typeUser === 'bodyCorporate' ? true : false;
+    this.isContractor = this.userType === 'contractor';
+    this.isBodyCorporate = this.userType === 'bodyCorporate';
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
       this.updateBreadcrumbs(event.url);
@@ -154,14 +156,14 @@ export class HeaderComponent {
     }
   }
   private updateBreadcrumbs(url: string): void {
-    if (!this.typeUser) return;
+    if (!this.userType) return;
 
     const baseUrl = url.split('?')[0].split('#')[0];
     const pathParts = baseUrl.split('/').filter(part => part);
 
     const houseId = pathParts[0] === 'viewHouse' || pathParts[0] === 'manageBudget' ? pathParts[1] : null;
 
-    const userRoutes = this.routeMap[this.typeUser];
+    const userRoutes = this.routeMap[this.userType];
     if (!userRoutes) return;
 
     if (userRoutes[baseUrl]) {
@@ -188,7 +190,7 @@ export class HeaderComponent {
     if(pathParts[0] === 'contractorDetails' && pathParts.length >= 3)
     {
       const contractorType = pathParts[2];
-      if(this.typeUser === 'bodyCorporate')
+      if(this.userType === 'bodyCorporate')
       {
         if(contractorType === 'public')
         {
@@ -210,9 +212,6 @@ export class HeaderComponent {
       }
     }
   }
-
-  userType: UserType = null;
-  navLinks: NavLink[] = [];
 
   setNavLinks() {
     let homeRoute = '/home';

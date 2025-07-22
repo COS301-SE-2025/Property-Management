@@ -9,13 +9,16 @@ import { ContractorDetails } from 'shared';
 import { getCookieValue } from 'shared';
 import { ImageApiService } from 'shared';
 import { Router } from '@angular/router';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-contractor-profile',
   standalone: true,
-  imports: [CommonModule, StepOneComponent, StepTwoComponent, StepThreeComponent, HeaderComponent],
+  imports: [CommonModule, StepOneComponent, StepTwoComponent, StepThreeComponent, HeaderComponent, ToastModule],
   templateUrl: './contractor-profile.component.html',
-  styleUrls: ['./contractor-profile.component.scss']
+  styleUrls: ['./contractor-profile.component.scss'],
+  providers: [MessageService] 
 })
 
 
@@ -43,7 +46,7 @@ export class ContractorProfileComponent implements OnInit {
     img: '',
   };
 
-  constructor(private contractorService: ContractorService, private imageService: ImageApiService, private router: Router) {}
+  constructor(private contractorService: ContractorService, private imageService: ImageApiService, private router: Router, private messageService: MessageService) {}
 
   step = 1;
 
@@ -179,6 +182,12 @@ export class ContractorProfileComponent implements OnInit {
     this.contractor.city = data.city;
     this.contractor.status = data.status;
     this.step = 2;
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Step 1 Complete',
+      detail: 'Your details have been saved.'
+    });
   }
 
   onStepTwoComplete(data: {reg_number: string, description: string, services: string})
@@ -187,10 +196,23 @@ export class ContractorProfileComponent implements OnInit {
     this.contractor.description = data.description;
     this.contractor.services = data.services;
     this.step = 3;
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Step 2 Complete',
+      detail: 'Registration details saved.'
+    });
   }
 
   onStepThreeComplete(data: {description: string}) {
     this.contractor.project_history = data.description;
     this.submitProfile();
+    
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Profile Complete',
+      detail: 'Your profile is now complete!'
+    });
+    
   }
 }

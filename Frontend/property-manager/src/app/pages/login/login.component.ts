@@ -22,7 +22,7 @@ export class LoginComponent {
   public userError = false;
   public serverError = false;
 
-  public selectedUserType = 'bodyCorporate'; // defualt change after login
+  public selectedUserType = 'bodyCorporate';
 
   constructor(private authService: AuthService, private router: Router){}
 
@@ -43,7 +43,6 @@ export class LoginComponent {
 
     try {
       const bodyCorpTokens = await this.authService.bodyCoporateLogin(this.email, this.password);
-      localStorage.setItem('userType', 'bodyCorporate');
       localStorage.setItem('bodyCorpID', bodyCorpTokens.userId);
       this.router.navigate(['/bodyCoporate']);
       return;
@@ -53,21 +52,21 @@ export class LoginComponent {
 
     try {
       const trusteeTokens = await this.authService.trusteeLogin(this.email, this.password);
-      localStorage.setItem('userType', 'trustee');
       localStorage.setItem('trusteeID', trusteeTokens.userId);
       console.log('Trustee logged in:', trusteeTokens);
       this.router.navigate(['/home']);
       return; 
     } catch (error) {
-      console.warn('Trustee login failed, trying Contractor...',error);
+      console.warn('Trustee login failed, trying Contractor...', error);
     }
 
     try {
       const contractorTokens = await this.authService.contractorLogin(this.email, this.password);
-      localStorage.setItem('userType', 'contractor');
       localStorage.setItem('contractorID', contractorTokens.userId);
       console.log('Contractor logged in:', contractorTokens);
 
+      // contractorProfileComplete is still checked in localStorage, 
+      // but userType is now determined from the Cognito token
       const profileComplete = localStorage.getItem('contractorProfileComplete');
       if (profileComplete === 'true') {
         this.router.navigate(['/contractorHome']);
@@ -75,11 +74,10 @@ export class LoginComponent {
         this.router.navigate(['/contractor-prof']);
       }
       return;
-  } catch (error) {
-    console.warn('Contractor login failed:', error);
-  }
+    } catch (error) {
+      console.warn('Contractor login failed:', error);
+    }
 
-    //all failed
     this.userError = true;
   }
 }

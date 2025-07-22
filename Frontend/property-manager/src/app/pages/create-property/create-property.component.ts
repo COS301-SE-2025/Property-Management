@@ -10,6 +10,8 @@ import { PropertyService, CreateBuildingPayload, ImageUploadResponse } from 'sha
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-create-property',
@@ -21,10 +23,12 @@ import { HttpErrorResponse } from '@angular/common/http';
     HeaderComponent,
     InputTextModule,
     FloatLabelModule,
-    DropdownModule
+    DropdownModule,
+    ToastModule
   ],
   templateUrl: './create-property.component.html',
   styles: [],
+  providers: [MessageService]
 })
 export class CreatePropertyComponent implements OnInit {
   form!: FormGroup;
@@ -45,6 +49,7 @@ export class CreatePropertyComponent implements OnInit {
     private propertyService: PropertyService,
     private contractorService: ContractorService,
     private router: Router,
+    private messageService: MessageService
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -159,6 +164,12 @@ export class CreatePropertyComponent implements OnInit {
           'Failed to create property.';
         this.isSubmitting = false;
       }
+    });
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Property Created',
+      detail: 'The property was created successfully.'
     });
   }
 }
