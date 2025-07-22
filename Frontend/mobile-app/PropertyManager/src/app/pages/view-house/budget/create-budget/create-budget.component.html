@@ -1,0 +1,39 @@
+<ion-modal [isOpen]="displayModal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="closeModal()">Cancel</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form [formGroup]="form" (ngSubmit)="confirm()">
+        <div class="flex flex-col justify-center items-center mt-4 space-y-2">
+          <p class="text-gray-700 pl-2 pb-2">Allocate budgets for inventory and maintenance tasks</p>
+          <ion-item>
+            <ion-input
+              label="Inventory budget allocation"
+              labelPlacement="stacked"
+              formControlName="inventory"
+            ></ion-input>
+            <p class="text-red-500" *ngIf="form.get('inventory')?.hasError('required') && form.get('inventory')?.touched">Field is required</p>
+            <p class="text-red-500" *ngIf="form.get('inventory')?.hasError('min') && form.get('inventory')?.touched">Value must be positive</p>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              label="Maintenance budget allocation"
+              labelPlacement="stacked"
+              formControlName="maintenance"
+            ></ion-input>
+            <p class="text-red-500" *ngIf="form.get('maintenance')?.hasError('required') && form.get('maintenance')?.touched">Field is required</p>
+            <p class="text-red-500" *ngIf="form.get('maintenance')?.hasError('min') && form.get('maintenance')?.touched">Value must be positive</p>
+          </ion-item>
+        </div>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

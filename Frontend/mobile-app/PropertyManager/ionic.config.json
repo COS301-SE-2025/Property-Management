@@ -1,0 +1,8 @@
+{
+  "name": "PropertyManager",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone",
+  "proxyConfig": "mobile-app/PropertyManager/proxy.conf.json"
+} 
