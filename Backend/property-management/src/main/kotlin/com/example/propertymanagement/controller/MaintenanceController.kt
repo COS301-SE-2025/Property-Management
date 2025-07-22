@@ -27,16 +27,21 @@ class MaintenanceController(
         @PathVariable uuid: UUID,
     ): ResponseEntity<Maintenance> = ResponseEntity.ok(service.getByUuid(uuid))
 
+    @GetMapping("/trustee/{tUuid}")
+    fun getTaskByTrustee(
+        @PathVariable tUuid: UUID,
+    ): ResponseEntity<List<Maintenance>> = ResponseEntity.ok(service.getTasksByTrustee(tUuid))
+
     data class Info(
         val title: String,
         val des: String,
         val status: String,
         val scheduled_date: Date,
         val approved: Boolean,
-        val b_uuid: UUID,
+        val bUuid: UUID,
         val img: UUID,
-        val t_uuid: UUID,
-        val c_uuid: UUID,
+        val tUuid: UUID,
+        val cUuid: UUID,
     )
 
     @PostMapping
@@ -49,10 +54,10 @@ class MaintenanceController(
             info.status,
             java.sql.Date(info.scheduled_date.time),
             info.approved,
-            info.b_uuid,
+            info.bUuid,
             info.img,
-            info.t_uuid,
-            info.c_uuid,
+            info.tUuid,
+            info.cUuid,
         )
 
     @PutMapping("/{uuid}")
