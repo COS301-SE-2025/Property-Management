@@ -19,8 +19,10 @@ data class Notification (
     val notificationType: String,
     @Column(name = "message" )
     val message: String,
-    @Column(name = "user_uuid uuid")
-    val userUuid: UUID,
+    @Column(name = "recipient_type")
+    val recipientType: String,
+    @Column(name = "recipient_uuid")
+    val recipientUuid: UUID,
     @Column(name = "is_read")
     val isRead: Boolean,
     @Column(name = "related_task_uuid")
