@@ -22,11 +22,11 @@ data class Maintenance(
     var scheduled_date: java.sql.Date? = null,
     val approved: Boolean,
     @Column(name = "building_uuid")
-    val b_uuid: UUID,
+    val bUuid: UUID,
     @Column(name = "image_uuid")
     val img: UUID,
     @Column(name = "trustee_uuid")
-    val t_uuid: UUID,
+    val tUuid: UUID,
     @Column(name = "contractor_uuid")
-    val c_uuid: UUID? = null,
+    val cUuid: UUID? = null,
 )

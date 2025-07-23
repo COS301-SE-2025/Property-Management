@@ -19,16 +19,18 @@ class MaintenanceService(
     fun getByUuid(uuid: UUID): Maintenance =
         repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Maintenance not found: $uuid") }
 
+    fun getTasksByTrustee(tUuid: UUID): List<Maintenance> = repository.findAllBytUuid(tUuid)
+
     fun add(
         title: String,
         des: String,
         status: String,
         scheduled_date: java.sql.Date,
         approved: Boolean,
-        b_uuid: UUID,
+        bUuid: UUID,
         img: UUID,
-        t_uuid: UUID,
-        c_uuid: UUID,
+        tUuid: UUID,
+        cUuid: UUID,
     ): Maintenance {
         val newUser =
             Maintenance(
@@ -37,10 +39,10 @@ class MaintenanceService(
                 status = status,
                 scheduled_date = scheduled_date,
                 approved = approved,
-                b_uuid = b_uuid,
+                bUuid = bUuid,
                 img = img,
-                t_uuid = t_uuid,
-                c_uuid = c_uuid,
+                tUuid = tUuid,
+                cUuid = cUuid,
             )
         return add(newUser)
     }
@@ -57,10 +59,10 @@ class MaintenanceService(
                 status = newItem.status,
                 scheduled_date = newItem.scheduled_date,
                 approved = newItem.approved,
-                b_uuid = newItem.b_uuid,
+                bUuid = newItem.bUuid,
                 img = newItem.img,
-                t_uuid = newItem.t_uuid,
-                c_uuid = newItem.c_uuid,
+                tUuid = newItem.tUuid,
+                cUuid = newItem.cUuid,
             )
         return repository.save(updated)
     }

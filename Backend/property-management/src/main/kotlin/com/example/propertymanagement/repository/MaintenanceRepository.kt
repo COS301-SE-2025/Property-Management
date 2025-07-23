@@ -9,4 +9,6 @@ interface MaintenanceRepository : JpaRepository<Maintenance, Int> {
     fun findByUuid(uuid: UUID): Optional<Maintenance>
 
     fun deleteByUuid(uuid: UUID)
+
+    fun findAllBytUuid(tUuid: UUID): List<Maintenance>
 }
