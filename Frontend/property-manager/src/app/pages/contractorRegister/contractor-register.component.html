@@ -11,7 +11,7 @@
             
             <p-floatlabel variant="on">
                 <img *ngIf = "!email" class = "absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/mail.svg" alt="">
-                <input class = "w-full border rounded !bg-white" pInputText id = "email" [(ngModel)]="email" autocomplete="off">
+                <input class = "w-full border rounded ml-2 !bg-white" pInputText id = "email" [(ngModel)]="email" autocomplete="off">
                 <label class = "pl-6" for="email">Enter email address</label>
             </p-floatlabel>
 
@@ -19,7 +19,7 @@
              <img *ngIf="!password" class="absolute top-3 left-2 h-5 w-5 pointer-events-none" src="assets/icons/key_vertical.svg" alt="">
 
                 <input
-                    class="w-full border rounded py-2 pl-8 pr-10 !bg-white"
+                    class="w-full border rounded py-2 ml-2 !bg-white"
                     [type]="passwordVisible ? 'text' : 'password'"
                     pInputText
                     id="over_label"
@@ -40,7 +40,7 @@
 
             <p-floatlabel variant="on">
                 <img *ngIf = "!contactNumber" class = "absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/telephone.svg" alt="">
-                <input class = "w-full border rounded !bg-white" pInputText id = "number" [(ngModel)]="contactNumber" autocomplete="off">
+                <input class = "w-full border rounded ml-2 !bg-white" pInputText id = "number" [(ngModel)]="contactNumber" autocomplete="off">
                 <label class = "pl-6" for="number">Enter Contact number</label>
             </p-floatlabel> 
 

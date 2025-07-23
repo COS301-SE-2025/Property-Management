@@ -32,9 +32,11 @@
             </ng-template>
         </p-table>
 
-        <button class="cursor-pointer pl-105 pt-5" (click)="costAddDialog.openDialog()">
-            <img src="assets/icons/add_circle_gray.svg" alt="add new cost" class="w-10 h-10">
-        </button>
+        <div class="flex flex-col justify-center items-center">
+            <button class="cursor-pointer pt-5 pb-2" (click)="costAddDialog.openDialog()">
+                <img src="assets/icons/add_circle_gray.svg" alt="add new cost" class="w-10 h-10">
+            </button>
+        </div>
         <app-add-cost-dialog #costAddDialog/>
     </div>
 </div>

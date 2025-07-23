@@ -57,4 +57,12 @@ export class VotingService{
     {
 
     }
+    getTaskById(taskId: string)
+    {
+        return this.votingTasks().find(task => task.uuid === taskId);
+    }
+    getSessionId(taskId: string)
+    {
+        
+    }
 }

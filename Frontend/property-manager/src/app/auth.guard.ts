@@ -12,6 +12,7 @@ export const authGuard: (allowedRoles: string[]) => CanActivateFn = (allowedRole
 
     if (!isLoggedIn || !allowedRoles.includes(userType)) {
       router.navigate(['/login']);
+      console.log("returning false");
       return false;
     }
     return true;

@@ -175,6 +175,7 @@ export class BodyCoporateService {
         contractors.map(async (c) => {
           if(c.img) 
           {
+            console.log(c.img);
             try{
               const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.img));
               return { 
@@ -226,6 +227,10 @@ export class BodyCoporateService {
                 img: ""
               };
             }
+          }
+          else
+          {
+            c.img = "assets/images/no_image.png";
           }
           return c;
         })

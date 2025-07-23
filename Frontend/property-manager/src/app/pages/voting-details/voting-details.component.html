@@ -1,3 +1,35 @@
-<p>
-  voting-details works!
-</p>
+<app-header/>
+
+<div class="shadow-md border rounded-lg">
+  <div>
+    <img [src]="task()?.img" alt="">
+  </div>
+  <div>
+    <p-card>
+      <ng-template #title class="text-lg font-semibold">Pending task</ng-template>
+      <div>
+        <p>Task: {{ task()?.title }}</p>
+      </div>
+      <div>
+        <p class="text-sm">Description: {{ task()?.des }}</p>
+      </div>
+      <div>
+        <p>Due Date: {{ (task()?.scheduled_date ?? '') | formatDate }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Assigned Contractors:</p>
+        <!-- Table of contractors in future <p-table></p-table> -->
+      </div>
+
+      <div class="space-x-2 space-y-3">
+        <button class="bg-gray-300 px-3 py-2 rounded cursor-pointer">Cancel</button>
+        <button class="bg-yellow-400 px-3 py-2 rounded cursor-pointer">Submit vote</button>
+      </div>
+    </p-card>
+  </div>
+</div>
+<div>
+  <p-card>
+    <ng-template #title>Inventory items Assigned</ng-template>
+  </p-card>
+</div>

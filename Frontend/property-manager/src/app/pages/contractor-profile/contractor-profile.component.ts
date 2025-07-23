@@ -63,8 +63,16 @@ export class ContractorProfileComponent implements OnInit {
                 this.imagePreviewUrl = imageUrl;
               },
               error: (err) => {
-                console.error('Error loading image:', err);
-                this.imageError = true;
+
+                if(localStorage.getItem('contractorProfileComplete') === 'false' || !localStorage.getItem('contractorProfileComplete'))
+                {
+                  this.resetImage();
+                }
+                else
+                {
+                  console.error('Error loading image:', err);
+                  this.imageError = true;
+                }
               }
             });
           }
@@ -83,12 +91,28 @@ export class ContractorProfileComponent implements OnInit {
 
     this.contractorService.updateContractor(contractorId, this.contractor).subscribe({
       next: () => {
-        alert('Contractor created!');
         localStorage.setItem('contractorProfileComplete', 'true'); 
 
-        this.router.navigate(['/contractor-dashboard']);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Profile Complete',
+          detail: 'Your profile is now complete!'
+       });
+
+       setTimeout(() => {
+        this.router.navigate(['/contractor']);
+       }, 1500);
+
       },
-      error: (err) => alert('Error: ' + err.message)
+      error: (err) => {
+        this.messageService.add({
+          severity: 'danger',
+          summary: 'Profile',
+          detail: 'Error occured during profile creation, Please try again'
+       });
+
+       console.error(err);
+      }
     });
   }
 
@@ -190,10 +214,10 @@ export class ContractorProfileComponent implements OnInit {
     });
   }
 
-  onStepTwoComplete(data: {reg_number: string, description: string, services: string})
+  onStepTwoComplete(data: {reg_number: string, descriptionSkills: string, services: string})
   {
     this.contractor.reg_number = data.reg_number;
-    this.contractor.description = data.description;
+    this.contractor.description = data.descriptionSkills;
     this.contractor.services = data.services;
     this.step = 3;
 
@@ -207,12 +231,5 @@ export class ContractorProfileComponent implements OnInit {
   onStepThreeComplete(data: {description: string}) {
     this.contractor.project_history = data.description;
     this.submitProfile();
-    
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Profile Complete',
-      detail: 'Your profile is now complete!'
-    });
-    
   }
 }

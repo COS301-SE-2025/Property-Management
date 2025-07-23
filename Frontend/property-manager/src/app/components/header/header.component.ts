@@ -35,22 +35,13 @@ export class HeaderComponent {
 
   private routeMap: Record<string, Record<string, MenuItem[]>> = {
   'bodyCorporate': {
-    '/bodyCoporate': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
-    ],
-    '/home': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
-    ],
     '/bodyCoporate/contractors': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
       { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' }
     ],
     '/bodyCoporate/publicContractors': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
       { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' }
     ],
     '/contractorDetails': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
       { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' },
       { label: 'Contractor Details', route: '/contractorDetails' }
     ],
@@ -221,7 +212,6 @@ export class HeaderComponent {
         if(contractorType === 'public')
         {
           this.items = [
-            { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
             { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' },
             { label: 'Contractor Details', route: null }
           ];
@@ -229,7 +219,6 @@ export class HeaderComponent {
         else if(contractorType === 'trusted')
         {
           this.items = [
-            { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
             { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' },
             { label: 'Contractor Details', route: null }
           ];
@@ -244,19 +233,12 @@ export class HeaderComponent {
     if (this.userType === 'contractor') homeRoute = '/contractorHome';
     if (this.userType === 'bodyCorporate') homeRoute = '/bodyCoporate';
 
-    console.log(this.userType);
-
     this.navLinks = [
       { label: 'Home', route: homeRoute, show: true },
       { label: 'Properties', route: '/home', show: this.userType === 'bodyCorporate'},
       { label: 'Voting', route:'/voting', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' },
       { label: 'Contractors', route: '/bodyCoporate/contractors', show: this.userType === 'bodyCorporate' },
       { label: 'My Profile', route: '/contractor-prof', show: this.userType === 'contractor' },
-      { 
-        label: 'Dashboard', 
-        route: this.userType === 'contractor' ? '/contractorHome' : '/bodyCoporate', 
-        show: this.userType === 'contractor' || this.userType === 'bodyCorporate' 
-      }
     ];
   }
 }

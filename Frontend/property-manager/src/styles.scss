@@ -59,12 +59,15 @@ body {
 }
 
 .dark-theme .p-card{
-  background: var(--dark-background);
+  background: var(--datatable-border);
   color: var(--text-color);
 }
 .dark-theme .bg-gray-50  {
   background: var(--card-hover);
   color: var(--text-color);
+}
+.dark-theme app-inventory-card .p-card{
+  background: var(--dark-background);
 }
 .dark-theme .bg-gray-50  p{
   color: var(--text-color);

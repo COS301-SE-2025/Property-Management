@@ -12,10 +12,10 @@
     </div>
 
     <!-- 3 cards -->
-     <div class= "pl-60 pb-10">
+     <div class= "pb-10 pl-20">
          <app-graph-card [budgetGraphData]="houseService.budgetGraph()"/>
      </div>
-     <div *ngIf="!loading()" [@floatUp] class = "grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+     <div *ngIf="!loading()" [@floatUp] class = "grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
         <app-inventory-budget-card [inventory]="houseService.inventory()" [budget]="houseService.budgets()"/>
         <app-maintenance-card [maintenance]="houseService.timeline()" [budget]="houseService.budgets()"/>
      </div>
