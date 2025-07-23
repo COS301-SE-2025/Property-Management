@@ -1,0 +1,60 @@
+<app-header />
+<div class="min-h-screen bg-[#f9f9f9]">
+  <div class="pt-6 px-10">
+    <h2 class="text-3xl font-bold mb-2">Manage Members</h2>
+      <div class="h-1 w-64 bg-yellow-400 mb-6"></div>
+
+    <div class="flex gap-8 justify-center flex-wrap">
+
+      <div class="bg-white rounded-lg shadow border p-6 min-w-[700px] flex-1">
+        <h3 class="text-xl font-semibold mb-4 text-center">Invitation Status</h3>
+        <table class="w-full text-left table-auto">
+          <thead>
+            <tr class="border-b">
+              <th class="py-2">Name</th>
+              <th>Email</th>
+              <th>Date Sent</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let invite of invitations" class="border-b">
+              <td>{{ invite.name }}</td>
+              <td>{{ invite.email }}</td>
+              <td>{{ invite.dateSent | date:'dd MMM yyyy' }}</td>
+              <td>{{ invite.status }}</td>
+              <td>
+                <button *ngIf="invite.status === 'Pending' || invite.status === 'Rejected'" class="border rounded px-3 py-1 text-gray-700 hover:bg-gray-100" (click)="cancelInvite(invite)">Cancel</button>
+                <button *ngIf="invite.status === 'Accepted'" class="border rounded px-3 py-1 text-gray-700 hover:bg-gray-100" (click)="revokeInvite(invite)">Revoke</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <div class="bg-white rounded-lg shadow border p-6 min-w-[600px] flex-1">
+        <h3 class="text-xl font-semibold mb-4 text-center">Active Members</h3>
+        <table class="w-full text-left table-auto">
+          <thead>
+            <tr class="border-b">
+              <th class="py-2">Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Since</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of activeMembers" class="border-b">
+              <td>{{ member.name }}</td>
+              <td>{{ member.email }}</td>
+              <td>{{ member.role }}</td>
+              <td>{{ member.since | date:'dd MMM yyyy' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

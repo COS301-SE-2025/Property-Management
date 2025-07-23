@@ -17,6 +17,7 @@ import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.co
 import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
+import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
 
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
@@ -122,6 +123,12 @@ export const routes: Routes = [
     canActivate: [authGuard(['bodyCorporate'])],
     pathMatch: 'full',
     component: PublicContractorsComponent
+  },
+  {
+    path: 'members',
+    canActivate: [authGuard(['bodyCorporate'])],
+    pathMatch: 'full',
+    component: ManageMembersComponent
   },
   {
     path: 'landingPage',
