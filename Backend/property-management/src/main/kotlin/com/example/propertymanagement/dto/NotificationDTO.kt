@@ -3,8 +3,8 @@ package com.example.propertymanagement.dto
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class NotificationDTO (
-     val notificationUuid: UUID,
+data class NotificationDTO(
+    val notificationUuid: UUID,
     val createdAt: LocalDateTime,
     val notificationType: String,
     val message: String,

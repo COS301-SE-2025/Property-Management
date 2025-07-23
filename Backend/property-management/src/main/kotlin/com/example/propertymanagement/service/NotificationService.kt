@@ -23,7 +23,7 @@ class NotificationService(
     private val sessionRepo: QuoteVoteSessionRepository,
     private val trusteeRepo: TrusteeRepository,
     private val contractorRepo: ContractorRepository,
-    private val bodyCorporateRepo: BodyCorporateRepository
+    private val bodyCorporateRepo: BodyCorporateRepository,
 ) {
     fun createNotification(
         recipientType: String,
@@ -33,38 +33,42 @@ class NotificationService(
         relatedTaskUuid: UUID? = null,
         relatedQuoteUuid: UUID? = null,
         relatedSessionUuid: UUID? = null,
-        relatedInviteUuid: UUID? = null
+        relatedInviteUuid: UUID? = null,
     ): NotificationDTO {
         if (recipientType !in listOf("trustee", "contractor", "bodycorporate")) {
             throw RestException(HttpStatus.BAD_REQUEST, "Invalid recipient type")
         }
 
-        //are they a user
+        // are they a user
         when (recipientType) {
-            "trustee" -> if (!trusteeRepo.existsById(recipientUuid)) {
-                throw RestException(HttpStatus.NOT_FOUND, "Trustee not found")
-            }
-            "contractor" -> if (!contractorRepo.existsById(recipientUuid)) {
-                throw RestException(HttpStatus.NOT_FOUND, "Contractor not found")
-            }
-            "bodycoporate" -> if (!bodyCorporateRepo.existsById(recipientUuid)) {
-                throw RestException(HttpStatus.NOT_FOUND, "Body corporate not found")
-            }
+            "trustee" ->
+                if (!trusteeRepo.existsById(recipientUuid)) {
+                    throw RestException(HttpStatus.NOT_FOUND, "Trustee not found")
+                }
+            "contractor" ->
+                if (!contractorRepo.existsById(recipientUuid)) {
+                    throw RestException(HttpStatus.NOT_FOUND, "Contractor not found")
+                }
+            "bodycoporate" ->
+                if (!bodyCorporateRepo.existsById(recipientUuid)) {
+                    throw RestException(HttpStatus.NOT_FOUND, "Body corporate not found")
+                }
         }
 
-        val notification = Notification(
-            notificationUuid = UUID.randomUUID(),
-            createdAt = LocalDateTime.now(),
-            notificationType = notificationType,
-            message = message,
-            recipientType = recipientType,
-            recipientUuid = recipientUuid,
-            isRead = false,
-            relatedTaskUuid = relatedTaskUuid,
-            relatedQuoteUuid = relatedQuoteUuid,
-            relatedSessionUuid = relatedSessionUuid,
-            relatedInviteUuid = relatedInviteUuid
-        )
+        val notification =
+            Notification(
+                notificationUuid = UUID.randomUUID(),
+                createdAt = LocalDateTime.now(),
+                notificationType = notificationType,
+                message = message,
+                recipientType = recipientType,
+                recipientUuid = recipientUuid,
+                isRead = false,
+                relatedTaskUuid = relatedTaskUuid,
+                relatedQuoteUuid = relatedQuoteUuid,
+                relatedSessionUuid = relatedSessionUuid,
+                relatedInviteUuid = relatedInviteUuid,
+            )
         return notificationRepo.save(notification).let {
             NotificationDTO(
                 notificationUuid = it.notificationUuid,
@@ -77,12 +81,15 @@ class NotificationService(
                 relatedTaskUuid = it.relatedTaskUuid,
                 relatedQuoteUuid = it.relatedQuoteUuid,
                 relatedSessionUuid = it.relatedSessionUuid,
-                relatedInviteUuid = it.relatedInviteUuid
+                relatedInviteUuid = it.relatedInviteUuid,
             )
         }
     }
 
-    fun getNotifications(recipientType: String, recipientUuid: UUID): List<NotificationDTO> =
+    fun getNotifications(
+        recipientType: String,
+        recipientUuid: UUID,
+    ): List<NotificationDTO> =
         notificationRepo.findByRecipientTypeAndRecipientUuid(recipientType, recipientUuid).map {
             NotificationDTO(
                 notificationUuid = it.notificationUuid,
@@ -95,13 +102,15 @@ class NotificationService(
                 relatedTaskUuid = it.relatedTaskUuid,
                 relatedQuoteUuid = it.relatedQuoteUuid,
                 relatedSessionUuid = it.relatedSessionUuid,
-                relatedInviteUuid = it.relatedInviteUuid
+                relatedInviteUuid = it.relatedInviteUuid,
             )
         }
 
     fun markAsRead(notificationUuid: UUID) {
-        val notification = notificationRepo.findById(notificationUuid)
-            .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Notification not found") }
+        val notification =
+            notificationRepo
+                .findById(notificationUuid)
+                .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Notification not found") }
         notificationRepo.save(notification.copy(isRead = true))
     }
 }

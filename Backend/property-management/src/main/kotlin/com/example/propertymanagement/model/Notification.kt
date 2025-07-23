@@ -1,15 +1,15 @@
 package com.example.propertymanagement.model
 
-import java.time.LocalDateTime
-import java.util.UUID
 import jakarta.persistence.Column
-import jakarta.persistence.Table
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.Table
+import java.time.LocalDateTime
+import java.util.UUID
 
 @Entity
 @Table(name = "notification")
-data class Notification (
+data class Notification(
     @Id
     @Column(name = "notification_uuid", unique = true)
     val notificationUuid: UUID = UUID.randomUUID(),
@@ -17,7 +17,7 @@ data class Notification (
     val createdAt: LocalDateTime,
     @Column(name = "notification_type")
     val notificationType: String,
-    @Column(name = "message" )
+    @Column(name = "message")
     val message: String,
     @Column(name = "recipient_type")
     val recipientType: String,
