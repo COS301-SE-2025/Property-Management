@@ -1,0 +1,70 @@
+<ion-content class="ion-padding">
+  <div class="container mx-auto">
+    <div class="top-yellow-strip flex items-center">
+      <img class="mb-2" style="height: 3rem; width: auto;" src="assets/images/logo.png" alt="App logo">
+      <span class="ml-2 font-bold">Contractor Profile</span>
+    </div>
+    <div class="mt-10 bg-white py-6 w-full relative max-w-md mx-auto shadow-lg rounded-lg">
+      <p class="text-xl font-bold mb-2">Edit Contractor Profile</p>
+      <hr class="yellow-line mb-4" />
+      <div 
+        class="border border-gray-300 rounded-lg flex items-center justify-center mb-6 cursor-pointer image-upload-box"
+        style="height: 180px;"
+        (click)="fileInput.click()"
+      >
+        <img *ngIf="imagePreviewUrl && !imageError" [src]="imagePreviewUrl" alt="Profile image" class="h-full w-full object-cover rounded-lg" />
+        <ng-container *ngIf="!imagePreviewUrl || imageError">
+          <img src="assets/icons/image_placeholder.svg" alt="Image placeholder" style="height: 60px; width: 60px;" />
+        </ng-container>
+        <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+      </div>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="name" placeholder="Name *"></ion-input>
+        </ion-item>
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="email" placeholder="Email *"></ion-input>
+        </ion-item>
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="phone" placeholder="Phone *"></ion-input>
+        </ion-item>
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="address" placeholder="Address *"></ion-input>
+        </ion-item>
+        <div class="grid grid-cols-2 gap-4">
+          <ion-item class="rounded-lg border border-gray-300">
+            <ion-input formControlName="suburb" placeholder="Suburb"></ion-input>
+          </ion-item>
+          <ion-item class="rounded-lg border border-gray-300">
+            <ion-input formControlName="city" placeholder="City"></ion-input>
+          </ion-item>
+          <ion-item class="rounded-lg border border-gray-300">
+            <ion-input formControlName="postalCode" placeholder="Postal Code"></ion-input>
+          </ion-item>
+          <ion-item class="rounded-lg border border-gray-300">
+            <ion-input formControlName="reg_number" placeholder="Registration Number *"></ion-input>
+          </ion-item>
+        </div>
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="description" placeholder="Description *"></ion-input>
+        </ion-item>
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="services" placeholder="Services *"></ion-input>
+        </ion-item>
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="project_history" placeholder="Project History"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="submissionError">
+          <ion-text color="danger">{{ submissionError }}</ion-text>
+        </ion-item>
+        <button ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting"
+          class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800 w-full flex items-center justify-center">
+          <ion-spinner *ngIf="isSubmitting" name="dots"></ion-spinner>
+          {{ isSubmitting ? 'Saving...' : 'Save Profile' }}
+        </button>
+      </form>
+      <div style="height: 20px;"></div>
+    </div>
+  </div>
+  <!-- <app-tab/> -->
+</ion-content>
