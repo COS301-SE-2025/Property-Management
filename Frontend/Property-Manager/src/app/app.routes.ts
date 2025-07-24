@@ -23,6 +23,7 @@ import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { authGuard } from './auth.guard';
 import { AssignedComponent } from './pages/assigned-projects/assigned.component';
+import { SubmittedQuotationsComponent } from './pages/submitted-quotaions/submitted-quotations.component';
 
 export const routes: Routes = [
   {
@@ -143,5 +144,10 @@ export const routes: Routes = [
     path: 'assigned-projects',
     pathMatch: 'full',
     component: AssignedComponent
+  },
+  {
+    path: 'submitted-quotations',
+    pathMatch: 'full',
+    component: SubmittedQuotationsComponent
   }
 ];

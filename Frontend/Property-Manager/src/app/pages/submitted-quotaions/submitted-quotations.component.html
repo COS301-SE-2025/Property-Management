@@ -1,0 +1,40 @@
+<app-header></app-header>
+
+<div class="min-h-screen p-8" [@fadeInStagger] [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
+ 
+  <div class="ml-25 mb-12 animate-item" >
+    <h2 class="text-3xl font-semibold font-lato text-black" [ngStyle]="{'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)'}">Submitted quotations</h2>
+    <div class="w-60 h-1 bg-yellow-300 mt-2"></div>
+  </div>
+
+  
+  <div class="flex flex-wrap gap-6 justify-center">
+    <div *ngFor="let quote of quotations"
+         class="w-64 bg-white rounded border border-gray-300 shadow-sm p-4 flex flex-col justify-between rounded-lg animate-item">
+
+    
+      <div class="border-b-2 border-yellow-300 pb-2 mb-4">
+        <h3 class="text-center font-semibold">Property {{ quote.property }}</h3>
+      </div>
+
+      <div class="text-sm text-gray-800 space-y-1">
+        <p><strong>Issue Date:</strong> {{ quote.issueDate }}</p>
+        <p><strong>Expr. Date:</strong> {{ quote.expiryDate }}</p>
+        <p><strong>Quote No.:</strong> {{ quote.quoteNo }}</p>
+        <p><strong>Total amount:</strong> {{ quote.amount }}</p>
+      </div>
+
+      
+      <div class="mt-4 flex justify-center">
+        <span [ngClass]="{
+          'bg-gray-300 text-black': quote.status === 'pending',
+          'bg-green-500 text-white': quote.status === 'successful',
+          'bg-red-600 text-white': quote.status === 'unsuccessful'
+        }"
+        class="text-xs font-medium px-3 py-1 rounded">
+          {{ quote.status }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
