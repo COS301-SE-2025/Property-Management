@@ -1,0 +1,43 @@
+<app-header></app-header>
+
+<div class="min-h-screen bg-white relative" [@fadeInStagger]="true"
+    [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
+
+    <div clas="flex flex-col items center w-full">
+        <div class="mb-12 mt-8 ml-10 animate-item">
+            <h2 class="text-3xl font-semibold font-lato"
+                [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)' }">
+                Assigned Projects
+            </h2>
+            <div class="w-60 h-1 bg-yellow-300 mt-2"></div>
+        </div>
+        <div class="flex flex-wrap gap-8 justify-center w-full">
+            <a [routerLink]="['/quotation']" class="block animate-item">
+                <p-card [style]="{ height: '20rem', width: '15rem', overflow: 'hidden', backgroundColor: 'white' }">
+                    <ng-template #header>
+                        <img src="/assets/images/house1.jpg" alt="Project Image" class="w-full h-40 object-cover" />
+                    </ng-template>
+                    <ng-template #title>
+                        <span class="text-black"> Property X</span>
+                    </ng-template>
+                    <ng-template #subtitle>
+                        <span class="text-black">Fix the toilet</span>
+                    </ng-template>
+                    <ng-template #footer>
+                        <div class="flex gap-4 mt-1">
+                            <p-button label=" Edit timeline" icon="pi pi-pencil" iconPos="left" severity="secondary"
+                                [outlined]="true" styleClass="w-full"></p-button>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </a>
+        </div>
+        <!-- <ng-template #noTasks>
+      <div class="flex flex-col items-center justify-center w-full mt-20 text-center text-gray-400 animate-item">
+        <img src="/assets/icons/empty-folder.svg" alt="No tasks" class="w-24 h-24 mb-4 opacity-60" />
+        <p class="text-xl font-semibold mb-2">No projects available</p>
+        <p class="text-sm">A project has not been made available to you yet, please check again later.</p>
+      </div>
+    </ng-template> -->
+    </div>
+</div>

@@ -96,6 +96,11 @@ export class HeaderComponent {
       { label: 'Home', route: '/contractorHome' },
       { label: 'Quotations', route: '/quotation' }
     ]
+    ,
+    '/': [
+      { label: 'Home', route: '/contractorHome' },
+      { label: 'Assigned projects', route: '/assigned-projects' }
+    ]
   }
   };
 
@@ -237,6 +242,7 @@ export class HeaderComponent {
       { label: 'Contractors', route: '/bodyCoporate/contractors', show: this.userType === 'bodyCorporate' },
       { label: 'My Profile', route: '/contractor-prof', show: this.userType === 'contractor' },
       { label: 'Dashboard', route: this.userType === 'contractor' ? '/contractorHome' : (this.userType === 'bodyCorporate' ? '/bodyCoporate' : '/home'), show: true },
+      { label: 'Assigned projects', route: '/assigned-projects', show: this.userType === 'contractor' },
       { label: 'Help', route: '/help', show: true }
     ];
   }

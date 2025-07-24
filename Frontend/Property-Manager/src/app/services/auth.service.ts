@@ -238,7 +238,7 @@ export class AuthService {
       email,
       password
     };
-
+   console.log("contractorLoginRequest", req);
     return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req);
   }
 
@@ -298,11 +298,21 @@ getIdTokenFromCookieOrStorage(): string | null {
 }
 
 getUserType(): string | null {
-  const token = this.getIdTokenFromCookieOrStorage();
-  if (!token) return null;
-  const groups = this.tokenUtil.getUserGroups(token);
-  return groups.length > 0 ? groups[0] : null;
+  if (this.getCookieValue('trusteeId')) {
+    console.log("User type is trustee");
+    return 'trustee';
+  } 
+  else if (this.getCookieValue('bodyCoporateId')) {
+    console.log("User type is body corporate");
+    return 'bodyCorporate';
+  } 
+  else if (this.getCookieValue('contractorId')) {
+    console.log("User type is contractor");
+    return 'contractor';
+  }
+  return null;
 }
+
   
 logout()
   {

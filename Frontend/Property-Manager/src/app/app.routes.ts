@@ -22,6 +22,7 @@ import { LandingPageComponent } from './pages/LandingPage/LandingPage.component'
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { authGuard } from './auth.guard';
+import { AssignedComponent } from './pages/assigned-projects/assigned.component';
 
 export const routes: Routes = [
   {
@@ -137,5 +138,10 @@ export const routes: Routes = [
     path: 'reset-password',
     pathMatch: 'full',
     component: ResetPasswordComponent
+  },
+  {
+    path: 'assigned-projects',
+    pathMatch: 'full',
+    component: AssignedComponent
   }
 ];
