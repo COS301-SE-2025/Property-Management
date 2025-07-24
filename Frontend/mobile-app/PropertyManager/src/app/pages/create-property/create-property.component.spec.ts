@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreatePropertyComponent } from './create-property.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ContractorService } from 'shared';
 import { PropertyService } from 'shared';
@@ -20,6 +21,7 @@ describe('CreatePropertyComponent (Mobile)', () => {
       imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule],
       providers: [
         { provide: ContractorService, useValue: contractorService },
+        { provide: ActivatedRoute, useValue: { params: of({}), snapshot: {} } },
         { provide: PropertyService, useValue: propertyService }
       ]
     }).compileComponents();
