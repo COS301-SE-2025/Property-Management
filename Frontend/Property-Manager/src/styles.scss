@@ -124,7 +124,7 @@ body {
 }
 
 .dark-theme .p-dialog .p-float-label input {
-  background: #333;
+  background: var(--input-bg-color);
   color: var(--text-color);
   border-color: var(--surface-border);
 }
@@ -134,17 +134,17 @@ body {
 }
 
 .dark-theme .p-datepicker-panel {
-  background-color: #333;
+  background-color: seashell;
   color: var(--text-color);
   border-color: var(--surface-border);
 }
 .dark-theme .p-datepicker-input {
-  background-color: #333;
+  background-color: var(--input-bg-color);
   color: var(--text-color);
 }
 
 .dark-theme .p-datepicker-header {
-  background: #2d2d2d;
+  background: seashell;
 }
 
 .dark-theme .p-dialog button {
