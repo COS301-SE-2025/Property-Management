@@ -158,6 +158,33 @@
 
 ---
 
+## Get Buildings by Corporate
+**GET** `/api/buildings/corporate/{corporateUuid}`
+
+**Response Example:**
+```json
+{
+  "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+  "buildings": [
+    {
+      "name": "Block A",
+      "address": "123 Main St",
+      "type": "Apartment",
+      "propertyValue": 1000000.0,
+      "primaryContractors": [1, 2],
+      "latestInspectionDate": "2025-06-26",
+      "propertyImage": "img_123",
+      "area": 1200.0,
+      "buildingUuid": "b1c2d3e4-f5a6-7890-bcde-123456789abc",
+      "trusteeUuid": "e7b8c3a2-9b2e-4d8a-8f6b-123456789abc",
+      "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2"
+    }
+  ]
+}
+```
+
+---
+
 ## Search Buildings by Name
 **GET** `/api/buildings/search?name={name}`
 
