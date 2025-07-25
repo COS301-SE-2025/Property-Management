@@ -25,4 +25,9 @@ interface BuildingRepository : JpaRepository<Building, UUID> {
     fun findBuildingsByType(
         @Param("type") type: String,
     ): List<Building>
+
+    @Query("SELECT b FROM Building b WHERE b.coporateUuid =:coporateUuid")
+    fun findBuildingsByCorporateUuid(
+        @Param("coporateUuid") coporateUuid: UUID,
+    ): List<Building>
 }

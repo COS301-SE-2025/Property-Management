@@ -1,5 +1,6 @@
 package com.example.propertymanagement.controller
 
+import com.example.propertymanagement.dto.BuildingByCorporateDto
 import com.example.propertymanagement.dto.BuildingByTrusteeDto
 import com.example.propertymanagement.dto.BuildingCreateDto
 import com.example.propertymanagement.dto.BuildingResponseDto
@@ -76,6 +77,14 @@ class BuildingController(
         @PathVariable trusteeUuid: UUID,
     ): ResponseEntity<BuildingByTrusteeDto> {
         val result = buildingService.getBuildingsByTrustee(trusteeUuid)
+        return ResponseEntity.ok(result)
+    }
+
+    @GetMapping("/corporate/{corporateUuid}")
+    fun getBuildingsByCorporateUuid(
+        @PathVariable corporateUuid: UUID,
+    ): ResponseEntity<BuildingByCorporateDto> {
+        val result = buildingService.getBuildingsByCorporateUuid(corporateUuid)
         return ResponseEntity.ok(result)
     }
 
