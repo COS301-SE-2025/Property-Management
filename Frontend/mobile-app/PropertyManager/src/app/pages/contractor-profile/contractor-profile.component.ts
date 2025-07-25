@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonContent, IonItem, IonInput, IonText, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonItem, IonInput, IonText, IonSpinner, IonHeader, IonMenuButton, IonButtons, IonTitle, IonToolbar  } from '@ionic/angular/standalone';
 import { ContractorService, ContractorDetails, getCookieValue, ImageApiService } from 'shared';
+import { TabComponent } from 'src/app/components/tab/tab.component';
 import { Router } from '@angular/router';
+import { DrawerComponent } from 'src/app/components/drawer/drawer.component';
+
 
 @Component({
   selector: 'app-contractor-profile',
@@ -11,7 +14,8 @@ import { Router } from '@angular/router';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    IonContent, IonItem, IonInput, IonText, IonSpinner
+    IonContent, IonItem, IonInput, IonText, IonSpinner, TabComponent,
+    IonHeader, IonMenuButton, IonButtons, IonTitle, IonToolbar, DrawerComponent
   ],
   templateUrl: './contractor-profile.component.html',
   styleUrls: ['./contractor-profile.component.scss']

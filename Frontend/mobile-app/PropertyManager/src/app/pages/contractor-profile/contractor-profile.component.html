@@ -1,12 +1,17 @@
-<ion-content class="ion-padding">
-  <div class="container mx-auto">
-    <div class="top-yellow-strip flex items-center">
-      <img class="mb-2" style="height: 3rem; width: auto;" src="assets/images/logo.png" alt="App logo">
-      <span class="ml-2 font-bold">Contractor Profile</span>
-    </div>
-    <div class="mt-10 bg-white py-6 w-full relative max-w-md mx-auto shadow-lg rounded-lg">
-      <p class="text-xl font-bold mb-2">Edit Contractor Profile</p>
-      <hr class="yellow-line mb-4" />
+<app-drawer></app-drawer>
+<ion-header>
+  <ion-toolbar class="top-yellow-strip flex items-center">
+    <ion-buttons slot="start">
+      <ion-menu-button menu="main-menu"></ion-menu-button>
+    </ion-buttons>
+    <span class="font-bold text-lg">Contractor Profile</span>
+    <ion-title style="display:none"></ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content id="main-content" class="ion-padding">
+  <div class="container mx-auto pt-3">
+    <p class="text-l font-bold mb-2">Edit Contractor Profile</p>
+    <hr class="yellow-line mb-4" />
       <div 
         class="border border-gray-300 rounded-lg flex items-center justify-center mb-6 cursor-pointer image-upload-box"
         style="height: 180px;"
@@ -42,7 +47,7 @@
             <ion-input formControlName="postalCode" placeholder="Postal Code"></ion-input>
           </ion-item>
           <ion-item class="rounded-lg border border-gray-300">
-            <ion-input formControlName="reg_number" placeholder="Registration Number *"></ion-input>
+            <ion-input formControlName="reg_number" placeholder="Reg No. *"></ion-input>
           </ion-item>
         </div>
         <ion-item class="rounded-lg border border-gray-300">
@@ -63,8 +68,7 @@
           {{ isSubmitting ? 'Saving...' : 'Save Profile' }}
         </button>
       </form>
-      <div style="height: 20px;"></div>
-    </div>
+      <div style="height: 60px;"></div>
   </div>
-  <!-- <app-tab/> -->
 </ion-content>
+  <app-tab/>

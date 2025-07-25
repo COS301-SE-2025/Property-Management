@@ -7,11 +7,13 @@ import { IonicModule } from '@ionic/angular';
 import { PropertyService } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
+import { DrawerComponent } from 'src/app/components/drawer/drawer.component';
+
 
 @Component({
   selector: 'app-create-property',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent ],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent, DrawerComponent],
   templateUrl: './create-property.component.html',
   styleUrls: ['./create-property.component.scss']
 })
