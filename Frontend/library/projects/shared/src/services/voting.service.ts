@@ -12,6 +12,7 @@ export class VotingService{
     //Get all tasks thats scheduled date is past now
 
     votingTasks = signal<MaintenanceTask[]>([]); 
+    pendingTasks = signal<MaintenanceTask[]>([]);
 
     constructor(private votingApiService: VotingApiService, private taskApiService: TaskApiService, private imageService: ImageApiService){}
 
@@ -43,9 +44,17 @@ export class VotingService{
                                 }
                             });
                         }
+
+                        if(t.approved)
+                        {
+                            this.addToVoting(t);
+                        }
+                        else
+                        {
+                            this.addToPending(t);
+                        }
                     }
                 });
-                this.votingTasks.set(tasks);
             }
         });
     }
@@ -57,12 +66,24 @@ export class VotingService{
     {
 
     }
-    getTaskById(taskId: string)
+    getVotingTaskById(taskId: string)
     {
         return this.votingTasks().find(task => task.uuid === taskId);
+    }
+    getPendingTaskById(taskId: string)
+    {
+        return this.pendingTasks().find(task => task.uuid === taskId);
     }
     getSessionId(taskId: string)
     {
         
+    }
+    private addToPending(task: MaintenanceTask)
+    {
+        this.pendingTasks.set([...this.pendingTasks(), task])
+    }
+    private addToVoting(task: MaintenanceTask)
+    {
+        this.votingTasks.set([...this.votingTasks(), task]);
     }
 }

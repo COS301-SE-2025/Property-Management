@@ -81,7 +81,7 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
             this.router.navigate(['viewHouse', this.houseId]).then(() => {
               window.location.reload();
             });
-          }, 5000);
+          }, 3000);
         },
         error: (err) => {
           console.error("Failed to create inventory item", err);

@@ -53,6 +53,9 @@ export class HousesService {
   getHouseById(id: string): Property | undefined{
     return this.houses().find(house => house.buildingUuid === id);
   }
+  getInventoryById(id: string): Inventory | undefined{
+    return this.inventory().find(item => item.itemUuid === id);
+  }
 
   private sortTimeline()
   {
@@ -191,18 +194,7 @@ export class HousesService {
       }
       else
       {
-        this.inventoryItemApiService.deleteInventoryItem(item).subscribe({
-          next: () => {
-            this.inventory.update(current => 
-              current.filter(i => i.itemUuid !== item.itemUuid)
-            );
-            resolve();
-          },
-          error: (err) => {
-            console.error("Error deleting item ${item}", err);
-            reject(err);
-          }
-        });
+        this.deleteInvetoryItem(item);
       }
     })
    });
@@ -215,5 +207,22 @@ export class HousesService {
     console.error("Inventory items update failed", error);
     return false;
    }
+  }
+  deleteInvetoryItem(item: Inventory): Promise<void>
+  {
+    return new Promise((resolve, reject) => {
+      this.inventoryItemApiService.deleteInventoryItem(item).subscribe({
+        next: () => {
+          this.inventory.update(current => 
+            current.filter(i => i.itemUuid !== item.itemUuid)
+          );
+          resolve();
+        },
+        error: (err) => {
+          console.error("Error deleting item ${item}", err);
+          reject(err);
+        }
+      });
+    })
   }
 }

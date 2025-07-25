@@ -58,6 +58,10 @@ body {
   color: var(--text-color);
 }
 
+.dark-theme input, textarea{
+  color: #000000;
+}
+
 .dark-theme .p-card{
   background: var(--datatable-border);
   color: var(--text-color);

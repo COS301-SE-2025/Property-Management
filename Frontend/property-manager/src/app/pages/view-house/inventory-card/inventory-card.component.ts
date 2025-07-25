@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit} from '@angular/core';
+import { Component, EventEmitter, inject, Input, input, OnInit, Output} from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -6,17 +6,17 @@ import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { Inventory } from 'shared';
+import { Inventory, InventoryUsageApiService } from 'shared';
 import { CommonModule } from '@angular/common';
 import { HousesService } from 'shared';
-import { InventoryAddDialogComponent } from "./inventory-add-dialog/inventory-add-dialog.component";
 import { BudgetApiService } from 'shared';
 import { BuildingDetails } from 'shared';
 import { ActivatedRoute } from '@angular/router';
+import { InventoryAddDialogComponent } from "./inventory-add-dialog/inventory-add-dialog.component";
 
 @Component({
   selector: 'app-inventory-card',
-  imports: [CardModule, TableModule, CommonModule, InventoryAddDialogComponent, ButtonModule, FormsModule, InputNumberModule, ToastModule],
+  imports: [CardModule, TableModule, CommonModule, ButtonModule, FormsModule, InputNumberModule, ToastModule, InventoryAddDialogComponent],
   templateUrl: './inventory-card.component.html',
   styles: ``,
   providers: [MessageService]
@@ -33,7 +33,15 @@ export class InventoryCardComponent implements OnInit{
   draftQuantities: number[] = [];
   originalQuantities: number[] = [];
 
-  constructor(private route: ActivatedRoute, private messageService: MessageService)
+  //Used inside dialogs that call the table
+  @Output() itemUsage = new EventEmitter<{taskId: string, itemId: string, quantity: number}>();
+  @Output() quantitiesChanged = new EventEmitter<Inventory[]>();
+
+  @Input() capOriginal = false;
+  @Input() showAddButton = true;
+  @Input() readOnly = false;
+
+  constructor(private route: ActivatedRoute, private messageService: MessageService, private inventoryUsage: InventoryUsageApiService)
   {
     this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
   }
@@ -67,10 +75,29 @@ export class InventoryCardComponent implements OnInit{
   changeQuantity(rowIndex:number, change: number)
   {
     const val = this.draftQuantities[rowIndex] + change;
-    if(val >= 0)
+    const max = this.originalQuantities[rowIndex];
+
+    if(val >= 0 && (!this.capOriginal || val <= max))
     {
       this.draftQuantities[rowIndex] = val;
+
+      this.emitQuantities();
     }
+  }
+  onManualInput(rowIndex: number, event: Event)
+  {
+    const input = event.target as HTMLInputElement;
+    const max = this.originalQuantities[rowIndex];
+    let value = Number(input.value);
+
+    if(value < 0) value = 0;
+    if(this.capOriginal && value > max)
+    {
+      value = max;
+    }
+
+    this.draftQuantities[rowIndex] = value;
+    this.emitQuantities();
   }
   async confirmAction()
   { 
@@ -94,12 +121,10 @@ export class InventoryCardComponent implements OnInit{
     //API call
    if(updatedItems.length > 0)
    {
-    console.log("updating api", updatedItems);
     await this.houseService.updateInventory(updatedItems);
 
     if(overallPriceDiff > 0)
     {
-      console.log("Updating budget", overallPriceDiff)
       await this.getAndUpdateBudget(overallPriceDiff);
     }
     //Toast
@@ -173,5 +198,34 @@ export class InventoryCardComponent implements OnInit{
     {
       event.preventDefault();
     }
+  }
+  private emitQuantities()
+  {
+    const updated = this.inventory().map((item, index) => ({
+      ...item,
+      quantityInStock: this.draftQuantities[index]
+    }));
+    this.quantitiesChanged.emit(updated);
+  }
+
+  async addItemToUsage(taskId: string, itemId: string, quantity: number)
+  {
+    //Delete inventory item
+    const item = this.houseService.getInventoryById(itemId);
+    if(item)
+    {
+      this.itemUsage.emit({ taskId, itemId, quantity });
+    }
+
+    //Create inventory usage
+    this.inventoryUsage.createInventoryUsage(itemId, taskId, '00000000-0000-0000-0000-000000000000', quantity).subscribe({
+      next: (res) => {
+        console.log(res);
+        return res.usageUuid;
+      },
+      error: (err) => {
+        console.error("Error creating inventory usage", err);
+      }
+    });
   }
 }

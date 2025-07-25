@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
 import { getCookieValue, HousesService } from 'shared';
 import { Router } from '@angular/router';
+import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
 
 @Component({
   selector: 'app-home',
@@ -13,11 +14,15 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit{
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private breadCrumb: BreadCrumbService) {}
 
   ngOnInit(){
     const id = getCookieValue(document.cookie, 'trusteeId');
     this.houseService.loadHouses(id);
+
+    effect(() => {
+        this.breadCrumb.clearBreadCrumb();
+    })
   }
 
   private houseService = inject(HousesService);

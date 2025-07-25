@@ -6,6 +6,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { filter } from 'rxjs';
+import { BreadCrumbService } from '../breadcrumb/breadcrumb.service';
+import { trigger, transition, style, animate, state } from '@angular/animations';
 
 type UserType = 'contractor' | 'bodyCorporate' | 'trustee' | null;
 
@@ -19,7 +21,26 @@ interface NavLink {
   selector: 'app-header',
   imports: [CommonModule, BreadcrumbModule, RouterModule],
   templateUrl: `./header.component.html`,
-  styles: ''
+  styles: ``,
+  animations: [
+    trigger('slideToggle', [
+      state('active', style({
+        transform: 'translateX(0)',
+        opacity: 1
+      })),
+      state('inactive', style({
+        transform: 'translateX(100%)',
+        opacity: 0
+      })),
+      transition('inactive => active', [
+        style({ transform: 'translateX(-100%)', opacity: 0 }),
+        animate('300ms ease-out')
+      ]),
+      transition('active => inactive', [
+        animate('300ms ease-in', style({ transform: 'translateX(100%)', opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class HeaderComponent {
 
@@ -87,7 +108,7 @@ export class HeaderComponent {
   userType: UserType = null;
   navLinks: NavLink[] = [];
 
-  constructor(private authService: AuthService, private router: Router, private elementRef: ElementRef){
+  constructor(private authService: AuthService, private router: Router, private elementRef: ElementRef, private breadCrumbService: BreadCrumbService){
     const saved = localStorage.getItem('darkMode');
 
     this.userType = this.authService.getUserType() as UserType;
@@ -103,6 +124,17 @@ export class HeaderComponent {
     }
     this.applyDarkMode();
 
+    this.breadCrumbService.breadCrumbs.subscribe(bread => {
+      if(bread)
+      {
+        this.items = bread;
+      }
+      else
+      {
+        this.updateBreadcrumbs(this.router.url);
+      }
+    })
+
 
     this.isContractor = this.userType === 'contractor';
     this.isBodyCorporate = this.userType === 'bodyCorporate';
@@ -114,7 +146,6 @@ export class HeaderComponent {
 
   dropDownProfile()
   {
-    console.log('opening profile');
     this.dropDownSettingsOpen = false;
 
     setTimeout(() => {

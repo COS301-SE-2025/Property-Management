@@ -257,24 +257,24 @@ export class AuthService {
   }
 
   private getCookieValue(name: string): string | null {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? decodeURIComponent(match[2]) : null;
-}
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  } 
 
-getUserType(): string | null {
-  if (this.getCookieValue('trusteeId')) {
-    return 'trustee';
-  } 
-  else if (this.getCookieValue('bodyCoporateId')) {
-    return 'bodyCorporate';
-  } 
-  else if (this.getCookieValue('contractorId')) {
-    return 'contractor';
+  getUserType(): string | null {
+    if (this.getCookieValue('trusteeId')) {
+      return 'trustee';
+    } 
+    else if (this.getCookieValue('bodyCoporateId')) {
+      return 'bodyCorporate';
+    } 
+    else if (this.getCookieValue('contractorId')) {
+      return 'contractor';
+    }
+    return null;
   }
-  return null;
-}
   
-logout()
+  logout()
   {
     const deleteCookie = (name: string) => {
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;

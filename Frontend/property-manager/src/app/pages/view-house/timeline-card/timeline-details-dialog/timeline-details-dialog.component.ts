@@ -45,7 +45,6 @@ export class TimelineDetailsDialogComponent extends DialogComponent{
   async getContractor()
   {
     const contractorId = this.task?.c_uuid;
-    console.log(contractorId);
     if (typeof contractorId === 'string') {
       this.contractor = await this.contractorService.getContractorById(contractorId).toPromise();
     } else {

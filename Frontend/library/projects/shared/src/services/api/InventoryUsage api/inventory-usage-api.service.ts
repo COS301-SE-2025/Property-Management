@@ -16,7 +16,7 @@ export class InventoryUsageApiService {
     const newInventoryUsage = {
       itemUuid: itemId,
       taskUuid: taskId,
-      contractorUuid: contractorId,
+      usedByContractorUuid: contractorId,
       quantityUsed: quantityUsed
     };
 

@@ -63,7 +63,11 @@
 
                 <div #settingsDropDown *ngIf="dropDownSettingsOpen" class= "absolute right-1 top-[3rem] bg-white border rounded shadow-md w-40 z-50 dark:bg-gray-800">
                     <button (click)="toggleDarkMode()" class="block w-full px-8 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-400 dark:hover:bg-gray-700">
-                    {{ isDarkMode? 'Light mode': 'Dark mode' }}
+                        {{ isDarkMode? 'Light mode': 'Dark mode' }}
+                        <div class="relative w-6 h-6 inline-block overflow-hidden">
+                            <img src="assets/icons/moon.svg" [@slideToggle]="isDarkMode ? 'inactive' : 'active'" class="absolute inset-0" alt='moon icon'>
+                            <img src="assets/icons/sun.svg" [@slideToggle]="isDarkMode ? 'active' : 'inactive'" class="absolute inset-0" alt='sun icon'>
+                        </div>
                     </button>  
                     <button class= "block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer dark:hover:bg-gray-700">
                     Change font size

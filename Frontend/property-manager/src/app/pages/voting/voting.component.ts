@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
-import { VotingService } from 'shared';
+import { getCookieValue, VotingService } from 'shared';
 import { VotingCardComponent } from "./voting-card/voting-card.component";
 
 @Component({
@@ -13,11 +13,19 @@ import { VotingCardComponent } from "./voting-card/voting-card.component";
 export class VotingComponent  implements OnInit {
 
   private votingService = inject(VotingService);
-  tasks = this.votingService.votingTasks;
+  votingTasks = this.votingService.votingTasks;
+  pendingTasks = this.votingService.pendingTasks;
+
+  bcUser = false;
   
-  constructor() { }
+  constructor() { 
+    if(getCookieValue(document.cookie, 'bodyCoporateId') !== '')
+    {
+      this.bcUser = true;
+    }
+  }
   
   async ngOnInit() {
-    this.votingService.getTrusteeVotingTasks('test');
+    await this.votingService.getTrusteeVotingTasks('test');
   }
 }
