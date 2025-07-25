@@ -104,6 +104,16 @@ import { FormsModule } from '@angular/forms';
 .profile-btn-yellow:hover {
   background-color: #facc15;
 }
+
+.dark-theme .profile-card {
+  background: transparent !important;
+  border-color: #000 !important;
+}
+  
+:host-context(.dark-theme) .profile-card {
+  background: transparent !important;
+  border-color: #000 !important;
+}
   `]
 })
 export class StepThreeComponent {
