@@ -22,7 +22,7 @@
             <tr *ngFor="let invite of invitations" class="border-b">
               <td>{{ invite.name }}</td>
               <td>{{ invite.email }}</td>
-              <td>{{ invite.dateSent | date:'dd MMM yyyy' }}</td>
+              <td>{{ invite.invitedOn | date:'dd MMM yyyy' }}</td>
               <td>{{ invite.status }}</td>
               <td>
                 <button *ngIf="invite.status === 'Pending' || invite.status === 'Rejected'" class="border rounded px-3 py-1 text-gray-700 hover:bg-gray-100" (click)="cancelInvite(invite)">Cancel</button>
@@ -50,7 +50,7 @@
               <td>{{ member.name }}</td>
               <td>{{ member.email }}</td>
               <td>{{ member.role }}</td>
-              <td>{{ member.since | date:'dd MMM yyyy' }}</td>
+              <td>{{ member.invitedOn | date:'dd MMM yyyy' }}</td>
             </tr>
           </tbody>
         </table>
