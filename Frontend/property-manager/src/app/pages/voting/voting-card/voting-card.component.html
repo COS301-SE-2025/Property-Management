@@ -3,7 +3,7 @@
         <p-card>
             <img [src] = "task().img" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="" rel="preconnect">
             <p class = "text-lg font-bold mt-4"> {{ task().title }}</p>
-            <p class = "text-gray-600 mb-4" [ngStyle]="{ 'color':'var(--text-color)' }"> {{ task().scheduled_date | formatDate }}</p>
+            <p [class]="changeDueDate()" class = "mb-4"> {{ task().scheduled_date | formatDate }}</p>
         </p-card>
     </button>
 </div>

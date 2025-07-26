@@ -1,0 +1,37 @@
+<app-header/>
+
+<div class="mt-10">
+    <p-card>
+        <div class="rounded-lg flex p-4">
+            <div class="flex items-center justify-center w-1/2 p-6 pr-10">
+                <img [src]="imageUrl" alt="image of task" *ngIf="imageUrl; else noImg">
+                <ng-template #noImg>
+                    <p>No image available</p>
+                </ng-template>
+            </div>
+            <div class="w-1/2 pr-10 pl-4">
+                <div class="font-bold pb-3">
+                    <p>Task: {{ task?.title }}</p>
+                </div>
+                <div class="text-sm pb-3">
+                    <p>Description: {{ task?.des }}</p>
+                </div>
+                <div class="font-semibold pb-3">
+                    <p>Due Date: {{ (task?.scheduled_date ?? '') | formatDate }}</p>
+                </div>
+                <div class="font-semibold pb-3">
+                    <p>Assigned contractors: {{ contractor?.name }}</p>
+                </div>
+            </div>
+        </div>
+    </p-card>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pb-3">
+        <p-card>
+            <ng-template #title class="text-lg font-semibold">Inventory items assigned</ng-template>
+        </p-card>
+        <p-card>
+            <ng-template #title class="text-lg font-semibold">Contractor timeline</ng-template>
+        </p-card>
+    </div>
+</div>

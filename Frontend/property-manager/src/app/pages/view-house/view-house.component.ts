@@ -9,11 +9,10 @@ import { InventoryCardComponent } from "./inventory-card/inventory-card.componen
 import { BudgetCardComponent } from "./budget-card/budget-card.component";
 import { TimelineCardComponent } from "./timeline-card/timeline-card.component";
 import { Property } from 'shared';
-import { InventoryAddDialogComponent } from "./inventory-card/inventory-add-dialog/inventory-add-dialog.component";
 
 @Component({
   selector: 'app-view-house',
-  imports: [HeaderComponent, CommonModule, CardModule, InventoryCardComponent, BudgetCardComponent, TimelineCardComponent, InventoryAddDialogComponent],
+  imports: [HeaderComponent, CommonModule, CardModule, InventoryCardComponent, BudgetCardComponent, TimelineCardComponent],
   templateUrl: './view-house.component.html',
   styles: ``,
   animations: [

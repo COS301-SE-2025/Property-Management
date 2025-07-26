@@ -1,13 +1,11 @@
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { HeaderComponent } from "../../components/header/header.component";
-// import { DrawerComponent } from '../../components/drawer/drawer.component';
 import { PendingTaskCardComponent } from "./pending-task-card/pending-task-card.component";
 import { BodyCoporateService } from 'shared';
 import { LifeCycleCardComponent } from "./life-cycle-card/life-cycle-card.component";
 import { ReserveFundCardComponent } from "./reserve-fund-card/reserve-fund-card.component";
 import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenance-graph-card.component';
-import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
 
 @Component({
   selector: 'app-bc-home',
@@ -31,7 +29,7 @@ import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.servic
 })
 export class BcHomeComponent implements OnInit{
 
-  constructor(public bodyCoporateService: BodyCoporateService, private breadCrumb: BreadCrumbService){}
+  constructor(public bodyCoporateService: BodyCoporateService){}
 
   async ngOnInit() {
       try{
@@ -45,9 +43,5 @@ export class BcHomeComponent implements OnInit{
       {
         console.log("Error loading data:", error);
       }
-
-      effect(() => {
-        this.breadCrumb.clearBreadCrumb();
-      })
   }
 }

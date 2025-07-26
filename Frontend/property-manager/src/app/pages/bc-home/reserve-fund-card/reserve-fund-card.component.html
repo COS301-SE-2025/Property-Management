@@ -1,31 +1,33 @@
-<div class="flex flex-col items-center justify-center h-full shadow-md">
-    <div class="h-full w-full overflow-auto">
-        <p class="text-2xl font-semibold ml-45 pb-2">Reserve fund Contribution Schedule</p>
-        <p-table [value]="schedule()" [tableStyle]="{ 'min-width' : '40rem'}">
-            <ng-template #header>
-                <tr>
-                    <th pSortableColumn="UnitNo">
-                        Unit No. <p-sortIcon field="UnitNo"/>
-                    </th>
-                    <th pSortableColumn="floorArea">
-                        Floor Area <p-sortIcon field="floorArea"/>
-                    </th>
-                    <th pSortableColumn="quota">
-                        Participation Quota <p-sortIcon field="quota"/>
-                    </th>
-                    <th pSortableColumn="annualContribution">
-                        Annual Contribution <p-sortIcon field="annualContribution"/>
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template #body let-schedule>
-                <tr>
-                    <td>{{ schedule.unitName }}</td>
-                    <td>{{ schedule.floorArea }} ms</td>
-                    <td>{{ schedule.partipationQuota }}%</td>
-                    <td>R {{ schedule.annualContribution | formatAmount }}</td>
-                </tr>
-            </ng-template>
-        </p-table>
+<p-card>
+    <div class="flex flex-col items-center justify-center h-full shadow-md">
+        <div class="h-full w-full overflow-auto">
+            <p class="text-2xl font-semibold ml-45 pb-2">Reserve fund Contribution Schedule</p>
+            <p-table [value]="schedule()" [tableStyle]="{ 'min-width' : '40rem'}">
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="UnitNo">
+                            Unit No. <p-sortIcon field="UnitNo"/>
+                        </th>
+                        <th pSortableColumn="floorArea">
+                            Floor Area <p-sortIcon field="floorArea"/>
+                        </th>
+                        <th pSortableColumn="quota">
+                            Participation Quota <p-sortIcon field="quota"/>
+                        </th>
+                        <th pSortableColumn="annualContribution">
+                            Annual Contribution <p-sortIcon field="annualContribution"/>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-schedule>
+                    <tr>
+                        <td>{{ schedule.unitName }}</td>
+                        <td>{{ schedule.floorArea }} ms</td>
+                        <td>{{ schedule.partipationQuota }}%</td>
+                        <td>R {{ schedule.annualContribution | formatAmount }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
     </div>
-</div>
+</p-card>

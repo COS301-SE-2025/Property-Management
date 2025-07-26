@@ -24,6 +24,7 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { authGuard } from './auth.guard';
 import { VotingComponent } from './pages/voting/voting.component';
 import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
+import { TimelineDetailsComponent } from './pages/view-house/timeline-details/timeline-details.component';
 
 export const routes: Routes = [
   {
@@ -72,6 +73,12 @@ export const routes: Routes = [
     canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: ViewHouseComponent
+  },
+  {
+    path:'taskDetails/:taskId',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: TimelineDetailsComponent
   },
   { path: 'create-property',
     canActivate: [authGuard(['trustee', 'bodyCorporate'])],

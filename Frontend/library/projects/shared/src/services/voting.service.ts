@@ -22,6 +22,10 @@ export class VotingService{
     }
     async getTrusteeVotingTasks(trusteeId: string)
     {
+        const date = new Date();
+        this.votingTasks.set([]);
+        this.pendingTasks.set([]);
+        
         this.taskApiService.getAllTasks().subscribe({
             next: (tasks) => {
 
@@ -45,11 +49,11 @@ export class VotingService{
                             });
                         }
 
-                        if(t.approved)
+                        if(t.approved && t.scheduled_date > date)
                         {
                             this.addToVoting(t);
                         }
-                        else
+                        else if(t.scheduled_date > date)
                         {
                             this.addToPending(t);
                         }

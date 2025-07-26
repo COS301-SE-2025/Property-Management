@@ -1,4 +1,4 @@
-import { Component, effect, OnInit, signal } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit, signal } from '@angular/core';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -16,12 +16,11 @@ import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.servic
       color:inherit;
     }
     .due-date-urgent{
-      color: #ef4444;
-      font-weight:600;
+      color: #f01111;
     }
   `,
 })
-export class VotingDetailsComponent  implements OnInit {
+export class VotingDetailsComponent  implements OnInit, OnDestroy {
 
   public task = signal<MaintenanceTask | undefined>(undefined);
   private taskId: string | null = null;
@@ -74,6 +73,9 @@ export class VotingDetailsComponent  implements OnInit {
       }
     })
   }
+  ngOnDestroy(): void {
+    this.breadCrumb.clearBreadCrumb();
+  }
 
   async onSubmit()
   {
@@ -90,8 +92,18 @@ export class VotingDetailsComponent  implements OnInit {
   }
   changeDueDate()
   {
-    const date = new Date().getDay;
-    if(this.task()?.scheduled_date.getDay === date)
+    if(!this.task()?.scheduled_date) return 'due-date-normal';
+
+    const date = new Date();
+    const taskDate = new Date(this.task()!.scheduled_date);
+
+    date.setHours(0, 0, 0, 0);
+    taskDate.setHours(0, 0, 0, 0);
+
+    const threeFromNow = new Date();
+    threeFromNow.setDate(date.getDate() + 3);
+
+    if(taskDate <= threeFromNow)
     {
       return 'due-date-urgent';
     }
