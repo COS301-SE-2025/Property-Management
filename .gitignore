@@ -34,3 +34,4 @@ Thumbs.db
 *.tmp
 *.swp
 *~
+Backend/property-management/src/main/resources/application.properties
