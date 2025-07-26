@@ -18,6 +18,8 @@ interface BodyCorporateRepository : JpaRepository<BodyCorporate, UUID> {
 
     fun existsByUserId(userId: String): Boolean
 
+    fun findByCorporateUuid(coporateUuid: UUID): BodyCorporate?
+
     @Query("SELECT bc FROM BodyCorporate bc WHERE bc.corporateName ILIKE %:name%")
     fun findByCorporateNameContainingIgnoreCase(
         @Param("name") name: String,

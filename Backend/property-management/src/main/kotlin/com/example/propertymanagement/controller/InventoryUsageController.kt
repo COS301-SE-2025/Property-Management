@@ -1,6 +1,7 @@
 package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.dto.ApprovalRequest
+import com.example.propertymanagement.dto.AssignContractorRequest
 import com.example.propertymanagement.dto.CreateInventoryUsageRequest
 import com.example.propertymanagement.dto.InventoryUsageResponse
 import com.example.propertymanagement.dto.UpdateInventoryUsageRequest
@@ -197,5 +198,19 @@ class InventoryUsageController(
             ResponseEntity.ok(mapOf("totalQuantityUsed" to totalQuantity))
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
+
+    @PatchMapping("/{usageUuid}/assign-contractor")
+    fun assignContractorToUsage(
+        @PathVariable usageUuid: UUID,
+        @RequestBody request: AssignContractorRequest,
+    ): ResponseEntity<InventoryUsageResponse> =
+        try {
+            val response = inventoryUsageService.assignContractor(usageUuid, request.contractorUuid)
+            ResponseEntity.ok(response)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
 }

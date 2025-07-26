@@ -69,7 +69,6 @@ export class BodyCoporateApiService {
   {
     return this.http.get<ContractorDetails[]>(`${this.url}/contractor`).pipe(
       map(contractor => {
-        console.log(contractor);
         return contractor.filter(c => {
           return c.corporate_uuid === coporateId
         });
