@@ -1,0 +1,11 @@
+<app-header/>
+<div class = "mt-5 ml-10">
+    <p class = "text-xl font-normal">Public Contractors ready for work</p>
+</div>
+
+<div class="flex flex-wrap justify-center gap-8 p-8">
+    @for (contractor of publicContractors(); track contractor.uuid) 
+    {
+        <app-contractor-card [contractor]="contractor"/>
+    }
+</div>

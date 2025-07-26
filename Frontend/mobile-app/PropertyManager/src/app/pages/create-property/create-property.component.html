@@ -1,0 +1,88 @@
+<ion-content class="ion-padding">
+  <div class="top-yellow-strip flex items-center">
+    <ion-icon name="grid-outline" class="dashboard-icon"></ion-icon>
+    <img class="mb-2" style="height: 3rem; width: auto;" src="assets/images/logo.png" alt="App logo">
+    <span class="ml-2 font-bold">Property Manager</span>
+  </div>
+<div class="mx-auto mt-10 shadow-lg rounded-lg bg-white px-5 py-6 w-full max-w-md relative">
+    <p class="text-l font-bold mb-2">Create New Property</p>
+    <hr class="yellow-line mb-4;" />
+    <div 
+      class="border border-gray-300 rounded-lg flex items-center justify-center mb-6 cursor-pointer image-upload-box"
+      style="height: 180px;"
+      (click)="fileInput.click()"
+    >
+      <img *ngIf="imagePreview" [src]="imagePreview" alt="Property Image" class="h-full w-full object-cover rounded-lg" />
+      <ng-container *ngIf="!imagePreview">
+        <img src="assets/icons/image_placeholder.svg" alt="Image placeholder" style="height: 60px; width: 60px;" />
+      </ng-container>
+      <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+      <ion-item class="rounded-lg border border-gray-300">
+        <ion-input formControlName="name" placeholder="Property Name *"></ion-input>
+      </ion-item>
+      <ion-item class="rounded-lg border border-gray-300">
+        <ion-input type="number" formControlName="area" placeholder="Area (m²) *"></ion-input>
+      </ion-item>
+      <ion-item class="rounded-lg border border-gray-300">
+        <ion-input type="number" formControlName="propertyValue" placeholder="Property Value *"></ion-input>
+      </ion-item>
+      <ion-item class="rounded-lg border border-gray-300">
+        <ion-input formControlName="address" placeholder="Street Address *"></ion-input>
+      </ion-item>
+      <div class="grid grid-cols-2 gap-4">
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="suburb" placeholder="Suburb"></ion-input>
+        </ion-item>
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="city" placeholder="City"></ion-input>
+        </ion-item>
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="province" placeholder="Province"></ion-input>
+        </ion-item>
+        <ion-item class="rounded-lg border border-gray-300">
+          <ion-input formControlName="type" placeholder="Type *"></ion-input>
+        </ion-item>
+      </div>
+      <ion-label class="font-semibold" style="display: block; padding-top: 5px;">
+        Primary Contractors *
+      </ion-label>
+      <ion-item class="rounded-lg border border-gray-300">
+        <ion-select formControlName="primaryContractor" interface="action-sheet" placeholder="Select contractor">
+          <ion-select-option *ngFor="let contractor of contractors" [value]="contractor.uuid">
+            {{ contractor.name }} - {{ contractor.services }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item class="rounded-lg border border-gray-300">
+        <ion-input formControlName="bodyCorporate" placeholder="Invite members"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="submissionError">
+        <ion-text color="danger">{{ submissionError }}</ion-text>
+      </ion-item>
+      <button ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting"
+        class="bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800 w-full flex items-center justify-center">
+        <ion-spinner *ngIf="isSubmitting" name="dots"></ion-spinner>
+        {{ isSubmitting ? 'Creating...' : 'Create Property' }}
+      </button>
+    </form>
+    <div style="height: 20px;"></div>
+
+    <div class="tab-bar">
+      <button class="tab-item" [class.active]="true">
+        <ion-icon name="home-outline"></ion-icon>
+        <span>Home</span>
+      </button>
+      <button class="tab-item active">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        <span>Create</span>
+      </button>
+      <button class="tab-item">
+        <ion-icon name="settings-outline"></ion-icon>
+        <span>Settings</span>
+      </button>
+    </div>
+</div>
+</ion-content>
+

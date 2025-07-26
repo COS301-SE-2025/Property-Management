@@ -1,0 +1,64 @@
+<div class = "flex flex-col items-center justify-center pt-5">
+    <p-toast></p-toast>
+    <p-card class="text-center">
+    <ng-template #title>Inventory</ng-template>
+    <p-table [value] = "inventory()" [tableStyle]="{ 'min-width': '22rem' }">
+        <ng-template #header>
+        <tr>
+            <th pSortableColumn="name">
+                Description <p-sortIcon field="name"/>
+            </th>
+            <th pSortableColumn="quantityInStock">
+                Quantity <p-sortIcon field="quantityInStock"/>
+            </th>
+            <th>Actions</th>
+        </tr>
+        </ng-template>
+        <ng-template #body let-inventory let-rowIndex="rowIndex">
+        <tr>
+            <td>{{ inventory.name }}</td>
+            <td>
+                @if(editingRows[rowIndex])
+                {
+                    <input type="number" [(ngModel)]="draftQuantities[rowIndex]" min="0" class="w-20 p-1 border rounded" (keydown)="preventNegative($event)" (input)="onManualInput(rowIndex, $event)">
+                }
+                @else {
+                    {{ inventory.quantityInStock }}
+                }
+            </td>
+            <td>
+                @if(editingRows[rowIndex])
+                {
+                    <div class="flex gap-2">
+                        <p-button icon = "pi pi-plus" size="small" severity="warn" (click)="changeQuantity(rowIndex, 1)"></p-button>
+                        <p-button icon = "pi pi-minus" size="small" severity="warn" (click)="changeQuantity(rowIndex, -1)" [disabled]="draftQuantities[rowIndex] <= 0"></p-button>
+                    </div>
+                }
+                @else {
+                    <div class="flex gap-1">
+                        <p-button icon="pi pi-plus" size="small"  severity="warn" (click)="startAction(rowIndex, 'increase')"></p-button>
+                        <p-button icon="pi pi-minus" size="small"  severity="warn" (click)="startAction(rowIndex, 'decrease')" [disabled]="inventory.quantityInStock <= 0"></p-button>
+                        <p-button icon="pi pi-pencil" size="small" severity="secondary"(click)="startAction(rowIndex, 'edit')"></p-button>
+                    </div>
+                }
+            </td>
+        </tr>
+        </ng-template>
+    </p-table>
+
+    @if(isEditing && !readOnly)
+    {
+        <div class="flex justify-center items-center gap-2 mt-4">
+            <p-button label="Confirm" icon="pi pi-check" severity="success" (click)="confirmAction()" [disabled]="!hasChanges"></p-button>
+            <p-button label="Cancel" icon="pi pi-times" severity="danger" (click)="resetState()"></p-button>
+        </div>
+    }
+
+    </p-card>
+    <div class = "mt-4" *ngIf="showAddButton">
+        <button class = "cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="inventoryAddDialog.openDialog()">
+            <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
+        </button>
+        <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog>
+    </div>
+</div>

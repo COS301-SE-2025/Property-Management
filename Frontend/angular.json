@@ -1,0 +1,308 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": ".",
+  "projects": {
+    "shared": {
+      "projectType": "library",
+      "root": "library/projects/shared",
+      "sourceRoot": "library/projects/shared/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "library/projects/shared/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "library/projects/shared/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "library/projects/shared/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "tsConfig": "library/projects/shared/tsconfig.spec.json",
+            "karmaConfig": "library/projects/shared/karma.conf.js",
+            "assets": [],
+            "styles": [],
+            "scripts": []
+          }
+        }
+      }
+    },
+    "mobile-app": {
+      "projectType": "application",
+      "schematics": {
+        "@ionic/angular-toolkit:page": {
+          "styleext": "scss",
+          "standalone": true
+        }
+      },
+      "root": "mobile-app/PropertyManager",
+      "sourceRoot": "mobile-app/PropertyManager/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/mobile-app",
+            "index": "mobile-app/PropertyManager/src/index.html",
+            "postcssConfig": "mobile-app/PropertyManager/postcss.config.js",
+            "polyfills": [
+              "mobile-app/PropertyManager/src/polyfills.ts"
+            ],
+            "tsConfig": "mobile-app/PropertyManager/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "mobile-app/PropertyManager/src/assets",
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "mobile-app/PropertyManager/src/global.scss",
+              "mobile-app/PropertyManager/src/theme/variables.scss"
+            ],
+            "scripts": [],
+            "browser": "mobile-app/PropertyManager/src/main.ts"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "mobile-app/PropertyManager/src/environments/environment.ts",
+                  "with": "mobile-app/PropertyManager/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "ci": {
+              "progress": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "mobile-app:build:production"
+            },
+            "development": {
+              "buildTarget": "mobile-app:build:development",
+              "proxyConfig": "mobile-app/PropertyManager/proxy.conf.json"
+            },
+            "ci": {
+              "progress": false
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "mobile-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "mobile-app/PropertyManager/src/test.ts",
+            "polyfills": "mobile-app/PropertyManager/src/polyfills.ts",
+            "tsConfig": "mobile-app/PropertyManager/tsconfig.spec.json",
+            "karmaConfig": "mobile-app/PropertyManager/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "mobile-app/PropertyManager/src/assets",
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "mobile-app/PropertyManager/src/global.scss",
+              "mobile-app/PropertyManager/src/theme/variables.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "ci": {
+              "progress": false,
+              "watch": false
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "mobile-app/src/**/*.ts",
+              "mobile-app/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "property-manager": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "property-manager",
+      "sourceRoot": "property-manager/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/property-manager",
+            "index": "property-manager/src/index.html",
+            
+            "browser": "property-manager/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "property-manager/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "property-manager/src/assets",
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "property-manager/src/styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["node_modules"]
+            },
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "3MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "property-manager/proxy.conf.json"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "property-manager:build:production"
+            },
+            "development": {
+              "buildTarget": "property-manager:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "property-manager/src/test-global-polyfills.ts",
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "property-manager/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "property-manager/src/assets"
+            ],
+            "styles": [
+              "property-manager/src/styles.scss"
+            ],
+            "scripts": [],
+            "karmaConfig": "property-manager/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "property-manager/src/**/*.ts",
+              "property-manager/src/**/*.html"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "schematicCollections": [
+      "@ionic/angular-toolkit",
+      "angular-eslint"
+    ],
+    "analytics": "29d46da9-4c22-45c9-a351-2403bcdc5196"
+  },
+  "schematics": {
+    "@ionic/angular-toolkit:component": {
+      "styleext": "scss"
+    },
+    "@ionic/angular-toolkit:page": {
+      "styleext": "scss"
+    },
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
+    },
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  }
+}

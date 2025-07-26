@@ -1,0 +1,15 @@
+<app-header/>
+
+<div class = "mt-4 ml-10">
+    <p class = "text-xl font-normal">Your trusted contractors</p>
+</div>
+
+<div class="flex flex-wrap justify-center gap-8 p-8">
+    @for (contractor of contractors(); track contractor.uuid) 
+    {
+        <app-contractor-card [contractor]="contractor"/>
+    }
+    <button (click)="AddNewContractor()" class = "cursor-pointer">
+        <img class= "w-16 h-16" src= "assets/icons/add_circle.svg" alt="">
+    </button>
+</div>

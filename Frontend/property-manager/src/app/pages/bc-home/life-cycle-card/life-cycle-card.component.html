@@ -1,0 +1,44 @@
+<p-card>
+    <div class="flex flex-col items-center justify-center">
+        <div>
+            <p class="text-2xl font-semibold ml-82 pb-2">Life-cycle cost analysis</p>
+            <p-table [value]="costs()" [tableStyle]="{ 'min-width': '30rem'}">
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="type">
+                            Type <p-sortIcon field="type"/>
+                        </th>
+                        <th pSortableColumn="description">
+                            Description <p-sortIcon field="description"/>
+                        </th>
+                        <th pSortableColumn="condition">
+                            Condition <p-sortIcon field="condition"/>
+                        </th>
+                        <th pSortableColumn="timeFrame">
+                            Time Frame <p-sortIcon field="timeFrame"/>
+                        </th>
+                        <th pSortableColumn="estimatedBudget">
+                            Estimated Budget Required <p-sortIcon field="estimatedBudget"/>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-cost>
+                    <tr>
+                        <td>{{ cost.type }}</td>
+                        <td>{{ cost.description }}</td>
+                        <td>{{ cost.condition }}</td>
+                        <td>{{ cost.timeFrame }}</td>
+                        <td>R {{ cost.estimatedBudget | formatAmount }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+    
+            <div class="flex flex-col justify-center items-center">
+                <button class="cursor-pointer pt-5 pb-2" (click)="costAddDialog.openDialog()">
+                    <img src="assets/icons/add_circle_gray.svg" alt="add new cost" class="w-8 h-8">
+                </button>
+            </div>
+            <app-add-cost-dialog #costAddDialog/>
+        </div>
+    </div>
+</p-card>

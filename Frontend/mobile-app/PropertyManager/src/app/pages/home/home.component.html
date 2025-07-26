@@ -1,0 +1,25 @@
+<ion-content>
+  <div class="container mx-auto">
+    <app-header/>
+    
+    <div class="mt-4 ml-3">
+        <p class = "text-xl font-normal">Your properties</p>
+    </div>
+  
+    <div class=" mt-3 flex flex-col justify-center items-center">
+      <div class="flex flex-col justify-center items-center gap-5 p-6">
+        @for (house of houses(); track  house.buildingUuid)
+        {
+          <app-house [house]="house"/>
+        }   
+      </div>
+  
+      <ion-item>
+        <button type="button" class="cursor-pointer" (click)="RouteToCreateProperty()">
+          <img class="w-9 h-9" src="assets/icons/add_circle.svg" alt="">
+        </button>
+      </ion-item>
+    </div>
+  </div>
+  <app-tab/>
+</ion-content>

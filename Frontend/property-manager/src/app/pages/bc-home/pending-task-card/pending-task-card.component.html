@@ -1,0 +1,29 @@
+<p-card>
+    <div class="flex flex-col items-center justify-center h-full shadow-md">
+        <div class="h-full w-full overflow-auto">
+            <p class="text-2xl font-semibold ml-70 pb-2">Pending tasks</p>
+            <p-table [value]="tasks()" [tableStyle]="{ 'min-width': '40rem'}">
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="title">
+                            Task <p-sortIcon field="title"/>
+                        </th>
+                        <th pSortableColumn="des">
+                            Description <p-sortIcon field="des"/>
+                        </th>
+                        <th pSortableColumn="scheduled_date">
+                            Sceduled Date <p-sortIcon field="scheduled_date"/>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-task >
+                <tr *ngIf="task.status === 'pending'">
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.des }}</td>
+                    <td>{{ task.scheduled_date | formatDate }}</td>
+                </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</p-card>

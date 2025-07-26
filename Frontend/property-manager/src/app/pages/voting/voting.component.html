@@ -1,0 +1,29 @@
+<app-header/>
+
+<div class = "mt-4 ml-10">
+    <p class = "text-xl font-normal">Tasks open for voting</p>
+</div>
+
+<div class="flex flex-wrap justify-center gap-8 p-8">
+  @for(task of votingTasks(); track task.uuid)
+  {
+    <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
+      <app-voting-card [task]="task"/>
+    </div>
+  }
+</div>
+
+<div  *ngIf="bcUser">
+  <div class="mt-3 ml-12">
+    <p class="text-xl font-normal">Tasks pending approval</p>
+  </div>
+  
+  <div class="flex flex-wrap justify-center gap-8 p-8">
+    @for(task of pendingTasks(); track task.uuid)
+    {
+      <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
+        <app-voting-card [task]="task"/>
+      </div>
+    }
+  </div>
+</div>
