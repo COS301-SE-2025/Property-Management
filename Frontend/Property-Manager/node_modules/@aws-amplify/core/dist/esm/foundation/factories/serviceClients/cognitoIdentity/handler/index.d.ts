@@ -1,0 +1,1 @@
+export { cognitoIdentityTransferHandler } from './cognitoIdentityTransferHandler';

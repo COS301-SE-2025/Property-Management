@@ -1,0 +1,56 @@
+'use strict';
+
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteObject = void 0;
+const aws_client_utils_1 = require("@aws-amplify/core/internals/aws-client-utils");
+const utils_1 = require("@aws-amplify/core/internals/utils");
+const composers_1 = require("@aws-amplify/core/internals/aws-client-utils/composers");
+const utils_2 = require("../utils");
+const validateObjectUrl_1 = require("../../validateObjectUrl");
+const deserializeHelpers_1 = require("../utils/deserializeHelpers");
+const base_1 = require("./base");
+const deleteObjectSerializer = (input, endpoint) => {
+    const url = new utils_1.AmplifyUrl(endpoint.url.toString());
+    (0, utils_2.validateS3RequiredParameter)(!!input.Key, 'Key');
+    url.pathname = (0, utils_2.serializePathnameObjectKey)(url, input.Key);
+    url.search = new utils_1.AmplifyUrlSearchParams({
+        'x-id': 'DeleteObject',
+    }).toString();
+    (0, validateObjectUrl_1.validateObjectUrl)({
+        bucketName: input.Bucket,
+        key: input.Key,
+        objectURL: url,
+    });
+    const headers = (0, utils_2.assignStringVariables)({
+        'x-amz-expected-bucket-owner': input.ExpectedBucketOwner,
+    });
+    return {
+        method: 'DELETE',
+        headers,
+        url,
+    };
+};
+const deleteObjectDeserializer = async (response) => {
+    if (response.statusCode >= 300) {
+        // error is always set when statusCode >= 300
+        throw (0, utils_2.buildStorageServiceError)((await (0, base_1.parseXmlError)(response)));
+    }
+    else {
+        const content = (0, utils_2.map)(response.headers, {
+            DeleteMarker: ['x-amz-delete-marker', utils_2.deserializeBoolean],
+            VersionId: 'x-amz-version-id',
+            RequestCharged: [
+                'x-amz-request-charged',
+                (deserializeHelpers_1.deserializeStringTag),
+            ],
+        });
+        return {
+            ...content,
+            $metadata: (0, aws_client_utils_1.parseMetadata)(response),
+        };
+    }
+};
+exports.deleteObject = (0, composers_1.composeServiceApi)(utils_2.s3TransferHandler, deleteObjectSerializer, deleteObjectDeserializer, { ...base_1.defaultConfig, responseType: 'text' });
+//# sourceMappingURL=deleteObject.js.map

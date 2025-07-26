@@ -1,0 +1,27 @@
+'use strict';
+
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.retryOnResourceNotFoundException = retryOnResourceNotFoundException;
+const AuthError_1 = require("../../../errors/AuthError");
+/**
+ * It will retry the function if the error is a `ResourceNotFoundException` and
+ * will clean the device keys stored in the storage mechanism.
+ *
+ */
+async function retryOnResourceNotFoundException(func, args, username, tokenOrchestrator) {
+    try {
+        return await func(...args);
+    }
+    catch (error) {
+        if (error instanceof AuthError_1.AuthError &&
+            error.name === 'ResourceNotFoundException' &&
+            error.message.includes('Device does not exist.')) {
+            await tokenOrchestrator.clearDeviceMetadata(username);
+            return func(...args);
+        }
+        throw error;
+    }
+}
+//# sourceMappingURL=retryOnResourceNotFoundException.js.map
