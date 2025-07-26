@@ -5,9 +5,9 @@ import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskApiService, ImageApiService, ContractorApiService, ContractorDetails, StorageService } from 'shared';
-import { usePhoto } from 'src/composables/usePhoto';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
+import { PhotoService } from 'src/app/services/photo.service';
 
 
 @Component({
@@ -25,8 +25,6 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   public capturedPhoto: string | null = null;
   public contractors: ContractorDetails[] | undefined = undefined;
 
-  private photoService = usePhoto();
-  
   constructor(
     private fb: FormBuilder, 
     private route : ActivatedRoute, 
@@ -34,7 +32,8 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
     private taskApiService: TaskApiService, 
     private imageService: ImageApiService, 
     private contractorService: ContractorApiService,
-    private storage: StorageService
+    private storage: StorageService,
+    private photoService: PhotoService
   ) {
     super();
 
@@ -72,30 +71,14 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
       {
         this.capturedPhoto = `data:image/${photo.format};base64,${photo.base64String}`;
 
-        const blob = this.base64ToBlob(photo.base64String, `image/$(photo.format)`);
-        this.selectedFile = new File([blob], `captured_${Date.now()}.${photo.format}`, {
-          type: `image/${photo.format}`
-        });
+        const blob = this.photoService.base64ToBlob(photo.base64String, `image/$(photo.format)`);
+        this.selectedFile = this.photoService.createFile(blob, `captured_${Date.now()}.${photo.format}`, photo.format);
       }
     }
     catch(err){
       console.error("Error capturing photo", err);
     }
   }
-  private base64ToBlob(base64: string, content: string)
-  {
-    const bytes = atob(base64);
-    const byteNum = new Array(bytes.length);
-
-    for(let i = 0; i < bytes.length; i++)
-    {
-      byteNum[i] = bytes.charCodeAt(i);
-    }
-
-    const byteArr = new Uint8Array(byteNum);
-    return new Blob([byteArr], { type: content });
-  }
-
   override async confirm() {
     if(this.form.valid)
     {

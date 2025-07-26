@@ -1,0 +1,40 @@
+<ion-content>
+  <div class="container mx-auto">
+    <app-header/>
+
+    <div *ngIf="detailError">
+      <p class="font-semibold text-red-600">Couldnt find task, please try again</p>
+    </div>
+
+    <ion-card *ngIf="!detailError" class="mt-8">
+      <ion-card-header>
+        <ion-card-title>Pending Task</ion-card-title>
+        <ion-card-subtitle>
+          <div class="flex flex-col items-center justify-center pt-3 pb-1">
+            <img [src]="task()?.img" alt="" class="w-auto object-contain">
+            <p class="text-lg pt-4">Task: {{ task()?.title }}</p>
+          </div>
+        </ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="rounded-lg flex flex-col justify-center items-center">
+  
+          <div class="pt-2 space-y-3">
+            
+            <p class="text-sm">Description: {{ task()?.des }}</p>
+            <p [class]="changeDueDate()" class="font-medium">Due Date: {{ (task()?.scheduled_date ?? '') | formatDate }}</p>
+              <div>
+                <p class="font-semibold">Assigned Contractors:</p>
+                <!-- Table of contractors in future <p-table></p-table> -->
+              </div>
+              <div class="flex flex-row justify-center items-center space-x-2 pt-5">
+                <button class="bg-gray-300 px-3 py-2 rounded">Cancel</button>
+                <button class="bg-yellow-400 px-3 py-2 rounded">Submit vote</button>
+              </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <app-tab/>
+</ion-content>

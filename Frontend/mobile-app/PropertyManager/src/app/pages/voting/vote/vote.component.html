@@ -1,0 +1,9 @@
+<div class = "shadow-md rounded-lg border w-[15rem] text-center">
+  <button (click)="viewTask(task().uuid)">
+        <div>
+            <img [src] = "task().img" class="w-50 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="" rel="preconnect">
+            <p class = "text-lg font-bold mt-1"> {{ task().title }}</p>
+            <p [class]="changeDueDate()" class = "mb-2"> {{ task().scheduled_date | formatDate }}</p>
+        </div>
+    </button>
+</div>

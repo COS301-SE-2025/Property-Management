@@ -5,6 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ContractorService } from 'shared';
 import { PropertyService } from 'shared';
 import { of, throwError } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('CreatePropertyComponent (Mobile)', () => {
   let component: CreatePropertyComponent;
@@ -17,7 +18,7 @@ describe('CreatePropertyComponent (Mobile)', () => {
     propertyService = jasmine.createSpyObj('PropertyService', ['createProperty']);
 
     await TestBed.configureTestingModule({
-      imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule],
+      imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
         { provide: ContractorService, useValue: contractorService },
         { provide: PropertyService, useValue: propertyService }

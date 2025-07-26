@@ -41,5 +41,13 @@ export const routes: Routes = [
     {
         path: 'profile',
         loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent)
+    },
+    {
+        path: 'voting',
+        loadComponent: () => import('./pages/voting/voting.component').then(m => m.VotingComponent)
+    },
+    {
+        path: 'voting/:taskId',
+        loadComponent: () => import('./pages/voting/details/details.component').then(m => m.DetailsComponent)
     }
 ];

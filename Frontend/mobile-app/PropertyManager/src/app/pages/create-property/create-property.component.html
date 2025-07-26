@@ -10,13 +10,18 @@
     <div 
       class="border border-gray-300 rounded-lg flex items-center justify-center mb-6 cursor-pointer image-upload-box"
       style="height: 180px;"
-      (click)="fileInput.click()"
     >
-      <img *ngIf="imagePreview" [src]="imagePreview" alt="Property Image" class="h-full w-full object-cover rounded-lg" />
-      <ng-container *ngIf="!imagePreview">
-        <img src="assets/icons/image_placeholder.svg" alt="Image placeholder" style="height: 60px; width: 60px;" />
-      </ng-container>
-      <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+      <ion-button (click)="capturePhoto()" fill="clear">
+        <ion-icon name="camera-outline"></ion-icon>
+      </ion-button>
+
+      <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
+        <p class="mb-2">Preview</p>
+        <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
+        <ion-button (click)="deletePhoto()" fill="clear" color="dark">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </div>
     </div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
       <ion-item class="rounded-lg border border-gray-300">
@@ -68,21 +73,7 @@
       </button>
     </form>
     <div style="height: 20px;"></div>
-
-    <div class="tab-bar">
-      <button class="tab-item" [class.active]="true">
-        <ion-icon name="home-outline"></ion-icon>
-        <span>Home</span>
-      </button>
-      <button class="tab-item active">
-        <ion-icon name="add-circle-outline"></ion-icon>
-        <span>Create</span>
-      </button>
-      <button class="tab-item">
-        <ion-icon name="settings-outline"></ion-icon>
-        <span>Settings</span>
-      </button>
-    </div>
 </div>
+<app-tab/>
 </ion-content>
 
