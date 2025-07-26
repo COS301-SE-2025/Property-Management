@@ -28,6 +28,19 @@ class InventoryUsageService(
         return mapToResponse(savedUsage)
     }
 
+    fun assignContractor(
+        usageUuid: UUID,
+        contractorUuid: UUID,
+    ): InventoryUsageResponse {
+        val existing =
+            inventoryUsageRepository
+                .findById(usageUuid)
+                .orElseThrow { IllegalArgumentException("Usage not found") }
+
+        val updated = existing.copy(usedByContractorUuid = contractorUuid)
+        return mapToResponse(inventoryUsageRepository.save(updated))
+    }
+
     fun getAllInventoryUsage(pageable: Pageable): Page<InventoryUsageResponse> =
         inventoryUsageRepository
             .findAll(pageable)
