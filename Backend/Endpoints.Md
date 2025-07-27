@@ -525,7 +525,7 @@ _All fields are optional; only include the ones you want to update._
   "usageUuid": "e4f5a6b7-c8d9-0123-ef45-456789abcdef",
   "itemUuid": "b1c2d3e4-f5a6-7890-bcde-123456789abc",
   "taskUuid": "c2d3e4f5-a6b7-8901-cdef-23456789abcd",
-  "usedByContractorUuid": "d3e4f5a6-b7c8-9012-def3-3456789abcde",
+  "usedByContractorUuid": "d3e4f5a6-b7c8-9012-def3-3456789abcde", // can be null 
   "quantityUsed": 10,
   "trusteeApproved": true,
   "approvalDate": "2025-06-26"
@@ -539,6 +539,23 @@ _All fields are optional; only include the ones you want to update._
 
 - **Path Variable:**  
   - `usageUuid` (**required**): UUID of the usage record
+
+**Response Example (200 OK):**
+```json
+{ "message": "Inventory usage deleted successfully" }
+```
+- `404 Not Found` if not found
+
+---
+
+## Assign contractor 
+**PATCH** `/api/inventory-usage/{usageUuid}/assign-contractor`
+
+- **Path Variable:**  
+  - `usageUuid` (**required**): UUID of the usage record
+
+**Request Body Fields:**
+- `contractorUuid` (**required**): UUID of contractor you want to assign to
 
 **Response Example (200 OK):**
 ```json
@@ -1460,49 +1477,33 @@ Content-Type: multipart/form-data
 # Maintenance Task Endpoints
 
 ## Create Maintenance Task
-**POST** `/api/maintenance`
+**POST** `/api/maintenance/create`
+
+**Headers:**
+- **Key**`isOWner`: **value** boolean (true/false)
+- **Key**`isBodyCorporate`: **value** boolean (true/false)
 
 **Request Body Fields:**
 - `title` (**required**): Title of the maintenance task (string)
-- `des` (**required**): Description of the maintenance task (string)
-- `status` (**required**): Current status of the task (string)
+- `description` (**required**): Description of the maintenance task (string)
 - `scheduled_date` (**required**): Scheduled date for the task (string, format: "YYYY-MM-DD")
-- `approved` (**required**): Approval status (boolean)
-- `b_uuid` (**required**): UUID of the building (string/UUID)
-- `img` (**required**): UUID of the image from images table (string/UUID)
-- `t_uuid` (**required**): UUID of the trustee who created the task (string/UUID)
+- `buildingUuid` (**required**): UUID of the building (string/UUID)
+- `imageUuid` (**required**): UUID of the image from images table (string/UUID)
+- `trusteeUuid` (**required**): UUID of the trustee who created the task (string/UUID)
 
 **Request Body Example:**
 ```json
 {
-  "title": "Yes b yes",
-  "des": "djewoijdwoei",
-  "status": "cascsac",
-  "scheduled_date": "2025-06-18",
-  "approved": false,
-  "b_uuid": "67b2a69a-7823-474f-ad68-64aee3c94cc4",
-  "img": "80666f00-37a0-4749-9631-dc6befda031c",
-  "t_uuid": "c375bc26-d60f-403a-a62c-7c888296da6d"
+    "title": "Repair Elevator",
+    "description": "Fix elevator stuck on 3rd floor",
+    "scheduledDate": "2025-08-10",
+    "buildingUuid": "09a1909e-ff8b-4361-a737-c54141b141cf",
+    "createdByUuid": "4d33a2ce-110d-403a-9172-73baca2e5664",
+    "imageUuid": "bdab0887-4d84-4799-b862-fcb6a1a927cc",
+    "trusteeUuid": "4d33a2ce-110d-403a-9172-73baca2e5664"
 }
+
 ```
-
-**Response Example (201 Created):**
-```json
-{
-  "uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
-  "title": "Yes b yes",
-  "des": "djewoijdwoei",
-  "status": "cascsac",
-  "scheduled_date": "2025-06-18",
-  "approved": false,
-  "b_uuid": "67b2a69a-7823-474f-ad68-64aee3c94cc4",
-  "img": "80666f00-37a0-4749-9631-dc6befda031c",
-  "t_uuid": "c375bc26-d60f-403a-a62c-7c888296da6d"
-}
-```
-
----
-
 ## Get All Maintenance Tasks
 **GET** `/api/maintenance`
 
@@ -1595,6 +1596,66 @@ _All fields are optional; only include the ones you want to update._
 
 ---
 
+## update task(approve)
+**PUT** `/api/maintenance/update/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the maintenance task
+
+**Request Body Fields:**  
+- `approvalStatus`: (String)
+
+**Request Example:**
+```json
+{
+  "approvalStatus": "APPROVED"
+}
+```
+
+---
+
+## Assign Contractors
+**POST** `/api/maintenance/assign-Contractors`
+
+**Description** Assign contractors to task.
+
+**Request Body Fields:**  
+- `taskUuid` (**required**) : UUID of the maintenance task
+- `contractorUuids` (**required**) : comma separated array of contractor uuids
+
+**Response Example:**
+```json
+{
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "contractorUuids": [
+    "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "098f75f5-0f57-4a5d-82d1-d5e881e15fa7"
+  ]
+}
+```
+---
+
+## submit quote
+**POST** `/api/maintenance/quotes`
+
+**Description** submit a qoute.
+
+**Request Header:**
+- **key** `isBodyCorporate`, **value** `true` ,**type** `text`
+
+**Response Example:**
+```json
+{
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "contractorUuid":"288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "amount" : 5000.00,
+    "submittedOn": "2025-07-25T15:24:00.000Z",
+    "status": "SUBMITTED",
+    "documentUrl": "http://example.com/quote1.pdf"
+}
+```
+---
+
 ## Delete Maintenance Task
 **DELETE** `/api/maintenance/{uuid}`
 
@@ -1607,6 +1668,83 @@ _All fields are optional; only include the ones you want to update._
 - `204 No Content` if deleted  
 - `404 Not Found` if not found
 
+---
+
+## Get Assigned Contractors
+
+**Method:** `GET`  
+**URL:** `/api/maintenance/{taskUuid}/contractors`
+
+**Description:**  
+Returns the list of contractors assigned to a specific maintenance task.
+
+**Request Parameters:**  
+- `taskUuid` – UUID of the maintenance task (in URL path)
+
+**Example Request:**  
+```http
+GET /api/maintenance/5c3588ce-20df-4cfe-baa3-39355e398f56/contractors 
+```
+
+**Response:**  
+```json
+[
+  {
+    "contractorUuid": "abc123...",
+    "name": "FixIt Contractors",
+    "quoteSubmitted": true
+  },
+  ...
+]
+```
+
+---
+
+## Get Contractor Maintenance Tasks
+
+**Method:** `GET`  
+**URL:** `/api/maintenance/contractor/{contractorUuid}`
+
+**Headers:**  
+- `isBodyCorporate: true`
+
+**Request Body:**  
+```json
+{
+  "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56"
+}
+```
+
+**Description:**  
+Fetches all maintenance tasks assigned to a specific contractor. Intended for verifying which tasks a contractor can view and access.
+
+**Example Request:**  
+```http
+GET /api/maintenance/contractor/288b32c8-6123-497c-bf7e-e8fa99a075a8
+Host: localhost:8080
+Content-Type: application/json
+isBodyCorporate: true
+
+{
+  "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56"
+}
+```
+
+**Response:**  
+```json
+[
+  {
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "title": "Fix Broken Fence",
+    "status": "PENDING",
+    "quote": {
+      "amount": 5000.00,
+      "description": "Includes materials and labor"
+    }
+  },
+  ...
+]
+```
 ---
 
 ### Maintenance Task Field Requirements Summary
