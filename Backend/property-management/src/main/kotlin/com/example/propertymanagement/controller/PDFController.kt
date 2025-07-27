@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.multipart.MultipartFile
-import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
@@ -34,21 +32,25 @@ class PDFController(
     @GetMapping("/presigned-upload")
     fun generatePresignedUploadUrl(
         @RequestParam filename: String,
-        @RequestParam contentType: String
+        @RequestParam contentType: String,
     ): ResponseEntity<Map<String, String>> {
         val id = UUID.randomUUID().toString()
         val key = "uploads/$id-$filename"
 
-        val putObjectRequest = PutObjectRequest.builder()
-            .bucket(bucketName)
-            .key(key)
-            .contentType(contentType)
-            .build()
+        val putObjectRequest =
+            PutObjectRequest
+                .builder()
+                .bucket(bucketName)
+                .key(key)
+                .contentType(contentType)
+                .build()
 
-        val presignRequest = software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest.builder()
-            .putObjectRequest(putObjectRequest)
-            .signatureDuration(Duration.ofMinutes(15))
-            .build()
+        val presignRequest =
+            software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest
+                .builder()
+                .putObjectRequest(putObjectRequest)
+                .signatureDuration(Duration.ofMinutes(15))
+                .build()
 
         val presignedRequest = s3Presigner.presignPutObject(presignRequest)
         val uploadUrl = presignedRequest.url().toString()
@@ -57,8 +59,8 @@ class PDFController(
             mapOf(
                 "uploadUrl" to uploadUrl,
                 "fileKey" to key,
-                "id" to id
-            )
+                "id" to id,
+            ),
         )
     }
 
@@ -66,15 +68,16 @@ class PDFController(
     fun notifyUploadComplete(
         @RequestParam id: String,
         @RequestParam filename: String,
-        @RequestParam key: String
+        @RequestParam key: String,
     ): ResponseEntity<String> {
         val url = "https://$bucketName.s3.amazonaws.com/$key"
-        val pdfMeta = PDFMeta(
-            id = id,
-            filename = filename,
-            key = key,
-            url = url
-        )
+        val pdfMeta =
+            PDFMeta(
+                id = id,
+                filename = filename,
+                key = key,
+                url = url,
+            )
         PDFRepository.save(pdfMeta)
         return ResponseEntity.ok("Upload metadata saved.")
     }
@@ -107,10 +110,9 @@ class PDFController(
             .contentType(MediaType.TEXT_PLAIN)
             .body(presignedUrl)
     }
+
     private fun extractKeyFromUrl(url: String): String {
         // Assuming URL is https://bucket.s3.amazonaws.com/key
         return url.substringAfter("$bucketName.s3.amazonaws.com/")
     }
-
-
 }
