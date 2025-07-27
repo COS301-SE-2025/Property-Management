@@ -64,4 +64,12 @@ export class PropertyService {
   getInvitations(): Observable<InviteWithTrustee[]> {
     return this.http.get<InviteWithTrustee[]>('/api/invitations');
   }
+
+  cancelInvite(inviteUuid: string): Observable<any> {
+    return this.http.delete(`/api/invitations/${inviteUuid}`);
+  }
+
+  revokeInvite(inviteUuid: string): Observable<any> {
+    return this.http.put(`/api/invitations/${inviteUuid}/revoke`, {});
+  }
 }

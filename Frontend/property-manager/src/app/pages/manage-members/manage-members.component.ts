@@ -22,11 +22,19 @@ export class ManageMembersComponent implements OnInit {
     });
   }
 
-  cancelInvite(invite: InviteWithTrustee) {
-    // Implement cancel logic here
-  }
+cancelInvite(invite: InviteWithTrustee) {
+  this.propertyService.cancelInvite(invite.inviteUuid).subscribe(() => {
+    this.invitations = this.invitations.filter(i => i.inviteUuid !== invite.inviteUuid);
+    this.activeMembers = this.activeMembers.filter(i => i.inviteUuid !== invite.inviteUuid);
+  });
+}
 
-  revokeInvite(invite: InviteWithTrustee) {
-    // Implement revoke logic here
-  }
+revokeInvite(invite: InviteWithTrustee) {
+  this.propertyService.revokeInvite(invite.inviteUuid).subscribe(updated => {
+    this.invitations = this.invitations.map(i =>
+      i.inviteUuid === invite.inviteUuid ? { ...i, status: 'Revoked' } : i
+    );
+    this.activeMembers = this.activeMembers.filter(i => i.inviteUuid !== invite.inviteUuid);
+  });
+}
 }
