@@ -61,13 +61,35 @@
             </button>  
         </div>
 
-        <div *ngIf="dropDownSettingsOpen" class= "absolute right-1 top-18 bg-white border rounded shadow-md w-38 z-50" [ngStyle]="{ 'background-color': 'var(--bg-color)'}">
-            <button (click)="toggleDarkMode()" class="block text-black w-full text-left px-8 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200" [ngStyle]="{ 'color':'var(--text-color)', 'border-bottom-color':'var(--border-color)' }">
-            {{ isDarkMode? 'Light mode': 'Dark mode' }}
-            </button>  
-            <button class= "block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer">
+        <div *ngIf="dropDownSettingsOpen" class="absolute right-1 top-18 border rounded shadow-md w-38 z-50"
+            [ngStyle]="{ 'background-color': 'var(--bg-color)'}">
+        
+        <div class="flex justify-end px-2 pt-2">
+            <button (click)="dropDownSettingsOpen = false" aria-label="Close settings" class="text-gray-400 hover:text-yellow-500 text-xl font-bold focus:outline-none">
+            &times;
+            </button>
+        </div>
+        <div class="flex items-center justify-between px-6 py-2">
+            <!-- Moon Icon -->
+            <svg [ngClass]="{'opacity-60': !isDarkMode, 'opacity-100': isDarkMode}" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+            </svg>
+            <!-- Slider Switch -->
+            <label class="relative inline-flex items-center cursor-pointer mx-2">
+            <input type="checkbox" class="sr-only peer" [checked]="!isDarkMode" (change)="toggleDarkMode()" />
+            <div class="w-12 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-yellow-400 rounded-full peer dark:bg-gray-700 transition"></div>
+            <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white border border-gray-300 rounded-full shadow transform transition peer-checked:translate-x-6"></div>
+            </label>
+            <!-- Sun Icon -->
+            <svg [ngClass]="{'opacity-100': !isDarkMode, 'opacity-60': isDarkMode}" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M6.343 17.657l-1.414 1.414M17.657 17.657l-1.414-1.414M6.343 6.343L4.929 7.757" />
+            </svg>
+        </div>
+        <button class="block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer">
             Change font size
-            </button>          
+        </button>
         </div>
         </div>
     </div>

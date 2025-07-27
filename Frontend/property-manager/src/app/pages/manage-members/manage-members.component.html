@@ -1,12 +1,12 @@
 <app-header />
-<div class="min-h-screen bg-[#f9f9f9]">
+<div class="min-h-screen" [ngStyle]="{ 'background-color': 'var(--bg-color)' }">
   <div class="pt-6 px-10">
-    <h2 class="text-3xl font-bold mb-2">Manage Members</h2>
-      <div class="h-1 w-64 bg-yellow-400 mb-6"></div>
+    <h2 class="text-3xl font-bold mb-2" [ngStyle]="{ 'color': 'var(--text-color)' }">Manage Members</h2>
+    <div class="h-1 w-64 mb-6" [ngStyle]="{ 'background-color': 'var(--accent-color)' }"></div>
 
     <div class="flex gap-8 justify-center flex-wrap">
 
-      <div class="bg-white rounded-lg shadow border p-6 min-w-[700px] flex-1">
+      <div class="rounded-lg shadow border p-6 min-w-[700px] flex-1" [ngStyle]="{ 'background-color': 'var(--card-bg)', 'color': 'var(--text-color)' }">
         <h3 class="text-xl font-semibold mb-4 text-center">Invitation Status</h3>
         <table class="w-full text-left table-auto">
           <thead>
@@ -33,8 +33,7 @@
         </table>
       </div>
 
-
-      <div class="bg-white rounded-lg shadow border p-6 min-w-[600px] flex-1">
+      <div class="rounded-lg shadow border p-6 min-w-[600px] flex-1" [ngStyle]="{ 'background-color': 'var(--card-bg)', 'color': 'var(--text-color)' }">
         <h3 class="text-xl font-semibold mb-4 text-center">Active Members</h3>
         <table class="w-full text-left table-auto">
           <thead>
