@@ -32,6 +32,11 @@ class TrusteeBodyCorporateInviteController(
         @PathVariable trusteeUuid: UUID,
     ): List<InviteDTO> = inviteService.getInvitesForTrustee(trusteeUuid)
 
+    @GetMapping("/body-corporate/{coporateUuid}/accepted-trustees")
+    fun getAcceptedTrusteesForBodyCorporate(
+        @PathVariable coporateUuid: UUID,
+    ): List<InviteDTO> = inviteService.getAcceptedTrusteesForBodyCorporate(coporateUuid)
+
     @PutMapping("/{inviteUuid}/status")
     fun updateInviteStatus(
         @PathVariable inviteUuid: UUID,

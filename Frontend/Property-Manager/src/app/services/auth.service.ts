@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { TokenUtilService } from '../services/token-util.service';
+
 
 
 export interface AuthTokens {
@@ -39,7 +41,7 @@ export class AuthService {
 
   private url = '/api';
 
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient, private tokenUtil: TokenUtilService){}
 
   bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
   {
@@ -284,7 +286,25 @@ export class AuthService {
     });
   }
 
-  logout()
+  private getCookieValue(name: string): string | null {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+getIdTokenFromCookieOrStorage(): string | null {
+  const token = this.getCookieValue('idToken');
+  if (token) return token;
+  return localStorage.getItem('idToken');
+}
+
+getUserType(): string | null {
+  const token = this.getIdTokenFromCookieOrStorage();
+  if (!token) return null;
+  const groups = this.tokenUtil.getUserGroups(token);
+  return groups.length > 0 ? groups[0] : null;
+}
+  
+logout()
   {
     localStorage.removeItem("userType");
     localStorage.removeItem("trusteeID");

@@ -2,7 +2,6 @@ package com.example.propertymanagement.model
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.math.BigDecimal
@@ -13,9 +12,8 @@ import java.util.UUID
 @Table(name = "quote")
 data class Quote(
     @Id
-    @GeneratedValue // Hibernate will expect DB to assign the UUID
     @Column(name = "quote_uuid", nullable = false, unique = true)
-    val uuid: UUID? = null,
+    val uuid: UUID = UUID.randomUUID(),
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     val amount: BigDecimal,
     @Column(name = "document_url")

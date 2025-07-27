@@ -42,7 +42,7 @@ export class ContractorDetailsComponent implements OnInit{
       this.publicContractor = source === 'public';
 
       const contractorId = this.route.snapshot.paramMap.get('contractorId');
-      console.log(contractorId);
+      // console.log(contractorId);
 
       const foundContractor = this.contractorDetails().find(c => c.uuid === contractorId);
 
