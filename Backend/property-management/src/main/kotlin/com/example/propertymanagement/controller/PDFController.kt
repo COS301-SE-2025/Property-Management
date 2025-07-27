@@ -1,7 +1,7 @@
 package com.example.propertymanagement.controller
 
-import com.example.propertymanagement.dto.ImageMeta
-import com.example.propertymanagement.repository.ImageRepository
+import com.example.propertymanagement.model.PDFMeta
+import com.example.propertymanagement.repository.PDFRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -22,49 +22,74 @@ import java.time.Duration
 import java.util.UUID
 
 @RestController
-@RequestMapping("/api/images")
-class ImageController(
+@RequestMapping("/api/upload")
+class PDFController(
     val s3Client: S3Client,
     val s3Presigner: S3Presigner,
-    val imageRepository: ImageRepository,
+    val PDFRepository: PDFRepository,
 ) {
     @Value("\${aws.bucket-name:default-bucket}")
     lateinit var bucketName: String
 
-    @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun upload(
-        @RequestParam("file") file: MultipartFile,
+    @GetMapping("/presigned-upload")
+    fun generatePresignedUploadUrl(
+        @RequestParam filename: String,
+        @RequestParam contentType: String
     ): ResponseEntity<Map<String, String>> {
         val id = UUID.randomUUID().toString()
-        val key = "uploads/$id-${file.originalFilename}"
+        val key = "uploads/$id-$filename"
 
-        s3Client.putObject(
-            PutObjectRequest
-                .builder()
-                .bucket(bucketName)
-                .key(key)
-                .contentType(file.contentType)
-                .build(),
-            RequestBody.fromBytes(file.bytes),
+        val putObjectRequest = PutObjectRequest.builder()
+            .bucket(bucketName)
+            .key(key)
+            .contentType(contentType)
+            .build()
+
+        val presignRequest = software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest.builder()
+            .putObjectRequest(putObjectRequest)
+            .signatureDuration(Duration.ofMinutes(15))
+            .build()
+
+        val presignedRequest = s3Presigner.presignPutObject(presignRequest)
+        val uploadUrl = presignedRequest.url().toString()
+
+        return ResponseEntity.ok(
+            mapOf(
+                "uploadUrl" to uploadUrl,
+                "fileKey" to key,
+                "id" to id
+            )
         )
+    }
 
-        val imageUrl = "https://$bucketName.s3.amazonaws.com/$key"
-        imageRepository.save(ImageMeta(id = id, filename = file.originalFilename ?: "unknown", url = imageUrl))
-
-        return ResponseEntity.ok(mapOf("imageKey" to id))
+    @PostMapping("/notify-upload")
+    fun notifyUploadComplete(
+        @RequestParam id: String,
+        @RequestParam filename: String,
+        @RequestParam key: String
+    ): ResponseEntity<String> {
+        val url = "https://$bucketName.s3.amazonaws.com/$key"
+        val pdfMeta = PDFMeta(
+            id = id,
+            filename = filename,
+            key = key,
+            url = url
+        )
+        PDFRepository.save(pdfMeta)
+        return ResponseEntity.ok("Upload metadata saved.")
     }
 
     @GetMapping("/presigned/{id}")
     fun getPresignedUrl(
         @PathVariable id: String,
     ): ResponseEntity<String> {
-        val image = imageRepository.findById(id).orElseThrow()
+        val pdf = PDFRepository.findById(id).orElseThrow()
 
         val getObjectRequest =
             GetObjectRequest
                 .builder()
                 .bucket(bucketName)
-                .key(extractKeyFromUrl(image.url))
+                .key(extractKeyFromUrl(pdf.url))
                 .build()
 
         val presignRequest =
@@ -82,9 +107,10 @@ class ImageController(
             .contentType(MediaType.TEXT_PLAIN)
             .body(presignedUrl)
     }
-
     private fun extractKeyFromUrl(url: String): String {
         // Assuming URL is https://bucket.s3.amazonaws.com/key
         return url.substringAfter("$bucketName.s3.amazonaws.com/")
     }
+
+
 }
