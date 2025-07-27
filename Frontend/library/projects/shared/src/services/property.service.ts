@@ -62,14 +62,14 @@ export class PropertyService {
   }
 
   getInvitations(): Observable<InviteWithTrustee[]> {
-    return this.http.get<InviteWithTrustee[]>('/api/invitations');
+    return this.http.get<InviteWithTrustee[]>('/api/invites');
   }
 
   cancelInvite(inviteUuid: string): Observable<any> {
-    return this.http.delete(`/api/invitations/${inviteUuid}`);
+    return this.http.delete(`/api/invites/${inviteUuid}`);
   }
 
   revokeInvite(inviteUuid: string): Observable<any> {
-    return this.http.put(`/api/invitations/${inviteUuid}/revoke`, {});
+    return this.http.put(`/api/invites/${inviteUuid}/status?status=Revoked`, {});
   }
 }

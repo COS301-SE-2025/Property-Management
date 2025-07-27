@@ -35,6 +35,8 @@ class TrusteeBodyCorporateInviteService(
         val updated = invite.copy(status = status)
         return inviteRepository.save(updated).toDTO()
     }
+
+    fun getAllInvitations(): List<InviteDTO> = inviteRepository.findAll().map { it.toDTO() }
 }
 
 fun TrusteeBodyCorporateInvite.toDTO() =

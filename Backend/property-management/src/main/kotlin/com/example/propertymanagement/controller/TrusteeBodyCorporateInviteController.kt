@@ -42,4 +42,8 @@ class TrusteeBodyCorporateInviteController(
         @PathVariable inviteUuid: UUID,
         @RequestParam status: String,
     ): InviteDTO? = inviteService.updateInviteStatus(inviteUuid, status)
+
+    @GetMapping
+    fun getAllInvites(): List<InviteDTO> = inviteService.getAllInvitations()
+    
 }
