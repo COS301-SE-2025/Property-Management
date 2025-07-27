@@ -8,29 +8,21 @@ import java.time.Duration
 
 @Service
 class S3Service(private val s3Client: S3Client) {
+    private vval s3Presigner: S3Presigner
 
-    private val bucketName = "your-bucket-name"
-
-    fun generatePresignedUploadUrl(key: String): URL {
+    fun generatePresignedUploadUrl(bucket: String, key: String, contentType: String): URL {
         val putObjectRequest = PutObjectRequest.builder()
-            .bucket(bucketName)
+            .bucket(bucket)
             .key(key)
-            .contentType("application/pdf")
-            .build()
-
-        val presigner = S3Presigner.builder()
-            .region(s3Client.region())
-            .credentialsProvider(s3Client.credentialsProvider())
+            .contentType(contentType)
             .build()
 
         val presignRequest = PutObjectPresignRequest.builder()
-            .putObjectRequest(putObjectRequest)
             .signatureDuration(Duration.ofMinutes(15))
+            .putObjectRequest(putObjectRequest)
             .build()
 
-        val presignedRequest = presigner.presignPutObject(presignRequest)
-        presigner.close()
-
+        val presignedRequest = s3Presigner.presignPutObject(presignRequest)
         return presignedRequest.url()
     }
 }
