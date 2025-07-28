@@ -18,7 +18,7 @@ export class ManageMembersComponent implements OnInit {
   ngOnInit() {
     this.propertyService.getInvitations().subscribe(data => {
       this.invitations = data;
-      this.activeMembers = data.filter(invite => invite.status === 'Accepted');
+      this.activeMembers = data.filter(invite => invite.status === 'ACCEPTED');
     });
   }
 

@@ -25,8 +25,20 @@
               <td>{{ invite.invitedOn | date:'dd MMM yyyy' }}</td>
               <td>{{ invite.status }}</td>
               <td>
-                <button *ngIf="invite.status === 'Pending' || invite.status === 'Rejected'" class="border rounded px-3 py-1 text-gray-700 hover:bg-gray-100" (click)="cancelInvite(invite)">Cancel</button>
-                <button *ngIf="invite.status === 'Accepted'" class="border rounded px-3 py-1 text-gray-700 hover:bg-gray-100" (click)="revokeInvite(invite)">Revoke</button>
+                <button
+                  *ngIf="invite.status === 'Pending' || invite.status === 'Rejected'"
+                  type="button"
+                  class="text-xs px-4 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow transition"
+                  (click)="cancelInvite(invite)">
+                  Cancel
+                </button>
+                <button
+                  *ngIf="invite.status === 'Accepted'"
+                  type="button"
+                  class="text-xs px-4 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow transition"
+                  (click)="revokeInvite(invite)">
+                  Revoke
+                </button>
               </td>
             </tr>
           </tbody>
