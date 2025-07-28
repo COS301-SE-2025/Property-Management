@@ -3,6 +3,7 @@ package com.example.propertymanagement.controller
 import com.example.propertymanagement.dto.CreateVoteSessionRequest
 import com.example.propertymanagement.dto.SubmitVoteRequest
 import com.example.propertymanagement.dto.VoteSessionResult
+import com.example.propertymanagement.dto.VoteSessionSummary
 import com.example.propertymanagement.service.QuoteVotingService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -38,4 +39,16 @@ class QuoteVotingController(
     fun getResults(
         @PathVariable uuid: UUID,
     ): ResponseEntity<VoteSessionResult> = ResponseEntity.ok(votingService.getResults(uuid))
+
+    @GetMapping("/sessions")
+    fun getAllSessions(): ResponseEntity<List<VoteSessionSummary>> {
+        return ResponseEntity.ok(votingService.getAllSessions())
+    }
+
+     @GetMapping("/session/{uuid}/task")
+    fun getTaskId(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<Map<String, UUID>> {
+        return ResponseEntity.ok(mapOf("taskUuid" to votingService.getTaskId(uuid)))
+    }
 }

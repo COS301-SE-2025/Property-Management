@@ -1,6 +1,7 @@
 package com.example.propertymanagement.dto
 
 import java.util.UUID
+import java.time.LocalDateTime
 
 data class CreateVoteSessionRequest(
     val coporateUuid: UUID,
@@ -28,4 +29,12 @@ data class VoteSessionResult(
     val results: List<QuoteVoteResult>,
     val votingEnded: Boolean,
     val winningQuoteUuid: UUID?,
+)
+
+data class VoteSessionSummary(
+    val sessionUuid: UUID,
+    val taskUuid: UUID,
+    val coporateUuid: UUID,
+    val votingEndsAt: LocalDateTime,
+    val isActive: Boolean
 )
