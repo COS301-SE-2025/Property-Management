@@ -11,12 +11,11 @@ export class InventoryUsageApiService {
   private url = '/api';
   constructor(private http: HttpClient) { }
 
-  createInventoryUsage(itemId: string, taskId: string, contractorId: string, quantityUsed: number): Observable<InventoryUsage>
+  createInventoryUsage(itemId: string, taskId: string, quantityUsed: number): Observable<InventoryUsage>
   {
     const newInventoryUsage = {
       itemUuid: itemId,
       taskUuid: taskId,
-      usedByContractorUuid: contractorId,
       quantityUsed: quantityUsed
     };
 
@@ -64,7 +63,7 @@ export class InventoryUsageApiService {
 
   getUsageRecordsByTaskId(taskId: string): Observable<InventoryUsage[]>
   {
-    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/${taskId}`)
+    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-task/${taskId}`)
   }
 
   getUsageRecordsByContractorId(contractorId: string): Observable<InventoryUsage[]>

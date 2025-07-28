@@ -138,7 +138,7 @@ export class InventoryCardComponent implements OnInit{
 
    setTimeout(() => {
      window.location.reload();
-   }, 3000);
+   }, 2000);
   }
   private async getAndUpdateBudget(overallPrice: number)
   {
@@ -208,6 +208,7 @@ export class InventoryCardComponent implements OnInit{
     this.quantitiesChanged.emit(updated);
   }
 
+  //Used in dialogs
   async addItemToUsage(taskId: string, itemId: string, quantity: number)
   {
     //Delete inventory item
@@ -218,7 +219,7 @@ export class InventoryCardComponent implements OnInit{
     }
 
     //Create inventory usage
-    this.inventoryUsage.createInventoryUsage(itemId, taskId, '00000000-0000-0000-0000-000000000000', quantity).subscribe({
+    this.inventoryUsage.createInventoryUsage(itemId, taskId, quantity).subscribe({
       next: (res) => {
         console.log(res);
         return res.usageUuid;

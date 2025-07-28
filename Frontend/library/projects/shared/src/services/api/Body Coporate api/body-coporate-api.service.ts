@@ -31,7 +31,7 @@ export class BodyCoporateApiService {
     return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`).pipe(
       map(tasks => {
         return tasks.filter(task => {
-          return task.b_uuid === buildingId && task.status.includes('pending')
+          return task.buuid === buildingId && task.status.includes('pending')
         });
       })
     );

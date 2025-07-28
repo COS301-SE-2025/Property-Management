@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
-import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { MultiSelectChangeEvent, MultiSelectModule } from 'primeng/multiselect'; 
 import { TableModule } from 'primeng/table';
@@ -21,7 +20,7 @@ import { InventoryCardComponent } from '../../inventory-card/inventory-card.comp
 
 @Component({
   selector: 'app-timeline-add-dialog',
-  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, SelectModule, FileUploadModule, ToastModule, MultiSelectModule, TableModule, InventoryCardComponent],
+  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, FileUploadModule, ToastModule, MultiSelectModule, TableModule, InventoryCardComponent],
   templateUrl: './timeline-add-dialog.component.html',
   styles: ``,
   providers: [MessageService]
@@ -57,7 +56,6 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       name: ['', Validators.required],
       description: ['', Validators.required],
       date: ['', Validators.required],
-      contractorName: ['', Validators.required],
     });
 
     //Get contractors
@@ -115,20 +113,16 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     }
 
     const userId = getCookieValue(document.cookie, 'trusteeId');
+    const isBodyCorporate = userId === '' ? true : false
     const name = this.form.value.name;
     const des = this.form.value.description;
     const date = this.form.value.date;
 
-    console.log(this.form.value.contractorName);
-
-    const contractorId = this.form.value.contractorName;
-
-    this.taskApiService.createTask(name, des, "pending", date, false, this.houseId, userId, imageId, contractorId).subscribe({
+    this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate).subscribe({
       next: (task) => {
 
         if(this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0)
         {
-          console.log("handling inventory usage", task.uuid);
           this.handleInventoryUsage(task.uuid);
         }
 
@@ -169,8 +163,6 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
 
   
   this.inventoryItemsUsed.forEach(item => {
-    console.log(item.quantityInStock);
-    console.log(taskId)
     this.inventoryCard.addItemToUsage(
       taskId,
       item.itemUuid,

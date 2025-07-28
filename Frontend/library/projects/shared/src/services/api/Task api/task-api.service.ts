@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 
 @Injectable({
@@ -11,23 +11,25 @@ export class TaskApiService {
   private url = '/api';
   constructor(private http: HttpClient) { }
 
-  createTask(title: string, des: string, status: string, scheduledDate: Date, approved: boolean, buildingId: string, trusteeId: string, imgId: string, contractorId: string): Observable<MaintenanceTask>
+  createTask(title: string, des: string, scheduledDate: Date, buildingId: string, trusteeId: string, imgId: string, createdId: string, isOwner: boolean, isBodyCorporate: boolean): Observable<MaintenanceTask>
   {
+    const headers = new HttpHeaders().set('isOwner', String(isOwner)).set('isBodyCorporate', String(isBodyCorporate));
     const req = {
       title: title,
-      des: des,
-      status: status,
-      scheduled_date: scheduledDate,
-      approved: approved,
-      b_uuid: buildingId,
-      t_uuid: trusteeId,
-      img: imgId,
-      c_uuid: contractorId
+      description: des,
+      scheduledDate: scheduledDate,
+      buildingUuid: buildingId,
+      trusteeUuid: trusteeId,
+      imageUuid: imgId,
+      createdByUuid: createdId,
+      approvalStatus: "PENDING"
     };
 
-    console.log(req);
-
-    return this.http.post<MaintenanceTask>(`${this.url}/maintenance`, req);
+    return this.http.post<MaintenanceTask>(`${this.url}/maintenance/create`, req, { headers }).pipe(map( res => ({
+      ...res,
+      uuid: res['taskUuid']
+    })
+    ));
   } 
 
   getAllTasks(): Observable<MaintenanceTask[]>
