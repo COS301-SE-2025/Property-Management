@@ -25,6 +25,8 @@ export class TaskApiService {
       c_uuid: contractorId
     };
 
+    console.log(req);
+
     return this.http.post<MaintenanceTask>(`${this.url}/maintenance`, req);
   } 
 
