@@ -41,14 +41,10 @@ class QuoteVotingController(
     ): ResponseEntity<VoteSessionResult> = ResponseEntity.ok(votingService.getResults(uuid))
 
     @GetMapping("/sessions")
-    fun getAllSessions(): ResponseEntity<List<VoteSessionSummary>> {
-        return ResponseEntity.ok(votingService.getAllSessions())
-    }
+    fun getAllSessions(): ResponseEntity<List<VoteSessionSummary>> = ResponseEntity.ok(votingService.getAllSessions())
 
-     @GetMapping("/session/{uuid}/task")
+    @GetMapping("/session/{uuid}/task")
     fun getTaskId(
         @PathVariable uuid: UUID,
-    ): ResponseEntity<Map<String, UUID>> {
-        return ResponseEntity.ok(mapOf("taskUuid" to votingService.getTaskId(uuid)))
-    }
+    ): ResponseEntity<Map<String, UUID>> = ResponseEntity.ok(mapOf("taskUuid" to votingService.getTaskId(uuid)))
 }

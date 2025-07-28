@@ -130,22 +130,22 @@ class QuoteVotingService(
         )
     }
 
-    fun getAllSessions(): List<VoteSessionSummary> {
-        return sessionRepo.findAll().map { session ->
+    fun getAllSessions(): List<VoteSessionSummary> =
+        sessionRepo.findAll().map { session ->
             VoteSessionSummary(
                 sessionUuid = session.sessionUuid,
                 taskUuid = session.taskUuid,
                 coporateUuid = session.coporateUuid,
                 votingEndsAt = session.votingEndsAt,
-                isActive = session.votingEndsAt.isAfter(LocalDateTime.now())
+                isActive = session.votingEndsAt.isAfter(LocalDateTime.now()),
             )
         }
-    }
 
     fun getTaskId(sessionUuid: UUID): UUID {
-        val session = sessionRepo
-            .findById(sessionUuid)
-            .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Voting session not found") }
+        val session =
+            sessionRepo
+                .findById(sessionUuid)
+                .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Voting session not found") }
         return session.taskUuid
     }
 
