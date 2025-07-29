@@ -149,6 +149,19 @@ class QuoteVotingService(
         return session.taskUuid
     }
 
+    fun getSessionByTask(taskUuid: UUID): VoteSessionSummary? {
+        val session = sessionRepo.findByTaskUuid(taskUuid).orElse(null)
+        return session?.let {
+            VoteSessionSummary(
+                sessionUuid = it.sessionUuid,
+                taskUuid = it.taskUuid,
+                coporateUuid = it.coporateUuid,
+                votingEndsAt = it.votingEndsAt,
+                isActive = it.votingEndsAt.isAfter(LocalDateTime.now())
+            )
+        }
+    }
+
     private fun determineWinner(
         results: List<QuoteVoteResult>,
         quotes: List<Quote>,

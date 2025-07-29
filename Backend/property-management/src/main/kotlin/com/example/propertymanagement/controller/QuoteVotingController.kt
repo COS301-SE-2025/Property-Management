@@ -47,4 +47,16 @@ class QuoteVotingController(
     fun getTaskId(
         @PathVariable uuid: UUID,
     ): ResponseEntity<Map<String, UUID>> = ResponseEntity.ok(mapOf("taskUuid" to votingService.getTaskId(uuid)))
+
+    @GetMapping("/task/{taskUuid}/session")
+    fun getSessionByTask(
+        @PathVariable taskUuid: UUID,
+    ): ResponseEntity<VoteSessionSummary?> {
+        val session = votingService.getSessionByTask(taskUuid)
+        return if (session != null) {
+            ResponseEntity.ok(session)
+        } else {
+            ResponseEntity.ok(null)
+        }
+    }
 }
