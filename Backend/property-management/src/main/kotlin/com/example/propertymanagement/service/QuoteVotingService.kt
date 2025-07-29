@@ -157,7 +157,7 @@ class QuoteVotingService(
                 taskUuid = it.taskUuid,
                 coporateUuid = it.coporateUuid,
                 votingEndsAt = it.votingEndsAt,
-                isActive = it.votingEndsAt.isAfter(LocalDateTime.now())
+                isActive = it.votingEndsAt.isAfter(LocalDateTime.now()),
             )
         }
     }
