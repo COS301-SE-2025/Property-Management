@@ -35,6 +35,7 @@ export * from './models/lifeCycleCost.model';
 export * from './models/maintenanceTask.model';
 export * from './models/property.model';
 export * from './models/reserveFund.model';
+export * from './models/voting.model';
 
 //Utils
 export * from './utils/cookie-utils';

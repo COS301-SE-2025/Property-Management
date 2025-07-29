@@ -10,7 +10,7 @@ import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { FileUploadModule, FileSelectEvent } from 'primeng/fileupload';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HousesService, Inventory, InventoryItemApiService, TaskApiService } from 'shared';
 import { getCookieValue } from 'shared';
 import { ImageApiService } from 'shared';
@@ -40,6 +40,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
  constructor(
   private fb: FormBuilder, 
   private route : ActivatedRoute, 
+  private router: Router,
   private taskApiService: TaskApiService, 
   private imageService: ImageApiService, 
   private contractorService: ContractorApiService,
@@ -135,11 +136,11 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
           detail: 'Task added successfully'
         });
 
-        // setTimeout(() => {
-        //   this.router.navigate(['viewHouse', this.houseId]).then(() => {
-        //     window.location.reload();
-        //   });
-        // }, 3000);
+        setTimeout(() => {
+          this.router.navigate(['viewHouse', this.houseId]).then(() => {
+            window.location.reload();
+          });
+        }, 3000);
       },
       error: (err) => {
         console.error("Failed to create task", err);

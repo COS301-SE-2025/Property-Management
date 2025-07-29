@@ -1,0 +1,24 @@
+@if(this.inventoryUsage && this.inventoryUsage.length > 0)
+{
+    <p-card>
+        <ng-template #title class="text-lg font-semibold">Inventory items assigned</ng-template>
+        <p-table [value]="inventoryItem!">
+            <ng-template #header>
+            <tr>
+                <th pSortableColumn="name">
+                    Description <p-sortIcon field="name"/>
+                </th>
+                <th pSortableColumn="quantityInStock">
+                    Quantity <p-sortIcon field="quantityInStock"/>
+                </th>
+            </tr>
+            </ng-template>
+            <ng-template #body let-inventory let-rowIndex="rowIndex">
+            <tr>
+                <td> {{ inventory.name }}</td>
+                <td> {{ inventory.quantityInStock }}</td>
+            </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+}

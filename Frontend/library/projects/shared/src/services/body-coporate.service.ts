@@ -9,6 +9,7 @@ import { getCookieValue } from '../utils/cookie-utils';
 import { Graph } from '../models/graph.model';
 import { BudgetApiService } from './api/Budget api/budget-api.service';
 import { ImageApiService } from './api/Image api/image-api.service';
+import { Property, TaskApiService } from '../public-api';
 
 @Injectable({
   providedIn: 'root'
@@ -45,12 +46,81 @@ export class BodyCoporateService {
   fundContribution = signal<ReserveFund[]>([]);
   maintenanceGraph = signal<Graph>({} as Graph);
   contractorDetails = signal<ContractorDetails[]>([]);
+  buildings = signal<Property[]>([]);
   bcId = '';
-
 
   constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService){
     this.bcId = getCookieValue(document.cookie, 'bodyCoporateId');
   }
+
+  async loadHouses()
+  {
+    if(this.buildings().length > 0) {
+      return;
+    }
+
+    try{
+      this.buildings.set([]);
+      const buildings = await firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId));
+
+      const buildingImages = await Promise.all(
+        buildings.map(async b => {
+          if(b.propertyImage)
+          {
+            try{
+              const url = await firstValueFrom(this.imageApiService.getImage(b.propertyImage));
+              return { ...b, propertyImage: url};
+            }
+            catch(error)
+            {
+              console.error("Error fetching images", error);
+              return { ...b, propertyImage: 'assets/images/no_image.png'};
+            }
+          }
+          else
+          {
+            return { ...b, propertyImage: 'assets/images/no_image.png'}; 
+          }
+        })
+      )
+      this.buildings.set(buildingImages);
+    }
+    catch(error){
+      console.error("Error fetching buildings", error);
+    }
+
+   this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId).subscribe({
+    next: (res) => {
+      res.forEach(b => {
+        if(b.propertyImage)
+        {
+          this.imageApiService.getImage(b.propertyImage).subscribe(url => {
+            this.buildings.update(curr => [
+              ...curr,
+              {
+                ...b,
+                propertyImage: url
+              }
+            ]); 
+          });
+        }
+        else
+        {
+          this.buildings.update(curr => [
+            ...curr,
+            {
+              ...b,
+              propertyImage: 'assets/images/no_image.png'
+            }
+          ]);
+        }
+      });
+    },
+    error: (err) => {
+      console.error("Couldnt fetch buildings", err)
+    }
+   })
+  } 
 
   async addToTask(task: MaintenanceTask): Promise<void> {
     this.pendingTasks.update(tasks => [...tasks, task]);
@@ -58,6 +128,7 @@ export class BodyCoporateService {
 
   async loadPendingTasks(): Promise<void> {
 
+    this.pendingTasks.set([]);
     try {
       const buildings = await firstValueFrom(
         this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)
@@ -72,6 +143,7 @@ export class BodyCoporateService {
           const tasks = await firstValueFrom(
             this.bodyCoporateApiService.getPendingTasks(uuid)
           );
+
           tasks.forEach(task => this.addToTask(task));
         } catch (error) {
           console.error(`Failed to load tasks for building ${uuid}`, error);

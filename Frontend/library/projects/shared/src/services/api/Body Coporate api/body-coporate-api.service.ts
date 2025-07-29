@@ -18,12 +18,8 @@ export class BodyCoporateApiService {
 
   getBuildingsLinkedtoBC(bcId: string): Observable<Property[]>
   {
-    return this.http.get<Property[]>(`${this.url}/buildings`).pipe(
-      map(properties => { 
-        return properties.filter(property => {
-          return property.coporateUuid === bcId;
-        })
-      })
+    return this.http.get<{ buildings: Property[] }>(`${this.url}/buildings/corporate/${bcId}`).pipe(
+      map(response => response.buildings)
     );
   }
   getPendingTasks(buildingId: string): Observable<MaintenanceTask[]>
@@ -31,7 +27,7 @@ export class BodyCoporateApiService {
     return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`).pipe(
       map(tasks => {
         return tasks.filter(task => {
-          return task.buuid === buildingId && task.status.includes('pending')
+          return task.buuid === buildingId && (task.status.includes('pending') || task.status.includes('OPEN'))
         });
       })
     );

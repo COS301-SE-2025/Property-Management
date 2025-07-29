@@ -7,7 +7,7 @@
 <p-card>
     <div class="rounded-lg flex p-4 mt-8" *ngIf="!detailError">
       <div class="flex items-center justify-center w-1/2 p-6 pr-10">
-        <img [src]="task()?.img" alt="" class="w-auto object-contain">
+        <img [src]="task()?.img" alt="" class="w-auto object-contain max-w-[20rem]">
       </div>
 
       <div class="w-1/2 pr-16 pl-4">
@@ -22,7 +22,7 @@
           <div>
             <p [class]="changeDueDate()" class="font-medium">Due Date: {{ (task()?.scheduled_date ?? '') | formatDate }}</p>
           </div>
-          @if(task()?.approved)
+          @if(this.taskType === 'voting')
           {
             <div>
               <p class="font-semibold">Assigned Contractors:</p>
@@ -34,7 +34,7 @@
             </div>
           }
           @else {
-            <form (ngSubmit)="onSubmit()">
+            <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
               <div>
                 <p class="font-semibold pb-2">Assign contractors</p>
                 <p-multiselect
@@ -46,18 +46,42 @@
                   class="border rounded w-75"
                   formControlName="contractorName"></p-multiselect>
               </div>
+              <div class="space-x-2 space-y-3 mt-4">
+                <button type="button"  (click)="confirmDisapprove($event)" class="bg-red-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-red-500">Disapprove task</button>
+                <button type="submit" class="bg-yellow-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-yellow-500">Approve task</button>
+              </div>
             </form>
-            <div class="space-x-2 space-y-3">
-              <button class="bg-red-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-red-500">Disapprove task</button>
-              <button class="bg-yellow-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-yellow-500">Approve task</button>
-            </div>
           }
         </div>
       </div>
   </div>
   </p-card>
 <div class="mt-6">
-  <p-card>
-    <ng-template #title>Inventory items Assigned</ng-template>
-  </p-card>
+  <app-inventory-usage [taskId]="this.taskId!"/>
 </div>
+<p-confirmdialog [visible]="confirmDialog">
+  <ng-template pTemplate="header">
+    <h3 class="font-bold">Confirm Action</h3>
+  </ng-template>
+  
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <button pButton 
+              type="button" 
+              label="Cancel" 
+              icon="pi pi-times" 
+              class="p-button-outlined p-button-danger" 
+              (click)="confirmDialog = false">
+            </button>
+      <button pButton 
+              type="button" 
+              label="Confirm" 
+              icon="pi pi-check" 
+              class="p-button-outlined p-button-success"
+              (click)="onDisapprove()"
+              >
+            </button>
+    </div>
+  </ng-template>
+</p-confirmdialog>
+<p-toast/>

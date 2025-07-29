@@ -50,4 +50,25 @@ export class TaskApiService {
 
     return this.http.put<MaintenanceTask>(`${this.url}/maintenance/${taskId}`, req);
   }
+  updateTaskApproval(status: boolean, taskId: string)
+  {
+    const req = {
+      approvalStatus: status
+    }
+
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, req);
+  }
+  assignContractorsToTask(contractorIds: string[], taskId: string)
+  {
+    const req = {
+      taskUuid: taskId,
+      contractorUuids: contractorIds
+    };
+
+    return this.http.post<MaintenanceTask>(`${this.url}/maintenance/assign-Contractors`, req);
+  }
+  deleteTask(taskId: string)
+  {
+    return this.http.delete<MaintenanceTask>(`${this.url}/maintenance/${taskId}`);
+  }
 }

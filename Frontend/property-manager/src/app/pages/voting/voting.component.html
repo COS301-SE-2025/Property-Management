@@ -8,7 +8,7 @@
   @for(task of votingTasks(); track task.uuid)
   {
     <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
-      <app-voting-card [task]="task"/>
+      <app-voting-card [task]="task" [type]="'voting'"/>
     </div>
   }
 </div>
@@ -22,7 +22,7 @@
     @for(task of pendingTasks(); track task.uuid)
     {
       <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
-        <app-voting-card [task]="task"/>
+        <app-voting-card [task]="task" [type]="'approval'"/>
       </div>
     }
   </div>

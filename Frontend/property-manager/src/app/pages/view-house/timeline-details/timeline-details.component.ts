@@ -6,13 +6,13 @@ import { HeaderComponent } from 'property-manager/src/app/components/header/head
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { BreadCrumbService } from 'property-manager/src/app/components/breadcrumb/breadcrumb.service';
-import { forkJoin, lastValueFrom } from 'rxjs';
+import { InventoryUsageComponent } from 'property-manager/src/app/components/inventory-usage/inventory-usage.component';
 
 @Component({
   selector: 'app-timeline-details',
   templateUrl: './timeline-details.component.html',
   styles: ``,
-  imports: [FormatDatePipe, CommonModule, HeaderComponent, CardModule, TableModule],
+  imports: [FormatDatePipe, CommonModule, HeaderComponent, CardModule, TableModule, InventoryUsageComponent],
 })
 export class TimelineDetailsComponent implements OnInit, OnDestroy {
 
@@ -22,14 +22,12 @@ export class TimelineDetailsComponent implements OnInit, OnDestroy {
   inventoryUsage: InventoryUsage[] | undefined = undefined;
   inventoryItem: Inventory[] | undefined = undefined;
 
-  private taskId: string | null = null;
+  taskId: string | null = null;
 
   constructor(
     private imageService: ImageApiService, 
     private contractorService: ContractorApiService, 
     private taskService: TaskApiService, 
-    private inventoryUsageService: InventoryUsageApiService, 
-    private inventoryItemService: InventoryItemApiService,
     private route: ActivatedRoute,
     private breadCrumb: BreadCrumbService
   ) { 
@@ -51,7 +49,7 @@ export class TimelineDetailsComponent implements OnInit, OnDestroy {
         this.task = res;
         this.getImages();
         this.getContractor();
-        this.getInventoryUsage();
+        // this.getInventoryUsage();
       },
       error: (err) => {
         console.error(err)
@@ -76,34 +74,6 @@ export class TimelineDetailsComponent implements OnInit, OnDestroy {
     const contractorId = this.task?.cuuid;
     if (typeof contractorId === 'string') {
       this.contractor = await this.contractorService.getContractorById(contractorId).toPromise();
-    }
-  }
-  async getInventoryUsage()
-  {
-    if(this.taskId)
-    {
-      try{
-        this.inventoryUsage = await lastValueFrom(
-          this.inventoryUsageService.getUsageRecordsByTaskId(this.taskId)
-        );
-
-        if(this.inventoryUsage?.length)
-        {
-          const inventoryReq = this.inventoryUsage.map(item => 
-            this.inventoryItemService.getInventoryItemsById(item.itemUuid)
-          )
-          const inventoryItems = await lastValueFrom(forkJoin(inventoryReq));
-
-          this.inventoryItem = inventoryItems.map((inventory, index) => ({
-          ...inventory, 
-          quantityUsed: this.inventoryUsage![index].quantityUsed,
-        }));
-        }
-      }
-      catch(error) {
-        console.error("Error fetching inventory", error);
-      }
-      
     }
   }
 }

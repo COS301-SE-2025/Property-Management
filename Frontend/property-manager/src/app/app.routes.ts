@@ -98,7 +98,13 @@ export const routes: Routes = [
     component: VotingComponent
   },
   {
-    path:'voting/:taskId',
+    path:'voting/:taskId/approval',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: VotingDetailsComponent
+  },
+  {
+    path:'voting/:sessionId',
     canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: VotingDetailsComponent

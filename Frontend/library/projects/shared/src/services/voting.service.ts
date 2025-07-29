@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { ImageApiService, MaintenanceTask, TaskApiService } from '../public-api';
+import { BodyCoporateService, ImageApiService, MaintenanceTask, TaskApiService, Voting } from '../public-api';
 import { VotingApiService } from './api/Voting api/voting-api.service';
 
 @Injectable({
@@ -11,51 +11,92 @@ export class VotingService{
     //If bc get all trustees
     //Get all tasks thats scheduled date is past now
 
-    votingTasks = signal<MaintenanceTask[]>([]); 
+    votingTasks = signal<Voting[]>([]); 
     pendingTasks = signal<MaintenanceTask[]>([]);
 
-    constructor(private votingApiService: VotingApiService, private taskApiService: TaskApiService, private imageService: ImageApiService){}
+    constructor(private votingApiService: VotingApiService, private taskApiService: TaskApiService, private imageService: ImageApiService, private bodyCorporateService: BodyCoporateService){}
 
-    getBodyCorporateVotingTasks(bcId: string)
+    async getBodyCorporateVotingTasks()
     {
+        console.log('getting tasks');
+        const date = new Date();
+        this.pendingTasks.set([]);
+        this.votingTasks.set([]);
 
+        await this.bodyCorporateService.loadPendingTasks();
+        const tasks = this.bodyCorporateService.pendingTasks();
+
+        
+        tasks.forEach(task => {
+            if(!task.approved)
+            {
+                //add to pending tasks tasks 
+                if(task.scheduled_date > date)
+                {
+                    if(!task.img)
+                    {
+                        task.img = "assets/images/no_image.png";
+                    }
+                    else
+                    {
+                        if(task.img === '00000000-0000-0000-0000-000000000000')
+                        {
+                            task.img = "assets/images/no_image.png";
+                        }
+                        else
+                        {
+                            this.imageService.getImage(task.img).subscribe({
+                                next: (image) => {
+                                    task.img = image;
+                                }
+                            });
+                        }
+                        this.addToPending(task);
+                    }
+                }
+            }
+            else
+            {
+                //Get session data based on if the task has been approved and add to voting tasks, new endpoint
+            }
+        })
     }
     async getTrusteeVotingTasks(trusteeId: string)
     {
         const date = new Date();
         this.votingTasks.set([]);
-        this.pendingTasks.set([]);
         
         this.taskApiService.getAllTasks().subscribe({
             next: (tasks) => {
 
                 tasks.forEach(t => {
-                    if(!t.img)
+
+                    if(t.tuuid === trusteeId)
                     {
-                        t.img = "assets/images/no_image.png";
-                    }
-                    else
-                    {
-                        if(t.img === '00000000-0000-0000-0000-000000000000')
+                        if(!t.img)
                         {
                             t.img = "assets/images/no_image.png";
                         }
                         else
                         {
-                            this.imageService.getImage(t.img).subscribe({
-                                next: (image) => {
-                                    t.img = image;
-                                }
-                            });
-                        }
-
-                        if(t.approved && t.scheduled_date > date)
-                        {
-                            this.addToVoting(t);
-                        }
-                        else if(t.scheduled_date > date)
-                        {
-                            this.addToPending(t);
+                            if(t.img === '00000000-0000-0000-0000-000000000000')
+                            {
+                                t.img = "assets/images/no_image.png";
+                            }
+                            else
+                            {
+                                this.imageService.getImage(t.img).subscribe({
+                                    next: (image) => {
+                                        t.img = image;
+                                    }
+                                });
+                            }
+    
+                            if(t.approved && t.scheduled_date > date)
+                            {
+                                //TODO: Get session info
+                                // this.addToVoting(t);
+                            }
                         }
                     }
                 });
@@ -70,6 +111,27 @@ export class VotingService{
     {
 
     }
+    async createVotingSession(contractors: string[], taskId: string, bcId: string)
+    {
+        //Update approval and assign contractors
+        this.taskApiService.updateTaskApproval(true, taskId);
+        this.taskApiService.assignContractorsToTask(contractors, taskId);
+
+        //Create session
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        now.setDate(now.getDate() + 3);
+
+        const formattedDate = now.toISOString().split('.')[0];
+
+        console.log(now);
+        
+        this.votingApiService.createSession(taskId, bcId, formattedDate).subscribe({
+            next: (res) => {
+                console.log(res);
+            }
+        });
+    }
     getVotingTaskById(taskId: string)
     {
         return this.votingTasks().find(task => task.uuid === taskId);
@@ -78,15 +140,15 @@ export class VotingService{
     {
         return this.pendingTasks().find(task => task.uuid === taskId);
     }
-    getSessionId(taskId: string)
+    getSessionTaskId(sessionId: string)
     {
-        
+        return this.votingApiService.getSessionDetails(sessionId);
     }
     private addToPending(task: MaintenanceTask)
     {
         this.pendingTasks.set([...this.pendingTasks(), task])
     }
-    private addToVoting(task: MaintenanceTask)
+    private addToVoting(task: Voting)
     {
         this.votingTasks.set([...this.votingTasks(), task]);
     }
