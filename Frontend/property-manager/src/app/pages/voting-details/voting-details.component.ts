@@ -2,7 +2,7 @@ import { Component, effect, input, OnDestroy, OnInit, signal } from '@angular/co
 import { HeaderComponent } from '../../components/header/header.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MaintenanceTask, VotingService, FormatDatePipe, ContractorDetails, ContractorApiService, InventoryUsage, Inventory, Voting, getCookieValue, TaskApiService, ImageApiService, InventoryUsageApiService, InventoryItemApiService } from 'shared';
+import { MaintenanceTask, VotingService, FormatDatePipe, ContractorApiService, InventoryUsage, Inventory, getCookieValue, TaskApiService, ImageApiService, InventoryUsageApiService, InventoryItemApiService, AssignedContractor } from 'shared';
 import { CardModule } from 'primeng/card';
 import { MultiSelect } from "primeng/multiselect";
 import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
@@ -13,11 +13,13 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ButtonModule } from 'primeng/button';
 import { Toast } from 'primeng/toast';
 import { forkJoin, switchMap } from 'rxjs';
+import { TableModule } from 'primeng/table';
+import { QuoteDetailsComponent } from './quote-details/quote-details.component';
 
 
 @Component({
   selector: 'app-voting-details',
-  imports: [HeaderComponent, CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast],
+  imports: [HeaderComponent, CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast, TableModule, QuoteDetailsComponent],
   templateUrl: './voting-details.component.html',
   providers: [MessageService, ConfirmationService],
   styles: `
@@ -37,7 +39,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
   //True if the task has been approved
   public taskType: 'approval' | 'voting' | undefined;
   
-  public contractors: ContractorDetails[] | undefined = undefined;
+  public contractors = signal<AssignedContractor[] | undefined>(undefined);
   public inventoryUsage: InventoryUsage[] | undefined = undefined;
   public inventoryItem: Inventory[] | undefined = undefined;
   public detailError = false;
@@ -99,7 +101,12 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
           }
           this.task.set(res);
 
-
+          //Change in future to get only trusted contractors
+          this.contractorService.getAllContractors().subscribe({
+            next: (response) => {
+              this.contractors.set(response);
+            }
+          })
     
           this.form = this.fb.group({
             contractorName: ['', Validators.required]
@@ -115,7 +122,6 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     {
       //Get session details and taskId 
       const sessionId = this.route.snapshot.paramMap.get('sessionId');
-      console.log(sessionId);
 
       if(sessionId)
       {
@@ -129,23 +135,43 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
               this.taskService.getTaskById(this.taskId).subscribe({
                 next: (res) => {
 
-                if(res.img)
-                {
-                  this.imageService.getImage(res.img).subscribe({
-                    next: (url) => {
-                      res.img = url
-                    } 
-                  })
-                }
-                else
-                {
-                  res.img = "assets/images/no_img.png";
-                }
-                this.task.set(res);
-      
-                this.form = this.fb.group({
-                  contractorName: ['', Validators.required]
-                });
+                  if(res.img)
+                  {
+                    this.imageService.getImage(res.img).subscribe({
+                      next: (url) => {
+                        res.img = url
+                      } 
+                    })
+                  }
+                  else
+                  {
+                    res.img = "assets/images/no_img.png";
+                  }
+
+                  if(this.taskId)
+                  {
+                    this.votingService.getAssignedContractors(this.taskId).subscribe({
+                      next: (contractors) => {
+                        contractors.forEach( contractor => {
+                          //get contractor details
+                          this.contractorService.getContractorById(contractor.contractorUuid!).subscribe({
+                            next: (c) => {
+                              const contractorDetails: AssignedContractor = {
+                                ...c,
+                                quoteSubmitted: contractor.quoteSubmitted,
+                                quoteUuid: contractor.quoteUuid
+                              }
+                              this.addToContractors(contractorDetails);
+                            },
+                            error: (err) => {
+                              console.error("Couldnt find assigned contractors", err);
+                            }
+                          });
+                        })
+                      }
+                    })
+                  }
+                  this.task.set(res);
                 },
                 error: (err) => {
                 console.error("Couldnt find task", err);
@@ -160,12 +186,11 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
         });
       }
     }
-
-    this.contractorService.getAllContractors().subscribe({
-      next: (response) => {
-        this.contractors = response;
-      }
-    })
+  }
+  private addToContractors(contractor: AssignedContractor)
+  {
+    const curr = this.contractors() || [];
+    this.contractors.set([...curr, contractor]);
   }
   ngOnDestroy(): void {
     this.breadCrumb.clearBreadCrumb();
@@ -249,14 +274,10 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
   {
     if(this.taskId)
     {
-      console.log('deleting task');
-
       //Put inventory back
       //Get inventory usage, find quantity and id and add back to inventory
       this.inventoryUsageService.getInventoryUsageByTaskId(this.taskId).subscribe({
         next: (res) => {
-          console.log(res);
-
           //Update inventory items
           const updateReq = res.map(item =>
             this.inventoryItemService.updateInventoryItemQuantity(item.itemUuid, item.quantityUsed, 'ADD').pipe(

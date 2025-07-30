@@ -16,7 +16,6 @@ import { firstValueFrom } from 'rxjs';
 })
 export class HousesService {
 
-
   constructor(private buildingApiService: BuildingApiService, private budgetApiService: BudgetApiService, private inventoryItemApiService: InventoryItemApiService, private taskApiService: TaskApiService, private imageApiService: ImageApiService) { }
 
   houses = signal<Property[]>([]);

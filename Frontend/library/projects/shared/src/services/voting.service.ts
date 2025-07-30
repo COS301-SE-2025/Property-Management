@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
-import { AssignedContractor, BodyCoporateService, ContractorApiService, ImageApiService, MaintenanceTask, TaskApiService, Voting } from '../public-api';
+import { AssignedContractor, BodyCoporateService, ContractorApiService, HousesService, ImageApiService, MaintenanceTask, TaskApiService, Voting } from '../public-api';
 import { VotingApiService } from './api/Voting api/voting-api.service';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,14 @@ export class VotingService{
     assignedContractors = signal<AssignedContractor[]>([]);
     pendingTasks = signal<MaintenanceTask[]>([]);
 
-    constructor(private votingApiService: VotingApiService, private taskApiService: TaskApiService, private imageService: ImageApiService, private bodyCorporateService: BodyCoporateService, private contractorService: ContractorApiService){}
+    constructor(
+        private votingApiService: VotingApiService, 
+        private taskApiService: TaskApiService, 
+        private imageService: ImageApiService, 
+        private bodyCorporateService: BodyCoporateService, 
+        private contractorService: ContractorApiService, 
+        private housesService: HousesService
+    ){}
 
     async getBodyCorporateVotingTasks()
     {
@@ -82,11 +90,6 @@ export class VotingService{
                                     }
                                 });
                             }
-
-                            //Get assigned contractors
-                            this.contractorService.getAssignedContractor(votingRes.uuid).subscribe({
-                            })
-
                             this.addToVoting(votingRes);
                         }
                     })
@@ -98,41 +101,67 @@ export class VotingService{
     {
         const date = new Date();
         this.votingTasks.set([]);
-        
-        this.taskApiService.getAllTasks().subscribe({
-            next: (tasks) => {
 
-                tasks.forEach(t => {
+        //Get buildings and tasks for each building
+        await this.housesService.loadHouses(trusteeId);
+        const houses = this.housesService.houses();
 
-                    if(t.tuuid === trusteeId)
+       const tasksPromises = houses.map(async house => {
+            const tasks = await firstValueFrom(this.taskApiService.getAllTasks());
+            const filteredTasks = tasks.filter(t => t.buuid === house.buildingUuid);
+            this.housesService.timeline.set(filteredTasks);
+            return filteredTasks;
+        });
+
+        const allTimelines = await Promise.all(tasksPromises);
+        const tasks = allTimelines.flat();
+
+        tasks.forEach(t => {
+            if(t.approvalStatus === 'APPROVED' && t.scheduled_date > date)
+            {
+                if(!t.img)
+                {
+                    t.img = "assets/images/no_image.png";
+                }
+                else
+                {
+                    if(t.img === '00000000-0000-0000-0000-000000000000')
                     {
-                        if(!t.img)
-                        {
-                            t.img = "assets/images/no_image.png";
-                        }
-                        else
-                        {
-                            if(t.img === '00000000-0000-0000-0000-000000000000')
+                        t.img = "assets/images/no_image.png";
+                    }
+
+                    //TODO: Get session info
+                    this.votingApiService.getSessionFromTaskId(t.uuid).subscribe({
+                        next: (res) => {
+                            const [year, month, day, hour, min] = res.votingEndsAt;
+                            const votingDate = new Date(year, month -1, day, hour, min);
+
+                            const votingRes: Voting = {
+                                ...t,
+                                sessionUuid: res.sessionUuid,
+                                corporateUuid: res.corporateUuid,
+                                votingEndsAt: res.votingEndsAt,
+                                votingEndsAtDate: votingDate,
+                                isActive: res.isActive
+                            }
+
+                            //Get image
+                            if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
                             {
-                                t.img = "assets/images/no_image.png";
+                                votingRes.img = "assets/images/no_image.png";
                             }
                             else
                             {
-                                this.imageService.getImage(t.img).subscribe({
+                                this.imageService.getImage(votingRes.img).subscribe({
                                     next: (image) => {
-                                        t.img = image;
+                                        votingRes.img = image;
                                     }
                                 });
                             }
-    
-                            if(t.approved && t.scheduled_date > date)
-                            {
-                                //TODO: Get session info
-                                // this.addToVoting(t);
-                            }
+                            this.addToVoting(votingRes);
                         }
-                    }
-                });
+                    })
+                }
             }
         });
     }
@@ -183,6 +212,10 @@ export class VotingService{
     getSessionTaskId(sessionId: string)
     {
         return this.votingApiService.getTaskFromSessionId(sessionId);
+    }
+    getAssignedContractors(taskId: string)
+    {
+        return this.contractorService.getAssignedContractor(taskId);
     }
     private addToPending(task: MaintenanceTask)
     {

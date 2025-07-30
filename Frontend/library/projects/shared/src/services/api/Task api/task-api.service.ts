@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
+import { Quote } from '../../../public-api';
 
 @Injectable({
   providedIn: 'root'
@@ -93,5 +94,9 @@ export class TaskApiService {
   deleteTask(taskId: string)
   {
     return this.http.delete<MaintenanceTask>(`${this.url}/maintenance/${taskId}`);
+  }
+  getQuoteFromTaskId(taskId: string)
+  {
+    return this.http.get<Quote[]>(`${this.url}/quote/task/${taskId}`);
   }
 }
