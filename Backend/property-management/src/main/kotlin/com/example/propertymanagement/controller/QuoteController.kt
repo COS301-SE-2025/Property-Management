@@ -31,6 +31,11 @@ class QuoteController(
         return if (quote != null) ResponseEntity.ok(quote) else ResponseEntity.notFound().build()
     }
 
+    @GetMapping("/task/{taskUuid}")
+    fun getQuotesByTask(
+        @PathVariable taskUuid: UUID,
+    ): List<Quote> = service.getQuotesByTask(taskUuid)
+
     data class QuoteDto(
         val amount: BigDecimal,
         val submitted_on: Date,

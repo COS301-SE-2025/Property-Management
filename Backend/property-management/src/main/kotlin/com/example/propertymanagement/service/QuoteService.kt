@@ -17,6 +17,8 @@ class QuoteService(
 
     fun getById(uuid: UUID): Quote = repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
+    fun getQuotesByTask(taskUuid: UUID): List<Quote> = repository.findAllByTaskUuid(taskUuid)
+
     fun add(item: Quote): Quote = repository.save(item)
 
     fun addQuote(
