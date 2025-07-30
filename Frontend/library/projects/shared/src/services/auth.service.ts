@@ -268,11 +268,6 @@ getIdTokenFromCookieOrStorage(): string | null {
 }
 
 getUserType(): string | null {
-  // const token = this.getIdTokenFromCookieOrStorage();
-  // if (!token) return null;
-  // const groups = this.tokenUtil.getUserGroups(token);
-  // return groups.length > 0 ? groups[0] : null;
-
   if (this.getCookieValue('trusteeId')) {
     return 'trustee';
   } 

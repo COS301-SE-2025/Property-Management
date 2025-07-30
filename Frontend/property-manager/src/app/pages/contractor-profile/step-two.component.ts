@@ -56,6 +56,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   transition: background 0.2s;
 }
 .btn-yellow:hover { background-color: #facc15; }
+
+:host-context(.dark-theme) .form-container {
+  background: transparent !important;
+  border-color: #000 !important;
+}
+
+
   `]
 })
 export class StepTwoComponent {
@@ -84,10 +91,10 @@ export class StepTwoComponent {
   }
 
   emitRelevantData() {
-    // if(!this.form.valid){
-    //   this.form.markAllAsTouched();
-    //   return;
-    // }
+    if(!this.form.valid){
+      this.form.markAllAsTouched();
+      return;
+    }
 
     this.next.emit({
       // address: this.form.value.address,

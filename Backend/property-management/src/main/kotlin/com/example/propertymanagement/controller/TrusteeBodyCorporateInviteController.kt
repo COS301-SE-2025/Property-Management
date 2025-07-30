@@ -44,5 +44,6 @@ class TrusteeBodyCorporateInviteController(
     ): InviteDTO? = inviteService.updateInviteStatus(inviteUuid, status)
 
     @GetMapping
-    fun getAllInvites(): List<InviteDTO> = inviteService.getAllInvites()
+    fun getAllInvites(): List<InviteDTO> = inviteService.getAllInvitations()
+    
 }
