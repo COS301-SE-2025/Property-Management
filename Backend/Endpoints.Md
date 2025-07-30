@@ -2120,3 +2120,53 @@ isBodyCorporate: true
 
 ```
 ---
+
+# Voting system 
+
+## create voting session 
+**POST** `/api/vote/session`
+
+**Request Body Example:**
+```json
+{
+    "coporateUuid" : "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+    "taskUuid": "d05fed07-3568-4b69-8bad-6b9dedf8515b",
+    "votingEndsAt": "2025-07-21T18:40:00"   
+}
+```
+---
+
+## Submit Vote 
+**POST** `/api/vote`
+
+**Request Body Example:**
+```json
+{
+    "sessionUuid": "166fb380-ac2e-4466-951a-f7f47516be48",
+    "quoteUuid": "2bb7bd53-53a3-427e-95cd-eb9bcd3addb6",
+    "voterUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+    "isTrustee": false,
+    "voteFor": true
+}
+```
+---
+
+## Results 
+**GET** `/api/vote/session/{session uuid}/results`
+
+---
+
+## Get all sessions
+**GET** `/api/vote/sessions`
+
+---
+
+## get by task uuid by session uuid 
+**GET** `/api/vote/session/{session uuid}/task`
+
+---
+
+## get session uuid by task uuid 
+**GET** `/api/vote/task/{task uuid}/session`
+
+---
