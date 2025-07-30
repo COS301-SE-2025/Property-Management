@@ -42,8 +42,6 @@ export class InventoryUsageComponent  implements OnInit {
             ...inventory, 
             quantityUsed: this.inventoryUsage![index].quantityUsed,
           }));
-
-          console.log(this.inventoryItem);
         }
       }
       catch(error) {

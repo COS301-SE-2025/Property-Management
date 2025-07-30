@@ -160,7 +160,6 @@ export class HousesService {
   {
     this.taskApiService.getAllTasks().subscribe({
       next: (task) => {
-        console.log(task);
         const filteredTasks = task.filter(t => t.buuid === buildingId);
         this.timeline.set(filteredTasks);
         this.sortTimeline();

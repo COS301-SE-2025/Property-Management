@@ -119,6 +119,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     const des = this.form.value.description;
     const date = this.form.value.date;
 
+    console.log(date);
+
     this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate).subscribe({
       next: (task) => {
 

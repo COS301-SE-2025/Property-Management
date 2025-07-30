@@ -154,7 +154,6 @@ export class HeaderComponent {
   }
   dropDownSettings()
   {
-    console.log("opening settings");
     this.dropDownProfileOpen = false;
 
     setTimeout(() => {

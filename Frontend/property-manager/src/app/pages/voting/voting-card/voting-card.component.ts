@@ -34,6 +34,7 @@ export class VotingCardComponent{
     }
     else
     {
+      id = this.task().sessionUuid;
       this.router.navigate(['voting', id])
     }
   }
@@ -49,10 +50,10 @@ export class VotingCardComponent{
     date.setHours(0, 0, 0, 0);
     taskDate.setHours(0, 0, 0, 0);
 
-    const threeFromNow = new Date();
-    threeFromNow.setDate(date.getDate() + 3);
+    const twoFromNowFromNow = new Date();
+    twoFromNowFromNow.setDate(date.getDate() + 2);
 
-    if(taskDate <= threeFromNow)
+    if(taskDate <= twoFromNowFromNow)
     {
       return 'due-date-urgent';
     }

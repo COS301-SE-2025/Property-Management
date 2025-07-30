@@ -2,7 +2,7 @@ import { Component, effect, input, OnDestroy, OnInit, signal } from '@angular/co
 import { HeaderComponent } from '../../components/header/header.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MaintenanceTask, VotingService, FormatDatePipe, ContractorDetails, ContractorApiService, InventoryUsage, Inventory, Voting, getCookieValue, TaskApiService, ImageApiService } from 'shared';
+import { MaintenanceTask, VotingService, FormatDatePipe, ContractorDetails, ContractorApiService, InventoryUsage, Inventory, Voting, getCookieValue, TaskApiService, ImageApiService, InventoryUsageApiService, InventoryItemApiService } from 'shared';
 import { CardModule } from 'primeng/card';
 import { MultiSelect } from "primeng/multiselect";
 import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
@@ -12,6 +12,7 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ButtonModule } from 'primeng/button';
 import { Toast } from 'primeng/toast';
+import { forkJoin, switchMap } from 'rxjs';
 
 
 @Component({
@@ -50,6 +51,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     private votingService: VotingService,
     private contractorService: ContractorApiService, 
     private taskService: TaskApiService,
+    private inventoryUsageService: InventoryUsageApiService,
+    private inventoryItemService: InventoryItemApiService,
     private imageService: ImageApiService,
     private breadCrumb: BreadCrumbService, 
     private fb: FormBuilder,
@@ -95,6 +98,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
             res.img = "assets/images/no_img.png";
           }
           this.task.set(res);
+
+
     
           this.form = this.fb.group({
             contractorName: ['', Validators.required]
@@ -115,7 +120,44 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
       if(sessionId)
       {
         this.taskType = 'voting';
-        
+        this.votingService.getSessionTaskId(sessionId).subscribe({
+          next: (res) => {
+            if(res.taskUuid)
+            {
+              this.taskId = res.taskUuid;
+
+              this.taskService.getTaskById(this.taskId).subscribe({
+                next: (res) => {
+
+                if(res.img)
+                {
+                  this.imageService.getImage(res.img).subscribe({
+                    next: (url) => {
+                      res.img = url
+                    } 
+                  })
+                }
+                else
+                {
+                  res.img = "assets/images/no_img.png";
+                }
+                this.task.set(res);
+      
+                this.form = this.fb.group({
+                  contractorName: ['', Validators.required]
+                });
+                },
+                error: (err) => {
+                console.error("Couldnt find task", err);
+                this.detailError = true;
+                }
+              });
+            }
+          },
+          error: () => {
+            this.detailError = true;
+          }
+        });
       }
     }
 
@@ -135,13 +177,13 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     if(this.form.valid)
     {
       const contractors = this.form.value.contractorName;
-      console.log(contractors);
 
       //Update assigned contractors and approve
       const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
 
       if(this.taskId)
       {
+        //TODO - Change scheduled date
         await this.votingService.createVotingSession(contractors, this.taskId, bcId).then(() => {
           this.messageSerive.add({
             severity: 'success',
@@ -176,10 +218,10 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     date.setHours(0, 0, 0, 0);
     taskDate.setHours(0, 0, 0, 0);
 
-    const threeFromNow = new Date();
-    threeFromNow.setDate(date.getDate() + 3);
+    const twoFromNow = new Date();
+    twoFromNow.setDate(date.getDate() + 2);
 
-    if(taskDate <= threeFromNow)
+    if(taskDate <= twoFromNow)
     {
       return 'due-date-urgent';
     }
@@ -208,25 +250,64 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     if(this.taskId)
     {
       console.log('deleting task');
-      this.taskService.deleteTask(this.taskId).subscribe({
-        next: () => {
-          this.confirmDialog = false;
 
-          setTimeout(() => {
-            this.router.navigate(['voting']).then(() => {
-              window.location.reload();
-            })
-          }, 2500);
-        },
-        error: (err) => {
-          console.log(err);
-          this.messageSerive.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Task unsuccesfully deleted'
-          });
+      //Put inventory back
+      //Get inventory usage, find quantity and id and add back to inventory
+      this.inventoryUsageService.getInventoryUsageByTaskId(this.taskId).subscribe({
+        next: (res) => {
+          console.log(res);
+
+          //Update inventory items
+          const updateReq = res.map(item =>
+            this.inventoryItemService.updateInventoryItemQuantity(item.itemUuid, item.quantityUsed, 'ADD').pipe(
+                //Delete inventory usage
+                switchMap(() => this.inventoryUsageService.deleteInventoryUsageById(item.usageUuid))
+            )
+          );
+
+          if(updateReq.length === 0)
+          {
+            this.deleteTask();
+            return;
+          }
+
+          forkJoin(updateReq).subscribe({
+            next: () => this.deleteTask(),
+            error: (err) => {
+              console.error(err);
+              this.messageSerive.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Task unsuccesfully deleted'
+              });
+            }
+          })
         }
       });
     }
+  }
+  private deleteTask()
+  {
+    if(!this.taskId) return;
+
+    this.taskService.deleteTask(this.taskId).subscribe({
+      next: () => {
+        this.confirmDialog = false;
+
+        setTimeout(() => {
+          this.router.navigate(['voting']).then(() => {
+            window.location.reload();
+          })
+        }, 2500);
+      },
+      error: (err) => {
+        console.error(err);
+        this.messageSerive.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Task unsuccesfully deleted'
+        });
+      }
+    })
   }
 }

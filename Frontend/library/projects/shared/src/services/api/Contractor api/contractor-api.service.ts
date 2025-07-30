@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ContractorDetails } from '../../../models/contractorDetails.model';
 import { Observable } from 'rxjs';
+import { AssignedContractor } from '../../../public-api';
 
 @Injectable({
   providedIn: 'root'
@@ -39,5 +40,10 @@ export class ContractorApiService {
   getContractorById(contractorId: string): Observable<ContractorDetails>
   {
     return this.http.get<ContractorDetails>(`${this.url}/contractor/${contractorId}`);
+  }
+
+  getAssignedContractor(taskId: string)
+  {
+    return this.http.get<AssignedContractor>(`${this.url}/maintenance/${taskId}/contractors`);
   }
 }

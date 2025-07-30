@@ -36,6 +36,7 @@ export * from './models/maintenanceTask.model';
 export * from './models/property.model';
 export * from './models/reserveFund.model';
 export * from './models/voting.model';
+export * from './models/AssignedContractor.model'
 
 //Utils
 export * from './utils/cookie-utils';
