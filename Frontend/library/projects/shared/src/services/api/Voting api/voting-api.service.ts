@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Voting } from '../../../public-api';
+import { Voting, VotingResults } from '../../../public-api';
 
 @Injectable({
     providedIn: 'root'
@@ -51,5 +51,9 @@ export class VotingApiService{
         };
 
         return this.http.post(`${this.url}`, req, { responseType: 'text' });
+    }
+    getVoteResults(sessionId: string)
+    {
+        return this.http.get<VotingResults>(`${this.url}/session/${sessionId}/results`);
     }
 }

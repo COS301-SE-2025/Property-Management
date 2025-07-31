@@ -60,66 +60,26 @@ export class BodyCoporateService {
     }
 
     try{
-      this.buildings.set([]);
       const buildings = await firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId));
 
       const buildingImages = await Promise.all(
         buildings.map(async b => {
-          if(b.propertyImage)
-          {
-            try{
-              const url = await firstValueFrom(this.imageApiService.getImage(b.propertyImage));
-              return { ...b, propertyImage: url};
-            }
-            catch(error)
-            {
-              console.error("Error fetching images", error);
-              return { ...b, propertyImage: 'assets/images/no_image.png'};
-            }
+          try{
+            const url = b.propertyImage ? await firstValueFrom(this.imageApiService.getImage(b.propertyImage)) : 'assets/images/no_image.png';
+            return { ...b, propertyImage: url };
           }
-          else
-          {
-            return { ...b, propertyImage: 'assets/images/no_image.png'}; 
+          catch(err) {
+            console.error("Error fetching image for building", b.buildingUuid, err);
+            return {...b, propertyImage: 'assets/images/no_image.png' };
           }
         })
-      )
+      );
       this.buildings.set(buildingImages);
     }
     catch(error){
       console.error("Error fetching buildings", error);
+      this.buildings.set([]);
     }
-
-   this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId).subscribe({
-    next: (res) => {
-      res.forEach(b => {
-        if(b.propertyImage)
-        {
-          this.imageApiService.getImage(b.propertyImage).subscribe(url => {
-            this.buildings.update(curr => [
-              ...curr,
-              {
-                ...b,
-                propertyImage: url
-              }
-            ]); 
-          });
-        }
-        else
-        {
-          this.buildings.update(curr => [
-            ...curr,
-            {
-              ...b,
-              propertyImage: 'assets/images/no_image.png'
-            }
-          ]);
-        }
-      });
-    },
-    error: (err) => {
-      console.error("Couldnt fetch buildings", err)
-    }
-   })
   } 
 
   async addToTask(task: MaintenanceTask): Promise<void> {

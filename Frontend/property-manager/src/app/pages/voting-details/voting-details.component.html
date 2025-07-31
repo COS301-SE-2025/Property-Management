@@ -98,8 +98,12 @@
     </div>
     </p-card>
 </div>
-<div class="w-1/2 mt-6 px-4 pb-5">
-  <app-inventory-usage [taskId]="this.taskId!"/>
+<div class="grid grid-cols-2 mt-6 px-4 pb-5">
+  <app-inventory-usage [taskId]="this.taskId!" class="pr-6"/>
+  @if(bcUser)
+  {
+    <app-voting-results [sessionId]="this.sessionId!" [assignedContractors]="contractorQuotes()!"/>
+  }
 </div>
 <p-confirmdialog [visible]="confirmDialog">
   <ng-template pTemplate="header">

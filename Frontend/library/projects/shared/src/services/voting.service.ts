@@ -196,7 +196,7 @@ export class VotingService{
     } 
     getAllVotes(sessionId: string)
     {
-
+        return this.votingApiService.getVoteResults(sessionId);
     }
     async createVotingSession(contractors: string[], taskId: string, bcId: string)
     {

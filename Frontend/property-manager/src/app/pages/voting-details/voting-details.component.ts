@@ -17,11 +17,12 @@ import { Toast } from 'primeng/toast';
 import { forkJoin, switchMap } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { QuoteDetailsComponent } from './quote-details/quote-details.component';
+import { VotingResultsComponent } from './voting-results/voting-results.component';
 
 
 @Component({
   selector: 'app-voting-details',
-  imports: [HeaderComponent, CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast, TableModule, QuoteDetailsComponent, ToggleButtonModule, FormsModule],
+  imports: [HeaderComponent, CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast, TableModule, QuoteDetailsComponent, ToggleButtonModule, FormsModule, VotingResultsComponent],
   templateUrl: './voting-details.component.html',
   providers: [MessageService, ConfirmationService],
   styles: `
@@ -56,6 +57,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
 
   public form!: FormGroup;
   public confirmDialog = false;
+  public bcUser = false;
+  public sessionId: string | null = null;
   
   constructor(
     private route: ActivatedRoute, 
@@ -131,12 +134,13 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     else
     {
       //Get session details and taskId 
-      const sessionId = this.route.snapshot.paramMap.get('sessionId');
+      this.bcUser = true;
+      this.sessionId = this.route.snapshot.paramMap.get('sessionId');
 
-      if(sessionId)
+      if(this.sessionId)
       {
         this.taskType = 'voting';
-        this.votingService.getSessionTaskId(sessionId).subscribe({
+        this.votingService.getSessionTaskId(this.sessionId).subscribe({
           next: (res) => {
             if(res.taskUuid)
             {
@@ -201,6 +205,14 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
   {
     const curr = this.contractors() || [];
     this.contractors.set([...curr, contractor]);
+
+    if(contractor.quoteUuid)
+    {
+      this.contractorQuotes.update(quotes => ({
+        ...quotes,
+        [contractor.uuid]: contractor.quoteUuid!
+      }));
+    }
   }
   ngOnDestroy(): void {
     this.breadCrumb.clearBreadCrumb();

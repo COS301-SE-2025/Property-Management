@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { lastValueFrom, forkJoin } from 'rxjs';
@@ -10,7 +10,7 @@ import { Inventory, InventoryItemApiService, InventoryUsage, InventoryUsageApiSe
   templateUrl: './inventory-usage.component.html',
   styles: ``,
 })
-export class InventoryUsageComponent  implements OnInit {
+export class InventoryUsageComponent  implements OnInit, OnChanges {
 
   @Input() taskId: string | undefined;
   inventoryUsage: InventoryUsage[] | undefined = undefined;
