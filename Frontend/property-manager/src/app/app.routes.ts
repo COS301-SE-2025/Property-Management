@@ -23,6 +23,9 @@ import { LandingPageComponent } from './pages/LandingPage/LandingPage.component'
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { authGuard } from './auth.guard';
+import { VotingComponent } from './pages/voting/voting.component';
+import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
+import { TimelineDetailsComponent } from './pages/view-house/timeline-details/timeline-details.component';
 
 export const routes: Routes = [
   {
@@ -72,6 +75,12 @@ export const routes: Routes = [
     pathMatch: 'full',
     component: ViewHouseComponent
   },
+  {
+    path:'taskDetails/:taskId',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: TimelineDetailsComponent
+  },
   { path: 'create-property',
     canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
@@ -82,6 +91,24 @@ export const routes: Routes = [
     canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: ManageBudgetComponent
+  },
+  {
+    path: 'voting',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: VotingComponent
+  },
+  {
+    path:'voting/:taskId/approval',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: VotingDetailsComponent
+  },
+  {
+    path:'voting/:sessionId',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: VotingDetailsComponent
   },
   {
     path: 'contractorHome',

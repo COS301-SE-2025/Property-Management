@@ -1,37 +1,40 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
-import { getCookieValue, HousesService } from 'shared';
+import { BodyCoporateService, getCookieValue, HousesService, Property } from 'shared';
 import { Router } from '@angular/router';
-import { DrawerComponent } from "../../components/drawer/drawer.component";
 
 @Component({
   selector: 'app-home',
-  imports: [HeaderComponent, HouseCardComponent, CommonModule, DrawerComponent],
+  imports: [HeaderComponent, HouseCardComponent, CommonModule],
   templateUrl: './home.component.html',
   styles: ``
 })
 export class HomeComponent implements OnInit{
 
-  public bcUser = false;
+  houses = signal<Property[]>([]);
+  private houseService = inject(HousesService);
+  private bodyCoporateService = inject(BodyCoporateService);
+  constructor(private router: Router) {}
 
-  constructor(private router: Router) {
+  async ngOnInit(){
+    let id = getCookieValue(document.cookie, 'trusteeId');
 
-    const typeUser = localStorage.getItem("typeUser");
-    if(typeUser !== null && typeUser === "bodyCoporate")
+    if(!id)
     {
-      this.bcUser = true;
+      id = getCookieValue(document.cookie, 'bodyCoporateId');
+      console.log('getting body corporate houses');
+      await this.bodyCoporateService.loadHouses();
+      this.houses.set(this.bodyCoporateService.buildings());
+    }
+    else
+    {
+      await this.houseService.loadHouses(id);
+      this.houses.set(this.houseService.houses());
     }
   }
 
-  ngOnInit(){
-    const id = getCookieValue(document.cookie, 'trusteeId');
-    this.houseService.loadHouses(id);
-  }
-
-  private houseService = inject(HousesService);
-  houses = this.houseService.houses;
 
   RouteToCreateProperty()
   {

@@ -71,7 +71,7 @@ export class StepTwoComponent {
     // city: string;
     // postal_code: string;
     reg_number: string;
-    description: string;
+    descriptionSkills: string;
     services: string;
   }>();
   @Output() back = new EventEmitter<void>();
@@ -85,7 +85,7 @@ export class StepTwoComponent {
       // postal_code: ['', Validators.required],
       reg_number: ['', Validators.required],
       // contractorId: [''],
-      description: ['', Validators.required],
+      descriptionSkills: ['', Validators.required],
       services: ['', Validators.required]
     });
   }
@@ -101,7 +101,7 @@ export class StepTwoComponent {
       // city: this.form.value.city,
       // postal_code: this.form.value.postal_code,
       reg_number: this.form.value.reg_number,
-      description: this.form.value.descriptionSkills,
+      descriptionSkills: this.form.value.descriptionSkills,
       services: this.form.value.services
     });
   }

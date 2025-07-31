@@ -5,11 +5,11 @@ import { HousesService } from 'shared';
 import { CommonModule } from '@angular/common';
 import { TimelineAddDialogComponent } from './timeline-add-dialog/timeline-add-dialog.component';
 import { MaintenanceTask } from 'shared';
-import { TimelineDetailsDialogComponent } from './timeline-details-dialog/timeline-details-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-timeline-card',
-  imports: [CardModule, TimelineModule, CommonModule, TimelineAddDialogComponent, TimelineDetailsDialogComponent],
+  imports: [CardModule, TimelineModule, CommonModule, TimelineAddDialogComponent],
   templateUrl: './timeline-card.component.html',
   styles: ``
 })
@@ -18,16 +18,10 @@ export class TimelineCardComponent {
 
   timeline = input.required<MaintenanceTask[]>();
 
-  @ViewChild('taskDialog') timelineDetails!: TimelineDetailsDialogComponent;
+  constructor(private router: Router){}
 
-  openDetailsDialog(item: MaintenanceTask): void
+  showDetails(task: MaintenanceTask)
   {
-    if(!item)
-    {
-      console.error("Invalid task");
-      return;
-    }
-
-    this.timelineDetails.openDialog(item);
+    this.router.navigate(['taskDetails', task.uuid])
   }
 }

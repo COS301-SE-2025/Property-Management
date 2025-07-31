@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { HeaderComponent } from "../../components/header/header.component";
-// import { DrawerComponent } from '../../components/drawer/drawer.component';
 import { PendingTaskCardComponent } from "./pending-task-card/pending-task-card.component";
 import { BodyCoporateService } from 'shared';
 import { LifeCycleCardComponent } from "./life-cycle-card/life-cycle-card.component";
@@ -45,5 +44,4 @@ export class BcHomeComponent implements OnInit{
         console.log("Error loading data:", error);
       }
   }
-
 }

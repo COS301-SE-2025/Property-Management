@@ -1,13 +1,13 @@
-<div class = "flex w-full justify-center items-center h-screen">
+<div class = "flex w-full justify-center items-center h-screen dark:bg-white">
     <div class = "flex w-[40rem] h-[22rem] shadow-lg rounded overflow-hidden border">
 
         <div class = "w-2/6 bg-white flex flex-col items-center justify-center p-6">
             <img class = "h-24 mb-4" src="assets/images/logo.png" alt="App logo">
-            <p class = "font-semibold text-lg">Property Manager</p>
+            <p class = "font-semibold text-lg dark:text-black">Property Manager</p>
         </div>
 
         <div class = "w-4/6 propertyYellow-bg p-12 flex flex-col justify-center space-y-4">
-            <p class = "text-center text-xl font-semibold">Sign in</p>
+            <p class = "text-center text-xl font-semibold dark:text-black">Sign in</p>
 
             <p-floatlabel variant="on">
                 <img *ngIf = "!email" class = "absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/mail.svg" alt="">
@@ -35,7 +35,7 @@
                 <p *ngIf="serverError" class="text-red-500 py-1 font-semibold rounded">Internal server error</p>
             </div>
 
-            <div class = "text-center text-sm space-y-2">
+            <div class = "text-center text-sm space-y-2 dark:text-black">
                 <a class = "block hover:underline" href="">Forgot password?</a>
                 <a class = "font-semibold hover:underline" href = "/registerHub">Create Account?</a>
             </div>

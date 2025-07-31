@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService } from 'shared';
@@ -6,6 +6,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { filter } from 'rxjs';
+import { BreadCrumbService } from '../breadcrumb/breadcrumb.service';
+import { trigger, transition, style, animate, state } from '@angular/animations';
 
 type UserType = 'contractor' | 'bodyCorporate' | 'trustee' | null;
 
@@ -19,7 +21,26 @@ interface NavLink {
   selector: 'app-header',
   imports: [CommonModule, BreadcrumbModule, RouterModule],
   templateUrl: `./header.component.html`,
-  styles: ''
+  styles: ``,
+  animations: [
+    trigger('slideToggle', [
+      state('active', style({
+        transform: 'translateX(0)',
+        opacity: 1
+      })),
+      state('inactive', style({
+        transform: 'translateX(100%)',
+        opacity: 0
+      })),
+      transition('inactive => active', [
+        style({ transform: 'translateX(-100%)', opacity: 0 }),
+        animate('300ms ease-out')
+      ]),
+      transition('active => inactive', [
+        animate('300ms ease-in', style({ transform: 'translateX(100%)', opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class HeaderComponent {
 
@@ -30,24 +51,18 @@ export class HeaderComponent {
   public isContractor = false; 
   public isBodyCorporate = false; 
 
+  @ViewChild('profileDropDown') profileDropDown!: ElementRef;
+  @ViewChild('settingsDropDown') settingsDropDown!: ElementRef;
+
   private routeMap: Record<string, Record<string, MenuItem[]>> = {
   'bodyCorporate': {
-    '/bodyCoporate': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
-    ],
-    '/home': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
-    ],
     '/bodyCoporate/contractors': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
       { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' }
     ],
     '/bodyCoporate/publicContractors': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
       { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' }
     ],
     '/contractorDetails': [
-      { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
       { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' },
       { label: 'Contractor Details', route: '/contractorDetails' }
     ],
@@ -93,7 +108,7 @@ export class HeaderComponent {
   userType: UserType = null;
   navLinks: NavLink[] = [];
 
-  constructor(private authService: AuthService, private router: Router){
+  constructor(private authService: AuthService, private router: Router, private elementRef: ElementRef, private breadCrumbService: BreadCrumbService){
     const saved = localStorage.getItem('darkMode');
 
     this.userType = this.authService.getUserType() as UserType;
@@ -109,6 +124,17 @@ export class HeaderComponent {
     }
     this.applyDarkMode();
 
+    this.breadCrumbService.breadCrumbs.subscribe(bread => {
+      if(bread)
+      {
+        this.items = bread;
+      }
+      else
+      {
+        this.updateBreadcrumbs(this.router.url);
+      }
+    })
+
 
     this.isContractor = this.userType === 'contractor';
     this.isBodyCorporate = this.userType === 'bodyCorporate';
@@ -121,12 +147,31 @@ export class HeaderComponent {
   dropDownProfile()
   {
     this.dropDownSettingsOpen = false;
-    this.dropDownProfileOpen = !this.dropDownProfileOpen;
+
+    setTimeout(() => {
+      this.dropDownProfileOpen = !this.dropDownProfileOpen;
+    }, 0);
   }
   dropDownSettings()
   {
     this.dropDownProfileOpen = false;
-    this.dropDownSettingsOpen = !this.dropDownSettingsOpen;
+
+    setTimeout(() => {
+      this.dropDownSettingsOpen = !this.dropDownSettingsOpen;
+    }, 0);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent)
+  {
+    const target = event.target as HTMLElement;
+
+    const clickedInside = this.elementRef.nativeElement.contains(target);
+    if(!clickedInside)
+    {
+      this.dropDownProfileOpen = false;
+      this.dropDownSettingsOpen = false;
+    }
   }
 
   signOut()
@@ -149,10 +194,12 @@ export class HeaderComponent {
     if(this.isDarkMode)
     {
       root.classList.add('dark-theme');
+      root.classList.add('dark');
     }
     else
     {
       root.classList.remove('dark-theme');
+      root.classList.remove('dark');
     }
   }
   private updateBreadcrumbs(url: string): void {
@@ -195,7 +242,6 @@ export class HeaderComponent {
         if(contractorType === 'public')
         {
           this.items = [
-            { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
             { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' },
             { label: 'Contractor Details', route: null }
           ];
@@ -203,7 +249,6 @@ export class HeaderComponent {
         else if(contractorType === 'trusted')
         {
           this.items = [
-            { label: 'Body Corporate Dashboard', route: '/bodyCoporate' },
             { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' },
             { label: 'Contractor Details', route: null }
           ];
@@ -220,11 +265,10 @@ export class HeaderComponent {
 
     this.navLinks = [
       { label: 'Home', route: homeRoute, show: true },
-      { label: 'Properties', route: '/home', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' },
+      { label: 'Properties', route: '/home', show: this.userType === 'bodyCorporate'},
+      { label: 'Voting', route:'/voting', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' },
       { label: 'Contractors', route: '/bodyCoporate/contractors', show: this.userType === 'bodyCorporate' },
       { label: 'My Profile', route: '/contractor-prof', show: this.userType === 'contractor' },
-      { label: 'Dashboard', route: this.userType === 'contractor' ? '/contractorHome' : (this.userType === 'bodyCorporate' ? '/bodyCoporate' : '/home'), show: true },
-      { label: 'Help', route: '/help', show: true }
     ];
   }
 }

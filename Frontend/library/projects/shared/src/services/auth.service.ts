@@ -257,30 +257,25 @@ export class AuthService {
   }
 
   private getCookieValue(name: string): string | null {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? decodeURIComponent(match[2]) : null;
-}
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  } 
 
-getIdTokenFromCookieOrStorage(): string | null {
-  const token = this.getCookieValue('idToken');
-  if (token) return token;
-  return localStorage.getItem('idToken');
-}
-
-getUserType(): string | null {
-  const token = this.getIdTokenFromCookieOrStorage();
-  if (!token) return null;
-  const groups = this.tokenUtil.getUserGroups(token);
-  return groups.length > 0 ? groups[0] : null;
-}
+  getUserType(): string | null {
+    if (this.getCookieValue('trusteeId')) {
+      return 'trustee';
+    } 
+    else if (this.getCookieValue('bodyCoporateId')) {
+      return 'bodyCorporate';
+    } 
+    else if (this.getCookieValue('contractorId')) {
+      return 'contractor';
+    }
+    return null;
+  }
   
-logout()
+  logout()
   {
-    localStorage.removeItem("userType");
-    localStorage.removeItem("trusteeID");
-    localStorage.removeItem("bodyCoporateID");
-    localStorage.removeItem("contractorID");
-
     const deleteCookie = (name: string) => {
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     };

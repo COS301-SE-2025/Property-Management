@@ -80,7 +80,7 @@ export class QuotationComponent implements OnInit{
   ngOnInit(): void {
     this.apiService.getMaintenanceTasks().subscribe({
       next: (tasks) => {
-        const task = tasks.find(t => t.c_uuid === this.contractorId);
+        const task = tasks.find(t => t.cuuid === this.contractorId);
         if (task) {
           this.taskId = task.uuid;
           console.log('Matching task found:', task);

@@ -50,7 +50,7 @@
   --dialog-mask-bg: rgba(0, 0, 0, 0.7);
 }
 :root, .dark-theme {
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
 }
 
 body {
@@ -58,13 +58,20 @@ body {
   color: var(--text-color);
 }
 
+.dark-theme input, textarea{
+  color: #000000;
+}
+
 .dark-theme .p-card{
-  background: var(--dark-background);
+  background: var(--datatable-border);
   color: var(--text-color);
 }
 .dark-theme .bg-gray-50  {
   background: var(--card-hover);
   color: var(--text-color);
+}
+.dark-theme app-inventory-card .p-card{
+  background: var(--dark-background);
 }
 .dark-theme .bg-gray-50  p{
   color: var(--text-color);
@@ -135,19 +142,38 @@ body {
   color: var(--text-color-secondary);
 }
 
-.dark-theme .p-datepicker-panel {
-  background-color: #333;
-  color: var(--text-color);
-  border-color: var(--surface-border);
+.dark-theme .p-datepicker-panel{
+  background-color: var(--datatable-border);
 }
-.dark-theme .p-datepicker-input {
-  background-color: #333;
+
+.dark-theme .p-datepicker-header{
+  background: var(--datatable-border);
+}
+.dark-theme .p-datepicker-day{
   color: var(--text-color);
 }
 
-.dark-theme .p-datepicker-header {
-  background: #2d2d2d;
+.dark-theme .p-datepicker-month{
+  color: var(--text-color);
 }
+.dark-theme .p-datepicker-year{
+  color: var(--text-color);
+}
+
+.dark-theme .p-datepicker-select-month{
+  color: var(--text-color);
+}
+.dark-theme .p-datepicker-select-year{
+  color: var(--text-color);
+}
+.dark-theme .p-datepicker-decade{
+  color: var(--text-color);
+}
+
+.dark-theme .p-datepicker-weekday {
+  color: var(--text-color); 
+}
+
 
 .dark-theme .p-dialog button {
   background-color: #444;
