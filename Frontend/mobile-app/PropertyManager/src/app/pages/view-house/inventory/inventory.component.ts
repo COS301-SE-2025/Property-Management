@@ -13,7 +13,27 @@ import { AddInventoryComponent } from './add-inventory/add-inventory.component';
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
-  styles: ``,
+  styles: `
+    .dark .p-datatable {
+      background-color: #1f2937 !important; /* Tailwind gray-800 equivalent */
+      color: #f9fafb !important;           /* Tailwind gray-50 (text) */
+      border-color: #374151 !important;    /* Tailwind gray-700 (borders) */
+    }
+
+    .dark .p-datatable thead th {
+      background-color: #374151 !important;
+      color: #f9fafb !important;
+    }
+
+    .dark .p-datatable tbody tr {
+      background-color: #1f2937 !important;
+      color: #f9fafb !important;
+    }
+
+    .dark .p-datatable tbody tr:nth-child(even) {
+      background-color: #111827 !important; /* Slightly darker for zebra effect */
+    }
+  `,
   imports: [IonButton, IonCardHeader, IonCardTitle, IonCard, FormsModule, CommonModule, TableModule, IonIcon, IonCardContent, AddInventoryComponent],
 })
 export class InventoryComponent  implements OnInit, OnDestroy {

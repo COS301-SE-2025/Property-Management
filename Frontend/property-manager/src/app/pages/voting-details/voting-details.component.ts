@@ -134,7 +134,10 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     else
     {
       //Get session details and taskId 
-      this.bcUser = true;
+      if(getCookieValue(document.cookie, 'bodyCorporateId'))
+      {
+        this.bcUser = true;
+      }
       this.sessionId = this.route.snapshot.paramMap.get('sessionId');
 
       if(this.sessionId)
@@ -286,7 +289,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
       if(sessionId)
       {
         this.votingService.castVote(sessionId, quoteId, userId, isTrusteee).subscribe({
-          next: (res) => {
+          next: () => {
             this.voteSubmitted.set(true);
 
             this.messageSerive.add({

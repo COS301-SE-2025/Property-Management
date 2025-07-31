@@ -141,8 +141,6 @@ export class CreatePropertyComponent implements OnInit {
       trusteeUuid: id
     };
 
-    console.log("Creating property", payload);
-
     try {
       await this.propertyService.createProperty(payload).toPromise();
       this.isSubmitting = false;

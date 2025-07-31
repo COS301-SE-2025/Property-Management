@@ -1,32 +1,32 @@
 import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
-import { MaintenanceTask, VotingService, FormatDatePipe, StorageService } from 'shared';
+import { MaintenanceTask, VotingService, FormatDatePipe, StorageService, Voting } from 'shared';
 
 @Component({
   selector: 'app-vote',
   imports: [ FormatDatePipe ],
   templateUrl: './vote.component.html',
   styles: `
-     .due-date-normal{
-      color:inherit;
+    .due-date-normal {
+      @apply text-inherit dark:text-white;
     }
-    .due-date-urgent{
-      color: #ff3838;
-      font-weight:200;
+    .due-date-urgent {
+      @apply text-[#ff3838] dark:text-[#ff3838] font-[200];
     }
   `,
 })
 export class VoteComponent {
 
   votingService = inject(VotingService);
-  task = input.required<MaintenanceTask>();
+  task = input.required<Voting>();
 
   constructor(private router: Router, private storage: StorageService) { }
 
-  async viewTask(taskId: string)
+  async viewTask(sessionId: string, taskId: string)
   {
     await this.storage.set('taskId', taskId);
-    this.router.navigate(['voting', taskId]);
+    await this.storage.set('sessionId', sessionId);
+    this.router.navigate(['voting', sessionId]);
   }
   changeDueDate()
   {

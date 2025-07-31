@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content class="dark:bg-gray-800">
   <div class="container mx-auto">
     <app-header/>
 
@@ -6,13 +6,13 @@
       <p class="font-semibold text-red-600">Couldnt find task, please try again</p>
     </div>
 
-    <ion-card *ngIf="!detailError" class="mt-8">
+    <ion-card *ngIf="!detailError" class="mt-8 dark:bg-gray-900">
       <ion-card-header>
-        <ion-card-title>Pending Task</ion-card-title>
+        <ion-card-title class="dark:text-white">Pending Task</ion-card-title>
         <ion-card-subtitle>
           <div class="flex flex-col items-center justify-center pt-3 pb-1">
             <img [src]="task()?.img" alt="" class="w-auto object-contain">
-            <p class="text-lg pt-4">Task: {{ task()?.title }}</p>
+            <p class="text-lg pt-4 dark:text-gray-50">Task: {{ task()?.title }}</p>
           </div>
         </ion-card-subtitle>
       </ion-card-header>
@@ -21,15 +21,53 @@
   
           <div class="pt-2 space-y-3">
             
-            <p class="text-sm">Description: {{ task()?.des }}</p>
-            <p [class]="changeDueDate()" class="font-medium">Due Date: {{ (task()?.scheduled_date ?? '') | formatDate }}</p>
+            <p class="text-sm dark:text-gray-100">Description: {{ task()?.des }}</p>
+            <p [class]="changeDueDate()">Due Date: {{ (task()?.scheduled_date ?? '') | formatDate }}</p>
               <div>
-                <p class="font-semibold">Assigned Contractors:</p>
-                <!-- Table of contractors in future <p-table></p-table> -->
+                <p class="font-semibold dark:text-gray-100">Assigned Contractors:</p>
+                <p-table [value]="contractors()!">
+                  <ng-template #header>
+                    <tr>
+                      <th>
+                        Contractor name
+                      </th>
+                      <th>
+                        Quotation
+                      </th>
+                      <th>
+                        Vote
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template #body let-contractor>
+                    <tr>
+                      <td>
+                        {{ contractor.name }}
+                      </td>
+                      <td>
+                        <button class="text-yellow-400 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="quoteDetails.openModal()">View quote</button>
+                        <app-quote #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote>
+                      </td>
+                      <td>
+                        <p-togglebutton 
+                          onIcon="pi pi-check" 
+                          offIcon="pi pi-check"
+                          onLabel="" 
+                          [ngModel]="selectedContractorId() === contractor.uuid"
+                          (ngModelChange)="voteForContractor(contractor.uuid)" 
+                          [disabled]="voteSubmitted()">
+                        </p-togglebutton>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
               </div>
               <div class="flex flex-row justify-center items-center space-x-2 pt-5">
-                <button class="bg-gray-300 px-3 py-2 rounded">Cancel</button>
-                <button class="bg-yellow-400 px-3 py-2 rounded">Submit vote</button>
+                <button 
+                class="bg-yellow-400 px-3 py-2 rounded text-black disabled:opacity-50" 
+                (click)="submitVote()"
+                [disabled]="!selectedContractorId() || voteSubmitted()">
+                  Submit vote</button>
               </div>
           </div>
         </div>

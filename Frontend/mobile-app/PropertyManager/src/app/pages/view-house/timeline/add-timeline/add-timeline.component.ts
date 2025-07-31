@@ -95,12 +95,6 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
         catch(err)
         {
           console.error("Image upload failed", err);
-
-          // this.messageService.add({
-          //   severity: 'error',
-          //   summary: 'Error',
-          //   detail: 'Failed to upload image, please try again'
-          // });
         }
       }
 
@@ -109,10 +103,8 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
       const name = this.form.value.name;
       const des = this.form.value.description;
       const date = this.form.value.date;
-      const contractorId = this.form.value.contractorName[0];
 
-
-      this.taskApiService.createTask(name, des, "pending", date, false, this.houseId, userId, imageId, contractorId).subscribe({
+      this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, true, false).subscribe({
         next: () => {
           this.form.reset();
           this.closeModal();

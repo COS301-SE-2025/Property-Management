@@ -41,7 +41,7 @@ export class ViewTaskComponent extends ModalComponent{
   }
   async getContractor()
   {
-    const contractorId = this.task?.c_uuid;
+    const contractorId = this.task?.cuuid;
     console.log(contractorId);
     if (typeof contractorId === 'string') {
       this.contractor = await this.contractorService.getContractorById(contractorId).toPromise();

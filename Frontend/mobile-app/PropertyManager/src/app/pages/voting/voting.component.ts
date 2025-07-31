@@ -23,5 +23,4 @@ export class VotingComponent  implements OnInit {
     const id = await this.storage.get('trusteeId');
     await this.votingService.getTrusteeVotingTasks(id);
   }
-
 }

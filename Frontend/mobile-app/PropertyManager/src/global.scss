@@ -29,6 +29,7 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
+@import "primeicons/primeicons.css";
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -58,4 +59,31 @@ app-tab {
   width: 100%;
   z-index: 100;
   height: 60px; 
+}
+.dark ion-content{
+  --background: var(--bg-color);
+}
+.dark ion-list{
+  --background: var(--bg-color);
+}
+.dark ion-item{
+  --background: var(--bg-color);
+}
+.dark ion-tabs{
+  --background: var(--bg-color);
+}
+.dark ion-tab-bar{
+  --background: var(--bg-color);
+}
+.dark ion-tab-button{
+  --background: var(--bg-color);
+}
+.dark ion-modal{
+  --background: var(--bg-color);
+}
+.dark ion-header{
+  --background: var(--bg-color);
+}
+.dark ion-toolbar{
+  --background: var(--bg-color);
 }

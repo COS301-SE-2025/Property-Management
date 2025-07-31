@@ -47,7 +47,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/voting/voting.component').then(m => m.VotingComponent)
     },
     {
-        path: 'voting/:taskId',
+        path: 'voting/:sessionId',
         loadComponent: () => import('./pages/voting/details/details.component').then(m => m.DetailsComponent)
     }
 ];
