@@ -256,7 +256,7 @@ export class AuthService {
     });
   }
 
-  private getCookieValue(name: string): string | null {
+  public getCookieValue(name: string): string | null {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   return match ? decodeURIComponent(match[2]) : null;
 }
