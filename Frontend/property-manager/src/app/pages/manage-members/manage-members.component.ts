@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { PropertyService, InviteWithTrustee } from 'shared';
-import { AuthService } from 'shared';
 
 @Component({
   selector: 'app-manage-members',
@@ -13,48 +12,13 @@ import { AuthService } from 'shared';
 export class ManageMembersComponent implements OnInit {
   invitations: InviteWithTrustee[] = [];
   activeMembers: InviteWithTrustee[] = [];
-  pendingInvites: InviteWithTrustee[] = [];
-  showInviteModal = false;
-  selectedInvite?: InviteWithTrustee;
 
-  constructor(
-    private propertyService: PropertyService,
-    private authService: AuthService 
-  ) {}
+  constructor(private propertyService: PropertyService) {}
 
   ngOnInit() {
-
-    const trusteeUuid = this.authService.getCookieValue('trusteeId');
-    if (!trusteeUuid) {
-
-      return;
-    }
-    this.propertyService.getInvitesForTrustee(trusteeUuid).subscribe(data => {
+    this.propertyService.getInvitations().subscribe(data => {
       this.invitations = data;
       this.activeMembers = data.filter(invite => invite.status === 'ACCEPTED');
-      this.pendingInvites = data.filter(invite => invite.status === 'PENDING');
-      if (this.pendingInvites.length > 0) {
-        this.showInviteNotification(this.pendingInvites[0]);
-      }
-    });
-  }
-
-  showInviteNotification(invite: InviteWithTrustee) {
-    this.selectedInvite = invite;
-    this.showInviteModal = true;
-  }
-
-  acceptInvite(invite: InviteWithTrustee) {
-    this.propertyService.updateInviteStatus(invite.inviteUuid, 'ACCEPTED').subscribe(updated => {
-      this.showInviteModal = false;
-      this.ngOnInit();
-    });
-  }
-
-  declineInvite(invite: InviteWithTrustee) {
-    this.propertyService.updateInviteStatus(invite.inviteUuid, 'REJECTED').subscribe(updated => {
-      this.showInviteModal = false;
-      this.ngOnInit();
     });
   }
 

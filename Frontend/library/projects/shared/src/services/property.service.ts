@@ -73,10 +73,6 @@ export class PropertyService {
     return this.http.put(`/api/invites/${inviteUuid}/status?status=Revoked`, {});
   }
 
-  getInvitesForTrustee(trusteeUuid: string): Observable<InviteWithTrustee[]> {
-    return this.http.get<InviteWithTrustee[]>(`/api/invites/trustee/${trusteeUuid}`);
-  }
-
   updateInviteStatus(inviteUuid: string, status: string): Observable<any> {
     return this.http.put(`/api/invites/${inviteUuid}/status?status=${status}`, {});
   }
