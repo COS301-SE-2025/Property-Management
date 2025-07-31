@@ -2,7 +2,7 @@ import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
-import { MaintenanceTask, VotingService, FormatDatePipe } from 'shared';
+import { MaintenanceTask, VotingService, FormatDatePipe, Voting } from 'shared';
 
 @Component({
   selector: 'app-voting-card',
@@ -21,28 +21,39 @@ import { MaintenanceTask, VotingService, FormatDatePipe } from 'shared';
 export class VotingCardComponent{
 
   votingService = inject(VotingService);
-  task = input.required<MaintenanceTask>();
+  task = input.required<MaintenanceTask | Voting>();
+  type = input.required<string>();
 
   constructor(private router: Router) { }
 
-  viewTask(taskId: string)
+  viewTask(id: string)
   {
-    this.router.navigate(['voting', taskId]);
+    if(this.type() === 'approval')
+    {
+      this.router.navigate(['voting', id, 'approval']);
+    }
+    else
+    {
+      id = this.task().sessionUuid;
+      this.router.navigate(['voting', id])
+    }
   }
   changeDueDate()
   {
-    if(!this.task()?.scheduled_date) return 'due-date-normal';
+    const task = this.task() as MaintenanceTask;
+
+    if(!task.scheduled_date) return 'due-date-normal';
 
     const date = new Date();
-    const taskDate = new Date(this.task().scheduled_date);
+    const taskDate = new Date(task.scheduled_date);
 
     date.setHours(0, 0, 0, 0);
     taskDate.setHours(0, 0, 0, 0);
 
-    const threeFromNow = new Date();
-    threeFromNow.setDate(date.getDate() + 3);
+    const twoFromNowFromNow = new Date();
+    twoFromNowFromNow.setDate(date.getDate() + 2);
 
-    if(taskDate <= threeFromNow)
+    if(taskDate <= twoFromNowFromNow)
     {
       return 'due-date-urgent';
     }

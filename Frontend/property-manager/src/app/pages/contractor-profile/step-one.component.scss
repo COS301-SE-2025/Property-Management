@@ -47,6 +47,7 @@
       gap: 0.5rem;
       margin-top: 1rem;
 
+
       label {
         display: inline-block;
         width: 160px;
@@ -95,4 +96,8 @@
 
 .dark-theme .card form input {
   color: #fff; 
+}
+
+.custom-btn-position {
+  padding-right: 30px;
 }

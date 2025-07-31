@@ -246,7 +246,7 @@ describe('InventoryItemApiService Integration Tests', () => {
       };
 
       service.updateInventoryItemQuantity(
-        { ...updatedItem, quantityInStock: 10 }, 
+        updatedItem.itemUuid, 
         5, 
         'add'
       ).subscribe(item => {
@@ -270,7 +270,7 @@ describe('InventoryItemApiService Integration Tests', () => {
       };
 
       service.updateInventoryItemQuantity(
-        { ...updatedItem, quantityInStock: 10 }, 
+        updatedItem.itemUuid, 
         5, 
         'subtract'
       ).subscribe(item => {
@@ -283,7 +283,7 @@ describe('InventoryItemApiService Integration Tests', () => {
 
     it('should handle invalid quantityInStock operation', () => {
       service.updateInventoryItemQuantity(
-        { itemUuid: '1', name: 'Chair', unit: 'pcs', quantityInStock: 10, price: 50, buildingUuid: 'bldg1' }, 
+        '1',
         5, 
         'invalid-op'
       ).subscribe(

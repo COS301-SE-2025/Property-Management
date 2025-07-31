@@ -54,7 +54,7 @@ export class ContractorHomeComponent implements OnInit{
       next: (tasks) => {
         
         const filteredTasks = tasks.filter(task => 
-          task.c_uuid === this.contractorId
+          task.cuuid === this.contractorId
         );
 
         if (filteredTasks.length === 0) {

@@ -56,6 +56,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   transition: background 0.2s;
 }
 .btn-yellow:hover { background-color: #facc15; }
+
+:host-context(.dark-theme) .form-container {
+  background: transparent !important;
+  border-color: #000 !important;
+}
+
+
   `]
 })
 export class StepTwoComponent {
