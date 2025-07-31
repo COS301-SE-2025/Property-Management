@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { AssignedContractor, BodyCoporateService, ContractorApiService, HousesService, ImageApiService, MaintenanceTask, TaskApiService, Voting } from '../public-api';
 import { VotingApiService } from './api/Voting api/voting-api.service';
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, map, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -165,10 +165,35 @@ export class VotingService{
             }
         });
     }
-    castVote(taskId: string, corporateId: string)
+    castVote(sessionId: string, quoteId: string, voterId: string, isTrustee: boolean)
     {
-
+        return this.votingApiService.castVote(sessionId, quoteId, voterId, isTrustee).pipe(
+            map(response => {
+                if(typeof response === 'string')
+                {
+                    return { success: true, message: response}
+                }
+                return response;  
+            }),
+            catchError(err => {
+                console.error('Voting error', err);
+                return throwError(() => err);
+            })
+        );
     }
+    handleVotingError(error: any): string {
+        if (error.status === 400) {
+            try {
+                const errorObj = JSON.parse(error.error);
+                if (errorObj.error === "You already voted for this quote") {
+                    return "You've already voted for this quote";
+                }
+            } catch (e) {
+            console.error(e);
+            }
+        }
+        return 'Failed to cast vote, please try again';
+    } 
     getAllVotes(sessionId: string)
     {
 

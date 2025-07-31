@@ -40,4 +40,16 @@ export class VotingApiService{
     {
         return this.http.get<Voting>(`${this.url}/session/${sessionId}/task`);
     }
+    castVote(sessionId: string, quoteId: string, voterId: string, isTrustee: boolean)
+    {
+        const req = { 
+         sessionUuid: sessionId,
+         quoteUuid: quoteId,
+         voterUuid: voterId,
+         isTrustee: isTrustee,
+         voteFor: true   
+        };
+
+        return this.http.post(`${this.url}`, req, { responseType: 'text' });
+    }
 }

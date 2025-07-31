@@ -1,7 +1,8 @@
-import { Component, effect, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit, signal } from '@angular/core';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MaintenanceTask, VotingService, FormatDatePipe, ContractorApiService, InventoryUsage, Inventory, getCookieValue, TaskApiService, ImageApiService, InventoryUsageApiService, InventoryItemApiService, AssignedContractor } from 'shared';
 import { CardModule } from 'primeng/card';
 import { MultiSelect } from "primeng/multiselect";
@@ -11,6 +12,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ButtonModule } from 'primeng/button';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 import { Toast } from 'primeng/toast';
 import { forkJoin, switchMap } from 'rxjs';
 import { TableModule } from 'primeng/table';
@@ -19,7 +21,7 @@ import { QuoteDetailsComponent } from './quote-details/quote-details.component';
 
 @Component({
   selector: 'app-voting-details',
-  imports: [HeaderComponent, CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast, TableModule, QuoteDetailsComponent],
+  imports: [HeaderComponent, CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast, TableModule, QuoteDetailsComponent, ToggleButtonModule, FormsModule],
   templateUrl: './voting-details.component.html',
   providers: [MessageService, ConfirmationService],
   styles: `
@@ -28,6 +30,9 @@ import { QuoteDetailsComponent } from './quote-details/quote-details.component';
     }
     .due-date-urgent{
       color: #f01111;
+    }
+    .p-togglebutton {
+      background-color: #facc15; 
     }
   `,
 })
@@ -43,6 +48,11 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
   public inventoryUsage: InventoryUsage[] | undefined = undefined;
   public inventoryItem: Inventory[] | undefined = undefined;
   public detailError = false;
+
+  public selectedContractorId = signal<string | null>(null);
+  public voteSubmitted = signal<boolean>(false); 
+  public contractorQuotes = signal<Record<string, string>>({});
+  public selectedQuoteId = signal<string | null>(null);
 
   public form!: FormGroup;
   public confirmDialog = false;
@@ -225,13 +235,95 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
       }
     }
   }
-  private async submitVote()
+  async submitVote()
   {
-    
-  }
-  private async updateTask()
-  {
+      const contractorId = this.selectedContractorId();
 
+      if(!contractorId || !this.taskId || this.voteSubmitted()){
+        return;
+      }
+
+      const quoteId = this.contractorQuotes()[contractorId];
+
+      if(!quoteId)
+      {
+        this.messageSerive.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Please review quote before voting'
+        });
+        return;
+      }
+
+      //api call and message
+      const sessionId = this.route.snapshot.paramMap.get('sessionId');
+
+      let userId = getCookieValue(document.cookie, 'trusteeId');
+      let isTrusteee = false;
+
+      if(userId)
+      {
+        isTrusteee = true;
+      }
+      else
+      {
+        userId = getCookieValue(document.cookie, 'bodyCoporateId');
+        isTrusteee = false;
+      }
+
+      if(sessionId)
+      {
+        this.votingService.castVote(sessionId, quoteId, userId, isTrusteee).subscribe({
+          next: (res) => {
+            this.voteSubmitted.set(true);
+
+            this.messageSerive.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Successfully submitted vote'
+            });
+
+            setTimeout(() => {
+              this.router.navigate(['/voting']);
+            }, 2000);
+          },
+          error: (err) => {
+            console.error(err);
+            this.voteSubmitted.set(false);
+
+            this.messageSerive.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: this.votingService.handleVotingError(err)
+            });
+          }
+        });
+      }
+  }
+  voteForContractor(contractorId: string)
+  {
+    if(!this.voteSubmitted()){
+      this.selectedContractorId.set(
+        this.selectedContractorId() === contractorId ? null : contractorId
+      );
+
+      if(this.contractorQuotes()[contractorId])
+      {
+        this.selectedQuoteId.set(this.contractorQuotes()[contractorId]);
+      }
+    }
+  }
+  onQuoteSelected(contractorId: string, quoteId: string)
+  {
+    this.contractorQuotes.update(quotes => ({
+      ...quotes,
+      [contractorId]: quoteId
+    }));
+
+    if(this.selectedContractorId() === contractorId)
+    {
+      this.selectedQuoteId.set(quoteId);
+    }
   }
   changeDueDate()
   {

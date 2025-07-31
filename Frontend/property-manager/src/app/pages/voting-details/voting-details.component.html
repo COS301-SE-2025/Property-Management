@@ -48,18 +48,30 @@
                       </td>
                       <td>
                         <button class="text-yellow-400 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="quoteDetails.openDialog()">View quote</button>
-                        <app-quote-details #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid"></app-quote-details>
+                        <app-quote-details #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote-details>
                       </td>
                       <td>
-                        <p-button icon="pi pi-check" severity="warn"></p-button>
+                        <p-togglebutton 
+                          onIcon="pi pi-check" 
+                          offIcon="pi pi-check"
+                          onLabel="" 
+                          [ngModel]="selectedContractorId() === contractor.uuid"
+                          (ngModelChange)="voteForContractor(contractor.uuid)" 
+                          [disabled]="voteSubmitted()">
+                        </p-togglebutton>
                       </td>
                     </tr>
                   </ng-template>
                 </p-table>
               </div>
                <div class="space-x-2 space-y-3">
-                <button class="bg-gray-300 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-gray-400">Cancel</button>
-                <button class="bg-yellow-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-yellow-500">Submit vote</button>
+                <button class="bg-gray-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-gray-400">Cancel</button>
+                <button 
+                class="bg-yellow-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-yellow-500 disabled:opacity-50"
+                (click)="submitVote()"
+                [disabled]="!selectedContractorId() || voteSubmitted()">
+                  Submit vote
+                </button>
               </div>
             }
             @else {
@@ -86,7 +98,7 @@
     </div>
     </p-card>
 </div>
-<div class="mt-6 px-4 pb-5">
+<div class="w-1/2 mt-6 px-4 pb-5">
   <app-inventory-usage [taskId]="this.taskId!"/>
 </div>
 <p-confirmdialog [visible]="confirmDialog">
