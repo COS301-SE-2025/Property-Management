@@ -1,30 +1,33 @@
 import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaintenanceTask, ContractorDetails, ContractorApiService, ImageApiService, FormatDatePipe, InventoryItemApiService, InventoryUsageApiService, TaskApiService } from 'shared';
+import { MaintenanceTask, ContractorDetails, ContractorApiService, ImageApiService, FormatDatePipe, InventoryItemApiService, InventoryUsageApiService, TaskApiService, InventoryUsage, Inventory } from 'shared';
 import { ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from 'property-manager/src/app/components/header/header.component';
 import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
 import { BreadCrumbService } from 'property-manager/src/app/components/breadcrumb/breadcrumb.service';
+import { InventoryUsageComponent } from 'property-manager/src/app/components/inventory-usage/inventory-usage.component';
 
 @Component({
   selector: 'app-timeline-details',
   templateUrl: './timeline-details.component.html',
   styles: ``,
-  imports: [FormatDatePipe, CommonModule, HeaderComponent, CardModule],
+  imports: [FormatDatePipe, CommonModule, HeaderComponent, CardModule, TableModule, InventoryUsageComponent],
 })
 export class TimelineDetailsComponent implements OnInit, OnDestroy {
 
   task: MaintenanceTask | undefined;
   imageUrl: string | undefined = undefined;
-  contractor: ContractorDetails | undefined;
+  contractor: ContractorDetails | undefined = undefined;
+  inventoryUsage: InventoryUsage[] | undefined = undefined;
+  inventoryItem: Inventory[] | undefined = undefined;
 
-  private taskId: string | null = null;
+  taskId: string | null = null;
 
   constructor(
     private imageService: ImageApiService, 
     private contractorService: ContractorApiService, 
     private taskService: TaskApiService, 
-    private inventoryUsageService: InventoryUsageApiService, 
     private route: ActivatedRoute,
     private breadCrumb: BreadCrumbService
   ) { 
@@ -46,6 +49,7 @@ export class TimelineDetailsComponent implements OnInit, OnDestroy {
         this.task = res;
         this.getImages();
         this.getContractor();
+        // this.getInventoryUsage();
       },
       error: (err) => {
         console.error(err)
@@ -67,12 +71,9 @@ export class TimelineDetailsComponent implements OnInit, OnDestroy {
   }
   async getContractor()
   {
-    const contractorId = this.task?.c_uuid;
+    const contractorId = this.task?.cuuid;
     if (typeof contractorId === 'string') {
       this.contractor = await this.contractorService.getContractorById(contractorId).toPromise();
-    } else {
-      this.contractor = undefined;
     }
   }
-
 }

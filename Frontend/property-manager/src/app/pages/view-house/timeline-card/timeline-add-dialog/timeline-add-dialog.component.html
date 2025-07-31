@@ -10,10 +10,6 @@
             <label for="timeline-description" class="font-bold ml-10">Task description</label>
             <textarea id="timeline-description" class = "border rounded w-90 mx-auto h-20 px-2" formControlName = "description" required></textarea>
         </div>
-        <div class = "mb-6">
-            <label for="contractors" class="font-bold block mb-2">Assigned contractors:</label>
-            <p-select id="contractors" [options]="contractors" optionLabel="name" placeholder="Contractors" optionValue="uuid" class="border rounded w-75" formControlName="contractorName"/>
-        </div>
         <div class="mb-6">
             <p class="font-bold">Assign inventory items to task</p>
             <p-multiselect 

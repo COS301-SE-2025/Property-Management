@@ -26,6 +26,15 @@ export class VotingComponent  implements OnInit {
   }
   
   async ngOnInit() {
-    await this.votingService.getTrusteeVotingTasks('test');
+
+    if(!this.bcUser)
+    {
+      const trusteeId = getCookieValue(document.cookie, 'trusteeId');
+      await this.votingService.getTrusteeVotingTasks(trusteeId);
+    }
+    else
+    {
+      await this.votingService.getBodyCorporateVotingTasks();
+    }
   }
 }

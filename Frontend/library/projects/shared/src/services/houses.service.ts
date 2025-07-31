@@ -9,13 +9,12 @@ import { TaskApiService } from './api/Task api/task-api.service';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
 import { Graph } from '../models/graph.model';
 import { ImageApiService } from './api/Image api/image-api.service';
-import { getCookieValue } from '../utils/cookie-utils';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HousesService {
-
 
   constructor(private buildingApiService: BuildingApiService, private budgetApiService: BudgetApiService, private inventoryItemApiService: InventoryItemApiService, private taskApiService: TaskApiService, private imageApiService: ImageApiService) { }
 
@@ -72,36 +71,33 @@ export class HousesService {
       return;
     }
 
-    this.buildingApiService.getBuildingsByTrustee(trusteeId).subscribe({
-      next: (houses) => {
-        
-        houses.buildings.forEach(h => {
-          if(h.propertyImage)
+    try{
+      const buildings = await firstValueFrom(this.buildingApiService.getBuildingsByTrustee(trusteeId));
+
+      const buildingImages = await Promise.all(
+        buildings.buildings.map(async b => {
+          if(b.propertyImage)
           {
-            this.imageApiService.getImage(h.propertyImage).subscribe(imageUrl => {
-              this.houses.update(currentHouses => [
-                ...currentHouses,
-                {
-                  ...h,
-                  propertyImage: imageUrl
-                }
-              ]);
-            });
-          } else {
-            this.houses.update(currentHouses => [
-              ...currentHouses,
-              {
-                ...h,
-                propertyImage: 'assets/images/no_image.png'
-              }
-            ]);
+            try{
+              const url = await firstValueFrom(this.imageApiService.getImage(b.propertyImage));
+              return {...b, propertyImage: url};
+            }
+            catch(error){
+              console.error("Error fetching images", error);
+              return { ...b, propertyImage: 'assets/images/no_image.png'}; 
+            }
           }
-        });
-      },
-      error: (error) => {
-        console.error("Error loading properties", error);
-      }
-    });
+          else
+          {
+            return { ...b, propertyImage: 'assets/images/no_image.png'};
+          }
+        })
+      )
+      this.houses.set(buildingImages);
+    }
+    catch(error){
+      console.error("Error fetching buildings", error);
+    }
   }
 
   async loadBudget(houseId: string){
@@ -163,7 +159,7 @@ export class HousesService {
   {
     this.taskApiService.getAllTasks().subscribe({
       next: (task) => {
-        const filteredTasks = task.filter(t => t.b_uuid === buildingId);
+        const filteredTasks = task.filter(t => t.buuid === buildingId);
         this.timeline.set(filteredTasks);
         this.sortTimeline();
       },

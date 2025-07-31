@@ -1,6 +1,6 @@
 <app-header/>
 
-<div class = "mt-4 ml-10">
+<div class = "mt-4 ml-10" *ngIf="votingTasks().length > 0">
     <p class = "text-xl font-normal">Tasks open for voting</p>
 </div>
 
@@ -8,13 +8,13 @@
   @for(task of votingTasks(); track task.uuid)
   {
     <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
-      <app-voting-card [task]="task"/>
+      <app-voting-card [task]="task" [type]="'voting'"/>
     </div>
   }
 </div>
 
 <div  *ngIf="bcUser">
-  <div class="mt-3 ml-12">
+  <div class="mt-3 ml-12" *ngIf="pendingTasks().length > 0">
     <p class="text-xl font-normal">Tasks pending approval</p>
   </div>
   
@@ -22,7 +22,7 @@
     @for(task of pendingTasks(); track task.uuid)
     {
       <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
-        <app-voting-card [task]="task"/>
+        <app-voting-card [task]="task" [type]="'approval'"/>
       </div>
     }
   </div>
