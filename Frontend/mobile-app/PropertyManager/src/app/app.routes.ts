@@ -49,5 +49,9 @@ export const routes: Routes = [
     {
         path: 'voting/:sessionId',
         loadComponent: () => import('./pages/voting/details/details.component').then(m => m.DetailsComponent)
+    },
+    {
+        path: 'contractor-profile',
+        loadComponent: () => import('./pages/contractor-profile/contractor-profile.component').then(m => m.ContractorProfileComponent)
     }
 ];

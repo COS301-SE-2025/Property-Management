@@ -2,11 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TabComponent } from 'src/app/components/tab/tab.component';
 import { IonicModule } from '@ionic/angular';
 import { ImageApiService, PropertyService, StorageService } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
-import { TabComponent } from 'src/app/components/tab/tab.component';
 import { PhotoService } from 'src/app/services/photo.service';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
@@ -14,7 +14,7 @@ import { cameraOutline, trashOutline } from 'ionicons/icons';
 @Component({
   selector: 'app-create-property',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent ],
   templateUrl: './create-property.component.html',
   styleUrls: ['./create-property.component.scss']
 })
