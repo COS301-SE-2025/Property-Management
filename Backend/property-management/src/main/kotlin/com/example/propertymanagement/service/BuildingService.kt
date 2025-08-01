@@ -1,5 +1,6 @@
 package com.example.propertymanagement.service
 
+import com.example.propertymanagement.dto.BuildingByCorporateDto
 import com.example.propertymanagement.dto.BuildingByTrusteeDto
 import com.example.propertymanagement.dto.BuildingCreateDto
 import com.example.propertymanagement.dto.BuildingResponseDto
@@ -90,6 +91,18 @@ class BuildingService(
 
         return BuildingByTrusteeDto(
             trusteeUuid = trusteeUuid,
+            buildings = buildings,
+        )
+    }
+
+    fun getBuildingsByCorporateUuid(coporateUuid: UUID): BuildingByCorporateDto {
+        val buildings =
+            buildingRepository
+                .findBuildingsByCorporateUuid(coporateUuid)
+                .map { mapToResponseDto(it) }
+
+        return BuildingByCorporateDto(
+            coporateUuid = coporateUuid,
             buildings = buildings,
         )
     }

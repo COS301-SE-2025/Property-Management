@@ -1,9 +1,10 @@
 <app-header />
 <p-toast></p-toast>
 
-<div class="px-10 py-8">
+<div class="px-10 py-8" [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
   <h2 class="text-2xl font-bold mb-2">Contractor Profile</h2>
   <div class="h-1 w-64 bg-yellow-400 mb-6"></div>
+  <div class="h-1 w-64 mb-6" [ngStyle]="{ 'background-color': 'var(--accent-color)' }"></div>
 
   <div class="flex justify-center mb-8 space-x-4">
     <span class="w-4 h-4 rounded-full" [ngClass]="{ 'bg-yellow-400': step === 1, 'bg-gray-300': step !== 1 }"></span>
@@ -12,13 +13,8 @@
   </div>
 
   <div
-    [ngClass]="{
-      'border rounded-lg p-12 shadow-sm max-w-6xl mx-auto': true,
-      'bg-#3d444d border-black text-white': step === 1 && !isDarkMode,
-      'bg-#2b3036 border-black text-white': step === 1 && isDarkMode,
-      'border-gray-200': step !== 1 && !isDarkMode,
-      'border-gray-700': step !== 1 && isDarkMode
-    }"
+    class="border rounded-lg p-12 shadow-sm max-w-6xl mx-auto"
+    [ngStyle]="{ 'background-color': 'var(--card-bg)', 'color': 'var(--text-color)' }"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
@@ -30,7 +26,8 @@
       </div>
       <div *ngIf="step === 1" class="flex flex-col items-center justify-start gap-4 py-14">
         <p class="font-semibold">Upload a Profile Image</p>
-        <div class="w-72 h-48 rounded-xl bg-gray-100 border flex items-center justify-center shadow-sm overflow-hidden">
+        <div class="w-72 h-48 rounded-xl border flex items-center justify-center shadow-sm overflow-hidden"
+             [ngStyle]="{ 'background-color': 'var(--card-bg)' }">
           <ng-container *ngIf="imagePreviewUrl && !imageError; else placeholder">
             <img [src]="imagePreviewUrl" alt="Profile image" class="w-full h-full object-cover" />
           </ng-container>
@@ -51,7 +48,7 @@
           <button
             *ngIf="imagePreviewUrl || contractor.img"
             type="button"
-            class="text-xs px-4 py-2 rounded bg-red-400 hover:bg-red-500 text-white font-semibold shadow"
+            class="text-xs px-4 py-2 rounded bg-red-400 hover:bg-red-500 text-black font-semibold shadow"
             (click)="resetImage()"
           >
             Remove Image
