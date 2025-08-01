@@ -33,6 +33,23 @@
             <p class="text-red-500" *ngIf="form.get('description')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
           </ion-item>
           <ion-item>
+            <ion-select class="dark:text-white" placeholder="Assign inventory items" [multiple]="true" (ionChange)="updateInventoryItemsUsed($event)">
+              @for(inventory of inventoryItemsAvailable; track inventory.itemUuid)
+              {
+                <ion-select-option [value]="inventory.itemUuid">{{ inventory.name}}  (Quantity: {{inventory.quantityInStock }})</ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+          <ion-item *ngIf="inventoryItemsUsed">
+             <app-inventory 
+                [inventory]="inventoryItemsUsed" 
+                [showAddButton]="false"
+                [readOnly]="true"
+                [capOriginal]="true"
+                (quantitiesChanged)="onQuantitiesChanged($event)"
+            ></app-inventory>
+          </ion-item>
+          <ion-item>
             <ion-input
               class="dark:text-gray-200"
               label="Proposed due date"
@@ -54,6 +71,9 @@
               <ion-button (click)="deletePhoto()" fill="clear" color="dark">
                 <ion-icon name="trash-outline"></ion-icon>
               </ion-button>
+            </div>
+            <div class="text-center">
+              <p class = "font-semibold text-red-500" *ngIf="addError">Error adding new task</p>
             </div>
           </div>
         </div>

@@ -18,15 +18,27 @@
         <div class="font-semibold pb-3">
             <p class="dark:text-gray-200">Due Date: {{ (task?.scheduled_date ?? '') | formatDate }}</p>
         </div>
-        <div class="font-semibold pb-3">
-            <p class="dark:text-gray-200">Assigned contractor: {{ contractor?.name }}</p>
+        <div class="font-semibold pb-3" *ngIf="contractor">
+            <p class="dark:text-gray-200">Assigned contractor: {{ contractor.name }}</p>
+        </div>
+        <div>
+          <app-inventory-usage *ngIf="inventoryUsage?.length" [taskId]="this.taskId!"/>
         </div>
         <div class="pb-3 flex flex-col justify-center items-center">
-            <p class="pb-2 dark:text-gray-200">Task image: </p>
+            <p class="pb-2 dark:text-gray-200 text-lg">Task image: </p>
             <img [src]="imageUrl" alt="image of task" *ngIf="imageUrl; else noImg" class="max-w-xs max-h-40 rounded-md">
             <ng-template #noImg>
                 <p>No image available</p>
             </ng-template>
+        </div>
+        <div>
+          <ion-card class="no-outline-card dark:bg-gray-900">
+            <ion-card-header>
+              <ion-card-title class="dark:text-white">Contractor timeline</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+            </ion-card-content>
+          </ion-card>
         </div>
       </div>
     </ion-content>

@@ -156,7 +156,6 @@ export class InventoryCardComponent implements OnInit{
           maintenanceBudget: element.maintenanceBudget,
           maintenanceSpent: element.maintenanceSpent
         };
-        console.log(newBudget);
         this.budgetApiService.updateBudget(elementID, newBudget).subscribe({
           error: (err) => {
             console.error("Couldnt update budget", err);
@@ -221,7 +220,6 @@ export class InventoryCardComponent implements OnInit{
     //Create inventory usage
     this.inventoryUsage.createInventoryUsage(itemId, taskId, quantity).subscribe({
       next: (res) => {
-        console.log(res);
         return res.usageUuid;
       },
       error: (err) => {

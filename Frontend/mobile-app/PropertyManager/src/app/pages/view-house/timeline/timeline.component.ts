@@ -10,9 +10,6 @@ import { ViewTaskComponent } from './view-task/view-task.component';
   selector: 'app-timeline',
   templateUrl: './timeline.component.html',
   styles: `
-    .dark p-timeline{
-      
-    }
   `,
   imports: [IonCardHeader, IonCardTitle, IonCardContent, IonCard, TimelineModule, CommonModule, AddTimelineComponent, ViewTaskComponent],
 })

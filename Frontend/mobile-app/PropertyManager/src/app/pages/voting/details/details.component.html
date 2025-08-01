@@ -24,7 +24,7 @@
             <p class="text-sm dark:text-gray-100">Description: {{ task()?.des }}</p>
             <p [class]="changeDueDate()">Due Date: {{ (task()?.scheduled_date ?? '') | formatDate }}</p>
               <div>
-                <p class="font-semibold dark:text-gray-100">Assigned Contractors:</p>
+                <p class="font-semibold dark:text-gray-100 pb-2">Assigned Contractors:</p>
                 <p-table [value]="contractors()!">
                   <ng-template #header>
                     <tr>
@@ -41,7 +41,7 @@
                   </ng-template>
                   <ng-template #body let-contractor>
                     <tr>
-                      <td>
+                      <td class="dark:text-gray-400">
                         {{ contractor.name }}
                       </td>
                       <td>
@@ -73,6 +73,9 @@
         </div>
       </ion-card-content>
     </ion-card>
+    <div class="mt-7">
+      <app-inventory-usage [taskId]="this.taskId!" class="pr-6"/>
+    </div>
   </div>
   <app-tab/>
 </ion-content>

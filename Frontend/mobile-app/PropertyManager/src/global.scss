@@ -87,3 +87,9 @@ app-tab {
 .dark ion-toolbar{
   --background: var(--bg-color);
 }
+.dark {
+  --p-datatable-row-background: #212121 !important; /* dark row background */
+  --p-datatable-header-background: #333333;
+  --p-datatable-header-cell-background: #000000 !important;
+  --p-datatable-row-color: #333333; /* text color */
+}

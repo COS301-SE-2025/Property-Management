@@ -10,10 +10,11 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { QuoteComponent } from '../quote/quote.component';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { InventoryUsageComponent } from 'src/app/components/inventory-usage/inventory-usage.component';
 
 @Component({
   selector: 'app-details',
-  imports: [IonContent, HeaderComponent, TabComponent, IonCard, CommonModule, FormatDatePipe, IonCardHeader, IonCardTitle, IonCardContent, IonCardSubtitle, TableModule, ToggleButtonModule, QuoteComponent, FormsModule],
+  imports: [IonContent, HeaderComponent, TabComponent, IonCard, CommonModule, FormatDatePipe, IonCardHeader, IonCardTitle, IonCardContent, IonCardSubtitle, TableModule, ToggleButtonModule, QuoteComponent, FormsModule, InventoryUsageComponent],
   templateUrl: './details.component.html',
   styles: `
     .due-date-normal {
@@ -80,8 +81,6 @@ export class DetailsComponent  implements OnInit {
   async ngOnInit() {
     this.taskId = await this.storage.get('taskId');
     const sessionId = await this.storage.get('sessionId');
-    console.log(sessionId);
-    console.log(this.taskId);
     if(sessionId)
     {
       this.taskService.getTaskById(this.taskId).subscribe({

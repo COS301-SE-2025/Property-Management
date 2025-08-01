@@ -1,20 +1,25 @@
 import { Injectable } from '@angular/core';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { Capacitor } from '@capacitor/core';
+import { CameraResultType, CameraSource } from '@capacitor/camera';
+import { CameraWrapperService } from './camera-wrapper.service';
+import { CapacitorWrapperService } from './capacitor-wrapper.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PhotoService {
 
-  constructor() { }
+  constructor(private cameraWrapper: CameraWrapperService, private capacitorWrapper: CapacitorWrapperService) { }
 
   async takePhoto(): Promise<{base64String?: string, format: string}>
   {
     try{
-      const photo = await Camera.getPhoto({
+      const source = this.capacitorWrapper.getPlatform() === 'web'
+        ? CameraSource.Prompt
+        : CameraSource.Camera;
+
+       const photo = await this.cameraWrapper.getPhoto({
         resultType: CameraResultType.Base64,
-        source: Capacitor.getPlatform() === 'web' ? CameraSource.Prompt : CameraSource.Camera,
+        source,
         quality: 100,
       });
 
