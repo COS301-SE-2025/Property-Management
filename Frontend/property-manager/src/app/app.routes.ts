@@ -18,7 +18,7 @@ import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-de
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
 import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
-import { RatingsComponent } from './pages/ratings/ratings.component';
+import { RatingsComponent } from './pages/ratings/ratings-page.component';
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';

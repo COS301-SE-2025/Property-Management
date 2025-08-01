@@ -26,7 +26,7 @@ interface Rating {
   selector: 'app-ratings',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './ratings.component.html'
+  templateUrl: './ratings-page.component.html'
 })
 export class RatingsComponent implements OnInit {
 
