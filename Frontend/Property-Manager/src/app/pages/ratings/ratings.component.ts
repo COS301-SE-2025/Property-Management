@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -28,35 +28,40 @@ interface Rating {
   imports: [CommonModule, FormsModule],
   templateUrl: './ratings.component.html'
 })
-export class RatingsComponent {
+export class RatingsComponent implements OnInit {
 
-    tasks: Task[] = [
-    { uuid: 'task-1', name: 'Fix Plumbing', contractor: { uuid: 'contractor-1', name: 'John M.' } },
-    { uuid: 'task-2', name: 'Paint Fence', contractor: { uuid: 'contractor-2', name: 'Sarah K.' } }
-  ];
-
-  ratingsHistory: Rating[] = [
-    {
-      uuid: 'rating-1',
-      task: { uuid: 'task-1', name: 'Fix Plumbing', contractor: { uuid: 'contractor-1', name: 'John M.' } },
-      contractor: { uuid: 'contractor-1', name: 'John M.' },
-      rating: 9,
-      comment: 'Quick & professional',
-      date: '2025-07-20'
-    },
-    {
-      uuid: 'rating-2',
-      task: { uuid: 'task-2', name: 'Paint Fence', contractor: { uuid: 'contractor-2', name: 'Sarah K.' } },
-      contractor: { uuid: 'contractor-2', name: 'Sarah K.' },
-      rating: 7,
-      comment: 'Good but took long',
-      date: '2025-07-15'
-    }
-  ];
-
+  tasks: Task[] = [];
+  ratingsHistory: Rating[] = [];
   selectedTaskUuid: string = '';
   selectedRating: number = 5;
   comment: string = '';
+
+  ngOnInit(): void {
+
+    this.tasks = [
+      { uuid: 'task-1', name: 'Fix Plumbing', contractor: { uuid: 'contractor-1', name: 'John M.' } },
+      { uuid: 'task-2', name: 'Paint Fence', contractor: { uuid: 'contractor-2', name: 'Sarah K.' } }
+    ];
+
+    this.ratingsHistory = [
+      {
+        uuid: 'rating-1',
+        task: { uuid: 'task-1', name: 'Fix Plumbing', contractor: { uuid: 'contractor-1', name: 'John M.' } },
+        contractor: { uuid: 'contractor-1', name: 'John M.' },
+        rating: 9,
+        comment: 'Quick & professional',
+        date: '2025-07-20'
+      },
+      {
+        uuid: 'rating-2',
+        task: { uuid: 'task-2', name: 'Paint Fence', contractor: { uuid: 'contractor-2', name: 'Sarah K.' } },
+        contractor: { uuid: 'contractor-2', name: 'Sarah K.' },
+        rating: 7,
+        comment: 'Good but took long',
+        date: '2025-07-15'
+      }
+    ];
+  }
 
   get selectedTask(): Task | undefined {
     return this.tasks.find(t => t.uuid === this.selectedTaskUuid);
