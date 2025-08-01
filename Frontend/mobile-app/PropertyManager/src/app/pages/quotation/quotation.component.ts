@@ -99,7 +99,7 @@ showExpirationDate = false;
   }
 
   async submitQuote() {
-    if (!this.file || !this.IssueDate || !this.expirationDate || !this.quoteNo || !this.totalAmount) {
+    if (!this.IssueDate || !this.expirationDate || !this.quoteNo || !this.totalAmount) {
       this.showToast('Please fill in all fields and upload a file.', 'danger');
       return;
     }
@@ -107,14 +107,15 @@ showExpirationDate = false;
     try {
       this.loading = true;
 
-      // Simulate upload
-      this.api.addQuote(
-        'some-t_uuid', // Replace with actual t_uuid 
-        this.contractorId, 
-        this.IssueDate,
-        this.expirationDate,
-        this.totalAmount,
-        this.quoteNo)
+       
+      await this.api.addQuote(
+  this.t_uuid,
+  this.contractorId,
+  this.IssueDate,
+  this.expirationDate,
+  this.totalAmount,
+  this.quoteNo
+);
        
       
       this.showToast('Quotation submitted successfully!', 'success');
