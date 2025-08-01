@@ -10,7 +10,7 @@ import java.util.UUID
 @Service
 class TrusteeBodyCorporateInviteService(
     private val inviteRepository: TrusteeBodyCorporateInviteRepository,
-    private val trusteeRepository: TrusteeRepository 
+    private val trusteeRepository: TrusteeRepository,
 ) {
     fun createInvite(dto: InviteDTO): InviteDTO {
         val entity =
@@ -38,8 +38,7 @@ class TrusteeBodyCorporateInviteService(
         return inviteRepository.save(updated).toDTO()
     }
 
-    fun getAllInvitations(): List<InviteDTO> =
-        inviteRepository.findAll().map { it.toDTOWithTrustee(trusteeRepository) }
+    fun getAllInvitations(): List<InviteDTO> = inviteRepository.findAll().map { it.toDTOWithTrustee(trusteeRepository) }
 }
 
 fun TrusteeBodyCorporateInvite.toDTO() =
@@ -51,7 +50,7 @@ fun TrusteeBodyCorporateInvite.toDTO() =
         invitedOn = this.invitedOn,
         name = null,
         email = null,
-        role = null
+        role = null,
     )
 
 fun TrusteeBodyCorporateInvite.toDTOWithTrustee(trusteeRepo: TrusteeRepository) =
@@ -63,5 +62,5 @@ fun TrusteeBodyCorporateInvite.toDTOWithTrustee(trusteeRepo: TrusteeRepository) 
         invitedOn = this.invitedOn,
         name = trusteeRepo.findByTrusteeUuid(this.trusteeUuid).orElse(null)?.name,
         email = trusteeRepo.findByTrusteeUuid(this.trusteeUuid).orElse(null)?.email,
-        role = "Trustee" 
+        role = "Trustee",
     )
