@@ -17,6 +17,7 @@ import {
 import { h } from 'ionicons/dist/types/stencil-public-runtime';
 import { addIcons } from 'ionicons';
 import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline } from 'ionicons/icons';
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -41,6 +42,9 @@ import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline } fro
 })
 export class QuotationComponent  {
   private api = inject(ApiService);
+  private route = inject(ActivatedRoute);
+  t_uuid: string = '';
+
   IssueDate: Date = new Date();
   expirationDate: string="";
   quoteNo: string="";
@@ -68,7 +72,9 @@ showExpirationDate = false;
    
   });
    this.contractorId = this.api.getCookieValue('contractorId');
+   this.t_uuid = this.route.snapshot.paramMap.get('t_uuid') ?? '';
   console.log('Contractor ID:', this.contractorId);
+  console.log('Task UUID:', this.t_uuid);
 }
   onFileSelected(event: any) {
   const file = event.target.files[0];

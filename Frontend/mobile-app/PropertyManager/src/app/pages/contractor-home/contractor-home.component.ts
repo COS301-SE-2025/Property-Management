@@ -75,8 +75,9 @@ export class ContractorHomeComponent implements OnInit {
     });
   }
 
-  goToQuotationPage() {
-    this.router.navigate(['/quotation']);
+  goToQuotationPage(task: MaintenanceTask) {
+   
+     this.router.navigate(['/quotation', task.t_uuid]);
   }
 
   constructor(private router: Router) {}
