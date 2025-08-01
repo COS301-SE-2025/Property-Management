@@ -19,7 +19,6 @@ import { PublicContractorsComponent } from './pages/bc-contractors/public-contra
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
 import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
 import { RatingsComponent } from './pages/ratings/ratings.component';
-
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
@@ -66,13 +65,13 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    // canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: HomeComponent
   },
   {
     path: 'viewHouse/:houseId',
-    // canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: ViewHouseComponent
   },
@@ -83,13 +82,13 @@ export const routes: Routes = [
     component: TimelineDetailsComponent
   },
   { path: 'create-property',
-    // canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: CreatePropertyComponent
   },
   {
     path: 'manageBudget/:houseId',
-    // canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: ManageBudgetComponent
   },
@@ -113,54 +112,54 @@ export const routes: Routes = [
   },
   {
     path: 'contractorHome',
-    // canActivate: [authGuard(['contractor'])],
+    canActivate: [authGuard(['contractor'])],
     pathMatch: 'full',
     component: ContractorHomeComponent
   },
   {
     path: 'quotation',
-    // canActivate: [authGuard(['contractor'])],
+    canActivate: [authGuard(['contractor'])],
     pathMatch: 'full',
     component: QuotationComponent
   },
   {
     path: 'contractor-prof',
-    // canActivate: [authGuard(['contractor'])],
+    canActivate: [authGuard(['contractor'])],
     component: ContractorProfileComponent
   },
   {
     path: 'bodyCoporate',
-    // canActivate: [authGuard(['bodyCorporate'])],
+    canActivate: [authGuard(['bodyCorporate'])],
     pathMatch: 'full',
     component: BcHomeComponent
   },
   {
     path: 'bodyCoporate/contractors',
-    // canActivate: [authGuard(['bodyCorporate'])],
+    canActivate: [authGuard(['bodyCorporate'])],
     pathMatch: 'full',
     component: BcContractorsComponent
   },
   {
     path: 'contractorDetails/:contractorId/:source',
-    // canActivate: [authGuard(['bodyCorporate'])],
+    canActivate: [authGuard(['bodyCorporate'])],
     pathMatch: 'full',
     component: ContractorDetailsComponent
   },
   {
     path: 'bodyCoporate/publicContractors',
-    // canActivate: [authGuard(['bodyCorporate'])],
+    canActivate: [authGuard(['bodyCorporate'])],
     pathMatch: 'full',
     component: PublicContractorsComponent
   },
   {
     path: 'members',
-    // canActivate: [authGuard(['bodyCorporate'])],
+    canActivate: [authGuard(['bodyCorporate'])],
     pathMatch: 'full',
     component: ManageMembersComponent
   },
   {
     path: 'ratings',
-    // canActivate: [authGuard(['bodyCorporate'])],
+    canActivate: [authGuard(['bodyCorporate'])],
     pathMatch: 'full',
     component: RatingsComponent
   },
