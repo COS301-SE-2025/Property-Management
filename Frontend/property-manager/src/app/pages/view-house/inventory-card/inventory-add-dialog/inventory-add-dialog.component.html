@@ -1,0 +1,36 @@
+<p-toast [showTransformOptions]="'300ms'" [showTransformOptions]="'translateX(100%)'" [hideTransformOptions]="'150ms'" [hideTransformOptions]="'translateX(100%)'"></p-toast>
+<p-dialog header="Add new inventory item?" [style]="{ width: '30rem'}" [(visible)]="displayDialog" [modal]="true">
+    <span class="p-text-secondary block mb-8">Add new item and update budget.</span>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class = "flex flex-col items-center justify-center mb-3 gap-2">
+            <label for="inventory-item" class="font-semibold block">Inventory item name</label>
+            <input id="inventory-item" class = "border rounded" pInputText formControlName="name" required>
+        </div>
+        <div class = "flex flex-col mb-3 gap-2 items-center justify-center">
+            <label for="inventory-price" class="font-semibold block">Price for one</label>
+            <input id="inventory-price" class = "border rounded" type="number" formControlName = "price"  pInputText required>
+        </div>
+        <div class = "flex flex-col mb-4 gap-2 items-center justify-center">
+            <label for="inventory-quantity" class="font-semibold block">Quantity bought</label>
+            <input id="inventory-quantity" class = "border rounded" type="number" formControlName="quantity" required>
+        </div>
+        <div class = "flex flex-col mb-8 gap-2 items-center justify-center">
+            <label for="inventory-boughtOn" class="font-semibold block">Bought on</label>
+            <p-datepicker id="inventory-boughtOn" formControlName="boughtOn" [iconDisplay]="'input'" [showIcon]="true" size="small" [appendTo]="'body'"/>
+        </div>
+        <div>
+            <p class = "font-semibold text-red-500 ml-35" *ngIf="addError">Please fill all required fields correctly</p>
+        </div>
+        <div class = "flex justify-end mt-3">
+            <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer" (click)="closeDialog()">Cancel</button>
+            <button type="submit" 
+                class = "px-3 py-2 rounded cursor-pointer"
+                [class.bg-black]="form.valid"
+                [class.bg-gray-200]="!form.valid"
+                [class.text-white]="form.valid"
+                [disabled]="!form.valid">
+                Add item
+            </button>
+        </div>
+    </form>
+</p-dialog>

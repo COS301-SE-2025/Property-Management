@@ -10,3 +10,6 @@ jobs:
 
     backend-run:
         uses: ./.github/workflows/backend.yml
+    
+    mobile-run:
+        uses: ./.github/workflows/mobile.yml

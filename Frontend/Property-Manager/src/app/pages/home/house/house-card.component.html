@@ -1,9 +1,0 @@
-<div class = "shadow-md rounded-lg border w-75 text-center" >
-    <button class = "cursor-pointer" (click)="viewHouse(house().buildingUuid!)">
-    <p-card>
-        <img [src] = "house().propertyImage" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="" rel="preconnect">
-        <p class = "text-lg font-bold mt-4"> {{ house().name }}</p>
-        <p class = "text-gray-600 mb-4" [ngStyle]="{ 'color':'var(--text-color)' }"> {{ house().address }}</p>
-    </p-card>
-</button>
-</div>
