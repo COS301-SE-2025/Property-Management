@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ApiService } from 'shared';
 import { MessageService } from 'primeng/api';
-
+import { HeaderComponent } from 'src/app/components/header/header.component';
+import { TabComponent } from "src/app/components/tab/tab.component";
 import {
   trigger,
   transition,
@@ -13,11 +14,16 @@ import {
   query,
   stagger
 } from '@angular/animations';
+import { h } from 'ionicons/dist/types/stencil-public-runtime';
+import { addIcons } from 'ionicons';
+import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline } from 'ionicons/icons';
+
+
 
 @Component({
   selector: 'app-quotation',
   standalone: true,
-  imports: [FormsModule, CommonModule, IonicModule],
+  imports: [FormsModule, CommonModule, IonicModule,HeaderComponent, TabComponent],
   providers: [MessageService],
   templateUrl: './quotation.component.html',
   animations: [
@@ -34,7 +40,8 @@ import {
   ]
 })
 export class QuotationComponent  {
-  IssueDate: string="";
+  private api = inject(ApiService);
+  IssueDate: Date = new Date();
   expirationDate: string="";
   quoteNo: string="";
   totalAmount: number=0;
@@ -49,8 +56,20 @@ showExpirationDate = false;
   toastColor: 'success' | 'danger' = 'success';
   loading = false;
   previewOpen = false;
+   contractorId: string = "";
   
 
+  ngOnInit() {
+  addIcons({
+    'calendar-outline': calendarOutline,
+    'newspaper-outline': newspaperOutline,
+    'wallet-outline': walletOutline,
+    'cloud-upload-outline': cloudUploadOutline
+   
+  });
+   this.contractorId = this.api.getCookieValue('contractorId');
+  console.log('Contractor ID:', this.contractorId);
+}
   onFileSelected(event: any) {
   const file = event.target.files[0];
   if (file) {
@@ -62,6 +81,7 @@ showExpirationDate = false;
     reader.readAsDataURL(file);
   }
 }
+
 
 
   openPreviewModal() {
@@ -82,9 +102,15 @@ showExpirationDate = false;
       this.loading = true;
 
       // Simulate upload
-      await new Promise((res) => setTimeout(res, 2000));
-
-      // Call your API here...
+      this.api.addQuote(
+        'some-t_uuid', // Replace with actual t_uuid 
+        this.contractorId, 
+        this.IssueDate,
+        this.expirationDate,
+        this.totalAmount,
+        this.quoteNo)
+       
+      
       this.showToast('Quotation submitted successfully!', 'success');
     } catch (err) {
       this.showToast('Error submitting quotation.', 'danger');

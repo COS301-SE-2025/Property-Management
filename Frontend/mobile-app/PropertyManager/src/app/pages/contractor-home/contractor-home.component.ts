@@ -45,7 +45,8 @@ import {
 export class ContractorHomeComponent implements OnInit {
   private api = inject(ApiService);
   tasks: MaintenanceTask[] = [];
-  contractorId = localStorage.getItem('contractorID');
+  contractorId = this.api.getCookieValue('contractorId');
+
 
   ngOnInit() {
     if (!this.contractorId) {
@@ -60,10 +61,10 @@ export class ContractorHomeComponent implements OnInit {
         const taskRequests = filteredTasks.map(task =>
           task.img
             ? this.api.getPresignedImageUrl(task.img).pipe(
-                map(imageUrl => ({ ...task, img: imageUrl || 'assets/images/default.jpg' })),
-                catchError(() => of({ ...task, img: 'assets/images/default.jpg' }))
+                map(imageUrl => ({ ...task, img: imageUrl || 'assets/images/default.jpeg' })),
+                catchError(() => of({ ...task, img: 'assets/images/default.jpeg' }))
               )
-            : of({ ...task, img: 'assets/images/default.jpg' })
+            : of({ ...task, img: 'assets/images/default.jpeg' })
         );
 
         forkJoin(taskRequests).subscribe(taskList => {

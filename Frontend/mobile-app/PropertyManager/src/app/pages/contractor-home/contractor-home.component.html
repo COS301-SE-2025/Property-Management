@@ -10,7 +10,7 @@
     <div *ngIf="tasks.length > 0; else noTasks" class="mt-6 flex flex-wrap justify-center gap-5 p-4">
       <div
         *ngFor="let task of tasks"
-        class=" animate-item [15rem] h-[18.5rem] shadow-md rounded-xl overflow-hidden bg-white"
+        class=" animate-item [15rem] h-[15rem] shadow-md rounded-xl overflow-hidden bg-white"
         (click)="goToQuotationPage()"
       >
         <img
