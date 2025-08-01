@@ -52,15 +52,16 @@ export class InventoryItemApiService {
     return this.http.put<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`, item);
   }
 
-  updateInventoryItemQuantity(inventoryItem: Inventory, differenceQuantity: number, operation: string): Observable<Inventory>
+  updateInventoryItemQuantity(itemId: string, differenceQuantity: number, operation: string): Observable<Inventory>
   {
     const quantityUpdate = {
       quantity: differenceQuantity,
       operation: operation
     }
 
-    return this.http.patch<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}/quantity`, quantityUpdate);
+    return this.http.patch<Inventory>(`${this.url}/inventory/${itemId}/quantity`, quantityUpdate);
   }
+  
 
   deleteInventoryItem(inventoryItem: Inventory): Observable<Inventory>
   {

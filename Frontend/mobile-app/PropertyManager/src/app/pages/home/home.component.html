@@ -1,9 +1,9 @@
-<ion-content>
+<ion-content class="dark:bg-gray-800">
   <div class="container mx-auto">
     <app-header/>
     
     <div class="mt-4 ml-3">
-        <p class = "text-xl font-normal">Your properties</p>
+        <p class = "text-xl font-normal dark:text-white">Your properties</p>
     </div>
   
     <div class=" mt-3 flex flex-col justify-center items-center">
@@ -15,12 +15,11 @@
       </div>
   
       <ion-item>
-        <button type="button" class="cursor-pointer" (click)="RouteToCreateProperty()">
-          <img class="w-9 h-9" src="assets/icons/add_circle.svg" alt="">
+        <button type="button" (click)="RouteToCreateProperty()">
+          <img class="w-9 h-9" [src]="darkMode ? 'assets/icons/add_circle_gray.svg' : 'assets/icons/add_circle.svg'" alt="">
         </button>
       </ion-item>
     </div>
   </div>
-  
   <app-tab/>
 </ion-content>

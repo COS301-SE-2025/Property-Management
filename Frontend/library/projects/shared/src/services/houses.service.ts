@@ -9,13 +9,12 @@ import { TaskApiService } from './api/Task api/task-api.service';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
 import { Graph } from '../models/graph.model';
 import { ImageApiService } from './api/Image api/image-api.service';
-import { getCookieValue } from '../utils/cookie-utils';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HousesService {
-
 
   constructor(private buildingApiService: BuildingApiService, private budgetApiService: BudgetApiService, private inventoryItemApiService: InventoryItemApiService, private taskApiService: TaskApiService, private imageApiService: ImageApiService) { }
 
@@ -53,6 +52,9 @@ export class HousesService {
   getHouseById(id: string): Property | undefined{
     return this.houses().find(house => house.buildingUuid === id);
   }
+  getInventoryById(id: string): Inventory | undefined{
+    return this.inventory().find(item => item.itemUuid === id);
+  }
 
   private sortTimeline()
   {
@@ -69,33 +71,33 @@ export class HousesService {
       return;
     }
 
-    this.buildingApiService.getBuildingsByTrustee(trusteeId).subscribe({
-      next: (houses) => {
-        
-        houses.buildings.forEach(h => {
-          if(h.propertyImage)
+    try{
+      const buildings = await firstValueFrom(this.buildingApiService.getBuildingsByTrustee(trusteeId));
+
+      const buildingImages = await Promise.all(
+        buildings.buildings.map(async b => {
+          if(b.propertyImage)
           {
-            this.imageApiService.getImage(h.propertyImage).subscribe(imageUrl => {
-              this.houses.update(currentHouses => [
-                ...currentHouses,
-                {
-                  ...h,
-                  propertyImage: imageUrl
-                }
-              ]);
-            });
-          } else {
-            this.houses.update(currentHouses => [
-              ...currentHouses,
-              h
-            ]);
+            try{
+              const url = await firstValueFrom(this.imageApiService.getImage(b.propertyImage));
+              return {...b, propertyImage: url};
+            }
+            catch(error){
+              console.error("Error fetching images", error);
+              return { ...b, propertyImage: 'assets/images/no_image.png'}; 
+            }
           }
-        });
-      },
-      error: (error) => {
-        console.error("Error loading properties", error);
-      }
-    });
+          else
+          {
+            return { ...b, propertyImage: 'assets/images/no_image.png'};
+          }
+        })
+      )
+      this.houses.set(buildingImages);
+    }
+    catch(error){
+      console.error("Error fetching buildings", error);
+    }
   }
 
   async loadBudget(houseId: string){
@@ -157,7 +159,7 @@ export class HousesService {
   {
     this.taskApiService.getAllTasks().subscribe({
       next: (task) => {
-        const filteredTasks = task.filter(t => t.b_uuid === buildingId);
+        const filteredTasks = task.filter(t => t.buuid === buildingId);
         this.timeline.set(filteredTasks);
         this.sortTimeline();
       },
@@ -188,18 +190,7 @@ export class HousesService {
       }
       else
       {
-        this.inventoryItemApiService.deleteInventoryItem(item).subscribe({
-          next: () => {
-            this.inventory.update(current => 
-              current.filter(i => i.itemUuid !== item.itemUuid)
-            );
-            resolve();
-          },
-          error: (err) => {
-            console.error("Error deleting item ${item}", err);
-            reject(err);
-          }
-        });
+        this.deleteInvetoryItem(item);
       }
     })
    });
@@ -212,5 +203,22 @@ export class HousesService {
     console.error("Inventory items update failed", error);
     return false;
    }
+  }
+  deleteInvetoryItem(item: Inventory): Promise<void>
+  {
+    return new Promise((resolve, reject) => {
+      this.inventoryItemApiService.deleteInventoryItem(item).subscribe({
+        next: () => {
+          this.inventory.update(current => 
+            current.filter(i => i.itemUuid !== item.itemUuid)
+          );
+          resolve();
+        },
+        error: (err) => {
+          console.error("Error deleting item ${item}", err);
+          reject(err);
+        }
+      });
+    })
   }
 }

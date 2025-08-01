@@ -74,7 +74,6 @@ export class ViewHouseComponent  implements OnInit {
 
      const sub = this.route.paramMap.subscribe(async params => {
       const houseId = params.get('houseId');
-      console.log(houseId);
       
       try{
         await Promise.all([

@@ -19,6 +19,7 @@ export * from './services/api/InventoryItem api/inventory-item-api.service';
 export * from './services/api/InventoryUsage api/inventory-usage-api.service';
 export * from './services/api/Task api/task-api.service';
 export * from './services/storage.service';
+export * from './services/voting.service';
 
 //Models
 export * from './models/bodyCoporate.model';
@@ -34,6 +35,9 @@ export * from './models/lifeCycleCost.model';
 export * from './models/maintenanceTask.model';
 export * from './models/property.model';
 export * from './models/reserveFund.model';
+export * from './models/voting.model';
+export * from './models/AssignedContractor.model'
+export * from './models/quote.model';
 
 //Utils
 export * from './utils/cookie-utils';

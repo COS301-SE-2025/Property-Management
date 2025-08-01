@@ -1,8 +1,9 @@
 export interface Quote{
-    quote_id: number;
-    task_id: number;
-    contractor_id: number;
+    uuid: string;
+    t_uuid: string;
+    c_uuid: string;
     amount: number;
     submitted_on: Date,
-    type: string;
+    doc: string;
+    status?: string;
 }

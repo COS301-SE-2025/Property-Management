@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
+import { TokenUtilService } from '../services/token-util.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class AuthService {
 
   private url = '/api';
 
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient, private tokenUtil: TokenUtilService){}
 
   bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
   {
@@ -255,13 +256,26 @@ export class AuthService {
     });
   }
 
+  private getCookieValue(name: string): string | null {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  } 
+
+  getUserType(): string | null {
+    if (this.getCookieValue('trusteeId')) {
+      return 'trustee';
+    } 
+    else if (this.getCookieValue('bodyCoporateId')) {
+      return 'bodyCorporate';
+    } 
+    else if (this.getCookieValue('contractorId')) {
+      return 'contractor';
+    }
+    return null;
+  }
+  
   logout()
   {
-    localStorage.removeItem("userType");
-    localStorage.removeItem("trusteeID");
-    localStorage.removeItem("bodyCoporateID");
-    localStorage.removeItem("contractorID");
-
     const deleteCookie = (name: string) => {
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     };
