@@ -1,10 +1,10 @@
 <ion-tabs>
   <ion-tab-bar slot="bottom">
-    <ion-tab-button href="/home">
+    <ion-tab-button [attr.href]="type === 'contractor' ? '/contractor-home' : '/home'">
       <ion-icon src="assets/icons/home-app.svg"></ion-icon>
       Home
     </ion-tab-button>
-    <ion-tab-button tab="voting">
+    <ion-tab-button tab="voting" *ngIf="type !== 'contractor'">
       <ion-icon src="assets/icons/vote.svg"></ion-icon>
       Voting
     </ion-tab-button>
