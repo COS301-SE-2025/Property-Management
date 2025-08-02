@@ -17,8 +17,7 @@ import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.co
 import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
-import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
-// import { RatingsComponent } from './pages/ratings/ratings-page.component';
+
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
@@ -26,6 +25,7 @@ import { authGuard } from './auth.guard';
 import { VotingComponent } from './pages/voting/voting.component';
 import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
 import { TimelineDetailsComponent } from './pages/view-house/timeline-details/timeline-details.component';
+import { NotificationComponent } from './pages/notifications/notification.component';
 
 export const routes: Routes = [
   {
@@ -152,18 +152,6 @@ export const routes: Routes = [
     component: PublicContractorsComponent
   },
   {
-    path: 'members',
-    canActivate: [authGuard(['bodyCorporate'])],
-    pathMatch: 'full',
-    component: ManageMembersComponent
-  },
-  // {
-  //   path: 'ratings',
-  //   canActivate: [authGuard(['bodyCorporate'])],
-  //   pathMatch: 'full',
-  //   component: RatingsComponent
-  // },
-  {
     path: 'landingPage',
     pathMatch: 'full',
     component: LandingPageComponent
@@ -177,5 +165,10 @@ export const routes: Routes = [
     path: 'reset-password',
     pathMatch: 'full',
     component: ResetPasswordComponent
+  },
+  {
+    path: 'notifications',
+    pathMatch: 'full',
+    component: NotificationComponent
   }
 ];

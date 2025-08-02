@@ -1,0 +1,46 @@
+<app-header/>
+
+<div class="flex flex-col justify-start items-start ml-10 my-8">
+    <h1 class="font-semibold text-2xl">All Notifications</h1>
+    <div class="w-[12rem] h-1 bg-yellow-300 mt-2"></div>
+
+    <div *ngIf="notiError">
+        <p class="text-red-500">Error getting notifications, please try again</p>
+    </div>
+
+    <div *ngIf="!notiError" class="mt-8 ml-10">
+        <div>
+            <p class="text-lg">Unread</p>
+            <p-timeline [value]="unreadTimeline()">
+                <ng-template #content let-time>
+                    <div class="cursor-pointer hover:underline hover:translate-y-0.5 transition-transform duration-200" tabindex="0" role="button" (click)="showDetails(time)" (keydown.enter)="showDetails(time)" (keydown.space)="showDetails(time)">
+                        {{ time.createdAtDate | formatTime }}  <br>  {{ time.message }}
+                    </div>
+                </ng-template>
+                <ng-template #marker let-time>
+                    <div class="flex items-center justify-center w-6 h-6 rounded-full shadow-md bg-white-200">
+                        <i class="pi pi-clock text-gray-800"></i>
+                    </div>
+                </ng-template>
+            </p-timeline>
+        </div>
+    
+        <!-- Read -->
+        <div>
+            <p class="text-lg">Recent</p>
+            <p-timeline [value]="timeline()">
+                <ng-template #content let-time>
+                    <div class="cursor-pointer hover:underline hover:translate-y-0.5 transition-transform duration-200" tabindex="0" role="button" (click)="showDetails(time)" (keydown.enter)="showDetails(time)" (keydown.space)="showDetails(time)">
+                        {{ time.createdAtDate | formatTime }} <br> {{ time.message }}
+                    </div>
+                </ng-template>
+                <ng-template #marker let-time>
+                    <div class="flex items-center justify-center w-6 h-6 rounded-full shadow-md bg-white-200">
+                        <img src="assets/icons/task_done.svg" alt="Read" class="w-5 h-5"/>
+                    </div>
+                </ng-template>
+            </p-timeline>
+        </div>
+    </div>
+    <!-- Unread -->
+</div>
