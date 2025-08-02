@@ -1,24 +1,25 @@
-<ion-modal [isOpen]="displayModal">
+<ion-modal [isOpen]="displayModal" class="dark:bg-gray-800">
   <ng-template>
     <ion-header>
-      <ion-toolbar>
+      <ion-toolbar class="dark:bg-gray-800">
         <ion-buttons slot="start">
-          <ion-button (click)="closeModal()">Cancel</ion-button>
+          <ion-button (click)="closeModal()" class="dark:text-white">Cancel</ion-button>
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+          <ion-button (click)="confirm()" [strong]="true" class="dark:text-white">Confirm</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <form [formGroup]="form" (ngSubmit)="confirm()">
         <div class="flex flex-col justify-center items-center mt-4 space-y-2">
-          <p class="text-gray-700 pl-2 pb-2">Add new item and update budget</p>
+          <p class="text-gray-700 pl-2 pb-2 dark:text-gray-100">Add new item and update budget</p>
           <ion-item>
             <ion-input
               label="Inventory item name"
               labelPlacement="stacked"
               formControlName="inventoryName"
+              class="dark:text-gray-200"
             ></ion-input>
             <p class="text-red-500" *ngIf="form.get('inventoryName')?.hasError('required') && form.get('inventoryName')?.touched">Field is required</p>
           </ion-item>
@@ -27,6 +28,7 @@
               label="Price for one"
               labelPlacement="stacked"
               formControlName="itemPrice"
+              class="dark:text-gray-200"
             ></ion-input>
             <p class="text-red-500" *ngIf="form.get('itemPrice')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
             <p class="text-red-500" *ngIf="form.get('itemPrice')?.hasError('min') && form.get('itemPrice')?.touched">Value must be positive</p>
@@ -36,6 +38,7 @@
               label="Quantity bought"
               labelPlacement="stacked"
               formControlName="quantity"
+              class="dark:text-gray-200"
             ></ion-input>
             <p class="text-red-500" *ngIf="form.get('quantity')?.hasError('required') && form.get('quantity')?.touched">Field is required</p>
             <p class="text-red-500" *ngIf="form.get('quantity')?.hasError('min') && form.get('quantity')?.touched">Value must be positive</p>
@@ -45,6 +48,7 @@
               label="Bought on"
               labelPlacement="stacked"
               formControlName="datePurchased"
+              class="dark:text-gray-200"
               type="date"
             ></ion-input>
             <p class="text-red-500" *ngIf="form.get('quantity')?.hasError('required') && form.get('quantity')?.touched">Field is required</p>

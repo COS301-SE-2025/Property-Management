@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonHeader, IonModal, IonInput, IonItem, IonToolbar, IonButtons, IonButton, IonContent, IonIcon, IonSelect, IonSelectOption } from "@ionic/angular/standalone";
+import { IonHeader, IonModal, IonInput, IonItem, IonToolbar, IonButtons, IonButton, IonContent, IonIcon, IonSelect, IonSelectOption, SelectChangeEventDetail } from "@ionic/angular/standalone";
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TaskApiService, ImageApiService, ContractorApiService, ContractorDetails, StorageService } from 'shared';
-import { usePhoto } from 'src/composables/usePhoto';
+import { TaskApiService, ImageApiService, ContractorApiService, ContractorDetails, StorageService, Inventory, InventoryItemApiService, HousesService } from 'shared';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
-
+import { PhotoService } from 'src/app/services/photo.service';
+import { InventoryComponent } from '../../inventory/inventory.component';
 
 @Component({
   selector: 'app-add-timeline',
-  imports: [IonIcon,  IonHeader, IonModal, IonInput, IonItem, IonIcon, IonToolbar, IonButtons, IonButton, IonContent, IonSelect, IonSelectOption, CommonModule, ReactiveFormsModule],
+  imports: [IonIcon, IonHeader, IonModal, IonInput, IonItem, IonIcon, IonToolbar, IonButtons, IonButton, IonContent, IonSelect, IonSelectOption, CommonModule, ReactiveFormsModule, InventoryComponent],
   templateUrl: './add-timeline.component.html',
   styles: ``,
 })
@@ -24,9 +24,12 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   
   public capturedPhoto: string | null = null;
   public contractors: ContractorDetails[] | undefined = undefined;
+  public inventoryItemsAvailable: Inventory[] | undefined = undefined;
+  public inventoryItemsUsed: Inventory[] | undefined  = undefined;
+  public addError = false;
 
-  private photoService = usePhoto();
-  
+  @ViewChild(InventoryComponent) inventoryCard!: InventoryComponent;
+
   constructor(
     private fb: FormBuilder, 
     private route : ActivatedRoute, 
@@ -34,7 +37,10 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
     private taskApiService: TaskApiService, 
     private imageService: ImageApiService, 
     private contractorService: ContractorApiService,
-    private storage: StorageService
+    private storage: StorageService,
+    private photoService: PhotoService,
+    private inventoryService: InventoryItemApiService,
+    private housesService: HousesService
   ) {
     super();
 
@@ -50,7 +56,6 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
       name: ['', Validators.required],
       description: ['', Validators.required],
       date: ['', Validators.required],
-      contractorName: [[], Validators.required],
     });
 
     this.contractorService.getAllContractors().subscribe({
@@ -58,10 +63,17 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
         this.contractors = response;
       }
     });
+
+    this.inventoryService.getInventoryItemsByBuilding(this.houseId).subscribe({
+      next: (res) => {
+        this.inventoryItemsAvailable = res;
+      }
+    });
   }
 
   override closeModal(): void {
     this.form.reset();
+    this.inventoryItemsUsed = undefined;
     super.closeModal();
   }
 
@@ -72,33 +84,18 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
       {
         this.capturedPhoto = `data:image/${photo.format};base64,${photo.base64String}`;
 
-        const blob = this.base64ToBlob(photo.base64String, `image/$(photo.format)`);
-        this.selectedFile = new File([blob], `captured_${Date.now()}.${photo.format}`, {
-          type: `image/${photo.format}`
-        });
+        const blob = this.photoService.base64ToBlob(photo.base64String, `image/$(photo.format)`);
+        this.selectedFile = this.photoService.createFile(blob, `captured_${Date.now()}.${photo.format}`, photo.format);
       }
     }
     catch(err){
       console.error("Error capturing photo", err);
     }
   }
-  private base64ToBlob(base64: string, content: string)
-  {
-    const bytes = atob(base64);
-    const byteNum = new Array(bytes.length);
-
-    for(let i = 0; i < bytes.length; i++)
-    {
-      byteNum[i] = bytes.charCodeAt(i);
-    }
-
-    const byteArr = new Uint8Array(byteNum);
-    return new Blob([byteArr], { type: content });
-  }
-
   override async confirm() {
     if(this.form.valid)
     {
+      this.addError = false;
       let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
 
       if(this.selectedFile)
@@ -112,12 +109,6 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
         catch(err)
         {
           console.error("Image upload failed", err);
-
-          // this.messageService.add({
-          //   severity: 'error',
-          //   summary: 'Error',
-          //   detail: 'Failed to upload image, please try again'
-          // });
         }
       }
 
@@ -125,12 +116,16 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
 
       const name = this.form.value.name;
       const des = this.form.value.description;
-      const date = this.form.value.date;
-      const contractorId = this.form.value.contractorName[0];
+      const date = new Date(this.form.value.date);
 
+      this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, true, false).subscribe({
+        next: (task) => {
 
-      this.taskApiService.createTask(name, des, "pending", date, false, this.houseId, userId, imageId, contractorId).subscribe({
-        next: () => {
+          if(this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0)
+          {
+            this.handleInventory(task.uuid);
+          }
+
           this.form.reset();
           this.closeModal();
 
@@ -142,6 +137,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
         },
         error: (err) => {
           console.error("Failed to create task", err);
+          this.addError = true;
         }
       });
     }
@@ -151,4 +147,45 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
     this.capturedPhoto = null;
     this.selectedFile = null;
   }
+  updateInventoryItemsUsed(event: CustomEvent<SelectChangeEventDetail<string[]>>)
+  {
+    const selectedIds = event.detail.value as string[];
+    if(!this.inventoryItemsAvailable) return;
+
+    this.inventoryItemsUsed = this.inventoryItemsAvailable.filter(item =>
+      selectedIds.includes(item.itemUuid)
+    );
+ }
+ private handleInventory(taskId: string)
+ {
+  if(!this.inventoryItemsUsed) return;
+
+  this.inventoryItemsUsed.forEach(item => {
+    this.inventoryCard.addItemToUsage(
+      taskId,
+      item.itemUuid,
+      item.quantityInStock
+    );
+
+    const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
+    if(org)
+    {
+      org.quantityInStock -= item.quantityInStock;
+      if(org.quantityInStock <= 0)
+      {
+        this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
+
+        this.housesService.deleteInvetoryItem(item);
+      }
+      else
+      {
+        this.housesService.updateInventory([org]);
+      }
+    }
+  });
+ }
+ onQuantitiesChanged(updated: Inventory[])
+ {
+  this.inventoryItemsUsed = updated;
+ }
 }

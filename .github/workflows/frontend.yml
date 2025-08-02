@@ -26,8 +26,8 @@ jobs:
               working-directory: Frontend/
 
             - name: Lint code
-              run: ng lint property-manager
-              working-directory: Frontend/Property-Manager
+              run: npm run lint property-manager
+              working-directory: Frontend
         
     audit:
       runs-on: ubuntu-22.04

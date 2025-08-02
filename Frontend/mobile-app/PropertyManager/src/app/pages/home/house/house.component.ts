@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { IonItem, IonCard, IonCardContent } from "@ionic/angular/standalone";
+import { IonItem} from "@ionic/angular/standalone";
 import { HousesService } from 'shared';
 import { Property } from 'shared';
 import { Router } from '@angular/router';

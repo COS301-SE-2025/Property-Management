@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { IonContent, IonItem, IonInput, IonText, IonSpinner } from '@ionic/angular/standalone';
 import { ContractorService, ContractorDetails, getCookieValue, ImageApiService } from 'shared';
 import { Router } from '@angular/router';
+import { TabComponent } from 'src/app/components/tab/tab.component';
 
 @Component({
   selector: 'app-contractor-profile',
@@ -11,7 +12,8 @@ import { Router } from '@angular/router';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    IonContent, IonItem, IonInput, IonText, IonSpinner
+    IonContent, IonItem, IonInput, IonText, IonSpinner,
+    TabComponent
   ],
   templateUrl: './contractor-profile.component.html',
   styleUrls: ['./contractor-profile.component.scss']

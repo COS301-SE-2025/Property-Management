@@ -1,29 +1,31 @@
 <ion-modal [isOpen]="displayModal">
   <ng-template>
-    <ion-header>
+    <ion-header class="bg-white dark:bg-gray-800">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-button (click)="closeModal()">Cancel</ion-button>
+          <ion-button (click)="closeModal()" class="dark:text-gray-200">Cancel</ion-button>
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+          <ion-button (click)="confirm()" [strong]="true" class="dark:text-gray-200">Confirm</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
+    <ion-content class="bg-white dark:bg-gray-800">
       <form [formGroup]="form" (ngSubmit)="confirm()">
         <div class="flex flex-col justify-center items-center mt-4 space-y-2">
-          <p class="text-gray-700 pl-2 pb-2">Add new item and update budget</p>
+          <p class="text-gray-700 pl-2 pb-2 dark:text-gray-400">Add new item and update budget</p>
           <ion-item>
             <ion-input
               label="Task name"
               labelPlacement="stacked"
               formControlName="name"
+              class="dark:text-gray-200"
             ></ion-input>
             <p class="text-red-500" *ngIf="form.get('name')?.hasError('required') && form.get('inventoryName')?.touched">Field is required</p>
           </ion-item>
           <ion-item>
             <ion-input
+              class="dark:text-gray-200"
               label="Task description"
               labelPlacement="stacked"
               formControlName="description"
@@ -31,15 +33,25 @@
             <p class="text-red-500" *ngIf="form.get('description')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
           </ion-item>
           <ion-item>
-            <ion-select label="Assigned contractors" [multiple]="true" formControlName="contractorName">
-              @for(contractor of contractors; track contractor.uuid)
+            <ion-select class="dark:text-white" placeholder="Assign inventory items" [multiple]="true" (ionChange)="updateInventoryItemsUsed($event)">
+              @for(inventory of inventoryItemsAvailable; track inventory.itemUuid)
               {
-                <ion-select-option [value]="contractor.uuid">{{ contractor.name }}</ion-select-option>
+                <ion-select-option [value]="inventory.itemUuid">{{ inventory.name}}  (Quantity: {{inventory.quantityInStock }})</ion-select-option>
               }
             </ion-select>
           </ion-item>
+          <ion-item *ngIf="inventoryItemsUsed">
+             <app-inventory 
+                [inventory]="inventoryItemsUsed" 
+                [showAddButton]="false"
+                [readOnly]="true"
+                [capOriginal]="true"
+                (quantitiesChanged)="onQuantitiesChanged($event)"
+            ></app-inventory>
+          </ion-item>
           <ion-item>
             <ion-input
+              class="dark:text-gray-200"
               label="Proposed due date"
               labelPlacement="stacked"
               formControlName="date"
@@ -48,7 +60,7 @@
             <p class="text-red-500" *ngIf="form.get('date')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
           </ion-item>
           <div class="pt-4 flex flex-col justify-center items-center">
-            <p>Take image of the task</p>
+            <p class="dark:text-gray-200">Take image of the task</p>
             <ion-button (click)="capturePhoto()" fill="clear">
               <ion-icon name="camera-outline"></ion-icon>
             </ion-button>
@@ -59,6 +71,9 @@
               <ion-button (click)="deletePhoto()" fill="clear" color="dark">
                 <ion-icon name="trash-outline"></ion-icon>
               </ion-button>
+            </div>
+            <div class="text-center">
+              <p class = "font-semibold text-red-500" *ngIf="addError">Error adding new task</p>
             </div>
           </div>
         </div>
