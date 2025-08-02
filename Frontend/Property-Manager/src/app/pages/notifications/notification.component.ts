@@ -4,12 +4,28 @@ import { TimelineModule } from 'primeng/timeline';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe } from 'shared';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { InviteDialogComponent } from "./invite-dialog/invite-dialog.component";
 
 @Component({
   selector: 'app-notifications',
-  imports: [HeaderComponent, TimelineModule, CommonModule, FormatTimePipe],
+  imports: [HeaderComponent, TimelineModule, CommonModule, FormatTimePipe, InviteDialogComponent],
   templateUrl: './notification.component.html',
   styles: ``,
+  animations: [
+    trigger('floatUp', [
+      state('void', style({
+        transform: 'translateY(20%)',
+        opacity: 0
+      })),
+      transition(':enter', [
+        animate('600ms ease-out', style({
+          transform: 'translateY(0)',
+          opacity: 1
+        }))
+      ])
+    ])
+  ]
 })
 export class NotificationComponent  implements OnInit {
 
@@ -17,6 +33,8 @@ export class NotificationComponent  implements OnInit {
   public timeline = signal<Notification[]>([]);
   private userId: string | null = null;
   public notiError = false;
+  public inviteId = signal<string | null>(null);
+  public inviteDialogVisible = false;
 
   constructor(private router: Router, private notificationService: NotificationsApiService) { }
 
@@ -30,8 +48,6 @@ export class NotificationComponent  implements OnInit {
     {
         this.notificationService.getNotifications(type, this.userId).subscribe({
             next: (noti) => {
-              console.log(noti);
-
               const unread: Notification[] = [];
               const read: Notification[] = [];
 
@@ -61,7 +77,39 @@ export class NotificationComponent  implements OnInit {
   }
   showDetails(noti: Notification)
   {
-
+    //Mark as read
+    this.notificationService.markNotificationsAsRead(noti.notificationUuid!).subscribe({
+      next: () => {
+        if(noti.relatedInviteUuid && this.getUserType() === 'trustee')
+        {
+          //confirm dialog pop up
+          this.inviteId.set(noti.relatedInviteUuid);
+          this.inviteDialogVisible = true;
+        }
+        else if(noti.relatedTaskUuid)
+        {
+          if(this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate')
+          {
+            this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
+          }
+        }
+        else if(noti.relatedSessionUuid)
+        {
+          if(this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate')
+          {
+            this.router.navigate(['/voting', noti.relatedSessionUuid]);
+          }
+        }
+        else if(noti.relatedQuoteUuid)
+        {
+          //Contractor can see their quote they made
+        }
+        else
+        {
+          window.location.reload();
+        }
+      }
+    });
   }
   private getUserType(): string | null {
     if (getCookieValue(document.cookie, 'trusteeId')) {
@@ -88,19 +136,12 @@ export class NotificationComponent  implements OnInit {
     }
     
     const sorted = [...notifications].sort((a, b) => {
-      console.log('trying to sort');
       if(!a.createdAt || !b.createdAt){
-        console.log('created at doesnt exist');
         return 0;
       } 
-      console.log(a.createdAt);
-      console.log(b.createdAt);
   
       const aDate = new Date(a.createdAt[0], a.createdAt[1] -1, a.createdAt[2], a.createdAt[3], a.createdAt[4], a.createdAt[5]);
       const bDate = new Date(b.createdAt[0], b.createdAt[1] -1, b.createdAt[2], b.createdAt[3], b.createdAt[4], b.createdAt[5]);
-  
-      console.log(aDate);
-      console.log(bDate);
   
       a.createdAtDate = aDate;
       b.createdAtDate = bDate;
