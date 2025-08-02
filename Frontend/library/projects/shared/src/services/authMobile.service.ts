@@ -98,12 +98,15 @@ export class AuthMobileService {
     return new Promise((resolve, reject) => {
       this.contractorLoginRequest(email, password).subscribe({
         next: (result) => {
+         const contractorId = result.userId;
           const idToken = result.idToken;
-          const contractorId = result.userId;
+          const expireDate = new Date();
+          expireDate.setDate(expireDate.getDate() + 1);
 
-          this.storage.set('idToken', idToken);
-          this.storage.set('contractorId', contractorId);
-          this.storage.set('userType', 'contractor');
+          document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
+          document.cookie = `contractorId=${contractorId}; expires=${expireDate.toUTCString()}; path=/`;
+          document.cookie = `userType=contractor; expires=${expireDate.toUTCString()}; path=/`;
+      
 
           resolve(result);
         },

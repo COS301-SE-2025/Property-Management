@@ -8,7 +8,7 @@ export const routes: Routes = [
     },
     {
         path: 'login',
-        loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) 
+        loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)
     },
     {
         path: 'registerTrustee',
@@ -53,5 +53,13 @@ export const routes: Routes = [
     {
         path: 'contractor-profile',
         loadComponent: () => import('./pages/contractor-profile/contractor-profile.component').then(m => m.ContractorProfileComponent)
+    },
+    {
+        path: 'contractor-home',
+        loadComponent: () => import('./pages/contractor-home/contractor-home.component').then(m => m.ContractorHomeComponent)
+    },
+    {
+        path: 'quotation/:t_uuid',
+        loadComponent: () => import('./pages/quotation/quotation.component').then(m => m.QuotationComponent)
     }
 ];
