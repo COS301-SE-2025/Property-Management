@@ -62,7 +62,6 @@ class ContractorController(
         @PathVariable Uuid: UUID,
     ): ResponseEntity<List<Contractor>> = ResponseEntity.ok(service.getContractorsByCorporateUuid(Uuid))
 
-
     @PostMapping
     fun createUser(
         @RequestBody contractor: ContractorDto,

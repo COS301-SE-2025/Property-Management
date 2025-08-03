@@ -87,7 +87,5 @@ class ContractorService(
     fun getByEmail(email: String): Contractor =
         repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
 
-    fun getContractorsByCorporateUuid(corporateUuid: UUID): List<Contractor> =
-        repository.findContractorsByCorporateUuid(corporateUuid)
-
+    fun getContractorsByCorporateUuid(corporateUuid: UUID): List<Contractor> = repository.findContractorsByCorporateUuid(corporateUuid)
 }
