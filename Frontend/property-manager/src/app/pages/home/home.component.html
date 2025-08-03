@@ -4,7 +4,7 @@
     <p class = "text-xl font-normal">Your properties</p>
 </div>
 
-<div class = "flex flex-wrap justify-center gap-8 p-8">
+<div [@floatUp] class = "flex flex-wrap justify-center gap-8 p-8">
     @for (house of houses(); track  house.buildingUuid)
     {
         <div class="hover:translate-y-1 transition-transform duration-200">

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
+import { PropertyService, InviteWithTrustee } from 'shared';
 
 @Component({
   selector: 'app-manage-members',
@@ -8,23 +9,34 @@ import { HeaderComponent } from '../../components/header/header.component';
   imports: [CommonModule, HeaderComponent],
   templateUrl: './manage-members.component.html'
 })
-export class ManageMembersComponent {
-  invitations = [
-    { name: 'Tafara', email: 'trustee@gmail.com', dateSent: new Date('2025-07-12'), status: 'Pending' },
-    { name: 'Patrick', email: 'trustee@gmail.com', dateSent: new Date('2025-06-26'), status: 'Accepted' },
-    { name: 'Thabiso', email: 'trustee@gmail.com', dateSent: new Date('2025-07-05'), status: 'Rejected' }
-  ];
+export class ManageMembersComponent implements OnInit {
+  invitations: InviteWithTrustee[] = [];
+  activeMembers: InviteWithTrustee[] = [];
 
-  activeMembers = [
-    { name: 'Patrick', email: 'patrick@gmail.com', role: 'Trustee', since: new Date('2025-06-26') },
-    { name: 'Neil', email: 'neil@gmail.com', role: 'Trustee', since: new Date('2025-07-07') }
-  ];
+  constructor(private propertyService: PropertyService) {}
 
-  cancelInvite(invite: any) {
-
+  ngOnInit() {
+    this.propertyService.getInvitations().subscribe(data => {
+      this.invitations = data;
+      this.activeMembers = data.filter(invite => invite.status === 'ACCEPTED');
+    });
   }
 
-  revokeInvite(invite: any) {
+  cancelInvite(invite: InviteWithTrustee) {
+    this.propertyService.updateInviteStatus(invite.inviteUuid, 'REJECTED').subscribe(updated => {
+      this.invitations = this.invitations.map(i =>
+        i.inviteUuid === invite.inviteUuid ? { ...i, status: 'REJECTED' } : i
+      );
+      this.activeMembers = this.activeMembers.filter(i => i.inviteUuid !== invite.inviteUuid);
+    });
+  }
 
+  revokeInvite(invite: InviteWithTrustee) {
+    this.propertyService.updateInviteStatus(invite.inviteUuid, 'REJECTED').subscribe(updated => {
+      this.invitations = this.invitations.map(i =>
+        i.inviteUuid === invite.inviteUuid ? { ...i, status: 'REJECTED' } : i
+      );
+      this.activeMembers = this.activeMembers.filter(i => i.inviteUuid !== invite.inviteUuid);
+    });
   }
 }

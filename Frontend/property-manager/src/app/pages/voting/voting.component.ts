@@ -3,12 +3,27 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { getCookieValue, VotingService } from 'shared';
 import { VotingCardComponent } from "./voting-card/voting-card.component";
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-voting',
   imports: [HeaderComponent, VotingCardComponent, CommonModule],
   templateUrl: './voting.component.html',
   styles: ``,
+  animations: [
+    trigger('floatUp', [
+      state('void', style({
+        transform: 'translateY(20%)',
+        opacity: 0
+      })),
+      transition(':enter', [
+        animate('600ms ease-out', style({
+          transform: 'translateY(0)',
+          opacity: 1
+        }))
+      ])
+    ])
+  ]
 })
 export class VotingComponent  implements OnInit {
 

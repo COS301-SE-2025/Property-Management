@@ -18,7 +18,7 @@ data class InventoryUsage(
     @Column(name = "task_uuid", columnDefinition = "UUID")
     val taskUuid: UUID,
     @Column(name = "used_by_contractor_uuid", columnDefinition = "UUID")
-    val usedByContractorUuid: UUID,
+    val usedByContractorUuid: UUID?,
     @Column(name = "quantity_used")
     val quantityUsed: Int,
     @Column(name = "trustee_approved")
