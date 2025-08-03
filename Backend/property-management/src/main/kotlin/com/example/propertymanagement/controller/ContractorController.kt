@@ -53,9 +53,15 @@ class ContractorController(
         val reg_number: String,
         val description: String,
         val services: String,
-        val corporate_uuid: UUID? = null,
+        val corporateUuid: UUID? = null,
         val img: UUID,
     )
+
+    @GetMapping("/corporate/{uuid}")
+    fun getTaskByTrustee(
+        @PathVariable Uuid: UUID,
+    ): ResponseEntity<List<Contractor>> = ResponseEntity.ok(service.getContractorsByCorporateUuid(Uuid))
+
 
     @PostMapping
     fun createUser(
@@ -74,7 +80,7 @@ class ContractorController(
             contractor.reg_number,
             contractor.description,
             contractor.services,
-            contractor.corporate_uuid ?: UUID.randomUUID(),
+            contractor.corporateUuid ?: UUID.randomUUID(),
             contractor.img,
         )
 
@@ -121,7 +127,7 @@ class ContractorController(
             reg_number = "N/A",
             description = "N/A",
             services = "N/A",
-            corporate_uuid = UUID.randomUUID(),
+            corporateUuid = UUID.randomUUID(),
             img = UUID.randomUUID(),
         )
         return ResponseEntity.ok(
