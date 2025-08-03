@@ -61,5 +61,9 @@ export const routes: Routes = [
     {
         path: 'quotation/:t_uuid',
         loadComponent: () => import('./pages/quotation/quotation.component').then(m => m.QuotationComponent)
+    },
+    {
+        path: 'notifications',
+        loadComponent: () => import('./pages/notification/notification.component').then(m => m.NotificationComponent)
     }
 ];
