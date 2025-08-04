@@ -1,21 +1,19 @@
 package com.example.propertymanagement.controller
 
-import com.example.propertymanagement.model.Quote
-import com.example.propertymanagement.dto.QuoteDto
 import com.example.propertymanagement.dto.PartialQuoteUpdateDTO
+import com.example.propertymanagement.dto.QuoteDto
+import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.service.QuoteService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.math.BigDecimal
-import java.util.Date
 import java.util.UUID
 
 @RestController
@@ -33,8 +31,6 @@ class QuoteController(
         val quote = service.getById(uuid)
         return if (quote != null) ResponseEntity.ok(quote) else ResponseEntity.notFound().build()
     }
-
-
 
     @PostMapping
     fun createQuote(
@@ -66,20 +62,21 @@ class QuoteController(
     @PatchMapping("/{uuid}")
     fun patchQuote(
         @PathVariable uuid: UUID,
-        @RequestBody dto: PartialQuoteUpdateDTO
+        @RequestBody dto: PartialQuoteUpdateDTO,
     ): ResponseEntity<Quote> {
-        val existing = service.getById(uuid)
-            ?: return ResponseEntity.notFound().build()
+        val existing =
+            service.getById(uuid)
+                ?: return ResponseEntity.notFound().build()
 
-        val updated = existing.copy(
-            amount = dto.amount ?: existing.amount,
-            status = dto.status ?: existing.status,
-            doc = dto.doc ?: existing.doc,
-            t_uuid = dto.t_uuid ?: existing.t_uuid,
-            c_uuid = dto.c_uuid ?: existing.c_uuid,
-        )
+        val updated =
+            existing.copy(
+                amount = dto.amount ?: existing.amount,
+                status = dto.status ?: existing.status,
+                doc = dto.doc ?: existing.doc,
+                t_uuid = dto.t_uuid ?: existing.t_uuid,
+                c_uuid = dto.c_uuid ?: existing.c_uuid,
+            )
 
         return ResponseEntity.ok(service.update(uuid, updated))
     }
-
 }
