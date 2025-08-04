@@ -1,12 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { IonContent, IonItem } from '@ionic/angular/standalone';
+import {  RouterModule } from '@angular/router';
+import { IonContent } from '@ionic/angular/standalone';
 import { ApiService } from 'shared';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from 'src/app/components/tab/tab.component';
-import { catchError, map } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
 import {
   trigger,
   transition,
@@ -22,7 +20,6 @@ import {
   imports: [
     CommonModule,
     IonContent,
-    IonItem,
     RouterModule,
     HeaderComponent,
     TabComponent

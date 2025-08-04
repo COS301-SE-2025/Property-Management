@@ -24,8 +24,6 @@ export class AuthMobileService {
           const idToken = result.idToken;
           const trusteeId = result.userId;
 
-          console.log(trusteeId);
-
           this.storage.set('idToken', idToken);
           this.storage.set('trusteeId', trusteeId);
           this.storage.set('userType', 'trustee');

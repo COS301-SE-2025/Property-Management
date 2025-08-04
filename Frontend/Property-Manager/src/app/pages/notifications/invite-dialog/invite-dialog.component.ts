@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Input, input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Toast } from 'primeng/toast';
-import { DialogComponent } from 'property-manager/src/app/components/dialog/dialog.component';
 
 @Component({
   selector: 'app-invite-dialog',
@@ -12,7 +11,7 @@ import { DialogComponent } from 'property-manager/src/app/components/dialog/dial
   providers: [MessageService, ConfirmationService]
 
 })
-export class InviteDialogComponent {
+export class InviteDialogComponent implements OnInit {
 
   @Input() display = false;
   @Input() inviteId = '';

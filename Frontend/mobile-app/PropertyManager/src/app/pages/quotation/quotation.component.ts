@@ -40,7 +40,7 @@ import { ActivatedRoute } from '@angular/router';
     ])
   ]
 })
-export class QuotationComponent  {
+export class QuotationComponent implements OnInit {
   private api = inject(ApiService);
   private route = inject(ActivatedRoute);
   t_uuid: string = '';
