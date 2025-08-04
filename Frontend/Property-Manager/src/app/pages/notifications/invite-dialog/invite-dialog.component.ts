@@ -15,7 +15,7 @@ import { ButtonModule } from 'primeng/button';
   providers: [MessageService]
 
 })
-export class InviteDialogComponent implements OnInit {
+export class InviteDialogComponent {
 
   @Input() display = false;
   @Input() inviteId = '';
@@ -24,10 +24,6 @@ export class InviteDialogComponent implements OnInit {
     private propertyService: PropertyService,
     private messageService: MessageService
   ) {}
-  ngOnInit()
-  {
-    
-  }
 
   onJoin() {
       if (!this.inviteId) return;
