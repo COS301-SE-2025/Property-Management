@@ -13,7 +13,7 @@
   }
 </div>
 
-<div  *ngIf="bcUser">
+<div *ngIf="bcUser">
   <div class="mt-3 ml-12" *ngIf="pendingTasks().length > 0">
     <p class="text-xl font-normal">Tasks pending approval</p>
   </div>
@@ -23,6 +23,19 @@
     {
       <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
         <app-voting-card [task]="task" [type]="'approval'"/>
+      </div>
+    }
+  </div>
+
+  <div class="mt-3 ml-12" *ngIf="approvedTasks().length > 0">
+    <p class="text-xl font-normal">Tasks approved</p>
+  </div>
+
+  <div class="flex flex-wrap justify-center gap-8 p-8">
+    @for(task of approvedTasks(); track task.uuid)
+    {
+      <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
+        <app-voting-card [task]="task" [type]="'voting'"/>
       </div>
     }
   </div>

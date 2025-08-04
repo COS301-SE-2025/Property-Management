@@ -1,8 +1,10 @@
 import { Component, Input, input, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { lastValueFrom } from 'rxjs';
-import { ContractorApiService, VotingResults, VotingService } from 'shared';
+import { ContractorApiService, TaskApiService, VotingResults, VotingService } from 'shared';
+import { Toast } from "primeng/toast";
 
 
 interface Results{
@@ -13,9 +15,10 @@ interface Results{
 }
 @Component({
   selector: 'app-voting-results',
-  imports: [CardModule, TableModule],
+  imports: [CardModule, TableModule, Toast],
   templateUrl: './voting-results.component.html',
   styles: ``,
+  providers: [MessageService]
 })
 export class VotingResultsComponent  implements OnInit, OnChanges {
 
@@ -24,8 +27,11 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
 
   public results = signal<Results[]>([]);
   public error = signal<string | null>(null);
+  public votingEnded = false;
+  public contractorHasBeenAssigned = false;
+  private taskId: string | null = null;
 
-  constructor(private votingService: VotingService, private contractorService: ContractorApiService) { }
+  constructor(private votingService: VotingService, private contractorService: ContractorApiService, private taskService: TaskApiService, private messageService: MessageService) { }
 
   ngOnInit() {
     this.loadResults();
@@ -41,11 +47,34 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
   loadResults()
   {
     this.error.set(null);
+    this.votingEnded = false;
+    this.contractorHasBeenAssigned = false;
 
     this.votingService.getAllVotes(this.sessionId()).subscribe({
       next: (res) => {
+        this.votingService.getTaskIdFromSessionId(this.sessionId()).subscribe({
+          next: (task) => {
+            if(task.taskUuid)
+            {
+              this.taskId = task.taskUuid;
+              this.taskService.getTaskById(task.taskUuid).subscribe({
+                next: (t) => {
+                  if(res.votingEnded && (t.cuuid === '' || !t.cuuid))
+                  {
+                    this.votingEnded = true;
+                  }
+                  else if(t.approvalStatus === "APPROVED" && t.cuuid && t.cuuid !== '')
+                  {
+                    this.contractorHasBeenAssigned = true;
+                  }
+                }
+              });
+            }
+          }
+        })
         this.processResults(res.results).then(proccessed => {
           this.results.set(proccessed);
+          console.log(this.results);
         });
       },
       error: (err) => {
@@ -83,5 +112,58 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
     }
     return results;
   }
+  async endVoting()
+  {
+    let winningContractorId = '' 
+    let max = 0;
+    this.results().forEach(r => {
+      if(r.votesFor > max)
+      {
+        max = r.votesFor;
+        winningContractorId = r.contractorId ?? ''; 
+      }
+    });
 
+    this.votingService.getTaskIdFromSessionId(this.sessionId()).subscribe({
+      next: (res) => 
+      {
+        if(res.taskUuid)
+        {
+          this.taskService.updateTaskAssignedContractor(winningContractorId, res.taskUuid).subscribe({
+            next: () => {
+
+              // this.votingService.getQuote(this.results)
+
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Contractor successfully assigned task'
+              });
+
+              setTimeout(() => {
+                window.location.reload()
+              }, 1500);
+            },
+            error: (err) => {
+              console.error(err);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error assigning contractor to task'
+              })
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error("Error assigning contractor", err);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: "Error assigning contractor to task"
+        })
+      }
+    })
+  }
 }

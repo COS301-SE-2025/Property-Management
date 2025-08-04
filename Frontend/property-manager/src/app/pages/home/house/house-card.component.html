@@ -4,6 +4,8 @@
             <img [src] = "house().propertyImage" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="" rel="preconnect">
             <p class = "text-lg font-bold mt-4"> {{ house().name }}</p>
             <p class = "text-gray-600 mb-4" [ngStyle]="{ 'color':'var(--text-color)' }"> {{ house().address }}</p>
+            <p class="inline-block px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-orange-800" *ngIf="!house().coporateUuid"; else #bodyCorporate>Owner</p>
+            <p class="inline-block px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 mt-2" #bodyCorporate>Part of body corporate: {{ bcName() }}</p>
         </p-card>
     </button>
 </div>
