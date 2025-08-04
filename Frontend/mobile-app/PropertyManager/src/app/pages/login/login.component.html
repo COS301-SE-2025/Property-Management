@@ -1,0 +1,42 @@
+<div class = "flex flex-col items-center justify-center space-y-4 mt-20 mx-auto shadow-lg rounded-lg ">
+  <div class="bg-border">
+    <img class="mb-2" style="height: 10rem; width: auto;" src="assets/images/logo.png" alt="App logo">
+  </div>
+
+  <div class="text-center space-y-4 propertyYellow-bg px-5 py-3">
+    <p class="text-xl font-bold">Sign in</p>
+
+    <ion-item>
+      <img class = "relative right-0.5 mr-2 h-5 w-5 pointer-events-none" src="assets/icons/mail.svg" alt="">
+      <ion-input 
+        placeholder="Enter email address"
+        [(ngModel)]="email"
+        type="email"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <img class = "relative right-1 mr-2 h-5 w-5 pointer-events-none" src="assets/icons/key_vertical.svg" alt="">
+      <ion-input
+       placeholder="Enter password"
+       [(ngModel)]="password"
+      >
+      <ion-input-password-toggle slot="end" color="dark"></ion-input-password-toggle>
+    </ion-input>
+    </ion-item>
+
+    <div class="pb-2 pt-1">
+        <button (click)="login()" class = "bg-black text-white px-5 py-2 rounded font-semibold text-md">Login</button>
+    </div>
+
+    <div *ngIf="emptyField || userError || serverError">
+      <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">Email or password missing</p>
+      <p *ngIf="userError" class="text-red-500 py-1 font-semibold rounded">Email or password incorrect</p>
+      <p *ngIf="serverError" class="text-red-500 py-1 font-semibold rounded">Internal server error</p>
+    </div>
+
+    <div class = "text-sm">
+        <a class = "block text-black no-underline pb-1" href="">Forgot password?</a>
+        <a class = "font-semibold text-black no-underline" href = "/registerHub">Create Account?</a>
+    </div>
+  </div>
+</div>

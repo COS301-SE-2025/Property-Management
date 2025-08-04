@@ -4,6 +4,7 @@ import com.example.propertymanagement.dto.CreateVoteSessionRequest
 import com.example.propertymanagement.dto.QuoteVoteResult
 import com.example.propertymanagement.dto.SubmitVoteRequest
 import com.example.propertymanagement.dto.VoteSessionResult
+import com.example.propertymanagement.dto.VoteSessionSummary
 import com.example.propertymanagement.exception.RestException
 import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.model.QuoteVote
@@ -127,6 +128,38 @@ class QuoteVotingService(
             votingEnded = ended,
             winningQuoteUuid = winner,
         )
+    }
+
+    fun getAllSessions(): List<VoteSessionSummary> =
+        sessionRepo.findAll().map { session ->
+            VoteSessionSummary(
+                sessionUuid = session.sessionUuid,
+                taskUuid = session.taskUuid,
+                coporateUuid = session.coporateUuid,
+                votingEndsAt = session.votingEndsAt,
+                isActive = session.votingEndsAt.isAfter(LocalDateTime.now()),
+            )
+        }
+
+    fun getTaskId(sessionUuid: UUID): UUID {
+        val session =
+            sessionRepo
+                .findById(sessionUuid)
+                .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Voting session not found") }
+        return session.taskUuid
+    }
+
+    fun getSessionByTask(taskUuid: UUID): VoteSessionSummary? {
+        val session = sessionRepo.findByTaskUuid(taskUuid).orElse(null)
+        return session?.let {
+            VoteSessionSummary(
+                sessionUuid = it.sessionUuid,
+                taskUuid = it.taskUuid,
+                coporateUuid = it.coporateUuid,
+                votingEndsAt = it.votingEndsAt,
+                isActive = it.votingEndsAt.isAfter(LocalDateTime.now()),
+            )
+        }
     }
 
     private fun determineWinner(

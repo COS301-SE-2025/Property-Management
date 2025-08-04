@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/presets/aura/blockui/index.ts"],"sourcesContent":["import { BlockUIDesignTokens } from '../../../../types/blockui';\n\nexport default {\n    root: {\n        borderRadius: '{content.border.radius}'\n    }\n} as BlockUIDesignTokens;\n"],"mappings":";AAEA,IAAO,kBAAQ;AAAA,EACX,MAAM;AAAA,IACF,cAAc;AAAA,EAClB;AACJ;","names":[]}

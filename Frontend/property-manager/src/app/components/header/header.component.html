@@ -1,0 +1,82 @@
+
+<div class = "flex flex-col" [ngStyle]="{ 'background-color': 'var(--bg-color)'}">
+    <!-- Name -->
+    <div class = "flex flex-row  items-center px-4 py-2"> 
+        <img src= "assets/images/logo.png" class="w-16 h-12 ml-8 " alt="logo">
+        <p class = "font-medium text-xl">Property Manager</p>
+
+        <div class="flex gap-8 ml-12">
+            <ng-container *ngFor="let link of navLinks">
+                <a *ngIf="link.show"
+                [routerLink]="link.route"
+                routerLinkActive="text-yellow-500"
+                class="text-gray-700 hover:text-yellow-500 font-semibold transition dark:text-white dark:hover:text-yellow-500">
+                {{ link.label }}
+                </a>
+            </ng-container>
+        </div>
+
+        <!--BreadCrumb-->
+        <div class="pl-5">
+            <p-breadcrumb class="max-w-full" [model]="items">
+                <ng-template #item let-item>
+                    <ng-container *ngIf="item.route && !item.active; else elseBlock">
+                        <a [routerLink]="item.route" class="p-breadcrumb-item-link">
+                            <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
+                            <span class="text-primary font-semibold">{{ item.label }}</span>
+                        </a>
+                    </ng-container>
+                    <ng-template #elseBlock>
+                        <span class="text-color">
+                            <span *ngIf="item.icon" [ngClass]="item.icon"></span>
+                            {{ item.label }}
+                        </span>
+                    </ng-template>
+                </ng-template>
+            </p-breadcrumb>
+        </div>
+
+        <div class = "flex flex-row items-center ml-auto">
+            <div class = "relative flex">
+                <!-- <div *ngIf ="isBodyCorporate" class="mr-4 space-x-4 mt-1.25">
+                    <a class="text-yellow-500" href="/home">View properties</a>
+                    <a class="text-yellow-500" href="/bodyCoporate/contractors">View contractors</a>
+                </div> -->
+                <button class = "cursor-pointer pr-3" (click)="dropDownSettings()"> 
+                    <img [src]= "isDarkMode? 'assets/icons/settings_gray.svg': 'assets/icons/settings.svg'" class="w-9 h-9" alt=""> 
+                </button>
+                <button class = "cursor-pointer" (click)="dropDownProfile()">
+                    <img [src]= "isDarkMode? 'assets/icons/profile_gray.svg': 'assets/icons/profile.svg'" class="w-9 h-9" alt="">
+                </button>
+
+                <div #profileDropDown *ngIf="dropDownProfileOpen" class= "absolute right-1 top-14 bg-white border rounded shadow-md w-28 z-50 dark:bg-gray-800">
+                    <button *ngIf="isContractor" class="block text-yellow-500 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-400 dark:hover:bg-gray-700">
+                        <a href="/contractor-prof">View profile</a>
+                    </button>
+                    <button class= "block text-yellow-300 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200 dark:hover:bg-gray-700">
+                        <a href="/help">Help?</a>
+                    </button>          
+                    <button (click)="signOut()" class= "block text-red-500 w-full px-3 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-200">
+                        Sign out
+                    </button>  
+                </div>
+
+                <div #settingsDropDown *ngIf="dropDownSettingsOpen" class= "absolute right-1 top-[3rem] bg-white border rounded shadow-md w-40 z-50 dark:bg-gray-800">
+                    <button (click)="toggleDarkMode()" class="block w-full px-8 py-1 hover:bg-gray-100 cursor-pointer border-b border-gray-400 dark:hover:bg-gray-700">
+                        {{ isDarkMode? 'Light mode': 'Dark mode' }}
+                        <div class="relative w-6 h-6 inline-block overflow-hidden">
+                            <img src="assets/icons/moon.svg" [@slideToggle]="isDarkMode ? 'inactive' : 'active'" class="absolute inset-0" alt='moon icon'>
+                            <img src="assets/icons/sun.svg" [@slideToggle]="isDarkMode ? 'active' : 'inactive'" class="absolute inset-0" alt='sun icon'>
+                        </div>
+                    </button>  
+                    <button class= "block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer dark:hover:bg-gray-700">
+                    Change font size
+                    </button>          
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- bar -->
+    <div class = "propertyYellow-bg h-4 w-full"></div>
+</div>

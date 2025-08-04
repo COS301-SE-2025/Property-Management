@@ -1,0 +1,76 @@
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Inventory</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p-table [value] = "inventory()">
+        <ng-template #header>
+        <tr>
+            <th pSortableColumn="name">
+                Description <p-sortIcon field="name"/>
+            </th>
+            <th pSortableColumn="quantityInStock">
+                Quantity <p-sortIcon field="quantityInStock"/>
+            </th>
+            <th>Actions</th>
+        </tr>
+        </ng-template>
+        <ng-template #body let-inventory let-rowIndex="rowIndex">
+        <tr>
+            <td>{{ inventory.name }}</td>
+            <td>
+                @if(editingRows[rowIndex])
+                {
+                    <input type="number" [(ngModel)]="draftQuantities[rowIndex]" min="0" class="w-20 p-1 border rounded" (keydown)="preventNegative($event)">
+                }
+                @else {
+                    {{ inventory.quantityInStock }}
+                }
+            </td>
+            <td>
+                @if(editingRows[rowIndex])
+                {
+                    <div class="flex gap-2">
+                        <ion-button color="warning" size="small" (click)="changeQuantity(rowIndex, 1)">
+                          <ion-icon name="add-outline"></ion-icon>
+                        </ion-button>
+                        <ion-button color="warning" size="small" (click)="changeQuantity(rowIndex, -1)" [disabled]="draftQuantities[rowIndex] <= 0">
+                          <ion-icon name="remove-outline"></ion-icon>
+                        </ion-button>
+                    </div>
+                }
+                @else {
+                    <div class="flex gap-1">
+                        <ion-button color="warning" size="small" (click)="startAction(rowIndex, 'increase')">
+                          <ion-icon name="add-outline"></ion-icon>
+                        </ion-button>
+                        <ion-button color="warning" size="small" (click)="startAction(rowIndex, 'decrease')" [disabled]="inventory.quantityInStock <= 0">
+                          <ion-icon name="remove-outline"></ion-icon>
+                        </ion-button>
+                    </div>
+                }
+            </td>
+        </tr>
+        </ng-template>
+    </p-table>
+
+    @if(isEditing)
+    {
+        <div class="flex justify-center items-center gap-2 mt-4">
+            <ion-button label="Confirm" color="success" (click)="confirmAction()" [disabled]="!hasChanges">
+              <ion-icon name="checkmark-outline"></ion-icon>
+            </ion-button>
+            <ion-button label="Cancel" color="danger" (click)="resetState()">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </div>
+    }
+    <div class = "mt-2 flex flex-col justify-center items-center">
+      <button (click)="inventoryAddDialog.openModal()">
+        <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
+      </button>
+      <app-add-inventory #inventoryAddDialog/>
+    </div>
+  </ion-card-content>
+</ion-card>
