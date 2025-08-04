@@ -1,6 +1,17 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Notification } from "../../../public-api";
+import { Observable } from 'rxjs';
+
+export interface InviteWithTrustee2 {
+  inviteUuid: string;
+  status: string;
+  invitedOn: string;
+  trusteeUuid: string;
+  name: string;
+  email: string;
+  role: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -22,4 +33,9 @@ export class NotificationsApiService{
     {
         return this.http.put<Notification>(`${this.url}/notifications/${NotificationsId}/read`, {});
     }
+
+    getInviteById(inviteUuid: string): Observable<InviteWithTrustee2> 
+    {
+        return this.http.get<InviteWithTrustee2>(`/api/invites/${inviteUuid}`);
+    } 
 }

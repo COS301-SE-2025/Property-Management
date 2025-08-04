@@ -75,42 +75,46 @@ export class NotificationComponent  implements OnInit {
         });
     }
   }
-  showDetails(noti: Notification)
-  {
-    //Mark as read
-    this.notificationService.markNotificationsAsRead(noti.notificationUuid!).subscribe({
-      next: () => {
-        if(noti.relatedInviteUuid && this.getUserType() === 'trustee')
-        {
-          //confirm dialog pop up
-          this.inviteId.set(noti.relatedInviteUuid);
-          this.inviteDialogVisible = true;
-        }
-        else if(noti.relatedTaskUuid)
-        {
-          if(this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate')
-          {
-            this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
+showDetails(noti: Notification)
+{
+  // Mark as read
+  this.notificationService.markNotificationsAsRead(noti.notificationUuid!).subscribe({
+    next: () => {
+      if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
+        // Check if invite is pending before showing dialog
+        this.notificationService.getInviteById(noti.relatedInviteUuid).subscribe({
+          next: (invite) => {
+            if (invite.status === 'PENDING') {
+              this.inviteId.set(noti.relatedInviteUuid ?? null);
+              this.inviteDialogVisible = true;
+            } else {
+              window.alert('This invite has already been accepted or declined.');
+            }
+          },
+          error: () => {
+            window.alert('Could not load invite details.');
           }
-        }
-        else if(noti.relatedSessionUuid)
-        {
-          if(this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate')
-          {
-            this.router.navigate(['/voting', noti.relatedSessionUuid]);
-          }
-        }
-        else if(noti.relatedQuoteUuid)
-        {
-          //Contractor can see their quote they made
-        }
-        else
-        {
-          window.location.reload();
+        });
+      }
+      else if (noti.relatedTaskUuid) {
+        if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+          this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
         }
       }
-    });
-  }
+      else if (noti.relatedSessionUuid) {
+        if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+          this.router.navigate(['/voting', noti.relatedSessionUuid]);
+        }
+      }
+      else if (noti.relatedQuoteUuid) {
+        // Contractor can see their quote they made
+      }
+      else {
+        window.location.reload();
+      }
+    }
+  });
+}
   private getUserType(): string | null {
     if (getCookieValue(document.cookie, 'trusteeId')) {
         this.userId = getCookieValue(document.cookie, 'trusteeId');
@@ -126,28 +130,40 @@ export class NotificationComponent  implements OnInit {
     }
     return null;
  }
- private sortTimeline(notifications: Notification[])
- {
-    if(notifications.length <= 1 && notifications[0].createdAt)
-    {
-      const date = new Date(notifications[0].createdAt[0], notifications[0].createdAt[1] -1, notifications[0].createdAt[2], notifications[0].createdAt[3], notifications[0].createdAt[4], notifications[0].createdAt[5]);
-      notifications[0].createdAtDate = date;
-      return notifications;
+private sortTimeline(notifications: Notification[])
+{
+  if (!notifications || notifications.length === 0) {
+    return [];
+  }
+
+  if (notifications.length === 1 && notifications[0] && notifications[0].createdAt) {
+    const date = new Date(
+      notifications[0].createdAt[0],
+      notifications[0].createdAt[1] - 1,
+      notifications[0].createdAt[2],
+      notifications[0].createdAt[3],
+      notifications[0].createdAt[4],
+      notifications[0].createdAt[5]
+    );
+    notifications[0].createdAtDate = date;
+    return notifications;
+  }
+
+  // this is to filter out the notifications missing createdAt
+  const valid = notifications.filter(n => n && Array.isArray(n.createdAt));
+  valid.forEach(n => {
+    if (n.createdAt) {
+      n.createdAtDate = new Date(
+        n.createdAt[0],
+        n.createdAt[1] - 1,
+        n.createdAt[2],
+        n.createdAt[3],
+        n.createdAt[4],
+        n.createdAt[5]
+      );
     }
-    
-    const sorted = [...notifications].sort((a, b) => {
-      if(!a.createdAt || !b.createdAt){
-        return 0;
-      } 
-  
-      const aDate = new Date(a.createdAt[0], a.createdAt[1] -1, a.createdAt[2], a.createdAt[3], a.createdAt[4], a.createdAt[5]);
-      const bDate = new Date(b.createdAt[0], b.createdAt[1] -1, b.createdAt[2], b.createdAt[3], b.createdAt[4], b.createdAt[5]);
-  
-      a.createdAtDate = aDate;
-      b.createdAtDate = bDate;
-  
-      return bDate.getTime() - aDate.getTime();
-    });
-    return sorted;
- }
+  });
+
+  return valid.sort((a, b) => b.createdAtDate!.getTime() - a.createdAtDate!.getTime());
+}
 }

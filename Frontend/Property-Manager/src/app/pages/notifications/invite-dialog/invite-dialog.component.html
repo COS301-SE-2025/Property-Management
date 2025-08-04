@@ -1,28 +1,25 @@
 <p-confirmdialog [visible]="display" [closable]="false">
-  <!-- <ng-template pTemplate="header">
+  <ng-template pTemplate="header">
     <h3 class="font-bold">Confirm Invitation</h3>
   </ng-template>
-
   <p>Do you want to accept this invitation?</p>
-  
   <ng-template pTemplate="footer">
     <div>
       <button pButton 
               type="button" 
-              label="Cancel" 
+              label="Decline" 
               icon="pi pi-times" 
               class="p-button-outlined p-button-danger" 
-              (click)="onJoin()">
+              (click)="onDisapprove()">
             </button>
       <button pButton 
               type="button" 
-              label="Confirm" 
+              label="Accept" 
               icon="pi pi-check" 
               class="p-button-outlined p-button-success"
-              (click)="onDisapprove()"
-              >
+              (click)="onJoin()">
             </button>
     </div>
-  </ng-template> -->
+  </ng-template>
 </p-confirmdialog>
 <p-toast/>
