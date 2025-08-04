@@ -1,16 +1,18 @@
 import { Component, EventEmitter, Input, input, OnInit, Output } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { PropertyService } from 'shared';
-import { DialogComponent } from "../../../components/dialog/dialog.component";
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+
+
 
 @Component({
   selector: 'app-invite-dialog',
-  imports: [Toast, ConfirmDialogModule],
+  imports: [Toast, DialogModule, ButtonModule],
   templateUrl: './invite-dialog.component.html',
   styles: ``,
-  providers: [MessageService, ConfirmationService]
+  providers: [MessageService]
 
 })
 export class InviteDialogComponent implements OnInit {
@@ -19,23 +21,12 @@ export class InviteDialogComponent implements OnInit {
   @Input() inviteId = '';
   
   constructor(
-    private confirmService: ConfirmationService,
     private propertyService: PropertyService,
     private messageService: MessageService
   ) {}
   ngOnInit()
   {
-    this.confirmService.confirm({
-      message: 'Do you want to accept this invitation?',
-      header: 'Confirm Invitation',
-      icon: 'pi pi-megaphone',
-      acceptLabel: 'Confirm',
-      rejectLabel: 'Cancel',
-      acceptButtonStyleClass: 'p-button-outlined p-button-success',
-      rejectButtonStyleClass: 'p-button-outlined p-button-danger',
-      accept: () => this.onJoin(),
-      reject: () => this.onDisapprove()
-    })
+    
   }
 
   onJoin() {
