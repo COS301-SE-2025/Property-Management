@@ -1,24 +1,36 @@
-<p-card>
-  <ng-template #title class="text-lg font-semibold">Voting results</ng-template>
-
-  @if(error())
-  {
-    <p class="text-red-500">Error loading results</p>
-  }
-  @else {
-    <p-table [value]="results()">
-      <ng-template #header>
-        <tr>
-          <th>Contractor name</th>
-          <th>Number of votes</th>
-        </tr>
-      </ng-template>    
-      <ng-template #body let-vote>
-        <tr>
-          <td>{{ vote.contractorName }}</td>
-          <td>{{ vote.votesFor }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  }
-</p-card>
+@if(!contractorHasBeenAssigned)
+{
+  <p-card>
+    <ng-template #title class="text-lg font-semibold">Voting results</ng-template>
+  
+    @if(error())
+    {
+      <p class="text-red-500">Error loading results</p>
+    }
+    @else {
+      <p-table [value]="results()">
+        <ng-template #header>
+          <tr>
+            <th>Contractor name</th>
+            <th>Number of votes</th>
+          </tr>
+        </ng-template>    
+        <ng-template #body let-vote>
+          <tr>
+            <td>{{ vote.contractorName }}</td>
+            <td>{{ vote.votesFor }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+  
+      @if(votingEnded && !contractorHasBeenAssigned)
+      {
+        <div class="text-md flex flex-col justify-center items-center pt-8">
+          <p class="pb-2">Voting has ended, Finalize the task assignment</p>
+          <button class="bg-yellow-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-yellow-500 disabled:opacity-50" (click)="endVoting()">Assign winning contractor</button>
+        </div>
+      }
+    }
+  </p-card>
+  <p-toast/>
+}

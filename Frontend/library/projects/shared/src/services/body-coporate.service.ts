@@ -4,7 +4,7 @@ import { LifeCycleCost } from '../models/lifeCycleCost.model';
 import { ContractorDetails } from '../models/contractorDetails.model';
 import { ReserveFund } from '../models/reserveFund.model';
 import { BodyCoporateApiService } from './api/Body Coporate api/body-coporate-api.service';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { getCookieValue } from '../utils/cookie-utils';
 import { Graph } from '../models/graph.model';
 import { BudgetApiService } from './api/Budget api/budget-api.service';
@@ -297,5 +297,11 @@ export class BodyCoporateService {
         }
       });
     });
+  }
+  getBodyCorporateName(bcId: string): Observable<string>
+  {
+    return this.bodyCoporateApiService.getBodyCoporate(bcId).pipe(
+      map(res => res.corporateName)
+    );
   }
 }

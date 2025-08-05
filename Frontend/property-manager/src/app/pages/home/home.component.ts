@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit{
     if(!id)
     {
       id = getCookieValue(document.cookie, 'bodyCoporateId');
-      console.log('getting body corporate houses');
       await this.bodyCoporateService.loadHouses();
       this.houses.set(this.bodyCoporateService.buildings());
     }

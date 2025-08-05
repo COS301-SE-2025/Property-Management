@@ -7,7 +7,7 @@ import { MaintenanceTask, VotingService, FormatDatePipe, ContractorApiService, I
 import { CardModule } from 'primeng/card';
 import { MultiSelect } from "primeng/multiselect";
 import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
-import { InventoryUsageComponent } from 'property-manager/src/app/components/inventory-usage/inventory-usage.component';
+import { InventoryUsageComponent } from '../../components/inventory-usage/inventory-usage.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -59,6 +59,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
   public confirmDialog = false;
   public bcUser = false;
   public sessionId: string | null = null;
+
+  public voteResult = false;
   
   constructor(
     private route: ActivatedRoute, 
@@ -92,6 +94,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
   async ngOnInit() {
 
     //If there is a taskId we still need to approve it
+    this.bcUser = true;
     this.taskId = this.route.snapshot.paramMap.get('taskId');
 
     if(this.taskId)
@@ -134,20 +137,23 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     else
     {
       //Get session details and taskId 
-      this.bcUser = true;
       this.sessionId = this.route.snapshot.paramMap.get('sessionId');
-
+      this.voteResult = false;
       if(this.sessionId)
       {
         this.taskType = 'voting';
-        this.votingService.getSessionTaskId(this.sessionId).subscribe({
+        this.votingService.getTaskIdFromSessionId(this.sessionId).subscribe({
           next: (res) => {
             if(res.taskUuid)
             {
               this.taskId = res.taskUuid;
-
+              
               this.taskService.getTaskById(this.taskId).subscribe({
                 next: (res) => {
+                  if(res.cuuid !== '' && res.cuuid)
+                  {
+                    this.voteResult = true;
+                  }
 
                   if(res.img)
                   {
@@ -170,12 +176,25 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
                           //get contractor details
                           this.contractorService.getContractorById(contractor.contractorUuid!).subscribe({
                             next: (c) => {
-                              const contractorDetails: AssignedContractor = {
-                                ...c,
-                                quoteSubmitted: contractor.quoteSubmitted,
-                                quoteUuid: contractor.quoteUuid
+
+                              if(!this.voteResult)
+                              {
+                                const contractorDetails: AssignedContractor = {
+                                  ...c,
+                                  quoteSubmitted: contractor.quoteSubmitted,
+                                  quoteUuid: contractor.quoteUuid
+                                }
+                                this.addToContractors(contractorDetails);
                               }
-                              this.addToContractors(contractorDetails);
+                              else
+                              {
+                                this.contractorService.getContractorById(this.task()?.cuuid!).subscribe({
+                                  next: (contractor) => {
+                                    this.contractors.set([]);
+                                    this.addToContractors(contractor);
+                                  }
+                                })
+                              }
                             },
                             error: (err) => {
                               console.error("Couldnt find assigned contractors", err);
@@ -286,7 +305,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
       if(sessionId)
       {
         this.votingService.castVote(sessionId, quoteId, userId, isTrusteee).subscribe({
-          next: (res) => {
+          next: () => {
             this.voteSubmitted.set(true);
 
             this.messageSerive.add({

@@ -32,16 +32,22 @@ export class BcHomeComponent implements OnInit{
   constructor(public bodyCoporateService: BodyCoporateService){}
 
   async ngOnInit() {
-      try{
+
+    while(!this.bodyCoporateService.bcId)
+    {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    try{
         await Promise.all([
           this.bodyCoporateService.loadFundContribution(),
           this.bodyCoporateService.loadPendingTasks(),
           this.bodyCoporateService.loadGraph()
         ]);
-      }
-      catch(error)
-      {
-        console.log("Error loading data:", error);
-      }
+    }
+    catch(error)
+    {
+      console.log("Error loading data:", error);
+    }
   }
 }
