@@ -20,7 +20,7 @@ export * from './services/api/InventoryUsage api/inventory-usage-api.service';
 export * from './services/api/Task api/task-api.service';
 export * from './services/storage.service';
 export * from './services/voting.service';
-export * from './services/api/Notifications api/notification-api.service';
+export * from './services/api/Notifications api/notifications-api.service';
 
 //Models
 export * from './models/bodyCoporate.model';
