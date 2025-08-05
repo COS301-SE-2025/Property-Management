@@ -6,12 +6,15 @@ import { CommonModule } from '@angular/common';
 import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe } from 'shared';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InviteDialogComponent } from "./invite-dialog/invite-dialog.component";
+import { MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-notifications',
-  imports: [HeaderComponent, TimelineModule, CommonModule, FormatTimePipe, InviteDialogComponent],
+  imports: [HeaderComponent, TimelineModule, CommonModule, FormatTimePipe, InviteDialogComponent, Toast],
   templateUrl: './notification.component.html',
   styles: ``,
+  providers: [MessageService],
   animations: [
     trigger('floatUp', [
       state('void', style({
@@ -36,7 +39,7 @@ export class NotificationComponent  implements OnInit {
   public inviteId = signal<string | null>(null);
   public inviteDialogVisible = false;
 
-  constructor(private router: Router, private notificationService: NotificationsApiService) { }
+  constructor(private router: Router, private notificationService: NotificationsApiService, private messageService: MessageService) { }
 
   async ngOnInit() {
     this.loadTimeline();
@@ -87,12 +90,15 @@ showDetails(noti: Notification)
             if (invite.status === 'PENDING') {
               this.inviteId.set(noti.relatedInviteUuid ?? null);
               this.inviteDialogVisible = true;
-            } else {
-              window.alert('This invite has already been accepted or declined.');
             }
           },
-          error: () => {
-            window.alert('Could not load invite details.');
+          error: (err) => {
+            console.error(err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to display invite.'
+            })
           }
         });
       }
