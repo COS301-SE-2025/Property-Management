@@ -12,7 +12,7 @@ import { Toast } from 'primeng/toast';
 @Component({
   selector: 'app-notifications',
   imports: [HeaderComponent, TimelineModule, CommonModule, FormatTimePipe, InviteDialogComponent, Toast],
-  templateUrl: './notification.component.html',
+  templateUrl: './notifications.component.html',
   styles: ``,
   providers: [MessageService],
   animations: [
@@ -30,7 +30,7 @@ import { Toast } from 'primeng/toast';
     ])
   ]
 })
-export class NotificationComponent  implements OnInit {
+export class NotificationsComponent  implements OnInit {
 
   public unreadTimeline = signal<Notification[]>([]);
   public timeline = signal<Notification[]>([]);

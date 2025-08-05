@@ -5,7 +5,6 @@ import { ViewHouseComponent } from './pages/view-house/view-house.component';
 import { RegisterOwnerComponent } from './pages/register-owner/register-owner.component';
 import { RegisterBodyCorporateComponent } from './pages/register-body-corporate/register-body-corporate.component';
 import { CreatePropertyComponent } from './pages/create-property/create-property.component';
-
 import { ContractorRegisterComponent } from './pages/contractorRegister/contractorRegister.component';
 import { ContractorHomeComponent } from './pages/contractorHome/contractorHome.component';
 import { QuotationComponent } from './pages/quotation/quotation.component';
@@ -17,7 +16,6 @@ import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.co
 import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
-
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
@@ -25,7 +23,7 @@ import { authGuard } from './auth.guard';
 import { VotingComponent } from './pages/voting/voting.component';
 import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
 import { TimelineDetailsComponent } from './pages/view-house/timeline-details/timeline-details.component';
-import { NotificationComponent } from './pages/notifications/notification.component';
+import { NotificationsComponent } from './pages/notifications/notifications.component';
 
 export const routes: Routes = [
   {
@@ -169,6 +167,6 @@ export const routes: Routes = [
   {
     path: 'notifications',
     pathMatch: 'full',
-    component: NotificationComponent
+    component: NotificationsComponent
   }
 ];
