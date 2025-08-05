@@ -30,6 +30,8 @@ export class VotingComponent  implements OnInit {
   private votingService = inject(VotingService);
   votingTasks = this.votingService.votingTasks;
   pendingTasks = this.votingService.pendingTasks;
+  finalApproval = this.votingService.finalApproval;
+  approvedTasks = this.votingService.approvedTasks;
 
   bcUser = false;
   

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, scheduled } from 'rxjs';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { Quote } from '../../../public-api';
 
@@ -56,6 +56,25 @@ export class TaskApiService {
 
     return this.http.put<MaintenanceTask>(`${this.url}/maintenance/${taskId}`, req, );
   }
+  updateTaskAssignedContractor(contractorId: string, taskId: string)
+  {
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDay()-1);
+
+    const localISO = (date: Date) => {
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    };
+
+    const headers = new HttpHeaders().set('isBodyCorporate', String(true));
+    const req = {
+      contractorUuid: contractorId,
+      approvalStatus: "APPROVED",
+      scheduled_date: localISO(pastDate)
+    };
+
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, req, { headers });
+  }
   updateTaskApproval(status: string, taskId: string, isBodyCorporate: boolean)
   {
     const headers = new HttpHeaders().set('isBodyCorporate', String(isBodyCorporate));
@@ -71,8 +90,6 @@ export class TaskApiService {
       const pad = (n: number) => n.toString().padStart(2, '0');
       return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
     };
-
-    console.log(localISO(date));
 
     const headers = new HttpHeaders().set('isBodyCorporate', String(true));
     const req = {
