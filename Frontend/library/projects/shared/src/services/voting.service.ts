@@ -15,6 +15,7 @@ export class VotingService{
     votingTasks = signal<Voting[]>([]); 
     assignedContractors = signal<AssignedContractor[]>([]);
     pendingTasks = signal<MaintenanceTask[]>([]);
+    finalApproval = signal<Voting[]>([]);
     approvedTasks = signal<Voting[]>([]);
 
     constructor(
@@ -32,32 +33,29 @@ export class VotingService{
         this.pendingTasks.set([]);
         this.votingTasks.set([]);
         this.approvedTasks.set([]);
+        this.finalApproval.set([]);
 
         await this.bodyCorporateService.loadPendingTasks();
         const tasks = this.bodyCorporateService.pendingTasks();
 
         
         tasks.forEach(task => {
-            console.log(task);
-            if(task.approvalStatus === 'PENDING')
+            if(task.approvalStatus === 'PENDING' && task.scheduled_date >= date)
             {
                 //add to pending tasks tasks 
-                if(task.scheduled_date >= date)
+                if(!task.img || task.img === '00000000-0000-0000-0000-000000000000')
                 {
-                    if(!task.img || task.img === '00000000-0000-0000-0000-000000000000')
-                    {
-                        task.img = "assets/images/no_image.png";
-                    }
-                    else
-                    {
-                        this.imageService.getImage(task.img).subscribe({
-                            next: (image) => {
-                                task.img = image;
-                            }
-                        });
-                    }
-                    this.addToPending(task);
+                    task.img = "assets/images/no_image.png";
                 }
+                else
+                {
+                    this.imageService.getImage(task.img).subscribe({
+                        next: (image) => {
+                            task.img = image;
+                        }
+                    });
+                }
+                this.addToPending(task);
             }
             else if(task.scheduled_date > date)
             {
@@ -94,9 +92,43 @@ export class VotingService{
                     }
                 });
             }
-            else if(task.approvalStatus === 'APPROVED' && (!task.cuuid || task.cuuid !== ''))
+            else if(!task.cuuid || task.cuuid === '')
             {
                 //Task approved by bc, give summary
+                this.votingApiService.getSessionFromTaskId(task.uuid).subscribe({
+                    next:(res) => {
+
+                        const [year, month, day, hour, min] = res.votingEndsAt;
+                        const votingDate = new Date(year, month -1, day, hour, min);
+
+                        const votingRes: Voting = {
+                            ...task,
+                            sessionUuid: res.sessionUuid,
+                            corporateUuid: res.corporateUuid,
+                            votingEndsAt: res.votingEndsAt,
+                            votingEndsAtDate: votingDate,
+                            isActive: res.isActive
+                        }
+
+                        //Get image
+                        if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
+                        {
+                            votingRes.img = "assets/images/no_image.png";
+                        }
+                        else
+                        {
+                            this.imageService.getImage(votingRes.img).subscribe({
+                                next: (image) => {
+                                    votingRes.img = image;
+                                }
+                            });
+                        }
+                        this.addToFinalApproval(votingRes);
+                    }
+                });
+            }
+            else
+            {
                 this.votingApiService.getSessionFromTaskId(task.uuid).subscribe({
                     next:(res) => {
 
@@ -291,6 +323,10 @@ export class VotingService{
     private addToVoting(task: Voting)
     {
         this.votingTasks.set([...this.votingTasks(), task]);
+    }
+    private addToFinalApproval(task: Voting)
+    {
+        this.finalApproval.set([...this.finalApproval(), task]);
     }
     private addToApprovalTasks(task: Voting)
     {

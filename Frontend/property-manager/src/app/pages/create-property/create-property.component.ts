@@ -6,7 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
 import { Router } from '@angular/router';
-import { PropertyService, CreateBuildingPayload, ImageUploadResponse } from 'shared';
+import { PropertyService, CreateBuildingPayload, ImageUploadResponse, getCookieValue } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -68,10 +68,14 @@ export class CreatePropertyComponent implements OnInit {
 
   ngOnInit(): void {
     this.isDarkMode = document.documentElement.classList.contains('dark-theme');
-    this.trusteeUuid = localStorage.getItem('trusteeID');
-    this.coporateUuid = localStorage.getItem('bodyCoporateID');
+    this.trusteeUuid = getCookieValue(document.cookie, 'trusteeId');
     if (!this.trusteeUuid) {
-      this.submissionError = 'Authentication error: Please log in again.';
+      this.coporateUuid = getCookieValue(document.cookie, 'bodyCoporateID');
+
+      if(!this.coporateUuid)
+      {
+        this.submissionError = 'Authentication error: Please log in again.';
+      }
     }
     this.loadContractors();
   }
@@ -153,7 +157,16 @@ export class CreatePropertyComponent implements OnInit {
     this.propertyService.createProperty(payload).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.router.navigate(['/home']);
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Property Created',
+          detail: 'The property was created successfully.'
+        });
+
+        setTimeout(() => {
+          this.router.navigate(['/home']).then(() => window.location.reload);
+        }, 2000)
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error creating property:', err);
@@ -166,10 +179,5 @@ export class CreatePropertyComponent implements OnInit {
       }
     });
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Property Created',
-      detail: 'The property was created successfully.'
-    });
   }
 }

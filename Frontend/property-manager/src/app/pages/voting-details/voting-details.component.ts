@@ -7,7 +7,7 @@ import { MaintenanceTask, VotingService, FormatDatePipe, ContractorApiService, I
 import { CardModule } from 'primeng/card';
 import { MultiSelect } from "primeng/multiselect";
 import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
-import { InventoryUsageComponent } from 'property-manager/src/app/components/inventory-usage/inventory-usage.component';
+import { InventoryUsageComponent } from '../../components/inventory-usage/inventory-usage.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
