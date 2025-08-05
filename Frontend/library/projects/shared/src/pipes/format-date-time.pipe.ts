@@ -1,15 +1,17 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'formatDate'
+  name: 'formatTime'
 })
-export class FormatDatePipe implements PipeTransform {
+export class FormatTimePipe implements PipeTransform {
 
   transform(value: Date | string | number): string {
     const date = new Date(value);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    return `${year}/${month}/${day}`;
+    const hour = String(date.getHours());
+    const min = String(date.getMinutes());
+    return `${year}/${month}/${day} ${hour}:${min}`;
   }
 }
