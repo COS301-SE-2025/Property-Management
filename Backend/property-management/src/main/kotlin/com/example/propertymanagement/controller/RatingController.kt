@@ -1,7 +1,7 @@
 package com.example.propertymanagement.controller
 
-import com.example.propertymanagement.model.Rating
 import com.example.propertymanagement.dto.RatingDto
+import com.example.propertymanagement.model.Rating
 import com.example.propertymanagement.service.RatingService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -17,7 +17,7 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/rating")
 class RatingController(
-    private val service: RatingService
+    private val service: RatingService,
 ) {
     @GetMapping
     fun getAll(): List<Rating> = service.getAll()
@@ -29,7 +29,7 @@ class RatingController(
         val rating = service.getByContractor(uuid)
         return if (rating != null) ResponseEntity.ok(rating) else ResponseEntity.notFound().build()
     }
-    
+
     @GetMapping("/avg/{uuid}")
     fun getAverageRating(
         @PathVariable uuid: UUID,

@@ -16,8 +16,7 @@ class RatingService(
 
     fun add(item: Rating): Rating = repository.save(item)
 
-    fun getByUuid(uuid: UUID): Rating =
-        repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Rating not found: $uuid") }
+    fun getByUuid(uuid: UUID): Rating = repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Rating not found: $uuid") }
 
     fun add(
         contractorUuid: UUID,
@@ -26,11 +25,14 @@ class RatingService(
         taskUuid: UUID,
         trusteeUuid: UUID,
     ): Rating {
-        val newRating = Rating(contractorUuid = contractorUuid, 
-        comment = comment, 
-        rating = rating, 
-        taskUuid = taskUuid,
-        trusteeUuid = trusteeUuid,)
+        val newRating =
+            Rating(
+                contractorUuid = contractorUuid,
+                comment = comment,
+                rating = rating,
+                taskUuid = taskUuid,
+                trusteeUuid = trusteeUuid,
+            )
         return add(newRating)
     }
 
@@ -57,7 +59,6 @@ class RatingService(
 
     fun getByTrustee(uuid: UUID): Rating =
         repository.findByTrusteeUuid(uuid).orElseThrow { NoSuchElementException("Trustee rating not found for uuid: $uuid") }
-        
-    fun getAverageRating(uuid: UUID): Double? =
-        repository.averageContractorRating(uuid)
+
+    fun getAverageRating(uuid: UUID): Double? = repository.averageContractorRating(uuid)
 }
