@@ -1,7 +1,0 @@
-{
-	"name": "@aws-amplify/storage/internals",
-	"types": "../dist/esm/internals/index.d.ts",
-	"main": "../dist/cjs/internals/index.js",
-	"module": "../dist/esm/internals/index.mjs",
-	"sideEffects": false
-}
