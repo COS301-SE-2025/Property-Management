@@ -121,30 +121,41 @@ export class NotificationComponent  implements OnInit {
       }
     });
   }
-  private sortTimeline(notifications: Notification[])
-  {
-    if(notifications.length <= 1 && notifications[0].createdAt)
-    {
-      const date = new Date(notifications[0].createdAt[0], notifications[0].createdAt[1] -1, notifications[0].createdAt[2], notifications[0].createdAt[3], notifications[0].createdAt[4], notifications[0].createdAt[5]);
-      notifications[0].createdAtDate = date;
-      return notifications;
+private sortTimeline(notifications: Notification[])
+{
+  if (!notifications || notifications.length === 0) {
+    return [];
+  }
+
+  if (notifications.length === 1 && notifications[0] && notifications[0].createdAt) {
+    const date = new Date(
+      notifications[0].createdAt[0],
+      notifications[0].createdAt[1] - 1,
+      notifications[0].createdAt[2],
+      notifications[0].createdAt[3],
+      notifications[0].createdAt[4],
+      notifications[0].createdAt[5]
+    );
+    notifications[0].createdAtDate = date;
+    return notifications;
+  }
+
+  const valid = notifications.filter(n => n && Array.isArray(n.createdAt));
+  valid.forEach(n => {
+    if (n.createdAt) {
+      n.createdAtDate = new Date(
+        n.createdAt[0],
+        n.createdAt[1] - 1,
+        n.createdAt[2],
+        n.createdAt[3],
+        n.createdAt[4],
+        n.createdAt[5]
+      );
     }
-    
-    const sorted = [...notifications].sort((a, b) => {
-      if(!a.createdAt || !b.createdAt){
-        return 0;
-      } 
-  
-      const aDate = new Date(a.createdAt[0], a.createdAt[1] -1, a.createdAt[2], a.createdAt[3], a.createdAt[4], a.createdAt[5]);
-      const bDate = new Date(b.createdAt[0], b.createdAt[1] -1, b.createdAt[2], b.createdAt[3], b.createdAt[4], b.createdAt[5]);
-  
-      a.createdAtDate = aDate;
-      b.createdAtDate = bDate;
-  
-      return bDate.getTime() - aDate.getTime();
-    });
-    return sorted;
- }
+  });
+
+  return valid.sort((a, b) => b.createdAtDate!.getTime() - a.createdAtDate!.getTime());
+}
  private async getUserType(): Promise<string | null> {
     if (await this.storage.get('trusteeId')) {
         this.userId = await this.storage.get('trusteeId');
