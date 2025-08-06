@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { IonButton, IonHeader, IonModal, IonToolbar, IonButtons, IonContent, IonTitle } from '@ionic/angular/standalone';
+import { IonButton, IonHeader, IonModal, IonToolbar, IonContent, IonTitle } from '@ionic/angular/standalone';
 import { PropertyService } from 'shared'; 
 import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-invite-modal',
-  imports: [IonModal, IonButton, IonHeader, IonToolbar, IonButtons, IonContent, IonTitle],
+  imports: [IonModal, IonButton, IonHeader, IonToolbar, IonContent, IonTitle],
   templateUrl: './invite-modal.component.html',
   styles: ``,
 })

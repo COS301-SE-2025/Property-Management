@@ -3,10 +3,6 @@
     <ion-header>
       <ion-toolbar class="dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <ion-title class="text-lg font-medium dark:text-white">Invitation</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="onDissaprove()" fill="clear" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">Decline</ion-button>
-          <ion-button (click)="onJoin()" [strong]="true" fill="solid" color="primary" class="ml-2">Accept</ion-button>
-        </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content class="dark:bg-gray-800">
@@ -17,8 +13,11 @@
             <span class="font-medium text-gray-800 dark:text-white">{{ bodyCorporate }}</span>
           </p>
         </div>
-        
         <p class="text-gray-800 dark:text-gray-300 mt-2">Do you want to accept this invitation?</p>
+        <div class="flex flex-row justify-center gap-4 mt-4">
+          <ion-button (click)="onDissaprove()" fill="clear" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">Decline</ion-button>
+          <ion-button (click)="onJoin()" [strong]="true" fill="solid" color="primary" class="ml-2">Accept</ion-button>
+        </div>
       </div>
     </ion-content>
   </ng-template>
