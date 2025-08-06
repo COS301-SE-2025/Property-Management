@@ -15,15 +15,15 @@ data class Quote(
     @Column(name = "quote_uuid", nullable = false, unique = true)
     val uuid: UUID = UUID.randomUUID(),
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
-    val amount: BigDecimal,
+    val amount: BigDecimal? = null,
     @Column(name = "document_url")
-    val doc: String,
+    val doc: String? = null,
     @Column(name = "submitted_on", nullable = false)
     val submitted_on: Date,
     @Column(name = "status", nullable = false)
-    val status: String,
+    val status: String? = null,
     @Column(name = "task_uuid")
-    val t_uuid: UUID,
+    val t_uuid: UUID? = null,
     @Column(name = "contractor_uuid")
-    val c_uuid: UUID,
+    val c_uuid: UUID? = null,
 )

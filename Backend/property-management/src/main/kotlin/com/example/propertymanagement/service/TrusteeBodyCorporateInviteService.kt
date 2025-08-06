@@ -3,12 +3,14 @@ package com.example.propertymanagement.service
 import com.example.propertymanagement.dto.InviteDTO
 import com.example.propertymanagement.model.TrusteeBodyCorporateInvite
 import com.example.propertymanagement.repository.TrusteeBodyCorporateInviteRepository
+import com.example.propertymanagement.repository.TrusteeRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
 class TrusteeBodyCorporateInviteService(
     private val inviteRepository: TrusteeBodyCorporateInviteRepository,
+    private val trusteeRepository: TrusteeRepository,
 ) {
     fun createInvite(dto: InviteDTO): InviteDTO {
         val entity =
@@ -35,6 +37,8 @@ class TrusteeBodyCorporateInviteService(
         val updated = invite.copy(status = status)
         return inviteRepository.save(updated).toDTO()
     }
+
+    fun getAllInvitations(): List<InviteDTO> = inviteRepository.findAll().map { it.toDTOWithTrustee(trusteeRepository) }
 }
 
 fun TrusteeBodyCorporateInvite.toDTO() =
@@ -44,4 +48,19 @@ fun TrusteeBodyCorporateInvite.toDTO() =
         coporateUuid = this.coporateUuid,
         status = this.status,
         invitedOn = this.invitedOn,
+        name = null,
+        email = null,
+        role = null,
+    )
+
+fun TrusteeBodyCorporateInvite.toDTOWithTrustee(trusteeRepo: TrusteeRepository) =
+    InviteDTO(
+        inviteUuid = this.inviteUuid,
+        trusteeUuid = this.trusteeUuid,
+        coporateUuid = this.coporateUuid,
+        status = this.status,
+        invitedOn = this.invitedOn,
+        name = trusteeRepo.findByTrusteeUuid(this.trusteeUuid).orElse(null)?.name,
+        email = trusteeRepo.findByTrusteeUuid(this.trusteeUuid).orElse(null)?.email,
+        role = "Trustee",
     )

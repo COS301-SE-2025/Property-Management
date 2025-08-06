@@ -1,0 +1,42 @@
+<app-header/>
+<ion-content>
+  <h3 class="text-lg mt-4 ml-4">My Account</h3>
+  <div class="flex flex-col justify-start items-start">
+    <ion-list>
+      <ion-item>
+        @if(darkMode)
+        {
+          <ion-button color="dark" fill="clear" (click)="changeTheme('dark')">
+            <ion-icon slot="start" name="moon-outline"></ion-icon>
+            Dark Mode
+          </ion-button>
+        }
+        @else{
+          <ion-button color="dark" fill="clear" (click)="changeTheme('light')">
+            <ion-icon slot="start" name="sunny-outline"></ion-icon>
+            Light Mode
+          </ion-button>
+        }
+      </ion-item>
+      <ion-item>
+        <ion-button color="dark" fill="clear">
+            <ion-icon slot="start" name="text-outline"></ion-icon>
+            Change font size
+          </ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-button color="dark" fill="clear">
+            <ion-icon slot="start" name="help-outline"></ion-icon>
+            Help
+          </ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-button color="danger" fill="clear" (click)="signOut()">
+            <ion-icon slot="start" name="log-out-outline"></ion-icon>
+            Sign out
+          </ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+<app-tab/>

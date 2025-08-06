@@ -1,0 +1,36 @@
+<ion-card>
+    <ion-card-header>
+      <ion-card-title>Budgets</ion-card-title>
+      <ion-card-subtitle *ngIf="hasBudget">
+        Overall Allocated Budget:
+        <p *ngIf="hasBudget" class = "text-yellow-500 font-semibold mt-2 text-lg text-center">R {{ calculateTotalBudget() | formatAmount }}</p> 
+      </ion-card-subtitle> 
+    </ion-card-header>
+
+    <ion-card-content>
+
+      @if(hasBudget)
+      {
+          <div class="flex flex-wrap justify-center gap-4 px-6">
+              <div class="bg-gray-100 p-4 rounded-lg shadow text-center w-45">
+                  <p class = "font-medium text-sm text-gray-600 mb-1">Allocated Inventory budget</p>
+                  <p class = "mt-1">R {{ (budget().inventoryBudget-budget().inventorySpent) | formatAmount }}</p>
+              </div>
+      
+              <div class="bg-gray-100 p-4 rounded-lg shadow text-center w-45">
+                  <p class = "font-medium text-sm text-gray-600 mb-1">Allocated Maintenance Spent</p>
+                  <p class = "mt-1">R {{ (budget().maintenanceBudget-budget().maintenanceSpent) | formatAmount }}</p>
+              </div>
+          </div>
+          <div class="mt-4 flex flex-col justify-center items-center">
+              <button class="bg-yellow-400 text-black px-3 py-1.5 rounded" (click)="RouteToManageBudget()">Manage budget</button>
+          </div>
+      }
+      @else {
+          <div class="mt-t flex flex-col justify-center items-center">
+              <button class="bg-yellow-400 text-black px-3 py-1.5 rounded cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="budgetModal.openModal()">Create budget</button>
+              <app-create-budget #budgetModal/>
+          </div>
+      }
+    </ion-card-content>
+</ion-card>
