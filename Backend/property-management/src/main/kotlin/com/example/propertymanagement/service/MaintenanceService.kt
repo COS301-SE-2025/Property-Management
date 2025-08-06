@@ -63,6 +63,7 @@ class MaintenanceService(
         img: UUID,
         tUuid: UUID,
         cUuid: UUID,
+        priority: String,
     ): Maintenance {
         val newTask =
             Maintenance(
@@ -76,6 +77,7 @@ class MaintenanceService(
                 img = img,
                 tUuid = tUuid,
                 cUuid = cUuid,
+                priority = priority,
             )
         return add(newTask)
     }
@@ -98,6 +100,7 @@ class MaintenanceService(
                 tUuid = newItem.tUuid,
                 cUuid = newItem.cUuid,
                 approvalStatus = newItem.approvalStatus,
+                priority = newItem.priority,
             )
         return repository.save(updated)
     }
@@ -149,6 +152,7 @@ class MaintenanceService(
                 tUuid = dto.trusteeUuid,
                 cUuid = if (isOwner && building.coporateUuid == null) dto.contractorUuid else null,
                 approvalStatus = if (building.coporateUuid == null) "APPROVED" else "PENDING",
+                priority = dto.priority ?: "Low",
             )
 
         val savedTask = repository.save(task)
@@ -191,6 +195,7 @@ class MaintenanceService(
                 approvalStatus = dto.approvalStatus ?: task.approvalStatus,
                 cUuid = if (dto.approvalStatus == "APPROVED") dto.contractorUuid ?: task.cUuid else task.cUuid,
                 img = imageUuid ?: task.img,
+                priority = dto.priority ?: task.priority,
             )
 
         val savedTask = repository.save(updatedTask)
@@ -291,5 +296,6 @@ class MaintenanceService(
             imageUuid = task.img.toString(),
             trusteeUuid = task.tUuid,
             contractorUuid = task.cUuid,
+            priority = task.priority,
         )
 }
