@@ -44,7 +44,7 @@ class QuoteController(
         val c_uuid: UUID,
         val doc: String,
     )
-    
+
     @PostMapping
     fun createQuote(
         @RequestBody quoteDto: QuoteDto,
