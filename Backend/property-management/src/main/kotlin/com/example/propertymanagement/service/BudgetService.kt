@@ -18,7 +18,6 @@ import java.util.UUID
 class BudgetService(
     private val budgetRepository: BudgetRepository,
 ) {
-
     @CacheEvict(value = ["apiCache"], allEntries = true)
     fun createBudget(createDto: BudgetCreateDto): BudgetResponseDto {
         val budget =

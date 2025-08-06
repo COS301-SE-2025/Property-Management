@@ -11,6 +11,7 @@ import com.example.propertymanagement.repository.ContractorRepository
 import com.example.propertymanagement.repository.ImageRepository
 import com.example.propertymanagement.repository.MaintenanceRepository
 import com.example.propertymanagement.repository.MaintenancetaskContractorRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.Date
@@ -40,13 +41,16 @@ class MaintenanceService(
         val status: String = "SUBMITTED",
     )
 
+    @Cacheable("apiCache")
     fun getAll(): List<Maintenance> = repository.findAll()
 
     fun add(item: Maintenance): Maintenance = repository.save(item)
 
+    @Cacheable("apiCache")
     fun getByUuid(uuid: UUID): Maintenance =
         repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Maintenance not found: $uuid") }
 
+    @Cacheable("apiCache")
     fun getTasksByTrustee(tUuid: UUID): List<Maintenance> = repository.findAllBytUuid(tUuid)
 
     fun add(
@@ -113,7 +117,6 @@ class MaintenanceService(
                 IllegalArgumentException("Building not found: ${dto.buildingUuid}")
             }
 
-        // Validate imageUuid
         var imageUuid: UUID? = null
         dto.imageUuid?.let { id ->
             if (!imageRepository.existsById(id)) {
@@ -126,7 +129,6 @@ class MaintenanceService(
             }
         }
 
-        // Validate contractorUuid
         if (dto.contractorUuid != null && (!isBodyCorporate && (building.coporateUuid != null || !isOwner))) {
             throw IllegalStateException(
                 "Trustees cannot assign contractors unless they are the owner and the building has no body corporate",
@@ -164,7 +166,6 @@ class MaintenanceService(
             throw IllegalStateException("Only body corporates can update approval status")
         }
 
-        // Validate imageUuid
         var imageUuid: UUID? = task.img
         dto.imageUuid?.let { id ->
             if (!imageRepository.existsById(id)) {
@@ -233,11 +234,13 @@ class MaintenanceService(
         }
     }
 
+    @Cacheable("apiCache")
     fun getTasksByCorporate(coporateUuid: UUID): List<MaintenanceTaskResponseDto> =
         repository.findByCorporateUuid(coporateUuid).map {
             mapToResponseDto(it)
         }
 
+    @Cacheable("apiCache")
     fun getTasksForContractor(contractorUuid: UUID): List<MaintenanceTaskResponseDto> {
         val contractorTasks = taskContractorRepository.findByContractorUuid(contractorUuid)
         val taskUuids = contractorTasks.filter { !it.quoteSubmitted }.map { it.taskUuid }
@@ -271,6 +274,7 @@ class MaintenanceService(
         taskContractorRepository.save(updated)
     }
 
+    @Cacheable("apiCache")
     fun getContractorsForTask(taskUuid: UUID): List<MaintenancetaskContractor> = taskContractorRepository.findByTaskUuid(taskUuid)
 
     private fun mapToResponseDto(task: Maintenance): MaintenanceTaskResponseDto =

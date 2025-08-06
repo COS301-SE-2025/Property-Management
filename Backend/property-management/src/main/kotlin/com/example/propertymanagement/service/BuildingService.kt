@@ -20,7 +20,6 @@ class BuildingService(
     private val buildingRepository: BuildingRepository,
     private val imageRepository: ImageRepository,
 ) {
-
     @CacheEvict(value = ["apiCache"], allEntries = true)
     fun createBuilding(dto: BuildingCreateDto): BuildingResponseDto {
         val propertyImageUrl =
