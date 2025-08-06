@@ -46,16 +46,11 @@ export class BuildingApiService {
     return this.http.get<Property>(`${this.url}/buildings/${propertyId}`);
   }
 
-  updateBuilding(property: Property, propertyId: string, trusteeId: string): Observable<Property> {
+  updateBuilding(propertyId: string, name: string, image: string, bcId: string): Observable<Property> {
     const updatedProperty = {
-      name: property.name,
-      address: property.address,
-      type: property.type,
-      propertyValue: property.propertyValue,
-      primaryContractors: property.primaryContractors,
-      latestInspectionDate: property.latestInspectionDate,
-      trusteeUuid: trusteeId,
-      propertyImageId: property.propertyImage
+      name: name,
+      propertyImageId: image,
+      corporateUuid: bcId
     };
 
     return this.http.put<Property>(`${this.url}/buildings/${propertyId}`, updatedProperty);
