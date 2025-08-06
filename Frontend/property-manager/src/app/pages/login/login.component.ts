@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent {
   public emptyField = false;
   public userError = false;
   public serverError = false;
+  public passwordLimit = false;
 
   public selectedUserType = 'bodyCorporate';
 
@@ -40,6 +42,7 @@ export class LoginComponent {
     this.emptyField = false;
     this.userError = false;
     this.serverError = false;
+    this.passwordLimit = false;
 
     try {
       await this.authService.bodyCoporateLogin(this.email, this.password);
@@ -47,6 +50,12 @@ export class LoginComponent {
       return;
     } catch (error) {
       console.warn('Body Corporate login failed, trying Trustee...', error);
+
+      if(error instanceof HttpErrorResponse && !error.error)
+      {
+        this.serverError = true;
+        return;
+      }
     }
 
     try {
@@ -55,6 +64,12 @@ export class LoginComponent {
       return; 
     } catch (error) {
       console.warn('Trustee login failed, trying Contractor...', error);
+
+      if(error instanceof HttpErrorResponse && !error.error)
+      {
+        this.serverError = true;
+        return;
+      }
     }
 
     try {
@@ -71,8 +86,19 @@ export class LoginComponent {
       return;
     } catch (error) {
       console.warn('Contractor login failed:', error);
-    }
 
-    this.userError = true;
+      if(error instanceof HttpErrorResponse && !error.error)
+      {
+        this.serverError = true;
+      }
+      else if(error instanceof HttpErrorResponse && error.error.error.includes('Password attempts exceeded'))
+      {
+        this.passwordLimit = true;
+      }
+      else
+      {
+        this.userError = true;
+      }
+    }
   }
 }

@@ -61,6 +61,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
   public sessionId: string | null = null;
 
   public voteResult = false;
+  public awaitFinal = false;
   
   constructor(
     private route: ActivatedRoute, 
@@ -139,6 +140,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
       //Get session details and taskId 
       this.sessionId = this.route.snapshot.paramMap.get('sessionId');
       this.voteResult = false;
+      this.awaitFinal = false;
       if(this.sessionId)
       {
         this.taskType = 'voting';
@@ -153,6 +155,10 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
                   if(res.cuuid !== '' && res.cuuid)
                   {
                     this.voteResult = true;
+                  }
+                  else if(res.approvalStatus === 'PENDING' && res.scheduled_date < new Date())
+                  {
+                    this.awaitFinal = true;
                   }
 
                   if(res.img)
@@ -177,7 +183,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
                           this.contractorService.getContractorById(contractor.contractorUuid!).subscribe({
                             next: (c) => {
 
-                              if(!this.voteResult)
+                              if(!this.voteResult || this.awaitFinal)
                               {
                                 const contractorDetails: AssignedContractor = {
                                   ...c,

@@ -36,7 +36,7 @@
                         <th>
                           Quotation
                         </th>
-                        <th *ngIf="!voteResult">
+                        <th *ngIf="!voteResult && !awaitFinal">
                         Vote
                       </th>
                       </tr>
@@ -50,7 +50,7 @@
                           <button class="text-yellow-400 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="quoteDetails.openDialog()">View quote</button>
                           <app-quote-details #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote-details>
                         </td>
-                        <td *ngIf="!voteResult">
+                        <td *ngIf="!voteResult && !awaitFinal">
                           <p-togglebutton 
                             onIcon="pi pi-check" 
                             offIcon="pi pi-check"
@@ -64,7 +64,7 @@
                     </ng-template>
                   </p-table>
               </div>
-              <div class="space-x-2 space-y-3" *ngIf="!voteResult">
+              <div class="space-x-2 space-y-3" *ngIf="!voteResult && !awaitFinal">
                 <button class="bg-gray-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-gray-400">Cancel</button>
                 <button 
                 class="bg-yellow-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-yellow-500 disabled:opacity-50"

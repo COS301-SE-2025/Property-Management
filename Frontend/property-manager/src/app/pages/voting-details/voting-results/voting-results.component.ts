@@ -74,7 +74,6 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
         })
         this.processResults(res.results).then(proccessed => {
           this.results.set(proccessed);
-          console.log(this.results);
         });
       },
       error: (err) => {

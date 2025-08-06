@@ -27,12 +27,14 @@
                 <button (click)="login()" class = "bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Login</button>
             </div>
 
-            <div *ngIf="emptyField || userError || serverError" class="pl-20">
-                <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">Email or password missing</p>
+            <div *ngIf="emptyField || userError || serverError" class="flex flex-col items-center justify-center">
+                <p *ngIf="emptyField" class="text-red-500 dark:text-red-500 py-1 font-semibold rounded">Email or password missing</p>
 
                 <p *ngIf="userError" class="text-red-500 py-1 font-semibold rounded">Email or password incorrect</p>
 
                 <p *ngIf="serverError" class="text-red-500 py-1 font-semibold rounded">Internal server error</p>
+
+                <p *ngIf="passwordLimit" class="text-red-500 py-1 font-semibold rounded">Password attempt limit reached. Try again later</p>
             </div>
 
             <div class = "text-center text-sm space-y-2 dark:text-black">
