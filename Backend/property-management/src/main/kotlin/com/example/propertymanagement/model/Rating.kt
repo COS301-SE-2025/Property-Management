@@ -12,7 +12,7 @@ data class Rating(
     @Id
     @Column(name = "uuid", unique = true, nullable = false)
     val uuid: UUID = UUID.randomUUID(),
-    @Column(name = "contractor_uud")
+    @Column(name = "contractor_uuid")
     val contractorUuid: UUID? = null,
     val comment: String? = null,
     val rating: Int? = null,

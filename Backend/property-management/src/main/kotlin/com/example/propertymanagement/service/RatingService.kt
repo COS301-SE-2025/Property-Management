@@ -58,4 +58,6 @@ class RatingService(
     fun getByTrustee(uuid: UUID): Rating =
         repository.findByTrusteeUuid(uuid).orElseThrow { NoSuchElementException("Trustee rating not found for uuid: $uuid") }
         
+    fun getAverageRating(uuid: UUID): Double? =
+        repository.averageContractorRating(uuid)
 }
