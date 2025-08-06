@@ -17,6 +17,7 @@ klint
 Frontend/node_modules
 Frontend/dist
 Frontend/.angular
+Frontend/property-management/node_modules
 
 # === Mobile App (Ionic) ===
 mobile-app/PropertyManager/node_modules
