@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { Inventory, InventoryUsageApiService } from 'shared';
+import { getCookieValue, Inventory, InventoryUsageApiService } from 'shared';
 import { CommonModule } from '@angular/common';
 import { HousesService } from 'shared';
 import { BudgetApiService } from 'shared';
@@ -27,6 +27,7 @@ export class InventoryCardComponent implements OnInit{
   budgetApiService = inject(BudgetApiService);
   inventory = input.required<Inventory[]>();
   private houseId = ''; 
+  bcUser = false;
 
   isEditing = false;
   editingRows: boolean[] = [];
@@ -48,6 +49,11 @@ export class InventoryCardComponent implements OnInit{
 
   ngOnInit()
   {
+    if(getCookieValue(document.cookie, 'bodyCoporateId'))
+    {
+      this.bcUser = true;
+    }
+    
     this.resetState();
   }
 

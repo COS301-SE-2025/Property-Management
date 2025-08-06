@@ -1,7 +1,7 @@
-import { Component, inject, input, ViewChild } from '@angular/core';
+import { Component, inject, input, OnInit, ViewChild } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TimelineModule } from 'primeng/timeline';
-import { HousesService } from 'shared';
+import { getCookieValue, HousesService } from 'shared';
 import { CommonModule } from '@angular/common';
 import { TimelineAddDialogComponent } from './timeline-add-dialog/timeline-add-dialog.component';
 import { MaintenanceTask } from 'shared';
@@ -13,12 +13,22 @@ import { Router } from '@angular/router';
   templateUrl: './timeline-card.component.html',
   styles: ``
 })
-export class TimelineCardComponent {
+export class TimelineCardComponent implements OnInit {
   houseService = inject(HousesService);
 
   timeline = input.required<MaintenanceTask[]>();
 
+  bcUser = false;
+
   constructor(private router: Router){}
+
+  ngOnInit()
+  {
+    getCookieValue(document.cookie, 'bodyCoporateId')
+    {
+      this.bcUser = true;
+    }
+  }
 
   showDetails(task: MaintenanceTask)
   {

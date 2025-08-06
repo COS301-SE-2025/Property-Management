@@ -195,9 +195,15 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
                               else
                               {
                                 this.contractorService.getContractorById(this.task()?.cuuid!).subscribe({
-                                  next: (contractor) => {
+                                  next: (c) => {
                                     this.contractors.set([]);
-                                    this.addToContractors(contractor);
+
+                                     const contractorDetails: AssignedContractor = {
+                                      ...c,
+                                      quoteSubmitted: contractor.quoteSubmitted,
+                                      quoteUuid: contractor.quoteUuid
+                                    }
+                                    this.addToContractors(contractorDetails);
                                   }
                                 })
                               }

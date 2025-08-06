@@ -20,9 +20,12 @@
     </p-timeline>
 
     <div class = "mt-7">
-        <button class = "cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="timelineAddDialog.openDialog()">
-            <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
-        </button>
-        <app-timeline-add-dialog #timelineAddDialog/>
+        @if(!bcUser)
+        {
+            <button class = "cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="timelineAddDialog.openDialog()">
+                <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
+            </button>
+            <app-timeline-add-dialog #timelineAddDialog/>
+        }
     </div>
 </p-card>

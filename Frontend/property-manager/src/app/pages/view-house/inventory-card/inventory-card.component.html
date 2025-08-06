@@ -11,7 +11,7 @@
             <th pSortableColumn="quantityInStock">
                 Quantity <p-sortIcon field="quantityInStock"/>
             </th>
-            <th>
+            <th *ngIf="!bcUser">
                 Actions
             </th>
         </tr>
@@ -28,7 +28,7 @@
                     {{ inventory.quantityInStock }}
                 }
             </td>
-            <td>
+            <td *ngIf="!bcUser">
                 @if(editingRows[rowIndex])
                 {
                     <div class="flex gap-2">
@@ -57,10 +57,13 @@
     }
 
     </p-card>
-    <div class = "mt-4" *ngIf="showAddButton">
-        <button class = "cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="inventoryAddDialog.openDialog()">
-            <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
-        </button>
-        <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog>
-    </div>
+    @if(!bcUser)
+    {
+        <div class = "mt-4" *ngIf="showAddButton">
+            <button class = "cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="inventoryAddDialog.openDialog()">
+                <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
+            </button>
+            <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog>
+        </div>
+    }
 </div>

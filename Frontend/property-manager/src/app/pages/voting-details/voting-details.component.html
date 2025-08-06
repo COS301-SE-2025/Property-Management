@@ -47,14 +47,22 @@
                           {{ contractor.name }}
                         </td>
                         <td>
-                          <button class="text-yellow-400 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="quoteDetails.openDialog()">View quote</button>
-                          <app-quote-details #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote-details>
+                          @if(contractor.quoteSubmitted)
+                          {
+                            <button class="text-yellow-400 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="quoteDetails.openDialog()">View quote</button>
+                            <app-quote-details #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote-details>
+                          }
+                          @else
+                          {
+                            <span class="text-yellow-400">No quote available yet</span>
+                          }
                         </td>
-                        <td *ngIf="!voteResult && !awaitFinal">
+                        <td *ngIf="!voteResult && !awaitFinal && contractor.quoteSubmitted">
                           <p-togglebutton 
                             onIcon="pi pi-check" 
                             offIcon="pi pi-check"
                             onLabel="" 
+                            offLabel=""
                             [ngModel]="selectedContractorId() === contractor.uuid"
                             (ngModelChange)="voteForContractor(contractor.uuid)" 
                             [disabled]="voteSubmitted()">
