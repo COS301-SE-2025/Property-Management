@@ -52,12 +52,12 @@ class QuoteService(
         val existing = getById(uuid)
         val updated =
             existing.copy(
-                t_uuid = newItem.t_uuid,
-                c_uuid = newItem.c_uuid,
-                amount = newItem.amount,
-                submitted_on = newItem.submitted_on,
-                status = newItem.status,
-                doc = newItem.doc,
+                t_uuid = newItem.t_uuid ?: existing.t_uuid,
+                c_uuid = newItem.c_uuid ?: existing.c_uuid,
+                amount = newItem.amount ?: existing.amount,
+                submitted_on = newItem.submitted_on ?: existing.submitted_on,
+                status = newItem.status ?: existing.status,
+                doc = newItem.doc ?: existing.doc,
             )
         return repository.save(updated)
     }
