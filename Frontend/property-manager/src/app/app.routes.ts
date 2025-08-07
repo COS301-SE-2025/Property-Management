@@ -14,6 +14,8 @@ import { RegisterHubComponent } from './pages/register-hub/register-hub.componen
 import { BcHomeComponent } from './pages/bc-home/bc-home.component';
 import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.component';
 import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
+import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
+// import { RatingsComponent } from './pages/ratings/ratings-page.component';
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
@@ -149,6 +151,19 @@ export const routes: Routes = [
     pathMatch: 'full',
     component: PublicContractorsComponent
   },
+  {
+    path: 'members',
+    canActivate: [authGuard(['bodyCorporate'])],
+    pathMatch: 'full',
+    component: ManageMembersComponent
+  },
+  //still working on this
+  // {
+  //   path: 'ratings',
+  //   canActivate: [authGuard(['bodyCorporate'])],
+  //   pathMatch: 'full',
+  //   component: RatingsComponent
+  // },
   {
     path: 'landingPage',
     pathMatch: 'full',

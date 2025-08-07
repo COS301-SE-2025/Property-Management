@@ -76,4 +76,12 @@ export class PropertyService {
   updateInviteStatus(inviteUuid: string, status: string): Observable<any> {
     return this.http.put(`/api/invites/${inviteUuid}/status?status=${status}`, {});
   }
+
+  getBodyCorporatesForTrustee(trusteeUuid: string) {
+    return this.http.get<any[]>(`/api/invites/trustee/${trusteeUuid}`);
+  }
+
+  getBodyCorporateByUuid(coporateUuid: string) {
+    return this.http.get<any>(`/api/body-corporates/${coporateUuid}`);
+  }
 }
