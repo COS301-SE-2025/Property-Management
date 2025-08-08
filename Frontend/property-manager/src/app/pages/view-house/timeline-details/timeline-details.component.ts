@@ -2,11 +2,11 @@ import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaintenanceTask, ContractorDetails, ContractorApiService, ImageApiService, FormatDatePipe, InventoryItemApiService, InventoryUsageApiService, TaskApiService, InventoryUsage, Inventory } from 'shared';
 import { ActivatedRoute } from '@angular/router';
-import { HeaderComponent } from 'property-manager/src/app/components/header/header.component';
+import { HeaderComponent } from '../../../components/header/header.component';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
-import { BreadCrumbService } from 'property-manager/src/app/components/breadcrumb/breadcrumb.service';
-import { InventoryUsageComponent } from 'property-manager/src/app/components/inventory-usage/inventory-usage.component';
+import { BreadCrumbService } from '../../../components/breadcrumb/breadcrumb.service';
+import { InventoryUsageComponent } from '../../../components/inventory-usage/inventory-usage.component';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
@@ -85,6 +85,7 @@ export class TimelineDetailsComponent implements OnInit, OnDestroy {
       this.inventoryUsage = await lastValueFrom(
         this.inventoryUsageService.getUsageRecordsByTaskId(this.taskId)
       );
+      console.log(this.inventoryUsage);
     }
   }
 }

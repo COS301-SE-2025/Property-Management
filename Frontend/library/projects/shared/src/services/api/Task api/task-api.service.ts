@@ -12,7 +12,7 @@ export class TaskApiService {
   private url = '/api';
   constructor(private http: HttpClient) { }
 
-  createTask(title: string, des: string, scheduledDate: Date, buildingId: string, trusteeId: string, imgId: string, createdId: string, isOwner: boolean, isBodyCorporate: boolean): Observable<MaintenanceTask>
+  createTask(title: string, des: string, scheduledDate: Date, buildingId: string, trusteeId: string, imgId: string, createdId: string, isOwner: boolean, isBodyCorporate: boolean, proirity: string): Observable<MaintenanceTask>
   {
     const localISO = (date: Date) => {
       const pad = (n: number) => n.toString().padStart(2, '0');
@@ -28,7 +28,8 @@ export class TaskApiService {
       trusteeUuid: trusteeId,
       imageUuid: imgId,
       createdByUuid: createdId,
-      approvalStatus: "PENDING"
+      approvalStatus: "PENDING",
+      proirity: proirity
     };
 
     return this.http.post<MaintenanceTask>(`${this.url}/maintenance/create`, req, { headers }).pipe(map( res => ({

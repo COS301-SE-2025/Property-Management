@@ -18,8 +18,9 @@
         />
     </div>
     <div class = "flex flex-col items-center justify-center mb-3 gap-2">
-        <label for="inventory-item" class="font-semibold block">Assign to body corporate</label>
+        <label for="body-corporate-select" class="font-semibold block">Assign to body corporate</label>
         <p-select 
+            id="body-corporate-select"
             *ngIf="bodyCorporates.length > 0"
             class="w-full" 
             [showClear]="true" 

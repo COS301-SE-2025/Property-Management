@@ -24,8 +24,10 @@ export class TimelineCardComponent implements OnInit {
 
   ngOnInit()
   {
-    getCookieValue(document.cookie, 'bodyCoporateId')
+    this.bcUser = false;
+    if(getCookieValue(document.cookie, 'bodyCoporateId'))
     {
+      console.log("Setting bcUser to true");
       this.bcUser = true;
     }
   }
