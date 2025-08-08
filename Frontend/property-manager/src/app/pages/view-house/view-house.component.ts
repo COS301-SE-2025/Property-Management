@@ -89,7 +89,7 @@ export class ViewHouseComponent implements OnInit{
       
     this.house.set(house);
     if(cookieId) return cookieId; 
-    return house.trusteeUuid;
+    return house.trusteeUuid!;
   }
   private async loadData(id: string)
   {

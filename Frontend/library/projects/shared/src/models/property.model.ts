@@ -10,5 +10,5 @@ export interface Property{
     propertyImage?: string | null;
     area: number;
     coporateUuid?: string;
-    trusteeUuid: string;
+    trusteeUuid?: string;
 }
