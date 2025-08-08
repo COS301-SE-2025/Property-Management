@@ -91,7 +91,7 @@ export const routes: Routes = [
     component: ContractorHomeComponent
   },
   {
-    path: 'quotation',
+    path: 'quotation/:taskId',
     canActivate: [authGuard(['contractor'])],
     pathMatch: 'full',
     component: QuotationComponent
