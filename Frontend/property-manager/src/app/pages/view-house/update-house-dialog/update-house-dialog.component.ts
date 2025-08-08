@@ -4,16 +4,16 @@ import { Toast } from "primeng/toast";
 import { CommonModule } from '@angular/common';
 import { DialogModule } from "primeng/dialog";
 import { MessageService } from 'primeng/api';
-import { Select } from "primeng/select";
+import { SelectModule } from 'primeng/select';
 import { FileSelectEvent, FileUploadModule } from "primeng/fileupload";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BodyCoporate, BuildingApiService, getCookieValue, ImageApiService } from 'shared';
+import { BodyCoporate, BodyCoporateService, BuildingApiService, getCookieValue, ImageApiService, PropertyService } from 'shared';
 
 @Component({
   selector: 'app-update-house-dialog',
   templateUrl: './update-house-dialog.component.html',
   styles: ``,
-  imports: [Toast, DialogModule, Select, FileUploadModule, CommonModule, ReactiveFormsModule],
+  imports: [Toast, DialogModule, SelectModule, FileUploadModule, CommonModule, ReactiveFormsModule],
   providers: [MessageService]
 })
 export class UpdateHouseDialogComponent extends DialogComponent implements OnInit {
@@ -22,19 +22,51 @@ export class UpdateHouseDialogComponent extends DialogComponent implements OnIni
   selectedFile: File | null = null;
   form!: FormGroup;
 
-  public bodyCorporates: BodyCoporate[] | undefined = undefined;
+  public bodyCorporates: BodyCoporate[] = [];
   public updateError = false;
   
-  constructor(private messageService: MessageService,  private fb: FormBuilder, private imageService: ImageApiService, private buildingService: BuildingApiService) { 
+  constructor(private messageService: MessageService, private fb: FormBuilder, private imageService: ImageApiService, private buildingService: BuildingApiService, private propertyService: PropertyService, private bodyCorporateService: BodyCoporateService) { 
     super();
   }
 
   ngOnInit() {
-    this.form = this.fb.group({
-        name: ['', Validators.required]
+    this.bodyCorporates = [];
+
+    //TODO Get the invites, filter by user, get bcId and then get name of bc
+    const id = getCookieValue(document.cookie, "trusteeId");
+    let corporateIds: string[] = [];
+    this.propertyService.getInvitations().subscribe({
+      next: (invite) => {
+        invite.forEach((i) => {
+          if(i.trusteeUuid === id && i.status === "ACCEPTED")
+          {
+            corporateIds.push(i.coporateUuid!);
+          }
+        });
+
+        if(corporateIds.length > 0 || !corporateIds)
+        {
+          corporateIds.forEach((id) => {
+            this.bodyCorporateService.getBodyCorporate(id).subscribe({
+              next: (bc) => {
+                this.bodyCorporates.push(bc);
+
+                const curr = this.form.get('corporateUuid')?.value;
+                if(curr === bc.corporateUuid)
+                {
+                  this.form.get('corporateUuid')?.setValue(bc.corporateUuid);
+                }
+              }
+            })
+          })
+        }
+      }
     });
 
-    //Get body corporates trustee is in
+    this.form = this.fb.group({
+        name: ['', Validators.required],
+        corporateUuid: [null]
+    });
   }
   onFileSelect(event: FileSelectEvent)
   {
@@ -71,23 +103,25 @@ export class UpdateHouseDialogComponent extends DialogComponent implements OnIni
       }
   
       const name = this.form.value.name;
-      const bcId = this.form.value.bodyCorporate;
+      const bcId = this.form.value.corporateUuid; 
   
       this.buildingService.updateBuilding(this.houseId(), name, imageId,  bcId).subscribe({
-        next: (res) => {
-          console.log(res);
-  
+        next: () => {
           this.form.reset();
           this.closeDialog();
   
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Task added successfully'
+            detail: 'Building successfully updated'
           });
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 150);
         },
         error: (err) => {
-          console.error("Failed to create task", err);
+          console.error("Failed to update building", err);
           this.updateError = true;
         }
       });

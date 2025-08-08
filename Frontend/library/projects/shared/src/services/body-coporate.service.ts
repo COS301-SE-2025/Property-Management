@@ -302,4 +302,8 @@ export class BodyCoporateService {
       map(res => res.corporateName)
     );
   }
+  getBodyCorporate(bcId: string)
+  {
+    return this.bodyCoporateApiService.getBodyCoporate(bcId);
+  }
 }

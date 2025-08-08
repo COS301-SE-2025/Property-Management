@@ -49,8 +49,8 @@ export class BuildingApiService {
   updateBuilding(propertyId: string, name: string, image: string, bcId: string): Observable<Property> {
     const updatedProperty = {
       name: name,
-      propertyImageId: image,
-      corporateUuid: bcId
+      propertyImage: image,
+      coporateUuid: bcId
     };
 
     return this.http.put<Property>(`${this.url}/buildings/${propertyId}`, updatedProperty);
