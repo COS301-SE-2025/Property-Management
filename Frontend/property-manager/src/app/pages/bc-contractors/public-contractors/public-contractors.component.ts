@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HeaderComponent } from "../../../components/header/header.component";
 import { ContractorCardComponent } from "../contractor-card/contractor-card.component";
-import { BodyCoporateService } from 'shared';
+import { BodyCoporateService, getCookieValue } from 'shared';
 
 @Component({
   selector: 'app-public-contractors',
@@ -14,6 +14,7 @@ export class PublicContractorsComponent implements OnInit {
   publicContractors = this.bodyCoporateService.contractorDetails;
 
   ngOnInit(): void {
-    this.bodyCoporateService.loadPublicContractors();   
+    const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
+    this.bodyCoporateService.loadPublicContractors(bcId);   
   }
 }

@@ -1,4 +1,4 @@
-@if(!contractorHasBeenAssigned)
+@if(!contractorHasBeenAssigned && results().length > 0)
 {
   <p-card>
     <ng-template #title class="text-lg font-semibold">Voting results</ng-template>

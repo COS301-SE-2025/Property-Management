@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { AssignedContractor, BodyCoporateService, ContractorApiService, HousesService, ImageApiService, MaintenanceTask, Quote, TaskApiService, Voting } from '../public-api';
+import { AssignedContractor, BodyCoporateService, ContractorApiService, getCookieValue, HousesService, ImageApiService, MaintenanceTask, Quote, TaskApiService, Voting } from '../public-api';
 import { VotingApiService } from './api/Voting api/voting-api.service';
 import { catchError, firstValueFrom, map, throwError } from 'rxjs';
 
@@ -35,7 +35,9 @@ export class VotingService{
         this.approvedTasks.set([]);
         this.finalApproval.set([]);
 
-        await this.bodyCorporateService.loadPendingTasks();
+        const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
+
+        await this.bodyCorporateService.loadPendingTasks(bcId);
         const tasks = this.bodyCorporateService.pendingTasks();
 
         

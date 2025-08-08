@@ -12,4 +12,5 @@ export interface MaintenanceTask{
     cuuid?: string;
     img?: string; 
     createdByUuid?: string | null;
+    priority?: string;
 }

@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
-import { PropertyService } from 'shared';
+import { NotificationsApiService, PropertyService, Notification, getCookieValue } from 'shared';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 
@@ -20,19 +20,46 @@ export class InviteDialogComponent {
   
   constructor(
     private propertyService: PropertyService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private notificationService: NotificationsApiService
   ) {}
 
   onJoin() {
       if (!this.inviteId) return;
       this.propertyService.updateInviteStatus(this.inviteId, 'ACCEPTED').subscribe({
         next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Invite Accepted',
-            detail: 'You have joined the body corporate.'
-          });
-          this.display = false;
+
+          const id = getCookieValue(document.cookie, 'trusteeId');
+          const noti: Notification = {
+            notificationType: 'INVITE ACCEPTED',
+            message: 'You accepted to join the body corporate',
+            recipientType: 'trustee',
+            recipientUuid: id,
+            isRead: false
+          };
+
+          this.notificationService.createNotifications(noti).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Invite Accepted',
+                detail: 'You have joined the body corporate.'
+              });
+              this.display = false;
+
+              setTimeout(() => {
+                window.location.reload();
+              }, 2000);
+            },
+            error: () => {
+               this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to accept invite.'
+              });
+            }
+          })
+
         },
         error: () => {
           this.messageService.add({

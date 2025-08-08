@@ -41,6 +41,7 @@ export interface InviteWithTrustee {
   name: string;
   email: string;
   role: string;
+  coporateUuid?: string;
 }
 
 @Injectable({ providedIn: 'root' })

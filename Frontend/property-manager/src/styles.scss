@@ -222,12 +222,10 @@ button.bg-yellow-500 {
 }
 
 .dark-theme .nav-link,
-.dark-theme .font-semibold,
 .dark-theme .text-gray-700 {
   color: #f3f4f6 !important; 
 }
 
-.dark-theme .nav-link:hover,
-.dark-theme .font-semibold:hover {
+.dark-theme .text-gray-700:hover {
   color: #facc15 !important;
 }
