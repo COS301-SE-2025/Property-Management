@@ -13,6 +13,7 @@ data class MaintenanceTaskCreateDto(
     val imageUuid: String? = null,
     val trusteeUuid: UUID,
     val contractorUuid: UUID? = null,
+    val priority: String? = null,
 )
 
 data class MaintenanceTaskResponseDto(
@@ -28,6 +29,7 @@ data class MaintenanceTaskResponseDto(
     val imageUuid: String?,
     val trusteeUuid: UUID?,
     val contractorUuid: UUID? = null,
+    val priority: String,
 )
 
 data class MaintenanceTaskUpdateDto(
@@ -37,6 +39,7 @@ data class MaintenanceTaskUpdateDto(
     val approvalStatus: String? = null, // PENDING, APPROVED, DENIED
     val contractorUuid: UUID? = null,
     val imageUuid: String? = null,
+    val priority: String? = null,
 )
 
 data class TaskContractorAssignDto(

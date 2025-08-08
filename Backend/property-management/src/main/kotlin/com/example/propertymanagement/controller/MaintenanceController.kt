@@ -51,6 +51,7 @@ class MaintenanceController(
         val tUuid: UUID,
         val cUuid: UUID,
         val approvalStatus: String,
+        val priority: String,
     )
 
     @PostMapping
@@ -67,6 +68,7 @@ class MaintenanceController(
             info.img,
             info.tUuid,
             info.cUuid,
+            info.priority,
         )
 
     @PutMapping("/{uuid}")

@@ -1554,7 +1554,7 @@ Content-Type: multipart/form-data
 ---
 
 ## Update Maintenance Task
-**PUT** `/api/maintenance/{uuid}`
+**PUT** `/api/maintenance/update/{uuid}`
 
 - **Path Variable:**  
   - `uuid` (**required**): UUID of the maintenance task
@@ -1615,7 +1615,7 @@ _All fields are optional; only include the ones you want to update._
 ---
 
 ## Assign Contractors
-**POST** `/api/maintenance/assign-Contractors`
+**POST** `/api/maintenance/assign-contractors`
 
 **Description** Assign contractors to task.
 
@@ -2016,3 +2016,157 @@ isBodyCorporate: true
   "userId": "5b029df7-1e95-439e-89d9-bb2bdc4a3766"
 }
 ```
+
+# Invites endpoints 
+
+## create invite 
+**POST** `/api/invites`
+
+**Request Body Example:**
+```json
+{
+  "trusteeUuid": "5f67ec9a-84f2-4d72-a6a3-48393f8a0456",
+  "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2"
+}
+```
+---
+
+## Get by invite Uuid
+**GET** `/api/invites/{uuid}`
+
+---
+
+## Get all invites for trustee
+**GET** `/api/invites/trustee/{uuid}`
+
+---
+
+## Accept invite
+**PUT** `/api/invites/{uuid}/status?status=ACCEPTED`
+
+---
+
+## Get all trustees in body corporate 
+**GET** /api/invites/body-corporate/{corp-uuid}/accepted-trustees
+
+---
+
+## Get all 
+**GET** `/api/invites`
+
+**RESPONSE**
+```json
+[
+    {
+        "inviteUuid": "36f15795-5e65-46b4-b569-aa630ed7e702",
+        "trusteeUuid": "4d33a2ce-110d-403a-9172-73baca2e5664",
+        "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+        "status": "ACCEPTED",
+        "invitedOn": 1752581150612
+    },
+    {
+        "inviteUuid": "23f5545b-dba8-4619-9ddc-a8426e8d5bb2",
+        "trusteeUuid": "5f67ec9a-84f2-4d72-a6a3-48393f8a0456",
+        "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+        "status": "PENDING",
+        "invitedOn": 1753629358177
+    }
+]
+```
+
+---
+
+# Life cycle cost
+
+## Create Life cycle cost
+**POST** `/api/lifecycle-cost`
+
+**Request Body Example:**
+```json
+{
+  "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+  "type": "Roof",
+  "description": "Needs repainting",
+  "condition": "Worn",
+  "timeframe": "6 months",
+  "estimatedCost": 15000.00
+}
+
+```
+---
+
+## GET BY ID 
+**GET** `/api/lifecycle-cost/{uuid}`
+
+---
+
+## GET By Coporate UUID
+**GET** `/api/lifecycle-cost/coporate/{uuid}`
+
+---
+
+## Update
+**PUT** `/api/lifecycle-cost/{uuid}`
+
+**Request Body Example:**
+```json
+{
+  "type": "Roof",
+  "description": "Urgent repair needed",
+  "condition": "Critical",
+  "timeframe": "1 month",
+  "estimatedCost": 25000.00
+}
+
+```
+---
+
+# Voting system 
+
+## create voting session 
+**POST** `/api/vote/session`
+
+**Request Body Example:**
+```json
+{
+    "coporateUuid" : "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+    "taskUuid": "d05fed07-3568-4b69-8bad-6b9dedf8515b",
+    "votingEndsAt": "2025-07-21T18:40:00"   
+}
+```
+---
+
+## Submit Vote 
+**POST** `/api/vote`
+
+**Request Body Example:**
+```json
+{
+    "sessionUuid": "166fb380-ac2e-4466-951a-f7f47516be48",
+    "quoteUuid": "2bb7bd53-53a3-427e-95cd-eb9bcd3addb6",
+    "voterUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+    "isTrustee": false,
+    "voteFor": true
+}
+```
+---
+
+## Results 
+**GET** `/api/vote/session/{session uuid}/results`
+
+---
+
+## Get all sessions
+**GET** `/api/vote/sessions`
+
+---
+
+## get by task uuid by session uuid 
+**GET** `/api/vote/session/{session uuid}/task`
+
+---
+
+## get session uuid by task uuid 
+**GET** `/api/vote/task/{task uuid}/session`
+
+---
