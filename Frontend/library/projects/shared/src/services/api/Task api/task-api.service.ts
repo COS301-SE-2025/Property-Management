@@ -116,4 +116,8 @@ export class TaskApiService {
   {
     return this.http.get<Quote[]>(`${this.url}/quote/task/${taskId}`);
   }
+
+  getTasksForTrustee(trusteeUuid: string): Observable<MaintenanceTask[]> {
+    return this.http.get<MaintenanceTask[]>(`/api/maintenance/trustee/${trusteeUuid}`);
+  }
 }

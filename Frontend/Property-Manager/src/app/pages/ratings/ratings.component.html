@@ -36,11 +36,11 @@
   </thead>
   <tbody>
     <tr *ngFor="let rating of ratingsHistory">
-      <td>{{ rating.task.name }}</td>
-      <td>{{ rating.contractor.name }}</td>
+      <td>{{ rating.taskName || 'N/A' }}</td>
+      <td>{{ rating.contractorName || 'N/A' }}</td>
       <td>{{ rating.rating }}</td>
       <td>{{ rating.comment }}</td>
-      <td>{{ rating.date }}</td>
+      <td>{{ rating.createdAt ? (rating.createdAt | date:'yyyy-MM-dd') : '' }}</td>
     </tr>
   </tbody>
 </table>
