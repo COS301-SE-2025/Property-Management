@@ -36,8 +36,17 @@
   </div>
 
   <ng-template #noQuotes>
-    <div class="text-center py-12">
-      <p class="text-gray-500 text-lg">No quotes found</p>
-    </div>
-  </ng-template>
+  <div class="text-center py-12 flex flex-col items-center">
+    
+    <img src="assets/icons/empty-folder.svg" 
+         alt="No quotes" 
+         class="w-24 h-24 mb-4 opacity-75">
+    
+  
+    <p class="text-gray-500 text-lg">No quotes found</p>
+    
+    
+    <p class="text-gray-400 text-sm mt-2">You haven't submitted any quotations yet</p>
+  </div>
+</ng-template>
 </div>
