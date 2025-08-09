@@ -1,57 +1,50 @@
-import { Component } from '@angular/core';
-import { HeaderComponent } from '../../components/header/header.component';
-import { CommonModule } from '@angular/common';
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-  query,
-  stagger
-} from '@angular/animations';
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../services/api.service';
+import { Quote } from '../../models/quote.model';
+import { HeaderComponent } from "../../components/header/header.component";
+import { CommonModule, NgClass, NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-submitted-quotations',
-    imports: [HeaderComponent, CommonModule],
   templateUrl: './submitted-quotations.component.html',
-  animations: [
-    trigger('fadeInStagger', [
-      transition(':enter', [
-        query('.animate-item', [
-          style({ opacity: 0, transform: 'translateY(20px)' }),
-          stagger(100, [
-            animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-          ])
-        ])
-      ])
-    ])
-  ]
+  standalone: true,
+  imports: [HeaderComponent, CommonModule, NgClass, NgStyle]
 })
-export class SubmittedQuotationsComponent {
-  quotations = [
-    {
-      property: 'X',
-      issueDate: '23 July 2025',
-      expiryDate: '30 July 2025',
-      quoteNo: 'AX213HJ',
-      amount: 'R2 500',
-      status: 'pending'
-    },
-    {
-      property: 'Y',
-      issueDate: '23 July 2025',
-      expiryDate: '30 July 2025',
-      quoteNo: 'AX213HJ',
-      amount: 'R2 500',
-      status: 'successful'
-    },
-    {
-      property: 'Z',
-      issueDate: '23 July 2025',
-      expiryDate: '30 July 2025',
-      quoteNo: 'AX213HJ',
-      amount: 'R2 500', 
-      status: 'unsuccessful'
+export class SubmittedQuotationsComponent implements OnInit {
+  quotes: Quote[] = [];
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit() {
+    const contractorId = this.getContractorIdFromLocalStorage();
+    if (contractorId) {
+      this.loadQuotes(contractorId);
     }
-  ];
+  }
+
+  getContractorIdFromLocalStorage(): string | null {
+    return localStorage.getItem('contractorID');
+  }
+
+  loadQuotes(contractorId: string) {
+   this.apiService.getQuotes().subscribe({
+    next: (data) => {
+      // Trim and compare strings to avoid whitespace issues
+      this.quotes = data.filter(q => 
+        q.c_uuid?.toString().trim() === contractorId?.toString().trim()
+      );
+      
+      if (this.quotes.length === 0) {
+        console.warn('No quotes found for contractor', contractorId);
+      }
+    },
+    error: (err) => {
+      console.error('Failed to load quotes:', err);
+    }
+  });
+  }
+
+  quoteDate(quote: Quote): string {
+    return new Date(quote.submitted_on).toLocaleString();
+  }
 }

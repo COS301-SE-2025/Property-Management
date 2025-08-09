@@ -65,7 +65,7 @@ export class QuotationComponent implements OnInit{
 
   contractorId = ''; 
   taskId = ''; 
-  type = 'Started';
+  type = 'pending';
 
   constructor(
   private messageService: MessageService,
