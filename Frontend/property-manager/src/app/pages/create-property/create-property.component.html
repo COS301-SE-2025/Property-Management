@@ -59,7 +59,7 @@
           </p-floatlabel>
         </div>
 
-        <div class="mb-8">
+        <!-- <div class="mb-8">
           <label for="primaryContractor" class="block mb-1 font-medium">Primary Contractors *</label>
           <p-dropdown 
             id="primaryContractor" 
@@ -88,6 +88,31 @@
               </div>
             </ng-template>
 
+          </p-dropdown>
+        </div> -->
+
+        <div class="mb-8">
+          <label for="coporateUuid" class="block mb-1 font-medium">Assign to Body Corporate *</label>
+          <p-dropdown
+            id="coporateUuid"
+            [options]="bodyCorporates"
+            optionLabel="coporateName"
+            optionValue="coporateUuid"
+            formControlName="coporateUuid"
+            [filter]="true"
+            [showClear]="true"
+            placeholder="Select a body corporate"
+            class="w-full col-span-2"
+            [style]="{ width: '91%' }">
+            <ng-template pTemplate="item" let-corp>
+              <div class="flex items-center gap-2">
+                <span>{{ corp.coporateName }}</span>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="selectedItem" let-corp>
+              <span *ngIf="corp">{{ corp.coporateName }}</span>
+              <span *ngIf="!corp">Select a body corporate</span>
+            </ng-template>
           </p-dropdown>
         </div>
 
@@ -129,7 +154,6 @@
             </p-floatlabel>
           </div>
         </div>
-
       </div>
 
       <div class="flex flex-col items-center">

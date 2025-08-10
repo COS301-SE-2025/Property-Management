@@ -22,9 +22,9 @@
             <p class = "font-semibold text-red-500 ml-35" *ngIf="addError">Please fill all required fields correctly</p>
         </div>
         <div class = "flex justify-end mt-3">
-            <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer" (click)="closeDialog()">Cancel</button>
+            <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="closeDialog()">Cancel</button>
             <button type="submit" 
-                class = "px-3 py-2 rounded cursor-pointer"
+                class = "px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200"
                 [class.bg-black]="form.valid"
                 [class.bg-gray-200]="!form.valid"
                 [class.text-white]="form.valid"

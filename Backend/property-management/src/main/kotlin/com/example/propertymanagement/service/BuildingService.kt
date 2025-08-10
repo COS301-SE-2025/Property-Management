@@ -52,11 +52,6 @@ class BuildingService(
     ): BuildingResponseDto? {
         val existingBuilding = buildingRepository.findById(uuid).orElse(null) ?: return null
 
-        val propertyImageUrl =
-            dto.propertyImageId?.let {
-                imageRepository.findById(it).orElse(null)?.url
-            } ?: existingBuilding.propertyImage
-
         val updatedBuilding =
             existingBuilding.copy(
                 name = dto.name ?: existingBuilding.name,
@@ -65,7 +60,7 @@ class BuildingService(
                 propertyValue = dto.propertyValue ?: existingBuilding.propertyValue,
                 primaryContractor = dto.primaryContractor ?: existingBuilding.primaryContractor,
                 latestInspectionDate = dto.latestInspectionDate ?: existingBuilding.latestInspectionDate,
-                propertyImage = propertyImageUrl,
+                propertyImage = dto.propertyImageId ?: existingBuilding.propertyImage,
                 area = dto.area ?: existingBuilding.area,
                 trusteeUuid = dto.trusteeUuid ?: existingBuilding.trusteeUuid,
                 coporateUuid = dto.coporateUuid ?: existingBuilding.coporateUuid,

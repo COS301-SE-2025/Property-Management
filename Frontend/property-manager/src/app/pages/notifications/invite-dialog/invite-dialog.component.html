@@ -1,0 +1,22 @@
+<p-dialog [(visible)]="display" [modal]="true" [closable]="false" [header]="'Confirm Invitation'">
+  <div class="p-4">
+    <p class="mb-4">Do you want to accept this invitation?</p>
+    <div class="flex gap-4 justify-end">
+      <button pButton 
+              type="button" 
+              label="Decline" 
+              icon="pi pi-times" 
+              class="p-button-outlined p-button-danger" 
+              (click)="onDisapprove()">
+      </button>
+      <button pButton 
+              type="button" 
+              label="Accept" 
+              icon="pi pi-check" 
+              class="p-button-outlined p-button-success"
+              (click)="onJoin()">
+      </button>
+    </div>
+  </div>
+</p-dialog>
+<p-toast/>

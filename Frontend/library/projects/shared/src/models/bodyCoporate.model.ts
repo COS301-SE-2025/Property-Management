@@ -1,6 +1,6 @@
 export interface BodyCoporate{
-    coporateUuid: string;
-    coporateName: string;
+    corporateUuid: string;
+    corporateName: string;
     contributionPerSqm: number;
     totalBudget: number;
     email: string;
