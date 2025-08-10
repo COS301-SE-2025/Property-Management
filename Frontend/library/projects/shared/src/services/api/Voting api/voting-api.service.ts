@@ -1,12 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Quote, Voting, VotingResults } from '../../../public-api';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class VotingApiService{
-    private url = '/api/vote';
+    // private url = '/api/vote';
+    private url = `${environmentMobile.apiUrl}/vote`;
     constructor(private http: HttpClient){}
 
     getSessionDetails(sessionId: string)

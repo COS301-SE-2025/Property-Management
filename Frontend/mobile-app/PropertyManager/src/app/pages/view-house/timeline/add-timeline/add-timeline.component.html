@@ -49,7 +49,7 @@
                 (quantitiesChanged)="onQuantitiesChanged($event)"
             ></app-inventory>
           </ion-item>
-          <ion-item>
+          <ion-item class="pb-5 pt-2">
             <ion-input
               class="dark:text-gray-200"
               label="Proposed due date"
@@ -59,21 +59,33 @@
             ></ion-input>
             <p class="text-red-500" *ngIf="form.get('date')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
           </ion-item>
-          <div class="pt-4 flex flex-col justify-center items-center">
+          <div class="px-5">
+            <label for="priority" class="font-semibold block pb-3 dark:text-gray-200">Assign a priority</label>
+            <p-select 
+                id="priority"
+                [options]="priorities" 
+                formControlName="priority"
+                placeholder="Priority"
+                optionLabel="label"
+                optionStyleClass="styleClass"
+            >
+              <ng-template let-priority pTemplate="item">
+                  <span [class]="priority.styleClass">{{priority.label}}</span>
+              </ng-template>
+            </p-select>
+          </div>
+          <div class="pt-6 flex flex-col justify-center items-center">
             <p class="dark:text-gray-200">Take image of the task</p>
             <ion-button (click)="capturePhoto()" fill="clear">
               <ion-icon name="camera-outline"></ion-icon>
             </ion-button>
 
             <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
-              <p class="mb-2">Preview</p>
+              <p class="mb-2 dark:text-gray-200">Preview</p>
               <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
               <ion-button (click)="deletePhoto()" fill="clear" color="dark">
                 <ion-icon name="trash-outline"></ion-icon>
               </ion-button>
-            </div>
-            <div class="text-center">
-              <p class = "font-semibold text-red-500" *ngIf="addError">Error adding new task</p>
             </div>
           </div>
         </div>

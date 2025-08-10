@@ -1,5 +1,9 @@
 <app-header/>
 
+<div class = "mt-10 ml-10" *ngIf="votingTasks().length <= 0">
+    <p class = "text-xl font-normal flex flex-col justify-center items-center pr-12 text-yellow-300">No tasks open for voting. Come back later</p>
+</div>
+
 <div class = "mt-10 ml-10" *ngIf="votingTasks().length > 0">
     <p class = "text-xl font-normal flex flex-col justify-center items-center pr-12">Tasks open for voting</p>
 </div>

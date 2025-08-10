@@ -3,13 +3,15 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StorageService } from './storage.service';
 import { AuthTokens, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
+import { environmentMobile } from '../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthMobileService {
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
 
   private http = inject(HttpClient);
   private storage = inject(StorageService);
