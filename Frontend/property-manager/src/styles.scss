@@ -172,7 +172,6 @@ body {
   color: var(--text-color); 
 }
 
-
 .dark-theme .p-dialog button {
   background-color: #444;
   color: var(--text-color);
@@ -240,4 +239,46 @@ button.bg-yellow-500 {
   background: #ffda47; 
   border-radius: 4px;
   outline: none;
+}
+
+select.custom-select {
+  background: #f7f7f7;
+  color: #111;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+select.custom-select:focus {
+  border-color: #facc15;
+}
+
+option.custom-option {
+  background: #f7f7f7 !important;
+  color: #111 !important;
+}
+
+.dark-theme select.custom-select,
+.dark-theme option.custom-option {
+  background: #feffac !important;
+  color: #111 !important;
+  border-color: #facc15;
+}
+
+.custom-select {
+  background: #f7f7f7;
+  color: #111;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.dark-theme .custom-select {
+  background: #8e8e8e !important;
+  color: #ffffff !important;
+  border-color: #facc15;
 }
