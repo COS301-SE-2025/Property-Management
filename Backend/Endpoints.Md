@@ -1673,7 +1673,7 @@ _All fields are optional; only include the ones you want to update._
 ## Get Assigned Contractors
 
 **Method:** `GET`  
-**URL:** `/api/maintenance/{taskUuid}/contractors`
+**URL:** `/api/maintenance/task/{taskUuid}/contractors`
 
 **Description:**  
 Returns the list of contractors assigned to a specific maintenance task.
@@ -2170,3 +2170,121 @@ isBodyCorporate: true
 **GET** `/api/vote/task/{task uuid}/session`
 
 ---
+
+# task progress
+
+## add task work 
+**POST** `/api/task-progress`
+
+**Request Body Example:**
+```json
+{
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId" : "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "workDescription" : "painted undercoat",
+    "inventoryUsageUuid" : "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed" : "5"
+}
+```
+
+**Response:200**
+```json
+{
+    "progressUuid": "93ae932e-7eb2-4f7b-aa3a-197f9714e039",
+    "submissionDate": 1754737940.029881833,
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId": "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "progressPercentage": 0,
+    "workDescription": "painted undercoat",
+    "inventoryUsageUuid": "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed": 5,
+    "remarks": null,
+    "lastUpdated": 1754737940.029940224
+}
+```
+---
+
+## Get by task id :
+**Get** `api/task-progress/{progressUuid}`
+
+**Response:200**
+```json
+{
+    "progressUuid": "93ae932e-7eb2-4f7b-aa3a-197f9714e039",
+    "submissionDate": 1754737940.029881833,
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId": "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "progressPercentage": 0,
+    "workDescription": "painted undercoat",
+    "inventoryUsageUuid": "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed": 5,
+    "remarks": null,
+    "lastUpdated": 1754737940.029940224
+}
+```
+---
+
+## Get by task uuid:
+**Get** `api/task-progress/task/{taskUuid}`
+
+**Response:200**
+```json
+{
+    "progressUuid": "93ae932e-7eb2-4f7b-aa3a-197f9714e039",
+    "submissionDate": 1754737940.029881833,
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId": "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "progressPercentage": 0,
+    "workDescription": "painted undercoat",
+    "inventoryUsageUuid": "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed": 5,
+    "remarks": null,
+    "lastUpdated": 1754737940.029940224
+}
+```
+---
+
+## Update 
+**PUT** `api/task-progress/task/{taskUuid}`
+
+**Request body example:**
+```json
+{
+    "progressPercentage" : 60,
+    "imageId" : "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "workDescription" : "finished painting 3 out of the 5 walls "
+}
+```
+
+**Response:200**
+```json
+{
+    "progressUuid": "93ae932e-7eb2-4f7b-aa3a-197f9714e039",
+    "submissionDate": 1754737940.029882000,
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId": "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "progressPercentage": 60,
+    "workDescription": "finished painting 3 out of the 5 walls ",
+    "inventoryUsageUuid": "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed": 5,
+    "remarks": null,
+    "lastUpdated": 1754739343.323560387
+}
+```
+### updatable fileds :
+```
+    val progressPercentage: BigDecimal,
+    val workDescription: String,
+    val imageId: String,
+    val quantityUsed: Int,
+    val remarks: String
+```
+
+## Delete task progress :
+**DELETE** `/api/task-progress/{progressUuid}`
+**Response:204** 
