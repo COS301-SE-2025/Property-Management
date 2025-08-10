@@ -157,10 +157,9 @@ export const routes: Routes = [
     pathMatch: 'full',
     component: ManageMembersComponent
   },
-  //still working on this
   {
     path: 'ratings',
-    // canActivate: [authGuard(['bodyCorporate'])],
+    canActivate: [authGuard(['bodyCorporate'])],
     pathMatch: 'full',
     component: RatingsComponent
   },
