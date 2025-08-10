@@ -28,7 +28,16 @@
 
         <div class="mb-8" *ngIf="selectedTask">
           <label for="rating" class="block mb-1 font-medium">Rating *</label>
-          <input type="range" id="rating" name="rating" min="1" max="10" [(ngModel)]="selectedRating" class="w-full" />
+          <input
+            type="range"
+            id="rating"
+            name="rating"
+            min="1"
+            max="10"
+            [(ngModel)]="selectedRating"
+            class="w-full custom-slider"
+            style="width: 91%;"
+          />
           <span class="ml-2 font-semibold">{{ selectedRating }}</span>
         </div>
 

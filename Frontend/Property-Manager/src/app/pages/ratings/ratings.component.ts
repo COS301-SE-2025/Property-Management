@@ -73,16 +73,15 @@ loadRatingsHistory() {
     next: (ratings: Rating[]) => {
       this.ratingsHistory = ratings
         .filter(r => r.trusteeUuid === this.trusteeUuid)
-        .map(r => ({
-          ...r,
-          task: {
-            uuid: r.taskUuid,
-            name: r.taskName || '', // If available
-            contractor: { uuid: r.contractorUuid, name: r.contractorName || '' }
-          },
-          contractor: { uuid: r.contractorUuid, name: r.contractorName || '' },
-          date: r.createdAt ? new Date(r.createdAt).toISOString().slice(0, 10) : ''
-        }));
+        .map(r => {
+          const task = this.tasks.find(t => t.uuid === r.taskUuid);
+          return {
+            ...r,
+            taskName: task ? task.name : 'N/A',
+            contractorName: task ? task.contractor.name : 'N/A',
+            createdAt: r.createdAt
+          };
+        });
     },
     error: (err: unknown) => { this.ratingsHistory = []; }
   });
