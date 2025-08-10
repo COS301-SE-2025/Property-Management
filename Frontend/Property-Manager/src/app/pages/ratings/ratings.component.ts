@@ -2,6 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RatingService, RatingPayload } from 'shared';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { HeaderComponent } from '../../components/header/header.component';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { PropertyService } from 'shared';
 import { getCookieValue } from 'shared';
 import { TaskApiService } from 'shared'; 
@@ -18,8 +24,16 @@ interface Task {
 @Component({
   selector: 'app-ratings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './ratings.component.html'
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    FloatLabelModule, 
+    InputTextModule, 
+    FloatLabelModule,
+    DropdownModule,
+    ToastModule, HeaderComponent],
+  templateUrl: './ratings.component.html',
+  providers: [MessageService]
 })
 export class RatingsComponent implements OnInit {
 
