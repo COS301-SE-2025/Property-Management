@@ -13,7 +13,13 @@ export class ThemeService {
 
   async initTheme()
   {
-    const theme = await this.storage.get('theme') || 'light';
+    let theme = await this.storage.get('theme') || 'light';
+
+    if(!theme)
+    {
+      theme = this.getSystemTheme();
+    }
+    
     this.darkMode.next(theme === 'dark');
     this.apply()
   }
@@ -32,5 +38,9 @@ export class ThemeService {
   }
   get currentMode() {
     return this.darkMode.value;
+  }
+  getSystemTheme(): 'light' | 'dark'
+  {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 }

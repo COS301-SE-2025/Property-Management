@@ -4,12 +4,13 @@ import { StorageService, VotingService } from 'shared';
 import { HeaderComponent } from "src/app/components/header/header.component";
 import { TabComponent } from 'src/app/components/tab/tab.component';
 import { VoteComponent } from "./vote/vote.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-voting',
   templateUrl: './voting.component.html',
   styles: ``,
-  imports: [HeaderComponent, IonContent, TabComponent, VoteComponent],
+  imports: [HeaderComponent, IonContent, TabComponent, VoteComponent, CommonModule],
 })
 export class VotingComponent  implements OnInit {
 

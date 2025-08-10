@@ -14,7 +14,7 @@
       <div class="flex flex-col items-center justify-center">
 
         <p>Inventory expenditure</p>
-        <p-table [value] = "inventory()">
+        <p-table [value] = "inventoryUsage()">
             <ng-template #header>
             <tr>
                 <th pSortableColumn="name">
@@ -23,16 +23,16 @@
                 <th pSortableColumn="quantityInStock">
                     Quantity <p-sortIcon field="quantityInStock"/>
                 </th>
-                <th pSortableColumn="price">
-                    Price <p-sortIcon field="price"/>
+                <th pSortableColumn="contractorName">
+                    Used by contractor <p-sortIcon field="contractorName"/>
                 </th>
             </tr>
             </ng-template>
-            <ng-template #body let-inventory>
+            <ng-template #body let-usage>
             <tr>
-                <td>{{ inventory.name }}</td>
-                <td>{{ inventory.quantityInStock }}</td>
-                <td>R {{ inventory.price }}</td>
+                <td>{{ usage.itemName }}</td>
+                <td>{{ usage.quantityUsed }}</td>
+                <td>{{ usage.contractorName }}</td>
             </tr>
             </ng-template>
         </p-table>
@@ -41,7 +41,6 @@
             <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
         </button>
         <app-edit-budget #editBudget [budgetType]="'inventory'" [oldBudgetAmount]="budget().inventoryBudget" [budget]="budget()"></app-edit-budget>
-        <p class = "pt-3">Total: R {{ getMaintenanceTotal() }}</p>
       </div>
     </ion-card-content>
 </ion-card>

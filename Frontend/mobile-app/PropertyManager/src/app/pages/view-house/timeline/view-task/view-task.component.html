@@ -36,9 +36,6 @@
         <div class="font-semibold pb-3" *ngIf="contractor">
             <p class="dark:text-gray-200">Assigned contractor: {{ contractor.name }}</p>
         </div>
-        <div>
-          <app-inventory-usage *ngIf="inventoryUsage?.length" [taskId]="this.taskId!"/>
-        </div>
         <div class="pb-3 flex flex-col justify-center items-center">
             <p class="pb-2 dark:text-gray-200 text-lg">Task image: </p>
             <img [src]="imageUrl" alt="image of task" *ngIf="imageUrl; else noImg" class="max-w-xs max-h-40 rounded-md">

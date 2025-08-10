@@ -176,5 +176,6 @@ export class AuthMobileService {
     this.storage.remove("userType");
     this.storage.remove("trusteeID");
     this.storage.remove("contractorID");
+    this.storage.remove("theme");
   }
 }

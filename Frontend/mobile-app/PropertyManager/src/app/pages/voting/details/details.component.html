@@ -45,10 +45,16 @@
                         {{ contractor.name }}
                       </td>
                       <td>
-                        <button class="text-yellow-400 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="quoteDetails.openModal()">View quote</button>
-                        <app-quote #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote>
+                        @if(contractor.quoteSubmitted)
+                        {
+                          <button class="text-yellow-400 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="quoteDetails.openModal()">View quote</button>
+                          <app-quote #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote>
+                        }
+                        @else {
+                          <span class="text-yellow-400">No quote available yet</span>
+                        }
                       </td>
-                      <td>
+                      <td *ngIf="contractor.quoteSubmitted">
                         <p-togglebutton 
                           onIcon="pi pi-check" 
                           offIcon="pi pi-check"
