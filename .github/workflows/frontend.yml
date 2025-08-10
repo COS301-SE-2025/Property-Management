@@ -73,6 +73,10 @@ jobs:
           run: npm ci
           working-directory: Frontend
 
+        - name: Remove Angular cache
+          run: rm -rf .angular
+          working-directory: Frontend
+            
         - name: Build shared library
           run: npm run build shared
           working-directory: Frontend
