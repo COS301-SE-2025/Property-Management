@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { getCookieValue, HousesService } from 'shared';
 import { FormatAmountPipe } from "shared";
 import { BuildingDetails } from 'shared';
-import { BudgetAddDialogComponent } from './budget-app-dialog/budget-card/budget-add-dialog.component';
+import { BudgetAddDialogComponent } from './budget-app-dialog/budget-add-dialog.component';
 
 @Component({
   selector: 'app-budget-card',

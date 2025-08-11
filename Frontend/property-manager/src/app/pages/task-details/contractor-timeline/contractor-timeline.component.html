@@ -1,0 +1,51 @@
+<p-card>
+    <ng-template #title class="text-lg font-semibold">Contractor timeline</ng-template>
+    <div>
+        <p class="flex flex-col justify-center items-center text-yellow-400 text-md p-3" *ngIf="emptyTimeline || !contractorUser">No updates from contractors yet, come back later</p>
+        <p-timeline [value]="timeline()" align="alternate">
+            <ng-template #marker let-time>
+                <ng-container *ngIf="(time.progressPercentage <= 49)">
+                    <i class="pi pi-clock text-gray-800"></i>
+                </ng-container>
+                <ng-container *ngIf="(time.progressPercentage >= 50 && time.progressPercentage <= 99)">
+                    <img src="assets/icons/hourglass.svg" alt="hourglass" class="w-5 h-5">
+                </ng-container>
+                <ng-container *ngIf="(time.progressPercentage === 100)">
+                    <img src="assets/icons/task_done.svg" alt="Done" class="w-5 h-5">
+                </ng-container>
+            </ng-template>
+            <ng-template #content let-time>
+                <p-card [subheader]="time.submissionDate | formatTime ">
+                    @if(time.progressPercentage === 100)
+                    {
+                        <ng-template #title>Task Done</ng-template>
+                    }
+                    @else
+                    {
+                        <ng-template #title>Ongoing</ng-template>
+                    }
+                    <img [src]="time.imageId" alt="task image" width="250">
+                    <p>{{ time.workDescription }}</p>
+                    @if(time.progressPercentage === 100 && task().status==="COMPLETED")
+                    {
+                        <button class="bg-yellow-400 text-white px-3 py-1.5 rounded cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="navigateToReview('write')">Review?</button>
+                    }
+                    @else if(time.progressPercentage === 100)
+                    {
+                        <button class="bg-yellow-400 text-white px-3 py-1.5 rounded cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="navigateToReview('read')">View review</button>
+                    }
+                </p-card>
+            </ng-template>
+        </p-timeline>
+    </div>
+</p-card>
+@if(contractorUser)
+{
+    <div class = "mt-4 flex flex-col justify-center items-center">
+        <button class = "cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="inventoryAddDialog.openDialog()">
+            <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
+        </button>
+        <app-add-progress-dialog #inventoryAddDialog/>
+    </div>
+}
+<p-toast/>
