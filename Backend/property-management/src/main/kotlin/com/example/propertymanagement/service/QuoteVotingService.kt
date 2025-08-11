@@ -143,7 +143,7 @@ class QuoteVotingService(
                 isActive = session.votingEndsAt.isAfter(LocalDateTime.now()),
             )
         }
-        
+
     @Cacheable("apiCache")
     fun getTaskId(sessionUuid: UUID): UUID {
         val session =
