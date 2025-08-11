@@ -20,8 +20,12 @@
       <ion-item>
         <ion-button [color]="darkMode? 'light': 'dark'" fill="clear">
             <ion-icon slot="start" name="text-outline"></ion-icon>
-            Change font size
-          </ion-button>
+            <ion-select [value]="fontSize" (ionChange)="changeFontSize($event.detail.value)">
+            <ion-select-option value="small">Small</ion-select-option>
+            <ion-select-option value="normal">Normal</ion-select-option>
+            <ion-select-option value="large">Large</ion-select-option>
+    </ion-select>
+        </ion-button>
       </ion-item>
       <ion-item>
         <ion-button [color]="darkMode? 'light': 'dark'" fill="clear">
