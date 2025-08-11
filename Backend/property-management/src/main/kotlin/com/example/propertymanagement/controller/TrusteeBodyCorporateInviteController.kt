@@ -45,5 +45,4 @@ class TrusteeBodyCorporateInviteController(
 
     @GetMapping
     fun getAllInvites(): List<InviteDTO> = inviteService.getAllInvitations()
-    
 }

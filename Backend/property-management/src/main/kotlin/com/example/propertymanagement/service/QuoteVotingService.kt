@@ -4,6 +4,7 @@ import com.example.propertymanagement.dto.CreateVoteSessionRequest
 import com.example.propertymanagement.dto.QuoteVoteResult
 import com.example.propertymanagement.dto.SubmitVoteRequest
 import com.example.propertymanagement.dto.VoteSessionResult
+import com.example.propertymanagement.dto.VoteSessionSummary
 import com.example.propertymanagement.exception.RestException
 import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.model.QuoteVote
@@ -13,6 +14,7 @@ import com.example.propertymanagement.repository.QuoteRepository
 import com.example.propertymanagement.repository.QuoteVoteRepository
 import com.example.propertymanagement.repository.QuoteVoteSessionRepository
 import com.example.propertymanagement.repository.TrusteeBodyCorporateInviteRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -91,6 +93,7 @@ class QuoteVotingService(
         )
     }
 
+    @Cacheable("apiCache")
     fun getResults(sessionUuid: UUID): VoteSessionResult {
         val session =
             sessionRepo
@@ -127,6 +130,41 @@ class QuoteVotingService(
             votingEnded = ended,
             winningQuoteUuid = winner,
         )
+    }
+
+    // @Cacheable("apiCache")
+    fun getAllSessions(): List<VoteSessionSummary> =
+        sessionRepo.findAll().map { session ->
+            VoteSessionSummary(
+                sessionUuid = session.sessionUuid,
+                taskUuid = session.taskUuid,
+                coporateUuid = session.coporateUuid,
+                votingEndsAt = session.votingEndsAt,
+                isActive = session.votingEndsAt.isAfter(LocalDateTime.now()),
+            )
+        }
+
+    @Cacheable("apiCache")
+    fun getTaskId(sessionUuid: UUID): UUID {
+        val session =
+            sessionRepo
+                .findById(sessionUuid)
+                .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Voting session not found") }
+        return session.taskUuid
+    }
+
+    @Cacheable("apiCache")
+    fun getSessionByTask(taskUuid: UUID): VoteSessionSummary? {
+        val session = sessionRepo.findByTaskUuid(taskUuid).orElse(null)
+        return session?.let {
+            VoteSessionSummary(
+                sessionUuid = it.sessionUuid,
+                taskUuid = it.taskUuid,
+                coporateUuid = it.coporateUuid,
+                votingEndsAt = it.votingEndsAt,
+                isActive = it.votingEndsAt.isAfter(LocalDateTime.now()),
+            )
+        }
     }
 
     private fun determineWinner(

@@ -9,6 +9,8 @@ import com.example.propertymanagement.dto.LoginResponse
 import com.example.propertymanagement.dto.UpdateBodyCorporateRequest
 import com.example.propertymanagement.model.BodyCorporate
 import com.example.propertymanagement.repository.BodyCorporateRepository
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -22,19 +24,18 @@ class BodyCorporateService(
     private val bodyCorporateRepository: BodyCorporateRepository,
     private val cognitoService: CognitoService,
 ) {
-    @Transactional
+    @CacheEvict(value = ["apiCache"], allEntries = true)
     fun registerBodyCorporate(request: CreateBodyCorporateRequest): BodyCorporateRegistrationResponse {
         if (bodyCorporateRepository.existsByEmail(request.email)) {
             throw IllegalArgumentException("Email already exists")
         }
 
-        // Generate a unique username (before @ + timestamp)
         val username = request.email.substringBefore("@") + "_" + System.currentTimeMillis()
 
         val attributes =
             mutableMapOf<String, String>().apply {
                 put("email", request.email)
-                put("given_name", username) // Use the generated username as given_name
+                put("given_name", username)
                 request.contactNumber?.let { put("phone_number", it) }
             }
 
@@ -56,7 +57,7 @@ class BodyCorporateService(
                 totalBudget = request.totalBudget,
                 email = request.email,
                 userId = cognitoUserId,
-                username = username, // Save username
+                username = username,
             )
 
         val savedBodyCorporate =
@@ -71,7 +72,7 @@ class BodyCorporateService(
             corporateName = savedBodyCorporate.corporateName,
             email = savedBodyCorporate.email!!,
             cognitoUserId = cognitoUserId,
-            username = username, // <-- Add this line
+            username = username,
             emailVerificationRequired = true,
         )
     }
@@ -109,7 +110,7 @@ class BodyCorporateService(
             .findAll(pageable)
             .map { it.toResponse() }
 
-    @Transactional(readOnly = true)
+    @Cacheable(value = ["apiCache"], key = "#id")
     fun getBodyCorporateById(id: UUID): BodyCorporateResponse {
         val bodyCorporate =
             bodyCorporateRepository
@@ -118,7 +119,7 @@ class BodyCorporateService(
         return bodyCorporate.toResponse()
     }
 
-    @Transactional(readOnly = true)
+    @Cacheable(value = ["apiCache"], key = "'email_'+#email")
     fun getBodyCorporateByEmail(email: String): BodyCorporateResponse {
         val bodyCorporate =
             bodyCorporateRepository.findByEmail(email)
@@ -126,7 +127,7 @@ class BodyCorporateService(
         return bodyCorporate.toResponse()
     }
 
-    @Transactional(readOnly = true)
+    @Cacheable(value = ["apiCache"], key = "'user_'+#userId")
     fun getBodyCorporateByUserId(userId: String): BodyCorporateResponse {
         val bodyCorporate =
             bodyCorporateRepository.findByUserId(userId)
@@ -134,6 +135,7 @@ class BodyCorporateService(
         return bodyCorporate.toResponse()
     }
 
+    @CacheEvict(value = ["apiCache"], key = "#id")
     fun updateBodyCorporate(
         id: UUID,
         request: UpdateBodyCorporateRequest,
@@ -143,7 +145,6 @@ class BodyCorporateService(
                 .findById(id)
                 .orElseThrow { NoSuchElementException("Body corporate not found with id: $id") }
 
-        // Check if email is being updated and if it already exists
         request.email?.let { newEmail ->
             if (newEmail != existingBodyCorporate.email && bodyCorporateRepository.existsByEmail(newEmail)) {
                 throw IllegalArgumentException("Email already exists")
@@ -161,6 +162,7 @@ class BodyCorporateService(
         return bodyCorporateRepository.save(updatedBodyCorporate).toResponse()
     }
 
+    @CacheEvict(value = ["apiCache"], key = "#id")
     fun deleteBodyCorporate(id: UUID) {
         val bodyCorporate =
             bodyCorporateRepository
@@ -170,13 +172,13 @@ class BodyCorporateService(
         bodyCorporateRepository.delete(bodyCorporate)
     }
 
-    @Transactional(readOnly = true)
+    @Cacheable(value = ["apiCache"], key = "'name_'+#name")
     fun searchBodyCorporatesByName(name: String): List<BodyCorporateResponse> =
         bodyCorporateRepository
             .findByCorporateNameContainingIgnoreCase(name)
             .map { it.toResponse() }
 
-    @Transactional(readOnly = true)
+    @Cacheable(value = ["apiCache"], key = "'contribution_'+#minContribution+'_'+#maxContribution")
     fun getBodyCorporatesByContributionRange(
         minContribution: BigDecimal,
         maxContribution: BigDecimal,
@@ -185,13 +187,13 @@ class BodyCorporateService(
             .findByContributionPerSqmBetween(minContribution, maxContribution)
             .map { it.toResponse() }
 
-    @Transactional(readOnly = true)
+    @Cacheable(value = ["apiCache"], key = "'minBudget_'+#minBudget")
     fun getBodyCorporatesByMinimumBudget(minBudget: BigDecimal): List<BodyCorporateResponse> =
         bodyCorporateRepository
             .findByTotalBudgetGreaterThanEqual(minBudget)
             .map { it.toResponse() }
 
-    @Transactional(readOnly = true)
+    @Cacheable("apiCache")
     fun getBodyCorporateStatistics(): BodyCorporateStatistics {
         val totalCount = bodyCorporateRepository.countAllBodyCorporates()
         val totalBudget = bodyCorporateRepository.sumAllTotalBudgets() ?: BigDecimal.ZERO

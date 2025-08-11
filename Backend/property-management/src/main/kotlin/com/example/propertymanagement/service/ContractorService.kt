@@ -2,6 +2,8 @@ package com.example.propertymanagement.service
 
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.repository.ContractorRepository
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.NoSuchElementException
@@ -11,11 +13,14 @@ import java.util.UUID
 class ContractorService(
     private val repository: ContractorRepository,
 ) {
+    @Cacheable("apiCache")
     fun getAll(): List<Contractor> = repository.findAll()
 
+    @Cacheable(value = ["apiCache"], key = "#uuid")
     fun getByUuid(uuid: UUID): Contractor =
         repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
+    @CacheEvict(value = ["apiCache"], key = "#uuid")
     fun updateByUuid(
         uuid: UUID,
         update: Contractor,
@@ -36,7 +41,7 @@ class ContractorService(
                 reg_number = update.reg_number ?: existing.reg_number,
                 description = update.description ?: existing.description,
                 services = update.services ?: existing.services,
-                corporate_uuid = update.corporate_uuid ?: existing.corporate_uuid,
+                corporateUuid = update.corporateUuid ?: existing.corporateUuid,
                 img = update.img ?: existing.img,
             )
 
@@ -44,10 +49,13 @@ class ContractorService(
     }
 
     @Transactional
+    @CacheEvict(value = ["apiCache"], key = "#uuid")
     fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
 
+    @CacheEvict(value = ["apiCache"], allEntries = true)
     fun add(item: Contractor): Contractor = repository.save(item)
 
+    @CacheEvict(value = ["apiCache"], allEntries = true)
     fun addUser(
         name: String,
         contact_info: String,
@@ -61,7 +69,7 @@ class ContractorService(
         reg_number: String,
         description: String,
         services: String,
-        corporate_uuid: UUID,
+        corporateUuid: UUID,
         img: UUID,
     ): Contractor {
         val newUser =
@@ -78,12 +86,15 @@ class ContractorService(
                 reg_number = reg_number,
                 description = description,
                 services = services,
-                corporate_uuid = corporate_uuid,
+                corporateUuid = corporateUuid,
                 img = img,
             )
         return add(newUser)
     }
 
+    @Cacheable(value = ["apiCache"], key = "'email_'+#email")
     fun getByEmail(email: String): Contractor =
         repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
+
+    fun getContractorsByCorporateUuid(corporateUuid: UUID): List<Contractor> = repository.findContractorsByCorporateUuid(corporateUuid)
 }

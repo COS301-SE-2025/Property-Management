@@ -21,6 +21,7 @@ export * from './services/api/Task api/task-api.service';
 export * from './services/storage.service';
 export * from './services/voting.service';
 export * from './services/api/Notifications api/notifications-api.service';
+export * from './services/api/Life Cycle Cost api/life-cycleCost-api.service';
 
 //Models
 export * from './models/bodyCoporate.model';

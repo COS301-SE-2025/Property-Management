@@ -9,7 +9,7 @@ data class InviteDTO(
     val coporateUuid: UUID,
     val status: String? = null,
     val invitedOn: Date? = null,
-    val name: String?,    
-    val email: String?,   
-    val role: String?
+    val name: String?,
+    val email: String?,
+    val role: String?,
 )

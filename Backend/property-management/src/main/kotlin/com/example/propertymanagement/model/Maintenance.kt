@@ -31,4 +31,6 @@ data class Maintenance(
     val cUuid: UUID? = null,
     @Column(name = "approval_status")
     val approvalStatus: String = "PENDING",
+    @Column(name = "priority")
+    val priority: String = "Low",
 )
