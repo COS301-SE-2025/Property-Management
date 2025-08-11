@@ -23,6 +23,21 @@
             
             <p class="text-sm dark:text-gray-100">Description: {{ task()?.des }}</p>
             <p [class]="changeDueDate()">Due Date: {{ (task()?.scheduled_date ?? '') | formatDate }}</p>
+            <div class="font-semibold pb-3">
+              <span>Priority:
+                  @if(task()?.priority === 'Low')
+                  {
+                      <span class="text-green-400">Low</span>
+                  }
+                  @else if(task()?.priority === 'Medium')
+                  {
+                      <span class="text-orange-400">Medium</span>
+                  }
+                  @else {
+                      <span class="text-red-500">High</span>
+                  }
+              </span>
+            </div>
               <div>
                 <p class="font-semibold dark:text-gray-100 pb-2">Assigned Contractors:</p>
                 <p-table [value]="contractors()!">
@@ -45,10 +60,16 @@
                         {{ contractor.name }}
                       </td>
                       <td>
-                        <button class="text-yellow-400 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="quoteDetails.openModal()">View quote</button>
-                        <app-quote #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote>
+                        @if(contractor.quoteSubmitted)
+                        {
+                          <button class="text-yellow-400 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="quoteDetails.openModal()">View quote</button>
+                          <app-quote #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote>
+                        }
+                        @else {
+                          <span class="text-yellow-400">No quote available yet</span>
+                        }
                       </td>
-                      <td>
+                      <td *ngIf="contractor.quoteSubmitted">
                         <p-togglebutton 
                           onIcon="pi pi-check" 
                           offIcon="pi pi-check"

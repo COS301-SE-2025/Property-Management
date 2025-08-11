@@ -6,13 +6,15 @@ import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { ReserveFund } from '../../../models/reserveFund.model';
 import { BodyCoporate } from '../../../models/bodyCoporate.model';
 import { ContractorDetails } from '../../../models/contractorDetails.model';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BodyCoporateApiService {
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -65,7 +67,6 @@ export class BodyCoporateApiService {
   {
     return this.http.get<ContractorDetails[]>(`${this.url}/contractor`).pipe(
       map(contractor => {
-        console.log(contractor);
         return contractor.filter(c => {
           return c.corporate_uuid === coporateId
         });

@@ -4,12 +4,27 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
 import { BodyCoporateService, getCookieValue, HousesService, Property } from 'shared';
 import { Router } from '@angular/router';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-home',
   imports: [HeaderComponent, HouseCardComponent, CommonModule],
   templateUrl: './home.component.html',
-  styles: ``
+  styles: ``,
+  animations: [
+    trigger('floatUp', [
+      state('void', style({
+        transform: 'translateY(20%)',
+        opacity: 0
+      })),
+      transition(':enter', [
+        animate('600ms ease-out', style({
+          transform: 'translateY(0)',
+          opacity: 1
+        }))
+      ])
+    ])
+  ]
 })
 export class HomeComponent implements OnInit{
 
@@ -24,8 +39,7 @@ export class HomeComponent implements OnInit{
     if(!id)
     {
       id = getCookieValue(document.cookie, 'bodyCoporateId');
-      console.log('getting body corporate houses');
-      await this.bodyCoporateService.loadHouses();
+      await this.bodyCoporateService.loadHouses(id);
       this.houses.set(this.bodyCoporateService.buildings());
     }
     else

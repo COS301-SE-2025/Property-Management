@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environmentMobile } from '../environment';
 
 export interface CreateBuildingPayload {
   name: string;
@@ -33,10 +34,23 @@ export interface ImageUploadResponse {
   imageKey: string;
 }
 
+export interface InviteWithTrustee {
+  inviteUuid: string;
+  status: string;
+  invitedOn: string;
+  trusteeUuid: string;
+  name: string;
+  email: string;
+  role: string;
+  coporateUuid?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PropertyService {
-  private apiUrl = 'http://localhost:8080/api/buildings';
-  private imageUploadUrl = 'http://localhost:8080/api/images/upload';
+  // private apiUrl = 'http://localhost:8080/api/buildings';
+  private apiUrl = environmentMobile.apiUrl;
+  // private imageUploadUrl = 'http://localhost:8080/api/images/upload';
+  private imageUploadUrl = `${this.apiUrl}/images/upload`;
 
   constructor(private http: HttpClient) {}
 
@@ -49,5 +63,29 @@ export class PropertyService {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post<ImageUploadResponse>(this.imageUploadUrl, formData);
+  }
+
+  getInvitations(): Observable<InviteWithTrustee[]> {
+    return this.http.get<InviteWithTrustee[]>('/api/invites');
+  }
+
+  cancelInvite(inviteUuid: string): Observable<any> {
+    return this.http.delete(`/api/invites/${inviteUuid}`);
+  }
+
+  revokeInvite(inviteUuid: string): Observable<any> {
+    return this.http.put(`/api/invites/${inviteUuid}/status?status=Revoked`, {});
+  }
+
+  updateInviteStatus(inviteUuid: string, status: string): Observable<any> {
+    return this.http.put(`/api/invites/${inviteUuid}/status?status=${status}`, {});
+  }
+
+  getBodyCorporatesForTrustee(trusteeUuid: string) {
+    return this.http.get<any[]>(`/api/invites/trustee/${trusteeUuid}`);
+  }
+
+  getBodyCorporateByUuid(coporateUuid: string) {
+    return this.http.get<any>(`/api/body-corporates/${coporateUuid}`);
   }
 }

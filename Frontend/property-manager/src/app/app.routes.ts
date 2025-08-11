@@ -5,7 +5,6 @@ import { ViewHouseComponent } from './pages/view-house/view-house.component';
 import { RegisterOwnerComponent } from './pages/register-owner/register-owner.component';
 import { RegisterBodyCorporateComponent } from './pages/register-body-corporate/register-body-corporate.component';
 import { CreatePropertyComponent } from './pages/create-property/create-property.component';
-
 import { ContractorRegisterComponent } from './pages/contractorRegister/contractorRegister.component';
 import { ContractorHomeComponent } from './pages/contractorHome/contractorHome.component';
 import { QuotationComponent } from './pages/quotation/quotation.component';
@@ -15,10 +14,10 @@ import { RegisterHubComponent } from './pages/register-hub/register-hub.componen
 import { BcHomeComponent } from './pages/bc-home/bc-home.component';
 import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.component';
 import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
+import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
+// import { RatingsComponent } from './pages/ratings/ratings-page.component';
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
-import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
-
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
@@ -26,6 +25,7 @@ import { authGuard } from './auth.guard';
 import { VotingComponent } from './pages/voting/voting.component';
 import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
 import { TimelineDetailsComponent } from './pages/view-house/timeline-details/timeline-details.component';
+import { NotificationsComponent } from './pages/notifications/notifications.component';
 
 export const routes: Routes = [
   {
@@ -157,6 +157,13 @@ export const routes: Routes = [
     pathMatch: 'full',
     component: ManageMembersComponent
   },
+  //still working on this
+  // {
+  //   path: 'ratings',
+  //   canActivate: [authGuard(['bodyCorporate'])],
+  //   pathMatch: 'full',
+  //   component: RatingsComponent
+  // },
   {
     path: 'landingPage',
     pathMatch: 'full',
@@ -171,5 +178,10 @@ export const routes: Routes = [
     path: 'reset-password',
     pathMatch: 'full',
     component: ResetPasswordComponent
+  },
+  {
+    path: 'notifications',
+    pathMatch: 'full',
+    component: NotificationsComponent
   }
 ];

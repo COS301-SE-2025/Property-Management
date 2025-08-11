@@ -13,6 +13,9 @@
             <th pSortableColumn="quantityInStock">
                 Quantity <p-sortIcon field="quantityInStock"/>
             </th>
+            <th pSortableColumn="price">
+                Price <p-sortIcon field="price"/>
+            </th>
             <th>Actions</th>
         </tr>
         </ng-template>
@@ -28,6 +31,7 @@
                     {{ inventory.quantityInStock }}
                 }
             </td>
+            <td>R {{ inventory.price }}</td>
             <td>
                 @if(editingRows[rowIndex])
                 {

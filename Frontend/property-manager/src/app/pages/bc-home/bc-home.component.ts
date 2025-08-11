@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { HeaderComponent } from "../../components/header/header.component";
 import { PendingTaskCardComponent } from "./pending-task-card/pending-task-card.component";
-import { BodyCoporateService } from 'shared';
+import { BodyCoporateService, getCookieValue } from 'shared';
 import { LifeCycleCardComponent } from "./life-cycle-card/life-cycle-card.component";
 import { ReserveFundCardComponent } from "./reserve-fund-card/reserve-fund-card.component";
 import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenance-graph-card.component';
@@ -32,16 +32,19 @@ export class BcHomeComponent implements OnInit{
   constructor(public bodyCoporateService: BodyCoporateService){}
 
   async ngOnInit() {
-      try{
+
+    const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
+
+    try{
         await Promise.all([
-          this.bodyCoporateService.loadFundContribution(),
-          this.bodyCoporateService.loadPendingTasks(),
-          this.bodyCoporateService.loadGraph()
+          this.bodyCoporateService.loadFundContribution(bcId),
+          this.bodyCoporateService.loadPendingTasks(bcId),
+          this.bodyCoporateService.loadGraph(bcId)
         ]);
-      }
-      catch(error)
-      {
-        console.log("Error loading data:", error);
-      }
+    }
+    catch(error)
+    {
+      console.log("Error loading data:", error);
+    }
   }
 }

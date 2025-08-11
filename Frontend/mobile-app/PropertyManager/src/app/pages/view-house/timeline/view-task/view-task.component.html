@@ -12,17 +12,29 @@
         <div class="font-bold pb-3">
             <p class="dark:text-gray-200">Task: {{ task?.title }}</p>
         </div>
-        <div class="pb-3">
+        <div class="pb-3 px-4">
             <p class="dark:text-gray-200">Description: {{ task?.des }}</p>
         </div>
         <div class="font-semibold pb-3">
             <p class="dark:text-gray-200">Due Date: {{ (task?.scheduled_date ?? '') | formatDate }}</p>
         </div>
+        <div class="font-semibold pb-3">
+          <span>Priority:
+              @if(task?.priority === 'Low')
+              {
+                  <span class="text-green-400">Low</span>
+              }
+              @else if(task?.priority === 'Medium')
+              {
+                  <span class="text-orange-400">Medium</span>
+              }
+              @else {
+                  <span class="text-red-500">High</span>
+              }
+          </span>
+        </div>
         <div class="font-semibold pb-3" *ngIf="contractor">
             <p class="dark:text-gray-200">Assigned contractor: {{ contractor.name }}</p>
-        </div>
-        <div>
-          <app-inventory-usage *ngIf="inventoryUsage?.length" [taskId]="this.taskId!"/>
         </div>
         <div class="pb-3 flex flex-col justify-center items-center">
             <p class="pb-2 dark:text-gray-200 text-lg">Task image: </p>
@@ -32,6 +44,7 @@
             </ng-template>
         </div>
         <div>
+          <app-inventory-usage *ngIf="inventoryUsage?.length" [taskId]="this.taskId!"/>
           <ion-card class="no-outline-card dark:bg-gray-900">
             <ion-card-header>
               <ion-card-title class="dark:text-white">Contractor timeline</ion-card-title>

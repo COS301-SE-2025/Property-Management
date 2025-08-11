@@ -261,18 +261,24 @@ export class AuthService {
     return match ? decodeURIComponent(match[2]) : null;
   } 
 
-  getUserType(): string | null {
-    if (this.getCookieValue('trusteeId')) {
-      return 'trustee';
-    } 
-    else if (this.getCookieValue('bodyCoporateId')) {
-      return 'bodyCorporate';
-    } 
-    else if (this.getCookieValue('contractorId')) {
-      return 'contractor';
-    }
-    return null;
+getIdTokenFromCookieOrStorage(): string | null {
+  const token = this.getCookieValue('idToken');
+  if (token) return token;
+  return localStorage.getItem('idToken');
+}
+
+getUserType(): string | null {
+  if (this.getCookieValue('trusteeId')) {
+    return 'trustee';
+  } 
+  else if (this.getCookieValue('bodyCoporateId')) {
+    return 'bodyCorporate';
+  } 
+  else if (this.getCookieValue('contractorId')) {
+    return 'contractor';
   }
+  return null;
+}
   
   logout()
   {

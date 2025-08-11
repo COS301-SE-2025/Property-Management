@@ -1,7 +1,7 @@
 import { Component, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
-import { DialogComponent } from 'property-manager/src/app/components/dialog/dialog.component';
+import { DialogComponent } from '../../../components/dialog/dialog.component';
 import { Contractor, ContractorApiService, Quote, TaskApiService, FormatDatePipe } from 'shared';
 
 @Component({

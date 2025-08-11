@@ -4,17 +4,32 @@ import { IonHeader, IonModal, IonInput, IonItem, IonToolbar, IonButtons, IonButt
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DatePickerModule } from 'primeng/datepicker';
 import { TaskApiService, ImageApiService, ContractorApiService, ContractorDetails, StorageService, Inventory, InventoryItemApiService, HousesService } from 'shared';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
 import { PhotoService } from 'src/app/services/photo.service';
+import { SelectModule } from 'primeng/select';
 import { InventoryComponent } from '../../inventory/inventory.component';
 
 @Component({
   selector: 'app-add-timeline',
-  imports: [IonIcon, IonHeader, IonModal, IonInput, IonItem, IonIcon, IonToolbar, IonButtons, IonButton, IonContent, IonSelect, IonSelectOption, CommonModule, ReactiveFormsModule, InventoryComponent],
+  imports: [IonIcon, IonHeader, IonModal, IonInput, IonItem, IonIcon, IonToolbar, IonButtons, IonButton, IonContent, IonSelect, IonSelectOption, CommonModule, ReactiveFormsModule, InventoryComponent, DatePickerModule, SelectModule],
   templateUrl: './add-timeline.component.html',
-  styles: ``,
+  styles: `
+    :host ::ng-deep .low-priority {
+      color: #4CAF50;
+    }
+    :host ::ng-deep .medium-priority {
+      color: #FFC107;
+    }
+    :host ::ng-deep .high-priority {
+      color: #F44336;
+    }
+    .dark .p-datepicker-panel{
+      background-color: #444;
+    }
+  `,
 })
 export class AddTimelineComponent extends ModalComponent implements OnInit {
 
@@ -27,6 +42,12 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   public inventoryItemsAvailable: Inventory[] | undefined = undefined;
   public inventoryItemsUsed: Inventory[] | undefined  = undefined;
   public addError = false;
+
+   public priorities = [
+    { label: 'Low', value: 'Low', styleClass: 'low-priority'},
+    { label: 'Medium', value: 'Medium', styleClass: 'medium-priority' },
+    { label: 'High', value: 'High', styleClass: 'high-priority' }
+  ];
 
   @ViewChild(InventoryComponent) inventoryCard!: InventoryComponent;
 
@@ -56,6 +77,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
       name: ['', Validators.required],
       description: ['', Validators.required],
       date: ['', Validators.required],
+      priority: ['', Validators.required]
     });
 
     this.contractorService.getAllContractors().subscribe({
@@ -117,8 +139,9 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
       const name = this.form.value.name;
       const des = this.form.value.description;
       const date = new Date(this.form.value.date);
+      const proirity = this.form.value.priority;
 
-      this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, true, false).subscribe({
+      this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, true, false, proirity).subscribe({
         next: (task) => {
 
           if(this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0)

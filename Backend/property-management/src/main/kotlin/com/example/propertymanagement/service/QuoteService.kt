@@ -2,6 +2,7 @@ package com.example.propertymanagement.service
 
 import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.repository.QuoteRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -13,9 +14,14 @@ import java.util.UUID
 class QuoteService(
     private val repository: QuoteRepository,
 ) {
+    @Cacheable("apiCache")
     fun getAll(): List<Quote> = repository.findAll()
 
+    @Cacheable("apiCache")
     fun getById(uuid: UUID): Quote = repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
+
+    @Cacheable("apiCache")
+    fun getQuotesByTask(taskUuid: UUID): List<Quote> = repository.findAllByTaskUuid(taskUuid)
 
     fun add(item: Quote): Quote = repository.save(item)
 
@@ -46,12 +52,12 @@ class QuoteService(
         val existing = getById(uuid)
         val updated =
             existing.copy(
-                t_uuid = newItem.t_uuid,
-                c_uuid = newItem.c_uuid,
-                amount = newItem.amount,
-                submitted_on = newItem.submitted_on,
-                status = newItem.status,
-                doc = newItem.doc,
+                t_uuid = newItem.t_uuid ?: existing.t_uuid,
+                c_uuid = newItem.c_uuid ?: existing.c_uuid,
+                amount = newItem.amount ?: existing.amount,
+                submitted_on = newItem.submitted_on ?: existing.submitted_on,
+                status = newItem.status ?: existing.status,
+                doc = newItem.doc ?: existing.doc,
             )
         return repository.save(updated)
     }

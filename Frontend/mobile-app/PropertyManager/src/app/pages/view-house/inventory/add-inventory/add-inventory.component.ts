@@ -11,7 +11,16 @@ import { BudgetApiService, BuildingDetails, HousesService, InventoryItemApiServi
   standalone: true,
   imports: [IonHeader, IonModal, IonInput, IonItem, IonToolbar, IonButtons, IonButton, IonContent, ReactiveFormsModule, CommonModule],
   templateUrl: './add-inventory.component.html',
-  styles: ``,
+  styles: `
+    .dark ion-input::part(native) {
+      background-color: #374151; /* gray-700 */
+      color: #f9fafb; /* gray-50 */
+    }
+
+    .dark ion-input::part(native):focus {
+      border-bottom: 1px solid #facc15; /* yellow-400 */
+    }
+  `,
 })
 export class AddInventoryComponent extends ModalComponent implements OnInit {
 

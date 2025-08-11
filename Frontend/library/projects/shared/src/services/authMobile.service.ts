@@ -3,13 +3,15 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StorageService } from './storage.service';
 import { AuthTokens, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
+import { environmentMobile } from '../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthMobileService {
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
 
   private http = inject(HttpClient);
   private storage = inject(StorageService);
@@ -23,8 +25,6 @@ export class AuthMobileService {
         next: (result) => {
           const idToken = result.idToken;
           const trusteeId = result.userId;
-
-          console.log(trusteeId);
 
           this.storage.set('idToken', idToken);
           this.storage.set('trusteeId', trusteeId);
@@ -176,5 +176,6 @@ export class AuthMobileService {
     this.storage.remove("userType");
     this.storage.remove("trusteeID");
     this.storage.remove("contractorID");
+    this.storage.remove("theme");
   }
 }

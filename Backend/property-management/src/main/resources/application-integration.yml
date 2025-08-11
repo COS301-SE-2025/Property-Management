@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/property_management_test
+    url: jdbc:postgresql://localhost:5432/property_management
     username: postgres
-    password: postgres
+    password: pg123
 
   jpa:
     hibernate:
