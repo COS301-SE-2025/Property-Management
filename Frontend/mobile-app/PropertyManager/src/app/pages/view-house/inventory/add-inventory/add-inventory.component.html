@@ -1,4 +1,4 @@
-<ion-modal [isOpen]="displayModal" class="dark:bg-gray-800">
+<ion-modal [isOpen]="displayModal" class="dark:bg-gray-700">
   <ng-template>
     <ion-header>
       <ion-toolbar class="dark:bg-gray-800">
@@ -51,8 +51,11 @@
               class="dark:text-gray-200"
               type="date"
             ></ion-input>
-            <p class="text-red-500" *ngIf="form.get('quantity')?.hasError('required') && form.get('quantity')?.touched">Field is required</p>
           </ion-item>
+          <div class="pt-5">
+            <button (click)="confirm()" class="bg-yellow-400 text-black px-3 py-1.5 rounded">Add item</button>
+          </div>
+          <p class="text-red-500" *ngIf="form.get('quantity')?.hasError('required') && form.get('quantity')?.touched">Field is required</p>
         </div>
       </form>
     </ion-content>

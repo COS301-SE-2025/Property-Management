@@ -13,7 +13,7 @@ export class ThemeService {
 
   async initTheme()
   {
-    let theme = await this.storage.get('theme') || 'light';
+    let theme = await this.storage.get('theme');
 
     if(!theme)
     {

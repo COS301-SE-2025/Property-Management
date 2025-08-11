@@ -14,7 +14,11 @@ import { cameraOutline, trashOutline } from 'ionicons/icons';
 @Component({
   selector: 'app-update-house',
   templateUrl: './update-house.component.html',
-  styles: ``,
+  styles: `
+    .dark .p-select {
+      background: #000000;
+    }
+  `,
   imports: [IonModal, IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonContent, Toast, ReactiveFormsModule, CommonModule, SelectModule],
   providers: [MessageService]
 })
