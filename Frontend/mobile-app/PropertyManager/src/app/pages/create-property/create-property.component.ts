@@ -10,11 +10,13 @@ import { Contractor } from 'shared';
 import { PhotoService } from 'src/app/services/photo.service';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
+import { DrawerComponent } from 'src/app/components/drawer/drawer.component';
+
 
 @Component({
   selector: 'app-create-property',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent ],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent, DrawerComponent],
   templateUrl: './create-property.component.html',
   styleUrls: ['./create-property.component.scss']
 })
