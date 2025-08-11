@@ -9,7 +9,7 @@ import com.example.propertymanagement.repository.TaskProgressRepository
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import java.time.OffsetDateTime
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
@@ -47,7 +47,7 @@ class TaskProgressService(
                 imageId = dto.imageId ?: existing.imageId,
                 quantityUsed = dto.quantityUsed ?: existing.quantityUsed,
                 remarks = dto.remarks ?: existing.remarks,
-                lastUpdated = OffsetDateTime.now(),
+                lastUpdated = LocalDateTime.now(),
             )
 
         return repository.save(updated).toResponseDTO()
