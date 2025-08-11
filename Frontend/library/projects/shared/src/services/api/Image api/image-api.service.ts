@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImageApiService{
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
   private imageCache = new Map<string, string>();
 
   constructor(private http: HttpClient) { }

@@ -1,7 +1,7 @@
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
-import { BodyCoporateService, getCookieValue, HousesService } from 'shared';
+import { BodyCoporateService, HousesService } from 'shared';
 import { Router } from '@angular/router';
 import { Property } from 'shared';
 import { firstValueFrom } from 'rxjs';

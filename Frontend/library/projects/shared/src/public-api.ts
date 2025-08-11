@@ -37,13 +37,13 @@ export * from './models/inventoryUsage.model';
 export * from './models/legacycontractor.model';
 export * from './models/lifeCycleCost.model';
 export * from './models/maintenanceTask.model';
+// export * from './models/MaintenanceTask2.model';
 export * from './models/property.model';
 export * from './models/reserveFund.model';
 export * from './models/voting.model';
 export * from './models/AssignedContractor.model'
 export * from './models/quote.model';
 export * from './models/Notifications.model';
-export * from './models/rating.model';
 
 //Utils
 export * from './utils/cookie-utils';

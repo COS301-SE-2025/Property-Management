@@ -26,10 +26,7 @@
 .bg-white {
   background: #fff;
 }
-.px-5 {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
-}
+
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
@@ -118,44 +115,6 @@
 .image-upload-box input[type="file"] {
   display: none;
 }
-
-.tab-bar {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100vw;
-  background: #ffe561;
-  border-top: 1px solid #e5e7eb;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 40px;
-  z-index: 50;
-}
-
-.tab-item {
-  background: none;
-  border: none;
-  outline: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #888;
-  font-size: 0.85rem;
-  padding: 0.5rem 1rem;
-  transition: color 0.2s;
-}
-
-.tab-item.active, .tab-item:active {
-  color: #000000;
-}
-
-.tab-item ion-icon {
-  font-size: 1.5rem;
-  margin-bottom: 0.1rem;
-  color: #000 !important;
-}
-
 
 .top-yellow-strip {
   width: 100vw;

@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Notification } from "../../../public-api";
 import { Observable } from 'rxjs';
+import { environmentMobile } from '../../../environment';
 
 export interface InviteWithTrustee2 {
   inviteUuid: string;
@@ -18,7 +19,8 @@ export interface InviteWithTrustee2 {
 })
 
 export class NotificationsApiService{
-    private url = '/api';
+    // private url = '/api';
+    private url = environmentMobile.apiUrl;
     constructor(private http: HttpClient) {}
 
     createNotifications(Notifications: Notification)

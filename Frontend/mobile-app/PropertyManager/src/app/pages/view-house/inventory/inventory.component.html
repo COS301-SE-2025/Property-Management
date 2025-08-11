@@ -1,6 +1,6 @@
-  <ion-card>
+  <ion-card class="dark:bg-gray-900">
     <ion-card-header>
-      <ion-card-title>Inventory</ion-card-title>
+      <ion-card-title class="dark:text-white">Inventory</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
@@ -13,13 +13,16 @@
             <th pSortableColumn="quantityInStock">
                 Quantity <p-sortIcon field="quantityInStock"/>
             </th>
+            <th pSortableColumn="price">
+                Price <p-sortIcon field="price"/>
+            </th>
             <th>Actions</th>
         </tr>
         </ng-template>
         <ng-template #body let-inventory let-rowIndex="rowIndex">
         <tr>
-            <td>{{ inventory.name }}</td>
-            <td>
+            <td class="dark:text-gray-400">{{ inventory.name }}</td>
+            <td class="dark:text-gray-400">
                 @if(editingRows[rowIndex])
                 {
                     <input type="number" [(ngModel)]="draftQuantities[rowIndex]" min="0" class="w-20 p-1 border rounded" (keydown)="preventNegative($event)">
@@ -28,6 +31,7 @@
                     {{ inventory.quantityInStock }}
                 }
             </td>
+            <td>R {{ inventory.price }}</td>
             <td>
                 @if(editingRows[rowIndex])
                 {
@@ -55,7 +59,7 @@
         </ng-template>
     </p-table>
 
-    @if(isEditing)
+    @if(isEditing && !readOnly)
     {
         <div class="flex justify-center items-center gap-2 mt-4">
             <ion-button label="Confirm" color="success" (click)="confirmAction()" [disabled]="!hasChanges">
@@ -66,7 +70,7 @@
             </ion-button>
         </div>
     }
-    <div class = "mt-2 flex flex-col justify-center items-center">
+    <div class = "mt-2 flex flex-col justify-center items-center" *ngIf="showAddButton">
       <button (click)="inventoryAddDialog.openModal()">
         <img class = "h-8 w-8" src = "assets/icons/add_circle_gray.svg" alt="add inventory">
       </button>

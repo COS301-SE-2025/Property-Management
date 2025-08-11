@@ -3,13 +3,15 @@ import { Injectable } from '@angular/core';
 import { ContractorDetails } from '../../../models/contractorDetails.model';
 import { Observable } from 'rxjs';
 import { AssignedContractor } from '../../../public-api';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContractorApiService {
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
   constructor(private http: HttpClient) { }
 
   createContractor(name: string, contact_info: string, status: boolean, apikey: string, email: string, phone: string, address: string, city: string, postal_code: string, reg_number: string, des: string, service: string): Observable<ContractorDetails>
