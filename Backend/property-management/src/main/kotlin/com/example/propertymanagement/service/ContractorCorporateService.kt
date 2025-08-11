@@ -48,7 +48,9 @@ class ContractorCorporateService(
         return add(newUser)
     }
 
-    fun getContractorCorporatesByCorporateUuid(bodyCorporateUuid: UUID): List<ContractorCorporate> = repository.findContractorsByBodyCorporateUuid(bodyCorporateUuid)
+    fun getContractorCorporatesByCorporateUuid(bodyCorporateUuid: UUID): List<ContractorCorporate> =
+        repository.findContractorsByBodyCorporateUuid(bodyCorporateUuid)
 
-    fun getContractorInCorporates(bodyCorporateUuid: UUID): List<ContractorCorporate> = repository.findContractorsInBodyCorporateUuid(bodyCorporateUuid)
+    fun getContractorInCorporates(bodyCorporateUuid: UUID): List<ContractorCorporate> =
+        repository.findContractorsInBodyCorporateUuid(bodyCorporateUuid)
 }

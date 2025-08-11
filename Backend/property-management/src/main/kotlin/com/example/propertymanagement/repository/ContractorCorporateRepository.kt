@@ -8,7 +8,6 @@ import java.util.Optional
 import java.util.UUID
 
 interface ContractorCorporateRepository : JpaRepository<ContractorCorporate, UUID> {
-
     fun findByContractorUuid(contractorUuid: UUID): Optional<ContractorCorporate>
 
     fun deleteByContractorUuid(contractorUuid: UUID)
@@ -22,5 +21,4 @@ interface ContractorCorporateRepository : JpaRepository<ContractorCorporate, UUI
     fun findContractorsInBodyCorporateUuid(
         @Param("contractorUuid") contractorUuid: UUID,
     ): List<ContractorCorporate>
-    
 }

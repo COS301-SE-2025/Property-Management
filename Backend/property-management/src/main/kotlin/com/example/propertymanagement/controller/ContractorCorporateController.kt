@@ -33,8 +33,8 @@ class ContractorCorporateController(
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }
-    
-     @GetMapping("/list/{uuid}")
+
+    @GetMapping("/list/{uuid}")
     fun getList(
         @PathVariable uuid: UUID,
     ): ResponseEntity<List<ContractorCorporate>> =
@@ -72,5 +72,4 @@ class ContractorCorporateController(
         service.deleteByUuid(uuid)
         return ResponseEntity.noContent().build()
     }
-
 }
