@@ -41,8 +41,8 @@ class MaintenanceService(
         val status: String = "SUBMITTED",
     )
 
-    @Cacheable("apiCache")
-    fun getAll(): List<Maintenance> = repository.findAll()
+    // @Cacheable("apiCache")
+    fun getAll(): List<Maintenance> = repository.findAll().toList()
 
     fun add(item: Maintenance): Maintenance = repository.save(item)
 
