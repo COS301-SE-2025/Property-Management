@@ -17,6 +17,7 @@ import com.example.propertymanagement.repository.TrusteeBodyCorporateInviteRepos
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.UUID
@@ -132,6 +133,7 @@ class QuoteVotingService(
         )
     }
 
+    @Transactional(readOnly = true)
     @Cacheable("apiCache")
     fun getAllSessions(): List<VoteSessionSummary> =
         sessionRepo.findAll().map { session ->
