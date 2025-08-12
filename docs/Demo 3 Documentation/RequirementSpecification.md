@@ -59,14 +59,30 @@ The solution will adhere to security best practices and implement multi-tenancy 
 
 - As a property manager, I want to view annual budget reports incorporating maintenance costs so that I can plan finances effectively.
 
+- As a property manager, I want to track the status of incoming invitations to join body corporates so that I can manage pending memberships effectively.
 
-### 2.2 Contractors
+### 2.2 Body Corporate
+
+- As a body corporate representative, I want to invite trustees and property managers to the platform so that they can manage buildings and tasks within the body corporate.
+
+- As a body corporate representative, I want to link newly created buildings to my body corporate so that management access is controlled.
+
+- As a body corporate representative, I want to view a list of all contractors assigned to my body corporate so that I can oversee who is authorized to work on our properties.
+
+- As a body corporate representative, I want to monitor maintenance budgets across all buildings so that I can ensure overall cost control.
+
+- As a body corporate representative, I want to view a list of all users within my body corporate so that I can monitor and manage member access.
+
+### 2.3 Contractors
 
 - As a contractor, I want to upload images of completed work so that I can provide evidence of task completion.
 
 - As a contractor, I want to view assigned tasks and deadlines so that I can plan my work schedule efficiently.
 
 - As a contractor, I want to request inventory items for specific projects so that I have the necessary materials to complete assigned tasks.
+
+- As a contractor, I want to receive feedback and ratings on my completed work so that I can improve my services and build credibility.
+
 
 ## Use Cases
 ![alt text](../images/Demo%202/useCase.png)
