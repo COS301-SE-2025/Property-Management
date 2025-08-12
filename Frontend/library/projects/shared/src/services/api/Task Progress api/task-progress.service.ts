@@ -11,7 +11,7 @@ export class TaskProgresApiService{
 
     constructor(private http: HttpClient){}
 
-    createProgress(contractorId: string, taskId: string, imageId: string, workDescription: string, inventoryUsageId: string, quantityUsed: number)
+    createProgress(contractorId: string, taskId: string, imageId: string, workDescription: string, inventoryUsageId: string, quantityUsed: number, progress: number)
     {
         const req = {
             contractorUuid: contractorId,

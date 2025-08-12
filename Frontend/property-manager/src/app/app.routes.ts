@@ -77,7 +77,7 @@ export const routes: Routes = [
   },
   {
     path:'taskDetails/:taskId',
-    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    canActivate: [authGuard(['trustee', 'bodyCorporate', 'contractor'])],
     pathMatch: 'full',
     component: TaskDetailsComponent
   },

@@ -37,6 +37,7 @@ export class InventoryUsageComponent  implements OnInit, OnChanges {
         this.inventoryUsage = await lastValueFrom(
           this.inventoryUsageService.getUsageRecordsByTaskId(this.taskId)
         );
+        console.log(this.inventoryUsage);
 
         if(this.inventoryUsage?.length)
         {

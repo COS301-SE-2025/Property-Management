@@ -15,10 +15,9 @@ import { Router } from '@angular/router';
 })
 export class TimelineCardComponent implements OnInit {
   houseService = inject(HousesService);
-
   timeline = input.required<MaintenanceTask[]>();
-
   bcUser = false;
+  public darkMode = false;
 
   constructor(private router: Router){}
 
@@ -27,9 +26,11 @@ export class TimelineCardComponent implements OnInit {
     this.bcUser = false;
     if(getCookieValue(document.cookie, 'bodyCoporateId'))
     {
-      console.log("Setting bcUser to true");
       this.bcUser = true;
     }
+
+    this.darkMode = localStorage.getItem('darkMode') === 'true';
+    console.log(this.darkMode);
   }
 
   showDetails(task: MaintenanceTask)

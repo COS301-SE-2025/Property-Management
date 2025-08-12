@@ -1,6 +1,38 @@
 <p-toast/>
 <p-dialog header="Update task progression?" [style]="{ width: '40rem'}" [(visible)]="displayDialog" [modal]="true">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mx-auto max-w-lg">
-        
+        <div class="flex flex-col justify-center items-center">
+            <div class="flex flex-col mx-5 gap-2">
+                <label for="progress-description" class="font-bold">Task progression update</label>
+                <textarea id="progress-description" class = "border rounded w-90 mx-auto h-20 px-2" formControlName = "description" required></textarea>
+            </div>
+            <div class="mb-6 pt-2">
+                <p class="font-bold pb-2">Declare inventory items used</p>
+                <!-- <p-multiselect 
+                    id="inventoryItems" 
+                    [options]="inventoryItemsAvailable()" 
+                    optionLabel="name" 
+                    optionValue="itemUuid" 
+                    class="border rounded w-75" 
+                    placeholder="Available Inventory Items"
+                    (onChange)="updateInventoryItemsUsed($event)"
+                >
+                    <ng-template let-item pTemplate="item">
+                        <div class="flex justify-between w-full">
+                            <span>{{item.name}}</span>
+                            <span class="ml-2 text-gray-500">(Qty: {{item.quantityInStock}})</span>
+                        </div>
+                    </ng-template>
+                </p-multiselect> -->
+                <!-- <app-inventory-card 
+                    *ngIf="inventoryItemsUsed" 
+                    [inventory]="inventoryItemsUsed!" 
+                    [showAddButton]="false"
+                    [readOnly]="true"
+                    [capOriginal]="true"
+                    (quantitiesChanged)="onQuantitiesChanged($event)"
+                ></app-inventory-card> -->
+            </div>
+        </div>
     </form>
 </p-dialog>

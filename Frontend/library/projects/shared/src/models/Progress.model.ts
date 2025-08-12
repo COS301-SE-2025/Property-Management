@@ -1,6 +1,7 @@
 export interface TaskProgress{
     progressUuid?: string;
-    submissionDate: Date;
+    submissionDate: number[];
+    subDate?: Date;
     contractorUuid: string;
     taskUuid: string;
     imageId?: string;
@@ -10,5 +11,5 @@ export interface TaskProgress{
     quantityUsed: number;
     quantityName?: string
     remarks: string | null;
-    lastUpdated: Date;
+    lastUpdated: number[];
 }
