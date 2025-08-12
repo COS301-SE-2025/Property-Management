@@ -14,6 +14,7 @@ import com.example.propertymanagement.repository.QuoteRepository
 import com.example.propertymanagement.repository.QuoteVoteRepository
 import com.example.propertymanagement.repository.QuoteVoteSessionRepository
 import com.example.propertymanagement.repository.TrusteeBodyCorporateInviteRepository
+import com.example.propertymanagement.service.RatingService
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -28,6 +29,7 @@ class QuoteVotingService(
     private val quoteRepo: QuoteRepository,
     private val inviteRepo: TrusteeBodyCorporateInviteRepository,
     private val bodycorpRepo: BodyCorporateRepository,
+    private val ratingService: RatingService,
 ) {
     fun createSession(request: CreateVoteSessionRequest): QuoteVoteSession =
         sessionRepo.save(
@@ -113,10 +115,12 @@ class QuoteVotingService(
                     voteRepo
                         .countBySessionUuidAndQuoteUuidAndVoteFor(sessionUuid, quoteUuid, false)
                         .toInt()
+                val avgRating = q.c_uuid?.let { ratingService.getAverageRating(it) }
                 QuoteVoteResult(
                     quoteUuid = quoteUuid,
                     votesFor = f,
                     votesAgainst = a,
+                    averageRating = avgRating,
                 )
             }
 
@@ -174,11 +178,13 @@ class QuoteVotingService(
         return results
             .mapNotNull { r ->
                 val q = quotes.find { it.uuid == r.quoteUuid } ?: return@mapNotNull null
-                val net = r.votesFor - r.votesAgainst
-                Triple(r.quoteUuid, net, q.submitted_on.toInstant())
+                val netVotes = r.votesFor - r.votesAgainst
+                val avgRating = q.c_uuid?.let { ratingService.getAverageRating(it) } ?: 0.0
+                Triple(r.quoteUuid, netVotes, avgRating to q.submitted_on.toInstant())
             }.sortedWith(
-                compareByDescending<Triple<UUID, Int, Instant>> { it.second }
-                    .thenBy { it.third },
+                compareByDescending<Triple<UUID, Int, Pair<Double, Instant>>> { it.second } // net votes
+                    .thenByDescending { it.third.first } // avg rating
+                    .thenBy { it.third.second }, // earliest submission if still tied
             ).firstOrNull()
             ?.first
     }
