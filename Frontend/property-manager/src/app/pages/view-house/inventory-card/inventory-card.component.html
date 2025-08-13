@@ -11,7 +11,7 @@
             <th pSortableColumn="quantityInStock">
                 Quantity <p-sortIcon field="quantityInStock"/>
             </th>
-            <th pSortableColumn="price">
+            <th pSortableColumn="price" *ngIf="showPrice">
                 Price of each <p-sortIcon field="price"/>
             </th>
             <th *ngIf="!bcUser">
@@ -31,7 +31,7 @@
                     {{ inventory.quantityInStock }}
                 }
             </td>
-            <td>R {{ inventory.price }}</td>
+            <td *ngIf="showPrice">R {{ inventory.price }}</td>
             <td *ngIf="!bcUser">
                 @if(editingItems.get(inventory.itemUuid))
                 {

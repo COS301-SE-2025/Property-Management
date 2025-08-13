@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BaseIcon } from "primeng/icons/baseicon";
 
 @Component({
   selector: 'app-login',
-  imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule],
+  imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule, BaseIcon],
   templateUrl: './login.component.html',
   styles: ``,
 })
@@ -18,6 +19,7 @@ export class LoginComponent {
   public email = "";
   public password = "";
   public passwordVisible = false;
+  public loading = false;
 
   public emptyField = false;
   public userError = false;
@@ -39,6 +41,7 @@ export class LoginComponent {
       return;
     }
 
+    this.loading = true;
     this.emptyField = false;
     this.userError = false;
     this.serverError = false;
@@ -99,6 +102,9 @@ export class LoginComponent {
       {
         this.userError = true;
       }
+    }
+    finally{
+      this.loading = false;
     }
   }
 }

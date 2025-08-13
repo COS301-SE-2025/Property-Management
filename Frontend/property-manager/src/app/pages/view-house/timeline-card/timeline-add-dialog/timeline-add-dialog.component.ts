@@ -186,7 +186,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     this.inventoryCard.addItemToUsage(
       taskId,
       item.itemUuid,
-      item.quantityInStock
+      item.quantityInStock,
+      true
     );
 
     const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);

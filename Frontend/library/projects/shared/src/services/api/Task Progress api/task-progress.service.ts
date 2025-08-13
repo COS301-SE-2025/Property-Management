@@ -19,8 +19,10 @@ export class TaskProgresApiService{
             imageId: imageId,
             workDescription: workDescription,
             inventoryUsageUuid: inventoryUsageId,
-            quantityUsed: quantityUsed
+            quantityUsed: quantityUsed,
+            progressPercentage: progress
         }
+        console.log(req);
         return this.http.post<TaskProgress>(`${this.url}`, req);
     }
     getTaskProgressById(progressId: string)

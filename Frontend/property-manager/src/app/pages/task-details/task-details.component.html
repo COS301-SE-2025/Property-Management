@@ -1,6 +1,6 @@
 <app-header/>
 
-<div class="mt-10 px-5">
+<div class="mt-10 px-10">
     <p-card>
         <div class="rounded-lg flex p-4">
             <div class="flex items-center justify-center w-1/2 p-6 pr-10">
@@ -55,7 +55,7 @@
                             [class.md:col-span-1]="contractor"/>
         @if(this.contractor) 
         {
-            <app-contractor-timeline [contractor]="this.contractor" 
+            <app-contractor-timeline [inventoryUsage]="inventoryUsage!"
                                     [task]="task!"
                                     [class.md:col-span-2]="contractor"/>
         }

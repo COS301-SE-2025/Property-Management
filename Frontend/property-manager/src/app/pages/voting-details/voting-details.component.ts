@@ -147,11 +147,11 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
         this.votingService.getTaskIdFromSessionId(this.sessionId).subscribe({
           next: (res) => {
             if(res.taskUuid)
-            {
-              this.taskId = res.taskUuid;
-              
-              this.taskService.getTaskById(this.taskId).subscribe({
-                next: (res) => {
+              {
+                this.taskId = res.taskUuid;
+                
+                this.taskService.getTaskById(this.taskId).subscribe({
+                  next: (res) => {
                   if(res.cuuid !== '' && res.cuuid)
                   {
                     this.voteResult = true;

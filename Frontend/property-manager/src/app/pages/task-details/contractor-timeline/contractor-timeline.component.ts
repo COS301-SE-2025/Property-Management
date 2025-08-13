@@ -1,4 +1,4 @@
-import { Component, input, signal } from "@angular/core";
+import { Component, Input, input, OnChanges, OnInit, signal, SimpleChanges } from "@angular/core";
 import { ContractorDetails, ImageApiService, MaintenanceTask, TaskProgresApiService, TaskProgress, FormatTimePipe, getCookieValue, InventoryUsage, Inventory, InventoryUsageApiService, InventoryItemApiService } from "shared";
 import { CardModule } from "primeng/card";
 import { MessageService } from "primeng/api";
@@ -8,7 +8,8 @@ import { TimelineModule } from "primeng/timeline";
 import { AddProgressDialog } from "../add-progress-dialog/add-progress-dialog.component";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TableModule } from "primeng/table";
-import { lastValueFrom } from "rxjs";
+import { forkJoin, lastValueFrom, of } from "rxjs";
+import { switchMap, catchError, tap } from "rxjs/operators";
 
 @Component({
   selector: 'app-contractor-timeline',
@@ -21,13 +22,13 @@ import { lastValueFrom } from "rxjs";
   imports: [CardModule, Toast, TimelineModule, CommonModule, FormatTimePipe, AddProgressDialog, TableModule],
   providers: [MessageService]
 })
-export class ContractorTimeline{
+export class ContractorTimeline implements OnInit, OnChanges {
     
-    public contractor = input.required<ContractorDetails>();
     public task = input.required<MaintenanceTask>();
+    @Input() inventoryUsage!: InventoryUsage[];
     public timeline = signal<TaskProgress[]>([]);
-    public inventoryUsage: InventoryUsage | undefined = undefined;
-    public inventoryItem =  signal<Inventory[]>([]);
+    public inventoryUsageContractor = signal<Inventory[]>([]);
+    public usageUsedByContractor = new Map<string, number>();
     public contractorUser = false;
     public bcUser = false;
     public darkMode = false;
@@ -38,56 +39,72 @@ export class ContractorTimeline{
         private imageService: ImageApiService,
         private inventoryUsageService: InventoryUsageApiService,
         private inventoryItemService: InventoryItemApiService
-    ){
+    ) {}
+
+    ngOnInit() {
+        this.loadTimelineData();
+        
+        if (getCookieValue(document.cookie, 'contractorId')) {
+            this.contractorUser = true;
+        } else if (getCookieValue(document.cookie, 'bodyCorporateId')) {
+            this.bcUser = true;
+        }
+        this.darkMode = localStorage.getItem('darkMode') === 'true';
     }
 
-    async ngOnInit()
-    {
-        this.timeline.set([]);
-        this.inventoryItem.set([]);
-        this.taskProgressService.getTaskProgressByTaskId(this.task().uuid).subscribe({
-            next: (res) => {
-                console.log(res);
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['inventoryUsage'] && this.inventoryUsage) {
+            this.trackQuantityUsed();
+        }
+    }
 
-                if(res.length === 0)
-                {
-                    return;
-                }
-
-                res.forEach(async p => {
-                    if(p.imageId)
-                    {
-                        this.imageService.getImage(p.imageId).subscribe({
-                            next: (res) => {
-                                p.imageId = res;
-                            },
-                            error: () => {
-                                p.imageId = 'assets/images/no_image.png';
-                            }
-                        })
-                    }
-                    else
-                    {
-                        p.imageId = 'assets/images/no_image.png';
-                    }
-
-                    if(p.inventoryUsageUuid)
-                    {
-                        this.getInventoryUsage(p.inventoryUsageUuid, p.quantityUsed);
-                    }
-
-                    p.subDate = this.toDate(p.submissionDate);
-                    this.timeline.set([...this.timeline(), p]);
-                }); 
-            },
-            error: (err) => {
-
-                if(err instanceof HttpErrorResponse && err.status === 404)
-                {
+    private loadTimelineData() {
+        this.taskProgressService.getTaskProgressByTaskId(this.task().uuid).pipe(
+            switchMap((progressItems: TaskProgress[]) => {
+                if (progressItems.length === 0) {
                     this.timeline.set([]);
+                    return of([]);
                 }
-                else
-                {
+
+                 progressItems.sort((a, b) => {
+                    const dateA = this.toDate(a.submissionDate).getTime();
+                    const dateB = this.toDate(b.submissionDate).getTime();
+                    return dateA - dateB;
+                });
+
+                const timelineProcessing = progressItems.map(p => {
+
+                    p.imageId = p.imageId ? p.imageId : 'assets/images/no_image.png';
+                    p.subDate = this.toDate(p.submissionDate);
+
+                    const imageRequest = p.imageId && p.imageId !== 'assets/images/no_image.png' 
+                        ? this.imageService.getImage(p.imageId).pipe(
+                            catchError(() => of('assets/images/no_image.png'))
+                        )
+                        : of(p.imageId);
+
+                    return imageRequest.pipe(
+                        tap(image => p.imageId = image),
+                        switchMap(() => {
+                            if (p.inventoryUsageUuid) {
+                                return this.processInventoryUsage(p.inventoryUsageUuid, p.quantityUsed);
+                            }
+                            return of(null);
+                        }),
+                        tap(() => this.timeline.update(current => [...current, p]))
+                    );
+                });
+
+                return forkJoin(timelineProcessing).pipe(
+                    tap(() => {
+                        this.timeline.set([...progressItems]);
+                    })
+                );
+            }),
+            catchError((err: HttpErrorResponse) => {
+                if (err.status === 404) {
+                    this.timeline.set([]);
+                } else {
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
@@ -95,50 +112,59 @@ export class ContractorTimeline{
                     });
                     console.error(err);
                 }
-            }
+                return of([]);
+            })
+        ).subscribe(() => {
+            this.trackQuantityUsed();
+        });
+    }
+
+    private processInventoryUsage(usageId: string, quantity: number) {
+        return this.inventoryUsageService.getInventoryUsageById(usageId).pipe(
+            switchMap(usage => 
+                this.inventoryItemService.getInventoryItemsById(usage.itemUuid).pipe(
+                    tap(item => {
+                        item.quantityInStock = quantity;
+                        this.inventoryUsageContractor.update(current => [...current, item]);
+                    }),
+                    catchError(error => {
+                        console.error("Error fetching inventory", error);
+                        return of(null);
+                    })
+                )
+            ),
+            catchError(error => {
+                console.error("Error fetching inventory usage", error);
+                return of(null);
+            })
+        );
+    }
+
+    trackQuantityUsed() {
+        if (!this.inventoryUsage || this.inventoryUsage.length === 0) return;
+        if (this.inventoryUsageContractor().length === 0) return;
+
+        const map = new Map<string, number>();
+
+        this.inventoryUsage.forEach(i => {
+            this.usageUsedByContractor.set(i.usageUuid, i.quantityUsed);
         });
 
-        if(getCookieValue(document.cookie, 'contractorId'))
-        {
-            this.contractorUser = true;
-        }
-        else if(getCookieValue(document.cookie, 'bodyCorporateId'))
-        {
-            this.bcUser = true;
-        }
-        this.darkMode = localStorage.getItem('darkMode') === 'true';
+        this.usageUsedByContractor.forEach((qty, id) => {
+            this.inventoryUsageContractor().forEach(i => {
+                if(id === i.itemUuid)
+                {
+                    this.usageUsedByContractor.set(id, qty-i.quantityInStock);
+                }
+            });
+        });
     }
-    async getInventoryUsage(usageId: string, quantity: number)
-    {
-        try{
-            this.inventoryUsage = await lastValueFrom(
-                this.inventoryUsageService.getInventoryUsageById(usageId)
-            );
 
-            if(this.inventoryUsage)
-            {
-                const inventoryItems = await lastValueFrom(
-                    this.inventoryItemService.getInventoryItemsById(this.inventoryUsage.itemUuid)
-                )
+    navigateToReview(review: string) {
 
-                inventoryItems.quantityInStock = quantity;
+    }
 
-                this.inventoryItem.set([...this.inventoryItem(), inventoryItems]);
-            }
-        }
-        catch(error) {
-            console.error("Error fetching inventory", error);
-        }
-    }
-    navigateToReview(review: string)
-    {
-        
-    }
-    checkQuantity()
-    {
-        return this.inventoryItem();
-    }
-    private toDate(arr: number[]): Date{
+    private toDate(arr: number[]): Date {
         return new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4]);
     }
 }

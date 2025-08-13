@@ -41,6 +41,7 @@ export class InventoryCardComponent implements OnInit{
   @Input() capOriginal = false;
   @Input() showAddButton = true;
   @Input() readOnly = false;
+  @Input() showPrice = true;
 
   constructor(private route: ActivatedRoute, private messageService: MessageService, private inventoryUsage: InventoryUsageApiService)
   {
@@ -224,23 +225,26 @@ export class InventoryCardComponent implements OnInit{
   }
 
   //Used in dialogs
-  async addItemToUsage(taskId: string, itemId: string, quantity: number)
+  async addItemToUsage(taskId: string, itemId: string, quantity: number, write: boolean)
   {
-    //Delete inventory item
-    const item = this.houseService.getInventoryById(itemId);
-    if(item)
+    if(write)
     {
-      this.itemUsage.emit({ taskId, itemId, quantity });
-    }
-
-    //Create inventory usage
-    this.inventoryUsage.createInventoryUsage(itemId, taskId, quantity).subscribe({
-      next: (res) => {
-        return res.usageUuid;
-      },
-      error: (err) => {
-        console.error("Error creating inventory usage", err);
+      //Delete inventory item
+      const item = this.houseService.getInventoryById(itemId);
+      if(item)
+      {
+        this.itemUsage.emit({ taskId, itemId, quantity });
       }
-    });
+  
+      //Create inventory usage
+      this.inventoryUsage.createInventoryUsage(itemId, taskId, quantity).subscribe({
+        next: (res) => {
+          return res.usageUuid;
+        },
+        error: (err) => {
+          console.error("Error creating inventory usage", err);
+        }
+      });
+    }
   }
 }
