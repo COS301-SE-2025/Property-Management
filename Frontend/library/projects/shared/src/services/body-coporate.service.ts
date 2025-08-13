@@ -47,7 +47,7 @@ export class BodyCoporateService {
   maintenanceGraph = signal<Graph>({} as Graph);
   contractorDetails = signal<ContractorDetails[]>([]);
   buildings = signal<Property[]>([]);
-  bcId = '';
+  public bcId = '';
 
   constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService){
     this.bcId = getCookieValue(document.cookie, 'bodyCoporateId');
