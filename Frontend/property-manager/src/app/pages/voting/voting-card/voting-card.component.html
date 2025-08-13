@@ -1,0 +1,21 @@
+<div class = "shadow-md rounded-lg border w-[18rem] text-center">
+  <button class = "cursor-pointer" (click)="viewTask(task().uuid)">
+        <p-card>
+            <img [src] = "task().img" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="" rel="preconnect">
+            <p class = "text-lg font-bold mt-4"> {{ task().title }}</p>
+            <p [class]="changeDueDate()" class = "mb-4"> {{ task().scheduled_date | formatDate }}</p>
+            @if(task().priority === 'Low')
+            {
+                <p class="inline-block px-3 py-1 rounded-full text-sm font-medium bg-green-200 text-green-800">Prority: {{ task().priority }}</p>
+            }
+            @else if(task().priority === 'Medium')
+            {
+                <p class="inline-block px-3 py-1 rounded-full text-sm font-medium bg-yellow-200 text-yellow-800">Prority: {{ task().priority }}</p>
+            }
+            @else if(task().priority === 'High')
+            {
+                <p class="inline-block px-3 py-1 rounded-full text-sm font-medium bg-red-200 text-red-800">Prority: {{ task().priority }}</p>
+            }
+        </p-card>
+    </button>
+</div>

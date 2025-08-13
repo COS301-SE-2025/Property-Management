@@ -1,0 +1,75 @@
+<p-toast/>
+<p-dialog header="Update task progression?" [style]="{ width: '40rem'}" [(visible)]="displayDialog" [modal]="true">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mx-auto max-w-lg">
+        <div class="flex flex-col justify-center items-center">
+            <div class="flex flex-col mx-5 gap-2 mt-5 pb-5">
+                <label for="progress-description" class="font-bold">Task progression update</label>
+                <textarea id="progress-description" class = "border rounded w-60 mx-auto h-10 px-2" formControlName = "description" required></textarea>
+            </div>
+            <div class="mb-4">
+                <div class="flex flex-col justify-center items-center">
+                    <p class="font-bold pb-2">Declare inventory items used</p>
+                    <div class="flex justify-center">
+                        <p-multiselect 
+                            id="inventoryItems" 
+                            [options]="inventoryItems" 
+                            optionLabel="name" 
+                            optionValue="itemUuid" 
+                            [appendTo]="'body'"
+                            class="border rounded w-75 max-w-md" 
+                            placeholder="Available Inventory Items"
+                            formControlName="inventoryItemsUsed"
+                            placeholder="Available Inventory Items"
+                            (onChange)="onInventorySelectionChange($event)"
+                        >
+                            <ng-template let-item pTemplate="item">
+                                <div class="flex justify-between w-full">
+                                    <span>{{item.name}}</span>
+                                    <span class="ml-2 text-gray-500">(Qty: {{item.quantityInStock }})</span>
+                                </div>
+                            </ng-template>
+                        </p-multiselect>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <app-inventory-card 
+                        *ngIf="inventoryItemsUsed.length !== 0" 
+                        [inventory]="inventoryItemsUsed" 
+                        [showAddButton]="false"
+                        [readOnly]="true"
+                        [capOriginal]="true"
+                        [showPrice]="false"
+                        (quantitiesChanged)="onQuantitiesChanged($event)"
+                    ></app-inventory-card>
+                </div>
+            </div>
+            <div class = "mb-6">
+                <p class="font-bold pb-4">Upload picture of task for the contractors</p>
+                <p-fileupload 
+                    #fileUpload name="file" 
+                    mode="basic" 
+                    chooseLabel="Choose" 
+                    chooseIcon="pi pi-upload" 
+                    accept="image/*" 
+                    maxFileSize="1000000" 
+                    (onSelect)="onFileSelect($event)" 
+                />
+            </div>
+             <div class="flex flex-col mx-5 gap-2 mt-5 pb-5">
+                <label for="progress-number" class="font-bold">Estimate how far you are (0-100%)</label>
+                <input id="progress-number" type="number" class = "border rounded px-2" formControlName = "progress" required>
+            </div>
+            <div class = "flex justify-end mt-3">
+                <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer  hover:translate-y-1 transition-transform duration-200" (click)="closeDialog()">Cancel</button>
+                <button type="submit" 
+                    class = "px-3 py-2 rounded cursor-pointer  hover:translate-y-1 transition-transform duration-200"
+                    [class.bg-black]="form.valid"
+                    [class.bg-gray-200]="!form.valid"
+                    [class.text-white]="form.valid"
+                    [disabled]="!form.valid">
+                    Add progress
+                </button>
+            </div>
+        </div>
+    </form>
+</p-dialog>

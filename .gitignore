@@ -14,14 +14,20 @@ Backend/ktlint
 klint
 
 # === Frontend (Angular/Node) ===
-Frontend/Property-Manager/node_modules
-Frontend/Property-Manager/dist
-Frontend/Property-Manager/.angular
+Frontend/node_modules
+Frontend/dist
+Frontend/.angular
+Frontend/property-management/node_modules
+node_modules/
+
+# === Mobile App (Ionic) ===
+mobile-app/PropertyManager/node_modules
 
 # === IDE and OS ===
 .idea/
 *.iml
 .vscode/
+.vscode
 .DS_Store
 Thumbs.db
 
@@ -30,4 +36,15 @@ Thumbs.db
 *.tmp
 *.swp
 *~
+Backend/property-management/src/main/resources/application.properties
 node_modules
+Frontend/angular.json
+Frontend/package-lock.json
+Frontend/package.json
+package-lock.json
+package.json
+Frontend/package-lock.json
+Frontend/package.json
+Frontend/package-lock.json
+Frontend/angular.json
+

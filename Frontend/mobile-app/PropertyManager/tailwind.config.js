@@ -1,0 +1,13 @@
+module.exports = {
+ content: [
+  "./src/**/*.{html,ts}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+  corePlugins: {
+    preflight: true,
+  },
+  darkMode: 'class',
+}

@@ -1,5 +1,6 @@
 package com.example.propertymanagement.service
 
+import com.example.propertymanagement.dto.BuildingByCorporateDto
 import com.example.propertymanagement.dto.BuildingByTrusteeDto
 import com.example.propertymanagement.dto.BuildingCreateDto
 import com.example.propertymanagement.dto.BuildingResponseDto
@@ -7,6 +8,8 @@ import com.example.propertymanagement.dto.BuildingUpdateDto
 import com.example.propertymanagement.model.Building
 import com.example.propertymanagement.repository.BuildingRepository
 import com.example.propertymanagement.repository.ImageRepository
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -17,6 +20,7 @@ class BuildingService(
     private val buildingRepository: BuildingRepository,
     private val imageRepository: ImageRepository,
 ) {
+    @CacheEvict(value = ["apiCache"], allEntries = true)
     fun createBuilding(dto: BuildingCreateDto): BuildingResponseDto {
         val propertyImageUrl =
             dto.propertyImageId?.let {
@@ -41,20 +45,18 @@ class BuildingService(
         return mapToResponseDto(savedBuilding)
     }
 
-    fun getAllBuildings(): List<BuildingResponseDto> = buildingRepository.findAll().map { mapToResponseDto(it) }
+    // @Cacheable("apiCache")
+    fun getAllBuildings(): List<BuildingResponseDto> = buildingRepository.findAll().map { mapToResponseDto(it) }.toList()
 
+    @Cacheable(value = ["apiCache"], key = "#uuid")
     fun getBuildingByUuid(uuid: UUID): BuildingResponseDto? = buildingRepository.findById(uuid).orElse(null)?.let { mapToResponseDto(it) }
 
+    @CacheEvict(value = ["apiCache"], key = "#uuid")
     fun updateBuilding(
         uuid: UUID,
         dto: BuildingUpdateDto,
     ): BuildingResponseDto? {
         val existingBuilding = buildingRepository.findById(uuid).orElse(null) ?: return null
-
-        val propertyImageUrl =
-            dto.propertyImageId?.let {
-                imageRepository.findById(it).orElse(null)?.url
-            } ?: existingBuilding.propertyImage
 
         val updatedBuilding =
             existingBuilding.copy(
@@ -64,7 +66,7 @@ class BuildingService(
                 propertyValue = dto.propertyValue ?: existingBuilding.propertyValue,
                 primaryContractor = dto.primaryContractor ?: existingBuilding.primaryContractor,
                 latestInspectionDate = dto.latestInspectionDate ?: existingBuilding.latestInspectionDate,
-                propertyImage = propertyImageUrl,
+                propertyImage = dto.propertyImageId ?: existingBuilding.propertyImage,
                 area = dto.area ?: existingBuilding.area,
                 trusteeUuid = dto.trusteeUuid ?: existingBuilding.trusteeUuid,
                 coporateUuid = dto.coporateUuid ?: existingBuilding.coporateUuid,
@@ -74,6 +76,7 @@ class BuildingService(
         return mapToResponseDto(savedBuilding)
     }
 
+    @CacheEvict(value = ["apiCache"], key = "#uuid")
     fun deleteBuilding(uuid: UUID): Boolean =
         if (buildingRepository.existsById(uuid)) {
             buildingRepository.deleteById(uuid)
@@ -82,6 +85,7 @@ class BuildingService(
             false
         }
 
+    @Cacheable(value = ["apiCache"], key = "'trustee_'+#trusteeUuid")
     fun getBuildingsByTrustee(trusteeUuid: UUID): BuildingByTrusteeDto {
         val buildings =
             buildingRepository
@@ -94,11 +98,26 @@ class BuildingService(
         )
     }
 
+    @Cacheable(value = ["apiCache"], key = "'corporate_'+#coporateUuid")
+    fun getBuildingsByCorporateUuid(coporateUuid: UUID): BuildingByCorporateDto {
+        val buildings =
+            buildingRepository
+                .findBuildingsByCorporateUuid(coporateUuid)
+                .map { mapToResponseDto(it) }
+
+        return BuildingByCorporateDto(
+            coporateUuid = coporateUuid,
+            buildings = buildings,
+        )
+    }
+
+    @Cacheable(value = ["apiCache"], key = "'search_'+#name")
     fun searchBuildingsByName(name: String): List<BuildingResponseDto> =
         buildingRepository
             .findBuildingsByNameContaining(name)
             .map { mapToResponseDto(it) }
 
+    @Cacheable(value = ["apiCache"], key = "'type_'+#type")
     fun getBuildingsByType(type: String): List<BuildingResponseDto> =
         buildingRepository
             .findBuildingsByType(type)

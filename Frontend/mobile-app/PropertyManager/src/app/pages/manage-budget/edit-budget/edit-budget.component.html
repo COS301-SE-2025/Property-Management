@@ -1,0 +1,31 @@
+<ion-modal [isOpen]="displayModal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="closeModal()">Cancel</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div class="flex flex-col justify-center items-center gap-2 mt-4">
+        <form [formGroup]="form" (ngSubmit)="confirm()">
+          <p class="text-gray-700 pl-2 pb-2">Add Remaining budget?</p>
+          <ion-item>
+            <ion-input
+              [label]="'Update ' +  budgetType() + ' amount'"
+              labelPlacement="stacked"
+              formControlName="updatedBudget"
+              (ionInput)="onBudgetUpdate($event)"
+            ></ion-input>
+            <p class="text-red-500" *ngIf="form.get('updatedBudget')?.hasError('required') && form.get('updatedBudget')?.touched">Field is required</p>
+            <p class="text-red-500" *ngIf="form.get('updatedBudget')?.hasError('min') && form.get('updatedBudget')?.touched">Field is required</p>
+          </ion-item>
+        </form>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

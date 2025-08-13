@@ -1,0 +1,64 @@
+<app-header/>
+
+<div class = "mt-10 ml-10" *ngIf="votingTasks().length <= 0">
+    <p class = "text-xl font-normal flex flex-col justify-center items-center pr-12 text-yellow-300">No tasks open for voting. Come back later</p>
+</div>
+
+<div class = "mt-10 ml-10" *ngIf="votingTasks().length > 0">
+    <p class = "text-xl font-normal flex flex-col justify-center items-center pr-12">Tasks open for voting</p>
+</div>
+
+<div [@floatUp] class="flex flex-wrap justify-center gap-8 p-8">
+  @for(task of votingTasks(); track task.uuid)
+  {
+    <div class="hover:translate-y-1 transition-transform duration-200">
+      <app-voting-card [task]="task" [type]="'voting'"/>
+    </div>
+  }
+</div>
+
+<div class="mt-8">
+  <div *ngIf="bcUser" class="grid grid-cols-1 md:grid-cols-3 gap-6 px-8 pb-8">
+    <div class="min-h-[20rem]">
+      <div class="mb-6 text-center" *ngIf="pendingTasks().length > 0">
+        <p class="text-xl font-normal">Tasks pending initial approval</p>
+      </div>
+      <div [@floatUp] class="flex flex-col gap-8 items-center">
+        @for(task of pendingTasks(); track task.uuid)
+        {
+          <div class="hover:translate-y-1 transition-transform duration-200">
+            <app-voting-card [task]="task" [type]="'approval'"/>
+          </div>
+        }
+      </div>
+    </div>
+    
+    <div class="min-h-[20rem]">
+      <div class="mb-4" *ngIf="finalApproval().length > 0">
+        <p class="text-xl font-normal flex flex-col text-center">Tasks pending final approval</p>
+      </div>
+      <div class="flex flex-col gap-8 items-center">
+        @for(task of finalApproval(); track task.uuid)
+        {
+          <div class="hover:translate-y-1 transition-transform duration-200">
+            <app-voting-card [task]="task" [type]="'voting'"/>
+          </div>
+        }
+      </div>
+    </div>
+    
+    <div class="min-h-[20rem]">
+      <div class="mb-4" *ngIf="approvedTasks().length > 0">
+        <p class="text-xl font-normal text-center">Tasks approved</p>
+      </div>
+      <div class="flex flex-col gap-8 items-center">
+        @for(task of approvedTasks(); track task.uuid)
+        {
+          <div class="hover:translate-y-1 transition-transform duration-200">
+            <app-voting-card [task]="task" [type]="'voting'"/>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

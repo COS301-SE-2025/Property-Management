@@ -50,3 +50,8 @@ data class BuildingByTrusteeDto(
     val trusteeUuid: UUID,
     val buildings: List<BuildingResponseDto>,
 )
+
+data class BuildingByCorporateDto(
+    val coporateUuid: UUID,
+    val buildings: List<BuildingResponseDto>,
+)
