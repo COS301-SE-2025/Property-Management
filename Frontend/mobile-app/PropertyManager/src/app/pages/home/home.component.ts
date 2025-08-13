@@ -7,6 +7,7 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from "src/app/components/tab/tab.component";
 import { IonItem, IonContent } from "@ionic/angular/standalone";
 import { HouseComponent } from './house/house.component';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-home',
@@ -18,8 +19,9 @@ export class HomeComponent implements OnInit{
 
   private houseService = inject(HousesService);
   houses = this.houseService.houses;
+  darkMode = false;
 
-  constructor(private storage: StorageService, private router: Router) { 
+  constructor(private storage: StorageService, private router: Router, private theme: ThemeService) { 
     
   }
 
@@ -28,6 +30,8 @@ export class HomeComponent implements OnInit{
     const id = await this.storage.get('trusteeId');
     // await this.storage.set("trusteeId", id);
     this.houseService.loadHouses(id);
+
+    this.theme.darkMode$.subscribe(mode => this.darkMode = mode);
   }
 
   RouteToCreateProperty()

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import { DialogComponent } from '../../../../../components/dialog/dialog.component';
+import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { BudgetApiService } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
 

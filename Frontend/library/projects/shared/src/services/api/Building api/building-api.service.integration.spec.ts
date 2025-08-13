@@ -2,11 +2,12 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { TestBed } from "@angular/core/testing";
 import { BuildingApiService } from "./building-api.service";
 import { Property } from "../../../models/property.model";
+import { environmentMobile } from '../../../environment';
 
 describe('BuildingApiService Integration Tests', () => {
     let service: BuildingApiService;
     let httpMock: HttpTestingController;
-    const url = '/api';
+    const url = environmentMobile.apiUrl;
 
     beforeEach(() => {
         TestBed.configureTestingModule({

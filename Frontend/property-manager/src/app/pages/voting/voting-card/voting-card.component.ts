@@ -16,6 +16,9 @@ import { MaintenanceTask, VotingService, FormatDatePipe, Voting } from 'shared';
       color: #ff3838;
       font-weight:600;
     }
+    .due-date-past{
+      color: #858585;
+    }
   `,
 })
 export class VotingCardComponent{
@@ -43,6 +46,8 @@ export class VotingCardComponent{
     const task = this.task() as MaintenanceTask;
 
     if(!task.scheduled_date) return 'due-date-normal';
+
+    if(task.scheduled_date < new Date()) return 'due-date-past';
 
     const date = new Date();
     const taskDate = new Date(task.scheduled_date);

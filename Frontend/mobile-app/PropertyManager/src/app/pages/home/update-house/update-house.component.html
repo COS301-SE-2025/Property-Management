@@ -1,0 +1,52 @@
+<p-toast/>
+<ion-modal [isOpen]="displayModal">
+  <ng-template>
+    <ion-header class="bg-white dark:bg-gray-800">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="closeModal()" class="dark:text-gray-200">Cancel</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button (click)="confirm()" [strong]="true" class="dark:text-gray-200">Confirm</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="bg-white dark:bg-gray-800">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col justify-center items-center p-5 space-y-4">
+         <div class = "mb-2 gap-2 flex flex-col items-center justify-center">
+            <label for="inventory-item" class="font-semibold block dark:text-gray-400">House name</label>
+            <input id="inventory-item" class = "border rounded dark:bg-gray-900 dark:text-gray-400" pInputText formControlName="name" required>
+        </div>
+        <div class = "flex flex-col items-center justify-center mb-3 gap-2">
+          <label for="body-corporate-select" class="font-semibold block dark:text-gray-400">Assign to body corporate</label>
+          <p-select 
+              id="body-corporate-select"
+              *ngIf="bodyCorporates.length > 0"
+              class="w-full" 
+              [showClear]="true" 
+              [options]="bodyCorporates" 
+              optionLabel="corporateName" 
+              formControlName="corporateUuid" 
+              optionValue="corporateUuid" 
+              placeholder="Body corporate"
+          >
+          </p-select>
+        </div>
+        <div class="pt-6 flex flex-col justify-center items-center">
+          <p class="dark:text-gray-400">Take image of the task</p>
+          <ion-button (click)="capturePhoto()" fill="clear">
+            <ion-icon name="camera-outline"></ion-icon>
+          </ion-button>
+  
+          <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
+            <p class="mb-2 dark:text-gray-400">Preview</p>
+            <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
+            <ion-button (click)="deletePhoto()" fill="clear" color="dark">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -37,3 +37,14 @@ Thumbs.db
 *.swp
 *~
 Backend/property-management/src/main/resources/application.properties
+node_modules
+Frontend/angular.json
+Frontend/package-lock.json
+Frontend/package.json
+package-lock.json
+package.json
+Frontend/package-lock.json
+Frontend/package.json
+Frontend/package-lock.json
+Frontend/angular.json
+

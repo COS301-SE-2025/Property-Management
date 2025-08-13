@@ -138,8 +138,6 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     const date = this.form.value.date;
     const proirity = this.form.value.priority;
 
-    console.log(proirity);
-    
     this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate, proirity).subscribe({
       next: (task) => {
 
@@ -188,7 +186,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     this.inventoryCard.addItemToUsage(
       taskId,
       item.itemUuid,
-      item.quantityInStock
+      item.quantityInStock,
+      true
     );
 
     const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);

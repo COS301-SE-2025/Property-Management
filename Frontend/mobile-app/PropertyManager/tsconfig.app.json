@@ -11,5 +11,11 @@
   ],
   "include": [
     "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "android",
+    "ios",
+    "**/android/**",
+    "**/ios/**"
   ]
 }

@@ -1,6 +1,6 @@
 <app-header/>
 
-<div class="mt-10 px-5">
+<div class="mt-10 px-10">
     <p-card>
         <div class="rounded-lg flex p-4">
             <div class="flex items-center justify-center w-1/2 p-6 pr-10">
@@ -19,7 +19,7 @@
                 <div class="font-semibold pb-3">
                     <p>Due Date: {{ (task?.scheduled_date ?? '') | formatDate }}</p>
                 </div>
-                <div class="font-semibold pb-3">
+                <div class="font-semibold pb-3" *ngIf="!contractorUser">
                     <span>Priority:
                         @if(task?.priority === 'Low')
                         {
@@ -46,12 +46,18 @@
 
     <div class="grid gap-4 mt-4 pb-3" 
         [ngClass]="{
-       'grid-cols-1 md:grid-cols-2': inventoryUsage?.length,
-       'grid-cols-1 place-items-start': !inventoryUsage?.length
-    }">
-        <app-inventory-usage *ngIf="inventoryUsage?.length" [taskId]="this.taskId!"/>
-        <p-card>
-            <ng-template #title class="text-lg font-semibold">Contractor timeline</ng-template>
-        </p-card>
+            'grid-cols-1 md:grid-cols-3': inventoryUsage?.length && contractor,
+            'grid-cols-1 md:grid-cols-2': inventoryUsage?.length && !contractor,
+            'grid-cols-1 place-items-start': !inventoryUsage?.length
+        }">
+        <app-inventory-usage *ngIf="inventoryUsage?.length" 
+                            [taskId]="this.taskId!"
+                            [class.md:col-span-1]="contractor"/>
+        @if(this.contractor) 
+        {
+            <app-contractor-timeline [inventoryUsage]="inventoryUsage!"
+                                    [task]="task!"
+                                    [class.md:col-span-2]="contractor"/>
+        }
     </div>
 </div>

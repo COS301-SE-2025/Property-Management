@@ -37,24 +37,7 @@ export class ViewHouseComponent implements OnInit{
   private houseId: string | null = null;
 
   constructor(private route: ActivatedRoute, public houseService: HousesService){
-    // effect(async () => {
-    //   const houseId = this.route.snapshot.paramMap.get('houseId');
-    //   const houses = this.houseService.houses();
 
-    //   if(houseId && houses.length > 0)
-    //   {
-    //     const house = this.houseService.getHouseById(houseId);
-
-    //     if(house)
-    //     {
-    //       this.house.set(house);
-    //     }
-    //   }
-    //   else
-    //   {
-    //     this.findHouse.set(true);
-    //   }
-    // });
   }
 
   async ngOnInit()

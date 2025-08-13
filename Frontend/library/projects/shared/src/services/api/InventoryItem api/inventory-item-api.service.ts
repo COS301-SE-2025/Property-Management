@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Inventory } from '../../../models/inventory.model';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryItemApiService {
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -62,7 +64,6 @@ export class InventoryItemApiService {
     return this.http.patch<Inventory>(`${this.url}/inventory/${itemId}/quantity`, quantityUpdate);
   }
   
-
   deleteInventoryItem(inventoryItem: Inventory): Observable<Inventory>
   {
     return this.http.delete<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`);

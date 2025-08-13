@@ -9,7 +9,8 @@ import { ViewTaskComponent } from './view-task/view-task.component';
 @Component({
   selector: 'app-timeline',
   templateUrl: './timeline.component.html',
-  styles: ``,
+  styles: `
+  `,
   imports: [IonCardHeader, IonCardTitle, IonCardContent, IonCard, TimelineModule, CommonModule, AddTimelineComponent, ViewTaskComponent],
 })
 export class TimelineComponent{
