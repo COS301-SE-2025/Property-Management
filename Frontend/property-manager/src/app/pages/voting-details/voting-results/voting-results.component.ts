@@ -3,7 +3,7 @@ import { MessageService } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { lastValueFrom } from 'rxjs';
-import { ContractorApiService, TaskApiService, VotingResults, VotingService } from 'shared';
+import { ContractorApiService, Notification, NotificationsApiService, TaskApiService, VotingResults, VotingService } from 'shared';
 import { Toast } from "primeng/toast";
 
 
@@ -31,7 +31,13 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
   public contractorHasBeenAssigned = false;
   private taskId: string | null = null;
 
-  constructor(private votingService: VotingService, private contractorService: ContractorApiService, private taskService: TaskApiService, private messageService: MessageService) { }
+  constructor(
+    private votingService: VotingService, 
+    private contractorService: ContractorApiService, 
+    private taskService: TaskApiService, 
+    private messageService: MessageService,
+    private notificationService: NotificationsApiService
+  ) { }
 
   ngOnInit() {
     this.loadResults();
@@ -57,6 +63,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
             if(task.taskUuid)
             {
               this.taskId = task.taskUuid;
+
               this.taskService.getTaskById(task.taskUuid).subscribe({
                 next: (t) => {
                   if(res.votingEnded && (t.cuuid === '' || !t.cuuid))
@@ -131,7 +138,25 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
           this.taskService.updateTaskAssignedContractor(winningContractorId, res.taskUuid).subscribe({
             next: () => {
 
-              // this.votingService.getQuote(this.results)
+              const notiTrustee: Notification = {
+                notificationType: 'Vote ended',
+                message: `Voting has ended for ${res.title}`,
+                recipientType: 'trustee',
+                recipientUuid: `${res.tuuid}`,
+                isRead: false,
+                relatedSessionUuid: this.sessionId()
+              }
+              const notiContractor: Notification = {
+                notificationType: 'Vote ended',
+                message: `You have been assigned task: ${res.title}`,
+                recipientType: 'contractor',
+                recipientUuid: winningContractorId,
+                isRead: false,
+                relatedTaskUuid: res.taskUuid
+              }
+              this.notificationService.createNotifications(notiTrustee);
+              this.notificationService.createNotifications(notiContractor);
+
 
               this.messageService.add({
                 severity: 'success',

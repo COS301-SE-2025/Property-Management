@@ -19,7 +19,7 @@ export class BudgetAddDialogComponent extends DialogComponent implements OnInit{
   public date = new Date();
   public addError = false;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router,  private budgetApiService: BudgetApiService){ 
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router,  private budgetApiService: BudgetApiService ){ 
     super();
     this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
   }
@@ -46,8 +46,7 @@ export class BudgetAddDialogComponent extends DialogComponent implements OnInit{
       const totalBudget = inventoryBudget + maintenanceBudget;
   
       this.budgetApiService.createBudget(totalBudget, maintenanceBudget, inventoryBudget, this.date, this.houseId).subscribe({
-        next: (response) => {
-          console.log(response);
+        next: () => {
           this.form.reset();
           this.closeDialog();
           this.router.navigate(['viewHouse', this.houseId]).then(() => {
