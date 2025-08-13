@@ -12,6 +12,7 @@ import { environmentMobile } from '../environment';
 
 export interface Trustee {
   trustee_id?: number;
+  trusteeUuid: string;
   name: string;
   email: string;
   phone: string;
@@ -96,8 +97,8 @@ export class ApiService {
   //   return this.http.delete(`${this.url}/trustee/${trusteeId}`);
   // }
 
-  registerTrustee(name: string, email: string, phone: string, apikey: string): Observable<Trustee> {
-    const item: Trustee = { name, email, phone, apikey };
+  registerTrustee(name: string, email: string, phone: string, apikey: string, trusteeUuid: string): Observable<Trustee> {
+    const item: Trustee = { trusteeUuid, name, email, phone, apikey };
     return this.http.post<Trustee>(`${this.url}/trustee`, item);
   }
 

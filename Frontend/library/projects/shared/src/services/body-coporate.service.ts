@@ -47,7 +47,8 @@ export class BodyCoporateService {
   maintenanceGraph = signal<Graph>({} as Graph);
   contractorDetails = signal<ContractorDetails[]>([]);
   buildings = signal<Property[]>([]);
-
+  public bcId = '';
+  
   constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService){
   }
 
