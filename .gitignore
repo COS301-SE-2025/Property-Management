@@ -4,7 +4,7 @@ Backend\property-management\src\main\resources\application.properties
 *.properties
 config.env
 .env
-.env.*
+.env.* 
 
 # Build directories
 /build/
