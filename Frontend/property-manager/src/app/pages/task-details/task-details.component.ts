@@ -8,13 +8,13 @@ import { TableModule } from 'primeng/table';
 import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
 import { InventoryUsageComponent } from '../../components/inventory-usage/inventory-usage.component';
 import { lastValueFrom } from 'rxjs';
-import { ContractorTimeline } from "./contractor-timeline/contractor-timeline.component";
+import { ContractorTimelineComponent } from "./contractor-timeline/contractor-timeline.component";
 
 @Component({
   selector: 'app-timeline-details',
   templateUrl: './task-details.component.html',
   styles: ``,
-  imports: [FormatDatePipe, CommonModule, HeaderComponent, CardModule, TableModule, InventoryUsageComponent, ContractorTimeline],
+  imports: [FormatDatePipe, CommonModule, HeaderComponent, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent],
 })
 export class TaskDetailsComponent implements OnInit, OnDestroy {
 

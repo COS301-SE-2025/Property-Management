@@ -1,4 +1,4 @@
-import { Component, Input, input } from "@angular/core";
+import { Component, DoCheck, Input, input } from "@angular/core";
 import { DialogComponent } from "property-manager/src/app/components/dialog/dialog.component";
 import { Toast } from "primeng/toast";
 import { DialogModule } from "primeng/dialog";
@@ -17,7 +17,7 @@ import { MessageService } from "primeng/api";
   imports: [Toast, DialogModule, ReactiveFormsModule, MultiSelectModule, InventoryCardComponent, CommonModule, FileUploadModule],
   providers: [MessageService, NotificationsApiService]
 })
-export class AddProgressDialog extends DialogComponent{
+export class AddProgressDialogComponent extends DialogComponent implements DoCheck{
     
     form!: FormGroup;
     selectedFile: File | null = null;

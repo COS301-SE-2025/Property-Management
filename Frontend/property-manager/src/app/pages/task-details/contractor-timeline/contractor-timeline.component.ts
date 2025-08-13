@@ -5,10 +5,10 @@ import { MessageService } from "primeng/api";
 import { Toast } from "primeng/toast";
 import { CommonModule } from "@angular/common";
 import { TimelineModule } from "primeng/timeline";
-import { AddProgressDialog } from "../add-progress-dialog/add-progress-dialog.component";
+import { AddProgressDialogComponent } from "../add-progress-dialog/add-progress-dialog.component";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TableModule } from "primeng/table";
-import { forkJoin, lastValueFrom, of } from "rxjs";
+import { forkJoin, of } from "rxjs";
 import { switchMap, catchError, tap } from "rxjs/operators";
 
 @Component({
@@ -19,10 +19,10 @@ import { switchMap, catchError, tap } from "rxjs/operators";
         color: #facc15;
     }
   `,
-  imports: [CardModule, Toast, TimelineModule, CommonModule, FormatTimePipe, AddProgressDialog, TableModule],
+  imports: [CardModule, Toast, TimelineModule, CommonModule, FormatTimePipe, AddProgressDialogComponent, TableModule],
   providers: [MessageService]
 })
-export class ContractorTimeline implements OnInit, OnChanges {
+export class ContractorTimelineComponent implements OnInit, OnChanges {
     
     public task = input.required<MaintenanceTask>();
     @Input() inventoryUsage!: InventoryUsage[];
