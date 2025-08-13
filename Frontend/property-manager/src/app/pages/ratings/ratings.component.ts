@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { RatingService, RatingPayload } from 'shared';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -48,16 +49,24 @@ export class RatingsComponent implements OnInit {
     private ratingService: RatingService,
     private taskApiService: TaskApiService,
     private messageService: MessageService,
-    private contractorService: ContractorService 
+    private contractorService: ContractorService,
+    private route: ActivatedRoute 
   ) {}
 
   contractors: { uuid: string; name: string }[] = [];
 
   ngOnInit(): void {
     this.trusteeUuid = getCookieValue(document.cookie, 'trusteeId') || '';
-    this.loadContractors();
-    this.loadTasks();
-    this.loadRatingsHistory();
+    
+    this.route.paramMap.subscribe(params => {
+        const taskId = params.get('taskId');
+        if (taskId) {
+            this.selectedTaskUuid = taskId;
+            this.loadContractors();
+            this.loadTasks();
+            this.loadRatingsHistory();
+        }
+    });
   }
 
   loadContractors() {
@@ -72,11 +81,20 @@ export class RatingsComponent implements OnInit {
     this.taskApiService.getTasksForTrustee(this.trusteeUuid).subscribe({
       next: (tasks: MaintenanceTask[]) => {
         this.tasks = tasks.map(t => {
-          const contractor = this.contractors.find(c => c.uuid === t.cuuid);
+          let contractor = this.contractors.find(c => c.uuid === t.cuuid);
+          if (!contractor && t.cuuid) {
+            this.contractorService.getContractorById(t.cuuid).subscribe({
+              next: (c: any) => {
+                contractor = { uuid: c.uuid, name: c.name };
+                const idx = this.tasks.findIndex(task => task.uuid === t.uuid);
+                if (idx !== -1) this.tasks[idx].contractor = contractor;
+              }
+            });
+          }
           return {
             uuid: t.uuid,
             name: t.title,
-            contractor: { uuid: t.cuuid ?? '', name: contractor ? contractor.name : 'N/A' }
+            contractor: { uuid: t.cuuid ?? '', name: contractor ? contractor.name : 'Loading...' }
           };
         });
       },

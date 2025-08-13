@@ -1,26 +1,32 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreatePropertyComponent } from './create-property.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ContractorService } from 'shared';
 import { PropertyService } from 'shared';
 import { of, throwError } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { StorageService } from 'shared';
 
 describe('CreatePropertyComponent (Mobile)', () => {
   let component: CreatePropertyComponent;
   let fixture: ComponentFixture<CreatePropertyComponent>;
   let contractorService: jasmine.SpyObj<ContractorService>;
   let propertyService: jasmine.SpyObj<PropertyService>;
+  let storageService: jasmine.SpyObj<StorageService>;
 
   beforeEach(async () => {
     contractorService = jasmine.createSpyObj('ContractorService', ['getAllContractors']);
     propertyService = jasmine.createSpyObj('PropertyService', ['createProperty']);
+    storageService = jasmine.createSpyObj('StorageService', ['get', 'set', 'remove']);
 
     await TestBed.configureTestingModule({
-      imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule],
+      imports: [CreatePropertyComponent, ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
         { provide: ContractorService, useValue: contractorService },
-        { provide: PropertyService, useValue: propertyService }
+        { provide: PropertyService, useValue: propertyService },
+        { provide: StorageService, useValue: storageService }
       ]
     }).compileComponents();
 

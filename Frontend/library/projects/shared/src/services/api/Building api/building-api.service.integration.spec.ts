@@ -2,11 +2,12 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { TestBed } from "@angular/core/testing";
 import { BuildingApiService } from "./building-api.service";
 import { Property } from "../../../models/property.model";
+import { environmentMobile } from '../../../environment';
 
 describe('BuildingApiService Integration Tests', () => {
     let service: BuildingApiService;
     let httpMock: HttpTestingController;
-    const url = '/api';
+    const url = environmentMobile.apiUrl;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -34,7 +35,8 @@ describe('BuildingApiService Integration Tests', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
+        trusteeUuid: '1'
       };
 
       const expectedBody = {
@@ -105,7 +107,8 @@ describe('BuildingApiService Integration Tests', () => {
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
           trustees: '1',
-          area: 2
+          area: 2,
+          trusteeUuid: '1'
         },
         {
           buildingUuid: '2',
@@ -117,7 +120,8 @@ describe('BuildingApiService Integration Tests', () => {
           latestInspectionDate: '2023-02-01',
           propertyImage: 'img2',
           trustees: '2',
-          area: 2
+          area: 2,
+          trusteeUuid: '2'
         }
       ];
 
@@ -152,7 +156,8 @@ describe('BuildingApiService Integration Tests', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
+        trusteeUuid: '1'
       };
 
       service.getBuildingById('1').subscribe(response => {
@@ -182,29 +187,32 @@ describe('BuildingApiService Integration Tests', () => {
       const mockProperty: Property = {
         buildingUuid: '1',
         name: 'Updated Building',
-        address: '456 New St',
-        type: 'Residential',
-        propertyValue: 750000,
-        primaryContractors: [2],
-        latestInspectionDate: '2023-06-01',
         propertyImage: 'img2',
-        trustees: '2',
-        area: 2
+        coporateUuid: '1',
+        address: '',
+        type: '',
+        propertyValue: null,
+        primaryContractors: null,
+        latestInspectionDate: '',
+        trustees: null,
+        area: 0,
+        trusteeUuid: '1',
       };
 
       const expectedBody = {
         name: 'Updated Building',
-        address: '456 New St',
-        type: 'Residential',
-        propertyValue: 750000,
-        primaryContractors: [2],
-        latestInspectionDate: '2023-06-01',
-        trusteeUuid: '2',
-        propertyImageId: 'img2'
+        propertyImage: 'img2',
+        coporateUuid: '1'
       };
 
-      service.updateBuilding(mockProperty, '1', '2').subscribe(response => {
-        expect(response).toEqual(mockProperty);
+      service.updateBuilding('1', 'Updated Building', 'img2', '1').subscribe(response => {
+        expect(response).toEqual({
+          ...mockProperty,
+          buildingUuid: '1',
+          name: 'Updated Building',
+          propertyImage: 'img2',
+          coporateUuid: '1'
+        });
       });
 
       const req = httpMock.expectOne(`${url}/buildings/1`);
@@ -224,10 +232,11 @@ describe('BuildingApiService Integration Tests', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
+        trusteeUuid: '1'
       };
 
-      service.updateBuilding(mockProperty, '1', '1').subscribe(
+      service.updateBuilding('1', 'Building', 'img', '1').subscribe(
         () => fail('should have failed with 400 error'),
         (error) => {
           expect(error.status).toBe(400);
@@ -251,7 +260,8 @@ describe('BuildingApiService Integration Tests', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
+        trusteeUuid: '1'
       };
 
       service.deleteBuilding('1').subscribe(response => {
@@ -289,7 +299,8 @@ describe('BuildingApiService Integration Tests', () => {
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
           trustees: '1',
-          area: 2
+          area: 2,
+          trusteeUuid: '1'
         }
       ];
 
@@ -329,7 +340,8 @@ describe('BuildingApiService Integration Tests', () => {
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
           trustees: '1',
-          area: 2
+          area: 2,
+          trusteeUuid: '1'
         }
       ];
 
@@ -367,7 +379,8 @@ describe('BuildingApiService Integration Tests', () => {
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
           trustees: '1',
-          area: 2
+          area: 2,
+          trusteeUuid: '1'
         }
       ];
 

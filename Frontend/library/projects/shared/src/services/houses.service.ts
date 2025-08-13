@@ -9,7 +9,7 @@ import { TaskApiService } from './api/Task api/task-api.service';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
 import { Graph } from '../models/graph.model';
 import { ImageApiService } from './api/Image api/image-api.service';
-import { firstValueFrom } from 'rxjs';
+import { first, firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +45,6 @@ export class HousesService {
   addToTasks(task: MaintenanceTask)
   {
     this.timeline.set([...this.timeline(), task]);
-    console.log(this.timeline());
     this.sortTimeline();
   }
 
@@ -67,9 +66,7 @@ export class HousesService {
   }
   async loadHouses(trusteeId: string) {
 
-    if (this.houses().length > 0) {
-      return;
-    }
+    this.houses.set([]);
 
     try{
       const buildings = await firstValueFrom(this.buildingApiService.getBuildingsByTrustee(trusteeId));
@@ -97,6 +94,36 @@ export class HousesService {
     }
     catch(error){
       console.error("Error fetching buildings", error);
+    }
+  }
+  async loadHouseById(houseId: string): Promise<Property | undefined>
+  {
+    try{
+      const building = await firstValueFrom(this.buildingApiService.getBuildingById(houseId));
+
+      if(building.propertyImage)
+      {
+        try{
+          const url = await firstValueFrom(this.imageApiService.getImage(building.propertyImage));
+          building.propertyImage = url;
+        }
+        catch(err)
+        {
+          console.error("Error fetching image", err);
+          building.propertyImage = 'assets/images/no_image.png';
+        }
+      }
+      else{
+        building.propertyImage = 'assets/images/no_image.png';
+      }
+
+      this.addToHouses(building);
+      return building;
+    }
+    catch(err)
+    {
+      console.error("Error fetching building", err);
+      return undefined;
     }
   }
 

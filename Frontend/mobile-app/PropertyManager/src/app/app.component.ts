@@ -1,7 +1,8 @@
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonApp} from '@ionic/angular/standalone';
 import { IonRouterOutlet } from "@ionic/angular/standalone";
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -9,9 +10,13 @@ import { IonRouterOutlet } from "@ionic/angular/standalone";
   styles: ``,
   imports: [IonApp, IonRouterOutlet],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public appPages = [];
   public labels = [];
-  constructor() {
+  constructor(private theme: ThemeService) {
+  }
+
+  async ngOnInit() {
+      await this.theme.initTheme();
   }
 }

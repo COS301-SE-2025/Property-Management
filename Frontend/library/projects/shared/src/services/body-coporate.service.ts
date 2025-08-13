@@ -48,19 +48,18 @@ export class BodyCoporateService {
   contractorDetails = signal<ContractorDetails[]>([]);
   buildings = signal<Property[]>([]);
   public bcId = '';
-
+  
   constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService){
-    this.bcId = getCookieValue(document.cookie, 'bodyCoporateId');
   }
 
-  async loadHouses()
+  async loadHouses(bcId: string)
   {
     if(this.buildings().length > 0) {
       return;
     }
 
     try{
-      const buildings = await firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId));
+      const buildings = await firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId));
 
       const buildingImages = await Promise.all(
         buildings.map(async b => {
@@ -86,12 +85,12 @@ export class BodyCoporateService {
     this.pendingTasks.update(tasks => [...tasks, task]);
   }
 
-  async loadPendingTasks(): Promise<void> {
+  async loadPendingTasks(bcId: string): Promise<void> {
 
     this.pendingTasks.set([]);
     try {
       const buildings = await firstValueFrom(
-        this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)
+        this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId)
       );
 
       const buildingUuids: string[] = buildings
@@ -113,12 +112,12 @@ export class BodyCoporateService {
       console.error('Failed to load buildings', error);
     }
   }
-  async loadFundContribution(): Promise<void> {
+  async loadFundContribution(bcId: string): Promise<void> {
 
     try {
       const [buildings, bc] = await Promise.all([
-        firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)),
-        firstValueFrom(this.bodyCoporateApiService.getBodyCoporate(this.bcId))
+        firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId)),
+        firstValueFrom(this.bodyCoporateApiService.getBodyCoporate(bcId))
       ]);
 
       const reserveFunds = buildings
@@ -138,11 +137,11 @@ export class BodyCoporateService {
       this.fundContribution.set([]);
     }
   }
-  async loadGraph():Promise<void>
+  async loadGraph(bcId: string):Promise<void>
   {
    try{
     const buildings = await firstValueFrom(
-      this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)
+      this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId)
     );
 
     const budgetPromise = buildings
@@ -194,13 +193,13 @@ export class BodyCoporateService {
     console.error("Failed to load graph data", error);
    }
   }
-  async loadTrustedContractors(): Promise<void>
+  async loadTrustedContractors(bcId: string): Promise<void>
   {
     this.contractorDetails.set([]);
 
     try{
       const contractors = await firstValueFrom(
-        this.bodyCoporateApiService.getTrustedContractors(this.bcId)
+        this.bodyCoporateApiService.getTrustedContractors(bcId)
       );
 
       const contractorsWithImages = await Promise.all(
@@ -233,13 +232,13 @@ export class BodyCoporateService {
       console.error("Error loading trusted contractors", err);
     }
   } 
-  async loadPublicContractors(): Promise<void>
+  async loadPublicContractors(bcId: string): Promise<void>
   {
     this.contractorDetails.set([]);
 
     try{
       const contractors = await firstValueFrom(
-        this.bodyCoporateApiService.getAllPublicContractors(this.bcId)
+        this.bodyCoporateApiService.getAllPublicContractors(bcId)
       );
       const contractorsWithImages = await Promise.all(
         contractors.map(async (c) => {
@@ -303,5 +302,9 @@ export class BodyCoporateService {
     return this.bodyCoporateApiService.getBodyCoporate(bcId).pipe(
       map(res => res.corporateName)
     );
+  }
+  getBodyCorporate(bcId: string)
+  {
+    return this.bodyCoporateApiService.getBodyCoporate(bcId);
   }
 }

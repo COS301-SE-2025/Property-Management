@@ -130,7 +130,7 @@ class MaintenanceController(
         return ResponseEntity.ok(tasks)
     }
 
-    @GetMapping("/{taskUuid}/contractors")
+    @GetMapping("/task/{taskUuid}/contractors")
     fun getContractorsForTask(
         @PathVariable taskUuid: UUID,
     ): ResponseEntity<List<MaintenancetaskContractor>> {

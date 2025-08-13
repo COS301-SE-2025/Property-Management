@@ -1,12 +1,12 @@
-<ion-card>
+<ion-card class="dark:bg-gray-900">
     <ion-card-header>
-      <ion-card-title>Timeline</ion-card-title>
+      <ion-card-title class="dark:text-white">Timeline</ion-card-title>
     </ion-card-header>
     
     <ion-card-content>
       <p-timeline [value]="timeline()" align="alternate">
           <ng-template #content let-time>
-              <div tabindex="0" role="button" (click)="openDetailsDialog(time)" (keydown.enter)="openDetailsDialog(time)" (keydown.space)="openDetailsDialog(time)">
+              <div tabindex="0" role="button" class="dark:text-white" (click)="openDetailsDialog(time)" (keydown.enter)="openDetailsDialog(time)" (keydown.space)="openDetailsDialog(time)">
                   {{ time.title }}
               </div>
           </ng-template>
@@ -16,7 +16,7 @@
                       <img src="assets/icons/task_done.svg" alt="Done" class="w-5 h-5" />
                   </ng-container>
                   <ng-template #pending>
-                      <i class="pi pi-clock text-gray-800"></i>
+                      <i class="pi pi-clock"></i>
                   </ng-template>
               </div>
           </ng-template>

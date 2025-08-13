@@ -1,0 +1,63 @@
+<app-header/>
+
+<div class="mt-10 px-10">
+    <p-card>
+        <div class="rounded-lg flex p-4">
+            <div class="flex items-center justify-center w-1/2 p-6 pr-10">
+                <img [src]="imageUrl" alt="image of task" *ngIf="imageUrl; else noImg" class="max-w-[20rem]">
+                <ng-template #noImg>
+                    <p>No image available</p>
+                </ng-template>
+            </div>
+            <div class="w-1/2 pr-10 pl-4 p-4">
+                <div class="font-bold pb-3">
+                    <p>Task: {{ task?.title }}</p>
+                </div>
+                <div class="text-sm pb-3">
+                    <p>Description: {{ task?.des }}</p>
+                </div>
+                <div class="font-semibold pb-3">
+                    <p>Due Date: {{ (task?.scheduled_date ?? '') | formatDate }}</p>
+                </div>
+                <div class="font-semibold pb-3" *ngIf="!contractorUser">
+                    <span>Priority:
+                        @if(task?.priority === 'Low')
+                        {
+                            <span class="text-green-400">Low</span>
+                        }
+                        @else if(task?.priority === 'Medium')
+                        {
+                            <span class="text-orange-400">Medium</span>
+                        }
+                        @else {
+                            <span class="text-red-500">High</span>
+                        }
+                    </span>
+                </div>
+                @if(this.contractor)
+                {
+                    <div class="font-semibold pb-3">
+                        <p>Assigned contractors: {{ contractor.name }}</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </p-card>
+
+    <div class="grid gap-4 mt-4 pb-3" 
+        [ngClass]="{
+            'grid-cols-1 md:grid-cols-3': inventoryUsage?.length && contractor,
+            'grid-cols-1 md:grid-cols-2': inventoryUsage?.length && !contractor,
+            'grid-cols-1 place-items-start': !inventoryUsage?.length
+        }">
+        <app-inventory-usage *ngIf="inventoryUsage?.length" 
+                            [taskId]="this.taskId!"
+                            [class.md:col-span-1]="contractor"/>
+        @if(this.contractor) 
+        {
+            <app-contractor-timeline [inventoryUsage]="inventoryUsage!"
+                                    [task]="task!"
+                                    [class.md:col-span-2]="contractor"/>
+        }
+    </div>
+</div>

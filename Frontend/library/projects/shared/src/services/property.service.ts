@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environmentMobile } from '../environment';
 
 export interface CreateBuildingPayload {
   name: string;
@@ -41,12 +42,15 @@ export interface InviteWithTrustee {
   name: string;
   email: string;
   role: string;
+  coporateUuid?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class PropertyService {
-  private apiUrl = 'http://localhost:8080/api/buildings';
-  private imageUploadUrl = 'http://localhost:8080/api/images/upload';
+  // private apiUrl = 'http://localhost:8080/api/buildings';
+  private apiUrl = environmentMobile.apiUrl;
+  // private imageUploadUrl = 'http://localhost:8080/api/images/upload';
+  private imageUploadUrl = `${this.apiUrl}/images/upload`;
 
   constructor(private http: HttpClient) {}
 

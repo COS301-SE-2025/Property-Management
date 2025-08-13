@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Property } from '../../../models/property.model';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BuildingApiService {
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -46,16 +48,11 @@ export class BuildingApiService {
     return this.http.get<Property>(`${this.url}/buildings/${propertyId}`);
   }
 
-  updateBuilding(property: Property, propertyId: string, trusteeId: string): Observable<Property> {
+  updateBuilding(propertyId: string, name: string, image: string, bcId: string): Observable<Property> {
     const updatedProperty = {
-      name: property.name,
-      address: property.address,
-      type: property.type,
-      propertyValue: property.propertyValue,
-      primaryContractors: property.primaryContractors,
-      latestInspectionDate: property.latestInspectionDate,
-      trusteeUuid: trusteeId,
-      propertyImageId: property.propertyImage
+      name: name,
+      propertyImage: image,
+      coporateUuid: bcId
     };
 
     return this.http.put<Property>(`${this.url}/buildings/${propertyId}`, updatedProperty);

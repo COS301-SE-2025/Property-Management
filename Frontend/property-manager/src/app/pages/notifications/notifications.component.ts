@@ -13,7 +13,11 @@ import { Toast } from 'primeng/toast';
   selector: 'app-notifications',
   imports: [HeaderComponent, TimelineModule, CommonModule, FormatTimePipe, InviteDialogComponent, Toast],
   templateUrl: './notifications.component.html',
-  styles: ``,
+  styles: `
+    ::ng-deep .p-timeline-left .p-timeline-event-opposite {
+      display: none !important;
+    }
+  `,
   providers: [MessageService],
   animations: [
     trigger('floatUp', [

@@ -132,7 +132,7 @@ class QuoteVotingService(
         )
     }
 
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getAllSessions(): List<VoteSessionSummary> =
         sessionRepo.findAll().map { session ->
             VoteSessionSummary(

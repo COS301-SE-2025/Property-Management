@@ -47,7 +47,7 @@ export class LoginComponent{
 
     try{
       await this.authService.contractorLogin(this.email, this.password);
-      this.router.navigate(['/contractor']);
+      this.router.navigate(['/contractor-home']);
       return;
     }
     catch(err){

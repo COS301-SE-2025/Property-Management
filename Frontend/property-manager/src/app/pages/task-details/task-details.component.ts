@@ -1,21 +1,22 @@
 import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaintenanceTask, ContractorDetails, ContractorApiService, ImageApiService, FormatDatePipe, InventoryItemApiService, InventoryUsageApiService, TaskApiService, InventoryUsage, Inventory } from 'shared';
+import { MaintenanceTask, ContractorDetails, ContractorApiService, ImageApiService, FormatDatePipe, InventoryItemApiService, InventoryUsageApiService, TaskApiService, InventoryUsage, Inventory, getCookieValue } from 'shared';
 import { ActivatedRoute } from '@angular/router';
-import { HeaderComponent } from 'property-manager/src/app/components/header/header.component';
+import { HeaderComponent } from '../../components/header/header.component';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
-import { BreadCrumbService } from 'property-manager/src/app/components/breadcrumb/breadcrumb.service';
-import { InventoryUsageComponent } from 'property-manager/src/app/components/inventory-usage/inventory-usage.component';
+import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
+import { InventoryUsageComponent } from '../../components/inventory-usage/inventory-usage.component';
 import { lastValueFrom } from 'rxjs';
+import { ContractorTimelineComponent } from "./contractor-timeline/contractor-timeline.component";
 
 @Component({
   selector: 'app-timeline-details',
-  templateUrl: './timeline-details.component.html',
+  templateUrl: './task-details.component.html',
   styles: ``,
-  imports: [FormatDatePipe, CommonModule, HeaderComponent, CardModule, TableModule, InventoryUsageComponent],
+  imports: [FormatDatePipe, CommonModule, HeaderComponent, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent],
 })
-export class TimelineDetailsComponent implements OnInit, OnDestroy {
+export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   task: MaintenanceTask | undefined;
   imageUrl: string | undefined = undefined;
@@ -24,6 +25,7 @@ export class TimelineDetailsComponent implements OnInit, OnDestroy {
   inventoryItem: Inventory[] | undefined = undefined;
 
   taskId: string | null = null;
+  contractorUser = false;
 
   constructor(
     private imageService: ImageApiService, 
@@ -58,6 +60,11 @@ export class TimelineDetailsComponent implements OnInit, OnDestroy {
       }
      });
    }
+
+   if(getCookieValue(document.cookie, 'contractorId'))
+   {
+    this.contractorUser = true;
+   }
   }
   ngOnDestroy(): void {
     this.breadCrumb.clearBreadCrumb();
@@ -68,7 +75,7 @@ export class TimelineDetailsComponent implements OnInit, OnDestroy {
     if (this.task?.img) {
       this.imageUrl = await this.imageService.getImage(this.task.img).toPromise();
     } else {
-      this.imageUrl = undefined;
+      this.imageUrl = "assets/images/no_image.png";
     }
   }
   async getContractor()
