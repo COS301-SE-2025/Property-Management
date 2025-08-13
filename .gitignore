@@ -30,3 +30,4 @@ Thumbs.db
 *.tmp
 *.swp
 *~
+node_modules
