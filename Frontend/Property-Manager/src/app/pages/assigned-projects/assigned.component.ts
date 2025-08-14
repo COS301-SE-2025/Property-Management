@@ -15,7 +15,7 @@ import {
 import { ApiService } from 'shared';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
-import { MaintenanceTask2 } from 'shared';
+import { MaintenanceTask } from 'shared';
 
 @Component({
     selector: 'app-contractor-assigned-projects',
@@ -39,7 +39,7 @@ import { MaintenanceTask2 } from 'shared';
 
 export class AssignedComponent implements OnInit{
    
-  tasks: MaintenanceTask2[] = [];
+  tasks: MaintenanceTask[] = [];
   contractorId = localStorage.getItem('contractorID');
   constructor(private api: ApiService) {}
 
@@ -54,7 +54,7 @@ export class AssignedComponent implements OnInit{
       next: (tasks) => {
         
         const filteredTasks = tasks.filter(task => 
-          task.c_uuid === this.contractorId
+          task['c_uuid'] === this.contractorId
         );
 
         if (filteredTasks.length === 0) {
