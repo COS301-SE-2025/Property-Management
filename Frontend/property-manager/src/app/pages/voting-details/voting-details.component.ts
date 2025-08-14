@@ -3,7 +3,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MaintenanceTask, VotingService, FormatDatePipe, ContractorApiService, InventoryUsage, Inventory, getCookieValue, TaskApiService, ImageApiService, InventoryUsageApiService, InventoryItemApiService, AssignedContractor, NotificationsApiService, Notification } from 'shared';
+import { MaintenanceTask, VotingService, FormatDatePipe, ContractorApiService, InventoryUsage, Inventory, getCookieValue, TaskApiService, ImageApiService, InventoryUsageApiService, InventoryItemApiService, AssignedContractor, NotificationsApiService, Notification, BodyCoporateApiService, BodyCoporateService } from 'shared';
 import { CardModule } from 'primeng/card';
 import { MultiSelect } from "primeng/multiselect";
 import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
@@ -75,6 +75,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     private inventoryItemService: InventoryItemApiService,
     private imageService: ImageApiService,
     private breadCrumb: BreadCrumbService, 
+    private bodyCorporateService: BodyCoporateService,
     private fb: FormBuilder,
     private messageSerive: MessageService,
     private confirmService: ConfirmationService,
@@ -100,13 +101,14 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
 
     //If there is a taskId we still need to approve it
     this.bcUser = true;
+    const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
     this.taskId = this.route.snapshot.paramMap.get('taskId');
 
     if(this.taskId)
     {
       this.taskType = 'approval';
       this.taskService.getTaskById(this.taskId).subscribe({
-        next: (res) => {
+        next: async (res) => {
 
           this.taskName = res.title;
           this.trusteeId = res.tuuid;
@@ -125,12 +127,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
           }
           this.task.set(res);
 
-          //Change in future to get only trusted contractors
-          this.contractorService.getAllContractors().subscribe({
-            next: (response) => {
-              this.contractors.set(response);
-            }
-          })
+          await this.bodyCorporateService.loadTrustedContractors(bcId)
+          this.contractors.set(this.bodyCorporateService.contractorDetails());
     
           this.form = this.fb.group({
             contractorName: ['', Validators.required]

@@ -6,10 +6,13 @@ import { BodyCoporateService, getCookieValue } from 'shared';
 import { LifeCycleCardComponent } from "./life-cycle-card/life-cycle-card.component";
 import { ReserveFundCardComponent } from "./reserve-fund-card/reserve-fund-card.component";
 import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenance-graph-card.component';
+import { MessageService } from 'primeng/api';
+import { Toast } from "primeng/toast";
 
 @Component({
   selector: 'app-bc-home',
-  imports: [HeaderComponent, PendingTaskCardComponent, LifeCycleCardComponent, ReserveFundCardComponent, MaintenanceGraphCardComponent],
+  imports: [HeaderComponent, PendingTaskCardComponent, LifeCycleCardComponent, ReserveFundCardComponent, MaintenanceGraphCardComponent, Toast],
+  providers: [MessageService],
   templateUrl: './bc-home.component.html',
   styles: ``,
   animations: [
@@ -29,7 +32,7 @@ import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenan
 })
 export class BcHomeComponent implements OnInit{
 
-  constructor(public bodyCoporateService: BodyCoporateService){}
+  constructor(public bodyCoporateService: BodyCoporateService, private messageService: MessageService){}
 
   async ngOnInit() {
 
@@ -45,6 +48,13 @@ export class BcHomeComponent implements OnInit{
     catch(error)
     {
       console.log("Error loading data:", error);
+      
+      this.messageService.add({
+         severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load body corporate date. Please try again',
+      })
+
     }
   }
 }

@@ -134,6 +134,12 @@ export class VotingService{
                 this.votingApiService.getSessionFromTaskId(task.uuid).subscribe({
                     next:(res) => {
 
+                        if(!res)
+                        {
+                            console.warn("Couldnt get session", task);
+                            return;
+                        }
+
                         const [year, month, day, hour, min] = res.votingEndsAt;
                         const votingDate = new Date(year, month -1, day, hour, min);
 
