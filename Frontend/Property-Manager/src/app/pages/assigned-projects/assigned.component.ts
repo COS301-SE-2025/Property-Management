@@ -12,10 +12,10 @@ import {
   query,
   stagger
 } from '@angular/animations';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from 'shared';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
-import { MaintenanceTask } from '../../models/maintenanceTask.model';
+import { MaintenanceTask2 } from 'shared';
 
 @Component({
     selector: 'app-contractor-assigned-projects',
@@ -39,7 +39,7 @@ import { MaintenanceTask } from '../../models/maintenanceTask.model';
 
 export class AssignedComponent implements OnInit{
    
-  tasks: MaintenanceTask[] = [];
+  tasks: MaintenanceTask2[] = [];
   contractorId = localStorage.getItem('contractorID');
   constructor(private api: ApiService) {}
 
