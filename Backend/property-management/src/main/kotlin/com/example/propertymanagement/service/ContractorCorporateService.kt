@@ -56,6 +56,6 @@ class ContractorCorporateService(
 
     fun getContractorUuidsByBodyCorporateUuid(bodyCorporateUuid: UUID): List<UUID> {
         return repository.findContractorsByBodyCorporateUuid(bodyCorporateUuid)
-        .map { it.contractorUuid }
+            .map { it.contractorUuid }
     }
 }

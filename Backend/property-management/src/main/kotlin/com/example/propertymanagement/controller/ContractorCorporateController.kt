@@ -47,7 +47,7 @@ class ContractorCorporateController(
 
     @GetMapping("/contractors/{bodyCorporateUuid}")
     fun getContractorUuidsByBodyCorporate(
-        @PathVariable bodyCorporateUuid: UUID
+        @PathVariable bodyCorporateUuid: UUID,
     ): ResponseEntity<List<UUID>> {
         val contractorUuids = service.getContractorUuidsByBodyCorporateUuid(bodyCorporateUuid)
         return if (contractorUuids.isEmpty()) {
