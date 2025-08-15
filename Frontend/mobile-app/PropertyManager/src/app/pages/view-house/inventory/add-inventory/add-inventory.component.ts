@@ -4,6 +4,7 @@ import { IonHeader, IonModal, IonInput, IonItem, IonToolbar, IonButtons, IonButt
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ToastController } from '@ionic/angular/standalone';
 import { BudgetApiService, BuildingDetails, HousesService, InventoryItemApiService } from 'shared';
 
 @Component({
@@ -13,12 +14,12 @@ import { BudgetApiService, BuildingDetails, HousesService, InventoryItemApiServi
   templateUrl: './add-inventory.component.html',
   styles: `
     .dark ion-input::part(native) {
-      background-color: #374151; /* gray-700 */
-      color: #f9fafb; /* gray-50 */
+      background-color: #374151;
+      color: #f9fafb;
     }
 
     .dark ion-input::part(native):focus {
-      border-bottom: 1px solid #facc15; /* yellow-400 */
+      border-bottom: 1px solid #facc15;
     }
   `,
 })
@@ -33,7 +34,8 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
     private route: ActivatedRoute, 
     private inventoryItemApiService: InventoryItemApiService, 
     private budgetApiService: BudgetApiService, 
-    private housesService: HousesService
+    private housesService: HousesService,
+    private toastController: ToastController
   ) {
     super();
    }
@@ -69,6 +71,8 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
           await this.getAndUpdateBudget((price*quantity));
           await this.housesService.loadInventory(this.houseId);
           await this.housesService.loadBudget(this.houseId);
+
+          await this.presentToast('Inventory item added succesfully', "success");
           
           this.form.reset();
           this.closeModal();
@@ -79,8 +83,10 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
             });
           }, 5000);
         },
-        error: (err) => {
+        error: async (err) => {
           console.error("Failed to create inventory item", err);
+
+          await this.presentToast('Failed to add inventory item', "danger")
         }
       });
     }
@@ -102,11 +108,22 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
           maintenanceSpent: element.maintenanceSpent
         };
         this.budgetApiService.updateBudget(elementID, newBudget).subscribe({
-          error: (err) => {
+          error: async (err) => {
             console.error("Couldnt update budget", err);
+
+            await this.presentToast('Failed to add inventory item', "danger")
           }
         });
       }
     )
+  }
+  private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,      
+      position: 'top'
+    });
+    await toast.present();
   }
 }

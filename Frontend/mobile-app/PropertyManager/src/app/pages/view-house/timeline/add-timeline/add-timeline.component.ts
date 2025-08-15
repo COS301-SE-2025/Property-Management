@@ -5,11 +5,12 @@ import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePickerModule } from 'primeng/datepicker';
-import { TaskApiService, ImageApiService, ContractorApiService, ContractorDetails, StorageService, Inventory, InventoryItemApiService, HousesService } from 'shared';
+import { TaskApiService, Notification, NotificationsApiService, ImageApiService, ContractorApiService, ContractorDetails, StorageService, Inventory, InventoryItemApiService, HousesService } from 'shared';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
 import { PhotoService } from 'src/app/services/photo.service';
 import { SelectModule } from 'primeng/select';
+import { ToastController } from '@ionic/angular/standalone';
 import { InventoryComponent } from '../../inventory/inventory.component';
 
 @Component({
@@ -25,9 +26,6 @@ import { InventoryComponent } from '../../inventory/inventory.component';
     }
     :host ::ng-deep .high-priority {
       color: #F44336;
-    }
-    .dark .p-datepicker-panel{
-      background-color: #444;
     }
   `,
 })
@@ -61,7 +59,9 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
     private storage: StorageService,
     private photoService: PhotoService,
     private inventoryService: InventoryItemApiService,
-    private housesService: HousesService
+    private housesService: HousesService,
+    private notificationService: NotificationsApiService,
+    private toastController: ToastController
   ) {
     super();
 
@@ -131,6 +131,8 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
         catch(err)
         {
           console.error("Image upload failed", err);
+
+          await this.presentToast('Failed to upload image, please try again', "warning");
         }
       }
 
@@ -152,11 +154,33 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
           this.form.reset();
           this.closeModal();
 
-          setTimeout(() => {
-            this.router.navigate(['view-house', this.houseId]).then(() => {
-              window.location.reload();
-            });
-          }, 3000);
+          const house = this.housesService.getHouseById(this.houseId);
+
+          const noti: Notification = {
+            notificationType: 'Task Creation',
+            message: `New task: ${name} has been added to ${house?.name}`,
+            recipientUuid: house?.coporateUuid!,
+            recipientType: 'body corporate',
+            isRead: false,
+            relatedTaskUuid: task.uuid
+          }
+
+          this.notificationService.createNotifications(noti).subscribe({
+            next: async() => {
+
+              await this.presentToast('Task successfully added', "success");
+
+              setTimeout(() => {
+                this.router.navigate(['view-house', this.houseId]).then(() => {
+                  window.location.reload();
+                });
+              }, 2000);
+            },
+            error: (err) => {
+              console.error("Failed to create task", err);
+              this.addError = true;
+            }
+          })
         },
         error: (err) => {
           console.error("Failed to create task", err);
@@ -211,4 +235,13 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
  {
   this.inventoryItemsUsed = updated;
  }
+  private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,      
+      position: 'top'
+    });
+    await toast.present();
+  }
 }

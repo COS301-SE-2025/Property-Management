@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BudgetApiService } from 'shared';
+import { ToastController } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-create-budget',
@@ -20,7 +21,7 @@ export class CreateBudgetComponent extends ModalComponent implements OnInit{
 
   public date = new Date();
 
-  constructor(private route: ActivatedRoute, private router: Router, private fb: FormBuilder,  private budgetApiService: BudgetApiService) {
+  constructor(private route: ActivatedRoute, private router: Router, private fb: FormBuilder,  private budgetApiService: BudgetApiService, private toastController: ToastController) {
     super();
    }
 
@@ -48,18 +49,31 @@ export class CreateBudgetComponent extends ModalComponent implements OnInit{
       const totalBudget = inventoryBudget + maintenanceBudget;
   
       this.budgetApiService.createBudget(totalBudget, maintenanceBudget, inventoryBudget, this.date, this.houseId!).subscribe({
-        next: (response) => {
-          console.log(response);
+        next: async (response) => {
           this.form.reset();
           this.closeModal();
+
+          await this.presentToast('Budget successfully created', "success");
+
           this.router.navigate(['view-house', this.houseId]).then(() => {
             window.location.reload();
           });
         },
-        error: (err) => {
+        error: async (err) => {
           console.error("Failed to create budget", err);
+
+          await this.presentToast('Failed to create budget', "danger");
         }
       });
     }   
+  }
+  private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,      
+      position: 'top'
+    });
+    await toast.present();
   }
 }
