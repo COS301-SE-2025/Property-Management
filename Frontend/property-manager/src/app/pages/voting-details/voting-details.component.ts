@@ -32,6 +32,9 @@ import { VotingResultsComponent } from './voting-results/voting-results.componen
     .due-date-urgent{
       color: #f01111;
     }
+    .due-date-past{
+      color: #858585;
+    }
     .p-togglebutton {
       background-color: #facc15; 
     }
@@ -401,6 +404,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
   changeDueDate()
   {
     if(!this.task()?.scheduled_date) return 'due-date-normal';
+
+    if(this.task()!.scheduled_date < new Date()) return 'due-date-past';
 
     const date = new Date();
     const taskDate = new Date(this.task()!.scheduled_date);
