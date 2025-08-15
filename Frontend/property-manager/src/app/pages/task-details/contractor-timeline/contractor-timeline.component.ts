@@ -48,7 +48,7 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         
         if (getCookieValue(document.cookie, 'contractorId')) {
             this.contractorUser = true;
-        } else if (getCookieValue(document.cookie, 'bodyCorporateId')) {
+        } else if (getCookieValue(document.cookie, 'bodyCoporateId')) {
             this.bcUser = true;
         }
         this.darkMode = localStorage.getItem('darkMode') === 'true';

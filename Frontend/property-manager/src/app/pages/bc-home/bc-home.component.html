@@ -4,7 +4,7 @@
     <div [@floatUp] class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <app-pending-task-card [tasks]="bodyCoporateService.pendingTasks()"/>
         <app-life-cycle-card/>
-        <app-reserve-fund-card [schedule]="bodyCoporateService.fundContribution()"/>
+        <app-reserve-fund-card [schedule]="bodyCoporateService.fundContribution()" [contri]="bodyCoporateService.contribution()"/>
         <app-maintenance-graph-card [bcData]="bodyCoporateService.maintenanceGraph()"/>
     </div>
 </div>
@@ -49,3 +49,4 @@
     <p *ngIf="inviteMessage" class="mt-2 text-green-600 dark:text-green-400">{{ inviteMessage }}</p>
   </div>
 </div>
+<p-toast/>

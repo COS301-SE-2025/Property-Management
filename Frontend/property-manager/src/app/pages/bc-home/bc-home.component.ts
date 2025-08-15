@@ -11,6 +11,8 @@ import { MaintenanceGraphCardComponent } from './maintenanceGraph-card/maintenan
 import { DropdownModule } from 'primeng/dropdown';
 import { PropertyService } from 'shared';
 import { ApiService } from 'shared';
+import { MessageService } from 'primeng/api';
+import { Toast } from "primeng/toast";
 
 @Component({
   selector: 'app-bc-home',
@@ -18,7 +20,8 @@ import { ApiService } from 'shared';
     HeaderComponent, 
     PendingTaskCardComponent, 
     LifeCycleCardComponent, 
-    ReserveFundCardComponent, MaintenanceGraphCardComponent, DropdownModule, CommonModule, FormsModule],
+    ReserveFundCardComponent, MaintenanceGraphCardComponent, DropdownModule, CommonModule, FormsModule, Toast],
+  providers: [MessageService],
   templateUrl: './bc-home.component.html',
   styles: ``,
   animations: [
@@ -49,15 +52,15 @@ export class BcHomeComponent implements OnInit{
     public bodyCoporateService: BodyCoporateService, 
     private propertyService: PropertyService,
     private apiService: ApiService
-  ){}
+  , private messageService: MessageService){}
 
   async ngOnInit() {
     
     this.loadTrustees();
 
-    this.bodyCorporateUuid = this.bodyCoporateService.bcId;
-
+    
     const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
+    this.bodyCorporateUuid = bcId;
 
     try{
         await Promise.all([
@@ -69,6 +72,13 @@ export class BcHomeComponent implements OnInit{
     catch(error)
     {
       console.log("Error loading data:", error);
+      
+      this.messageService.add({
+         severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load body corporate data. Please try again',
+      })
+
     }
   }
 

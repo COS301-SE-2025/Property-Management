@@ -30,7 +30,6 @@ export class TimelineCardComponent implements OnInit {
     }
 
     this.darkMode = localStorage.getItem('darkMode') === 'true';
-    console.log(this.darkMode);
   }
 
   showDetails(task: MaintenanceTask)
