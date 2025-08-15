@@ -1,12 +1,16 @@
 <ion-content class="dark:bg-gray-700">
   <div class="container mx-auto">
     <app-header/>
+
+    <div class="flex justify-center items-center mt-5" *ngIf="loading">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
     
-    <div class="mt-4 ml-3">
+    <div class="mt-4 ml-3" *ngIf="!loading">
         <p class = "text-xl font-normal dark:text-white">Your properties</p>
     </div>
   
-    <div class=" mt-3 flex flex-col justify-center items-center">
+    <div class=" mt-3 flex flex-col justify-center items-center" *ngIf="!loading">
       <div class="flex flex-col justify-center items-center gap-5 p-6">
         @for (house of houses(); track  house.buildingUuid)
         {

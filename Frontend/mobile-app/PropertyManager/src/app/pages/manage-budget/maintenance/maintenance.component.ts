@@ -1,30 +1,83 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from "@ionic/angular/standalone";
 import { TableModule } from 'primeng/table';
 import { EditBudgetComponent } from '../edit-budget/edit-budget.component';
-import { BuildingDetails, FormatAmountPipe, HousesService, MaintenanceTask } from "shared";
+import { BuildingDetails, FormatAmountPipe, HousesService, MaintenanceTask, FormatDatePipe, TaskApiService, ContractorApiService } from "shared";
+import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 
+interface TaskAndQuote extends MaintenanceTask{
+  amount?: number;
+  doneBy?: string;
+  submitted_on?: Date;
+} 
 @Component({
   selector: 'app-maintenance',
   templateUrl: './maintenance.component.html',
   styles: ``,
-  imports: [IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, TableModule, FormatAmountPipe, EditBudgetComponent],
+  imports: [IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, TableModule, FormatAmountPipe, EditBudgetComponent, FormatDatePipe],
+  providers: [MessageService]
 })
-export class MaintenanceComponent {
+export class MaintenanceComponent implements OnInit {
 
   houseService = inject(HousesService);
 
   maintenance = input.required<MaintenanceTask[]>();
   budget = input.required<BuildingDetails>();
-  constructor() { }
+  completedTasks = signal<TaskAndQuote[]>([]);
 
-  showMaintenanceDetailsDialog(maintenance: MaintenanceTask | MaintenanceTask[] | undefined): void {
+  constructor(private taskService: TaskApiService, private router: Router, private messageService: MessageService, private contractorService: ContractorApiService){}
+
+  async ngOnInit()
+  {
+    this.maintenance().forEach(m => {
+    if(m.approvalStatus === 'COMPLETED')
+    {
+      this.completedTasks.set([...this.completedTasks(), m]);
+    }
+   });
+
+   this.completedTasks().forEach(c => {
+    this.taskService.getQuoteFromTaskId(c.uuid).subscribe({
+      next: (res) => {
+        res.forEach(q => {
+          if(q.status === 'APPROVED')
+          {
+            c.amount = q.amount;
+            c.submitted_on = q.submitted_on;
+
+            this.contractorService.getContractorById(q.c_uuid).subscribe({
+              next: (contractor) => {
+                c.doneBy = contractor.name
+              }
+            })
+          }
+        });
+      },
+      error: (err) => {
+        console.error("Error getting previous tasks", err)
+        this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to get previous work done',
+        });
+      }
+    })
+   })
+  }
+
+ showMaintenanceDetailsDialog(maintenance: MaintenanceTask | MaintenanceTask[] | undefined): void {
     if(!maintenance || Array.isArray(maintenance)){
       console.error("Invalid maintenance data");
       return;
     }
-
-    //TODO: Implement dialog
-    // this.taskDialog.openDialog(maintenance);
+    this.router.navigate(['/taskDetails', maintenance.uuid]);
+  }
+  getMaintenanceTotal(): number {
+    let total = 0;
+    this.completedTasks().forEach((item) => {
+      total += item.amount!;
+    });
+    return total;
   }
 }

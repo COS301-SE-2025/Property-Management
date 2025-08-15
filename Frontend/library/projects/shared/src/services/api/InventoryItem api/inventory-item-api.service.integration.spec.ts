@@ -2,11 +2,12 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { InventoryItemApiService } from './inventory-item-api.service';
 import { Inventory } from '../../../models/inventory.model';
+import { environmentMobile } from '../../../environment';
 
 describe('InventoryItemApiService Integration Tests', () => {
   let service: InventoryItemApiService;
   let httpMock: HttpTestingController;
-  const url = '/api';
+  const url = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

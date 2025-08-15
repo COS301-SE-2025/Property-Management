@@ -4,12 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonCardSubtitle } from '@ionic/angular/standalone';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from 'src/app/components/tab/tab.component';
-import { ContractorApiService,  MaintenanceTask, StorageService, VotingService, FormatDatePipe, AssignedContractor, Inventory, InventoryUsage, ImageApiService, TaskApiService } from 'shared';
+import { ContractorApiService, Notification, MaintenanceTask, StorageService, VotingService, FormatDatePipe, AssignedContractor, Inventory, InventoryUsage, ImageApiService, TaskApiService, NotificationsApiService } from 'shared';
 import { TableModule } from 'primeng/table';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { QuoteComponent } from '../quote/quote.component';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular/standalone';
 import { InventoryUsageComponent } from 'src/app/components/inventory-usage/inventory-usage.component';
 
 @Component({
@@ -32,6 +32,7 @@ export class DetailsComponent  implements OnInit {
 
   public task = signal<MaintenanceTask | undefined>(undefined);
   public taskId: string | null = null;
+  private taskName: string | null = null;
 
   public contractors = signal<AssignedContractor[] | undefined>(undefined);
   public inventoryUsage: InventoryUsage[] | undefined = undefined;
@@ -42,6 +43,7 @@ export class DetailsComponent  implements OnInit {
   public voteSubmitted = signal<boolean>(false); 
   public contractorQuotes = signal<Record<string, string>>({});
   public selectedQuoteId = signal<string | null>(null);
+  
 
   constructor(
     private votingService: VotingService, 
@@ -50,7 +52,8 @@ export class DetailsComponent  implements OnInit {
     private router: Router,
     private taskService: TaskApiService,
     private imageService: ImageApiService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private notificationService: NotificationsApiService
   ) {
     effect(async () => {
       this.detailError = false;
@@ -85,6 +88,8 @@ export class DetailsComponent  implements OnInit {
     {
       this.taskService.getTaskById(this.taskId).subscribe({
         next: (res) => {
+
+          this.taskName = res.title;
 
           if(res.img)
           {
@@ -207,11 +212,30 @@ export class DetailsComponent  implements OnInit {
         next: async () => {
           this.voteSubmitted.set(true);
 
-          await this.presentToast('Successfully submitted vote', 'success')
+          const noti: Notification = {
+              notificationType: 'Vote submitted',
+              message: `Vote has been cast for task: ${this.taskName!}`,
+              recipientType: 'trustee',
+              recipientUuid: userId,
+              isRead: false,
+              relatedSessionUuid: sessionId
+          }
+          this.notificationService.createNotifications(noti).subscribe({
+            next: async () => {
+              await this.presentToast('Successfully submitted vote', 'success')
+    
+              setTimeout(() => {
+                this.router.navigate(['/voting']);
+              }, 1000);
+            },
+            error: async (err) => {
+              console.error(err);
+              this.voteSubmitted.set(false);
 
-          setTimeout(() => {
-            this.router.navigate(['/voting']);
-          }, 1000);
+              await this.presentToast(this.votingService.handleVotingError(err), 'danger');
+            }
+          })
+
         },
         error: async (err) => {
           console.error(err);

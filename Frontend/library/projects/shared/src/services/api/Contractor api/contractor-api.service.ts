@@ -46,6 +46,6 @@ export class ContractorApiService {
 
   getAssignedContractor(taskId: string)
   {
-    return this.http.get<AssignedContractor[]>(`${this.url}/maintenance/${taskId}/contractors`);
+    return this.http.get<AssignedContractor[]>(`${this.url}/maintenance/task/${taskId}/contractors`);
   }
 }

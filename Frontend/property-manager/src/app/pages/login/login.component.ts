@@ -18,6 +18,7 @@ export class LoginComponent {
   public email = "";
   public password = "";
   public passwordVisible = false;
+  public loading = false;
 
   public emptyField = false;
   public userError = false;
@@ -39,6 +40,7 @@ export class LoginComponent {
       return;
     }
 
+    this.loading = true;
     this.emptyField = false;
     this.userError = false;
     this.serverError = false;
@@ -99,6 +101,9 @@ export class LoginComponent {
       {
         this.userError = true;
       }
+    }
+    finally{
+      this.loading = false;
     }
   }
 }

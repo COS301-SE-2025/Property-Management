@@ -3,7 +3,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MaintenanceTask, VotingService, FormatDatePipe, ContractorApiService, InventoryUsage, Inventory, getCookieValue, TaskApiService, ImageApiService, InventoryUsageApiService, InventoryItemApiService, AssignedContractor } from 'shared';
+import { MaintenanceTask, VotingService, FormatDatePipe, ContractorApiService, InventoryUsage, Inventory, getCookieValue, TaskApiService, ImageApiService, InventoryUsageApiService, InventoryItemApiService, AssignedContractor, NotificationsApiService, Notification, BodyCoporateApiService, BodyCoporateService } from 'shared';
 import { CardModule } from 'primeng/card';
 import { MultiSelect } from "primeng/multiselect";
 import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
@@ -32,6 +32,9 @@ import { VotingResultsComponent } from './voting-results/voting-results.componen
     .due-date-urgent{
       color: #f01111;
     }
+    .due-date-past{
+      color: #858585;
+    }
     .p-togglebutton {
       background-color: #facc15; 
     }
@@ -41,6 +44,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
 
   public task = signal<MaintenanceTask | undefined>(undefined);
   public taskId: string | null = null;
+  private taskName: string | null = null;
+  private trusteeId: string | null = null;
 
   //True if the task has been approved
   public taskType: 'approval' | 'voting' | undefined;
@@ -73,9 +78,12 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     private inventoryItemService: InventoryItemApiService,
     private imageService: ImageApiService,
     private breadCrumb: BreadCrumbService, 
+    private bodyCorporateService: BodyCoporateService,
     private fb: FormBuilder,
     private messageSerive: MessageService,
-    private confirmService: ConfirmationService
+    private confirmService: ConfirmationService,
+    private notificationService: NotificationsApiService
+
    ) {
     effect(async () => {
       this.detailError = false;
@@ -96,13 +104,17 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
 
     //If there is a taskId we still need to approve it
     this.bcUser = true;
+    const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
     this.taskId = this.route.snapshot.paramMap.get('taskId');
 
     if(this.taskId)
     {
       this.taskType = 'approval';
       this.taskService.getTaskById(this.taskId).subscribe({
-        next: (res) => {
+        next: async (res) => {
+
+          this.taskName = res.title;
+          this.trusteeId = res.tuuid;
 
           if(res.img)
           {
@@ -118,12 +130,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
           }
           this.task.set(res);
 
-          //Change in future to get only trusted contractors
-          this.contractorService.getAllContractors().subscribe({
-            next: (response) => {
-              this.contractors.set(response);
-            }
-          })
+          await this.bodyCorporateService.loadTrustedContractors(bcId)
+          this.contractors.set(this.bodyCorporateService.contractorDetails());
     
           this.form = this.fb.group({
             contractorName: ['', Validators.required]
@@ -147,11 +155,11 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
         this.votingService.getTaskIdFromSessionId(this.sessionId).subscribe({
           next: (res) => {
             if(res.taskUuid)
-            {
-              this.taskId = res.taskUuid;
-              
-              this.taskService.getTaskById(this.taskId).subscribe({
-                next: (res) => {
+              {
+                this.taskId = res.taskUuid;
+                
+                this.taskService.getTaskById(this.taskId).subscribe({
+                  next: (res) => {
                   if(res.cuuid !== '' && res.cuuid)
                   {
                     this.voteResult = true;
@@ -263,17 +271,30 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
       {
         //TODO - Change scheduled date
         await this.votingService.createVotingSession(contractors, this.taskId, bcId).then(() => {
-          this.messageSerive.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Task succesfully approved'
-          });
 
-          setTimeout(() => {
-            this.router.navigate(['voting']).then(() => {
-              window.location.reload();
-            })
-          }, 2500);
+          const noti: Notification = {
+            notificationType: 'Task approval',
+            message: `Task ${this.taskName} has been initially approved`,
+            recipientType: 'trustee',
+            recipientUuid: this.trusteeId!,
+            relatedTaskUuid: this.taskId!,
+            isRead: false
+          }
+          this.notificationService.createNotifications(noti).subscribe({
+            next: () => {
+              this.messageSerive.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Task succesfully approved'
+              });
+    
+              setTimeout(() => {
+                this.router.navigate(['voting']).then(() => {
+                  window.location.reload();
+                })
+              }, 2500);
+            }
+          })
         });
       }
     }
@@ -320,15 +341,27 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
           next: () => {
             this.voteSubmitted.set(true);
 
-            this.messageSerive.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Successfully submitted vote'
+            const noti: Notification = {
+              notificationType: 'Vote submitted',
+              message: `Vote has been cast for task: ${this.taskName!}`,
+              recipientType: isTrusteee ? 'trustee' : 'body corporate',
+              recipientUuid: userId,
+              isRead: false,
+              relatedSessionUuid: sessionId
+            }
+            this.notificationService.createNotifications(noti).subscribe({
+              next: () => {
+                this.messageSerive.add({
+                  severity: 'success',
+                  summary: 'Success',
+                  detail: 'Successfully submitted vote'
+                });
+    
+                setTimeout(() => {
+                  this.router.navigate(['/voting']);
+                }, 2000);
+              }
             });
-
-            setTimeout(() => {
-              this.router.navigate(['/voting']);
-            }, 2000);
           },
           error: (err) => {
             console.error(err);
@@ -371,6 +404,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
   changeDueDate()
   {
     if(!this.task()?.scheduled_date) return 'due-date-normal';
+
+    if(this.task()!.scheduled_date < new Date()) return 'due-date-past';
 
     const date = new Date();
     const taskDate = new Date(this.task()!.scheduled_date);
@@ -450,11 +485,28 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
       next: () => {
         this.confirmDialog = false;
 
-        setTimeout(() => {
-          this.router.navigate(['voting']).then(() => {
-            window.location.reload();
-          })
-        }, 2500);
+        const noti: Notification = {
+          notificationType: 'Dissaprove task',
+          message: `Task: ${this.taskName!} has been disapproved`,
+          recipientType: 'trustee',
+          recipientUuid: this.trusteeId!,
+          isRead: false
+        }
+        this.notificationService.createNotifications(noti).subscribe({
+          next: () => {
+            this.messageSerive.add({
+              severity: 'sucess',
+              summary: 'Success',
+              detail: 'Task succesfully disapproved'
+            });
+    
+            setTimeout(() => {
+              this.router.navigate(['voting']).then(() => {
+                window.location.reload();
+              })
+            }, 2500);
+          }
+        })
       },
       error: (err) => {
         console.error(err);
