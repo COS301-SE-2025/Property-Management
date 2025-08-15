@@ -24,7 +24,12 @@ export class ImageApiService{
     
     return this.http.get(`${this.url}/images/presigned/${imageId}`, {
       responseType: 'text'
-    }); 
+    }).pipe(
+      map(url => {
+        this.imageCache.set(imageId, url);
+        return url
+      })
+    ); 
   }
   uploadImage(file: File)
   {

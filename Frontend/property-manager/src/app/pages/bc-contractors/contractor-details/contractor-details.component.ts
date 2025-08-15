@@ -92,10 +92,8 @@ export class ContractorDetailsComponent implements OnInit{
     if (contractor !== null) 
     {
       const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
-      contractor.corporate_uuid = bcId;
-      console.log(contractor);
 
-      this.bodyCoporateService.updateContractor(contractor).subscribe({
+      this.bodyCoporateService.makeContractorTrusted(bcId, contractor.uuid).subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',
@@ -106,7 +104,7 @@ export class ContractorDetailsComponent implements OnInit{
             this.router.navigate(['bodyCoporate/contractors']).then(() => {
               window.location.reload();
             });
-          }, 2500);
+          }, 2000);
         },
         error: () => {
           this.messageService.add({

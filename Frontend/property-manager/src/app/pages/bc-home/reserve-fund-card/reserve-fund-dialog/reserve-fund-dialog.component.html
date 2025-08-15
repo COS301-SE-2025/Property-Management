@@ -1,0 +1,25 @@
+<p-dialog header="Edit contribution per square meter for trustees?" [style]="{ width: '30rem'}" [(visible)]="displayDialog" [modal]="true">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mx-auto max-w-lg">
+        <div class="flex flex-col p-10">
+           <div class="flex flex-col gap-4 mb-4">
+                <input class="border rounded" type="number" pInputText formControlName="contri" required/>
+                <p-slider formControlName="contri" [min]="0" [max]="originalContribution()*2" (onSlideEnd)="onSliderChange($event)" class="w-full" styleClass="yellow-slider"/>
+            </div>
+            <div class="mb-7 w-full">
+                <p class = "font-semibold text-red-500" *ngIf="addError">Error updating new contribution</p>
+            </div>
+            <div class = "flex justify-end">
+                <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer" (click)="closeDialog()">Cancel</button>
+                <button type="submit" 
+                    class = "px-3 py-2 rounded cursor-pointer"
+                    [class.bg-black]="form.valid"
+                    [class.bg-gray-200]="!form.valid"
+                    [class.text-white]="form.valid"
+                    [disabled]="!form.valid">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+<p-toast/>
