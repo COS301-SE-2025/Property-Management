@@ -32,6 +32,7 @@ class QuoteService(
         status: String,
         amount: BigDecimal,
         doc: String,
+        expiry_date: Date,
     ): Quote {
         val newQuote =
             Quote(
@@ -41,6 +42,7 @@ class QuoteService(
                 status = status,
                 amount = amount,
                 doc = doc,
+                expiry_date = expiry_date,
             )
         return add(newQuote)
     }
@@ -58,6 +60,7 @@ class QuoteService(
                 submitted_on = newItem.submitted_on ?: existing.submitted_on,
                 status = newItem.status ?: existing.status,
                 doc = newItem.doc ?: existing.doc,
+                expiry_date = newItem.expiry_date ?: existing.expiry_date,
             )
         return repository.save(updated)
     }

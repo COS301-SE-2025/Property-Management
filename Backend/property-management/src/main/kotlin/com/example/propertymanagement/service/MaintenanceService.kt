@@ -39,6 +39,7 @@ class MaintenanceService(
         val contractorUuid: UUID,
         val submittedOn: Date? = Date(System.currentTimeMillis()),
         val status: String = "SUBMITTED",
+        val expiryDate: Date? = Date(System.currentTimeMillis() + (14L * 24 * 60 * 60 * 1000)),
     )
 
     // @Cacheable("apiCache")
@@ -268,6 +269,7 @@ class MaintenanceService(
                 status = quoteDto.status,
                 amount = quoteDto.amount.toBigDecimal(),
                 doc = quoteDto.documentUrl ?: "",
+                expiry_date = quoteDto.expiryDate ?: Date(System.currentTimeMillis() + (14L * 24 * 60 * 60 * 1000)),
             )
 
         val updated =

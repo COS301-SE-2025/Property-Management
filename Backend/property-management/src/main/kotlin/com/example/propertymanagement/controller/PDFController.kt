@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
@@ -29,20 +28,19 @@ class PDFController(
     @Value("\${aws.bucket-name:default-bucket}")
     lateinit var bucketName: String
 
-    @GetMapping("/presigned-upload")
+    @GetMapping("/presigned-upload/{filename}")
     fun generatePresignedUploadUrl(
-        @RequestParam filename: String,
-        @RequestParam contentType: String,
+        @PathVariable filename: String,
     ): ResponseEntity<Map<String, String>> {
         val id = UUID.randomUUID().toString()
-        val key = "uploads/$id-$filename"
+        val key = "uploads-$id-$filename"
 
         val putObjectRequest =
             PutObjectRequest
                 .builder()
                 .bucket(bucketName)
                 .key(key)
-                .contentType(contentType)
+                .contentType("application/pdf")
                 .build()
 
         val presignRequest =
@@ -64,11 +62,11 @@ class PDFController(
         )
     }
 
-    @PostMapping("/notify-upload")
+    @PostMapping("/notify-upload/{id}/{filename}/{key}")
     fun notifyUploadComplete(
-        @RequestParam id: String,
-        @RequestParam filename: String,
-        @RequestParam key: String,
+        @PathVariable id: String,
+        @PathVariable filename: String,
+        @PathVariable key: String,
     ): ResponseEntity<String> {
         val url = "https://$bucketName.s3.amazonaws.com/$key"
         val pdfMeta =
