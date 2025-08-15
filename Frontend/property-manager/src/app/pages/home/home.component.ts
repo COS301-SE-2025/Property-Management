@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
 import { BodyCoporateService, getCookieValue, HousesService, Property } from 'shared';
 import { Router } from '@angular/router';
@@ -8,7 +7,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 
 @Component({
   selector: 'app-home',
-  imports: [HeaderComponent, HouseCardComponent, CommonModule],
+  imports: [HouseCardComponent, CommonModule],
   templateUrl: './home.component.html',
   styles: ``,
   animations: [

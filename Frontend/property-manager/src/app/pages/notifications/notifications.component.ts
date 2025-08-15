@@ -1,5 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { HeaderComponent } from '../../components/header/header.component';
+// import { HeaderComponent } from '../../components/header/header.component';
 import { TimelineModule } from 'primeng/timeline';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -7,15 +7,28 @@ import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe }
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InviteDialogComponent } from './invite-dialog/invite-dialog.component';
 import { MessageService } from 'primeng/api';
-import { Toast } from 'primeng/toast';
+// import { Toast } from 'primeng/toast';
+import { DrawerModule } from 'primeng/drawer';
+import { NotificationDrawerService } from '../../../../../library/projects/shared/src/services/notification-drawer.service';
 
 @Component({
   selector: 'app-notifications',
-  imports: [HeaderComponent, TimelineModule, CommonModule, FormatTimePipe, InviteDialogComponent, Toast],
+  imports: [ TimelineModule, DrawerModule, CommonModule, FormatTimePipe, InviteDialogComponent],
   templateUrl: './notifications.component.html',
   styles: `
     ::ng-deep .p-timeline-left .p-timeline-event-opposite {
       display: none !important;
+    }
+    ::ng-deep .p-drawer {
+      width: 20rem;
+      max-width: 90vw;
+      background-color: var(--dialog-bg);
+      color: var(--dialog-content-text);
+    }
+    @media (min-width: 640px) {
+      ::ng-deep .p-drawer {
+        width: 24rem;
+      }
     }
   `,
   providers: [MessageService],
@@ -32,7 +45,8 @@ import { Toast } from 'primeng/toast';
         }))
       ])
     ])
-  ]
+  ],
+  standalone: true
 })
 export class NotificationsComponent  implements OnInit {
 
@@ -43,11 +57,24 @@ export class NotificationsComponent  implements OnInit {
   public inviteId = signal<string | null>(null);
   public inviteDialogVisible = false;
 
-  constructor(private router: Router, private notificationService: NotificationsApiService, private messageService: MessageService) { }
+  constructor(
+    private router: Router,
+    private notificationService: NotificationsApiService,
+    private messageService: MessageService,
+    public drawerService: NotificationDrawerService 
+  ) {}
 
   async ngOnInit() {
     this.loadTimeline();
   }
+
+  toggleDrawer() {
+    this.drawerService.toggleDrawer();
+    if (this.drawerService.drawerVisible()) {
+      this.loadTimeline();
+    }
+  }
+
   loadTimeline()
   {
     const type = this.getUserType();
@@ -82,11 +109,13 @@ export class NotificationsComponent  implements OnInit {
         });
     }
   }
-    showDetails(noti: Notification)
+
+  showDetails(noti: Notification)
     {
     // Mark as read
     this.notificationService.markNotificationsAsRead(noti.notificationUuid!).subscribe({
         next: () => {
+          this.drawerService.notificationRead.emit();
         if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
             // Check if invite is pending before showing dialog
             this.notificationService.getInviteById(noti.relatedInviteUuid).subscribe({
@@ -108,12 +137,14 @@ export class NotificationsComponent  implements OnInit {
         }
         else if (noti.relatedTaskUuid) {
             if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
-            this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
+              this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
+              this.drawerService.closeDrawer();
             }
         }
         else if (noti.relatedSessionUuid) {
             if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
-            this.router.navigate(['/voting', noti.relatedSessionUuid]);
+              this.router.navigate(['/voting', noti.relatedSessionUuid]);
+              this.drawerService.closeDrawer();
             }
         }
         else if (noti.relatedQuoteUuid) {
@@ -122,26 +153,27 @@ export class NotificationsComponent  implements OnInit {
         else {
             window.location.reload();
         }
-        }
+      }
     });
+  }
+
+  private getUserType(): string | null {
+    if (getCookieValue(document.cookie, 'trusteeId')) {
+        this.userId = getCookieValue(document.cookie, 'trusteeId');
+        return 'trustee';
+    } 
+    else if (getCookieValue(document.cookie, 'bodyCoporateId')) {
+        this.userId = getCookieValue(document.cookie, 'bodyCoporateId');
+        return 'bodyCorporate';
+    } 
+    else if (getCookieValue(document.cookie, 'contractorId')) {
+        this.userId = getCookieValue(document.cookie, 'contractorId');
+        return 'contractor';
     }
-    private getUserType(): string | null {
-        if (getCookieValue(document.cookie, 'trusteeId')) {
-            this.userId = getCookieValue(document.cookie, 'trusteeId');
-            return 'trustee';
-        } 
-        else if (getCookieValue(document.cookie, 'bodyCoporateId')) {
-            this.userId = getCookieValue(document.cookie, 'bodyCoporateId');
-            return 'bodyCorporate';
-        } 
-        else if (getCookieValue(document.cookie, 'contractorId')) {
-            this.userId = getCookieValue(document.cookie, 'contractorId');
-            return 'contractor';
-        }
-        return null;
-    }
-    private sortTimeline(notifications: Notification[])
-    {
+    return null;
+  }
+
+  private sortTimeline(notifications: Notification[]){
     if (!notifications || notifications.length === 0) {
         return [];
     }

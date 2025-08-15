@@ -11,8 +11,31 @@
   background-color: var(--property-yellow);
 }
 
+// ::ng-deep .p-drawer {
+//   background-color: #facc15 !important; 
+// }
+
 ::ng-deep .p-drawer {
-  background-color: #facc15 !important; 
+  background-color: var(--dialog-bg);
+  color: var(--dialog-content-text);
+  border-left: 1px solid var(--dialog-border);
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.3);
+}
+
+::ng-deep .p-drawer .p-drawer-header {
+  background: var(--dialog-header-bg);
+  color: var(--dialog-header-text);
+  border-bottom: 1px solid var(--dialog-border);
+  padding: 1rem;
+}
+
+::ng-deep .p-drawer .p-drawer-content {
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+::ng-deep .p-drawer-mask {
+  background-color: var(--dialog-mask-bg);
 }
 
 .custom-upload-button .p-button {
@@ -47,6 +70,7 @@
   --dialog-border: #444;
   --dialog-mask-bg: rgba(0, 0, 0, 0.7);
 }
+
 :root, .dark-theme {
   transition: all 0.5s ease;
 }
