@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonBreadcrumb, IonBreadcrumbs  } from "@ionic/angular/standalone";
+import { IonBreadcrumb, IonBreadcrumbs, IonIcon  } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styles: ``,
-  imports: [IonBreadcrumb, IonBreadcrumbs, CommonModule],
+  imports: [IonBreadcrumb, IonBreadcrumbs, CommonModule, IonIcon],
 })
 export class HeaderComponent implements OnInit{
 
