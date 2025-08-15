@@ -5,11 +5,11 @@ import { TableModule } from 'primeng/table';
 import { BodyCoporateService } from 'shared';
 import { FormatAmountPipe } from "shared";
 import { ReserveFund } from 'shared';
-import { ReserveFundDialog } from "./reserve-fund-dialog/reserve-fund-dialog.component";
+import { ReserveFundDialogComponent } from "./reserve-fund-dialog/reserve-fund-dialog.component";
 
 @Component({
   selector: 'app-reserve-fund-card',
-  imports: [CommonModule, CardModule, TableModule, FormatAmountPipe, ReserveFundDialog],
+  imports: [CommonModule, CardModule, TableModule, FormatAmountPipe, ReserveFundDialogComponent],
   templateUrl: './reserve-fund-card.component.html',
   styles: ``
 })

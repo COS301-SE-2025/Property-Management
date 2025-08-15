@@ -16,7 +16,7 @@ import { Toast } from "primeng/toast";
   styles: ``,
   providers: [MessageService]
 })
-export class ReserveFundDialog extends DialogComponent {
+export class ReserveFundDialogComponent extends DialogComponent {
 
   form: FormGroup;
   addError = false;

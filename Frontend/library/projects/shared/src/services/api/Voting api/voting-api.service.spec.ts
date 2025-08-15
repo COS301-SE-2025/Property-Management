@@ -273,16 +273,13 @@ describe('VotingApiService', () => {
         status: 'APPROVED'
       };
 
-      service.updateQuote('quote-123', 'APPROVED', mockQuote).subscribe(quote => {
+      service.updateQuoteStatus('quote-123', 'APPROVED').subscribe(quote => {
         expect(quote.status).toBe('APPROVED');
       });
 
       const req = httpMock.expectOne(`${mockApiUrl}/quote/quote-123`);
       expect(req.request.method).toBe('PUT');
-      expect(req.request.body).toEqual({
-        status: 'APPROVED',
-        submitted_on: mockQuote.submitted_on
-      });
+      expect(req.request.body.status).toBe('APPROVED');
       req.flush(mockQuote);
     });
   });

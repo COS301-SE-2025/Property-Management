@@ -320,9 +320,9 @@ export class VotingService{
     {
         return this.votingApiService.getQuote(quoteId);
     }
-    updateQuote(quoteId: string, status : string, quote: Quote)
+    updateQuoteStatus(quoteId: string, status : string)
     {
-        return this.votingApiService.updateQuote(quoteId, status, quote);
+        return this.votingApiService.updateQuoteStatus(quoteId, status);
     }
     private addToPending(task: MaintenanceTask)
     {

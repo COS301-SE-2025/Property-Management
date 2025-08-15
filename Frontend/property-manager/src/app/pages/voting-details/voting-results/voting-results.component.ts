@@ -3,7 +3,7 @@ import { MessageService } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { lastValueFrom } from 'rxjs';
-import { ContractorApiService, Notification, NotificationsApiService, TaskApiService, VotingResults, VotingService } from 'shared';
+import { ContractorApiService, Notification, NotificationsApiService, Quote, TaskApiService, VotingResults, VotingService } from 'shared';
 import { Toast } from "primeng/toast";
 
 
@@ -30,6 +30,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
   public votingEnded = false;
   public contractorHasBeenAssigned = false;
   private taskId: string | null = null;
+  private quoteId: string | null = null;
 
   constructor(
     private votingService: VotingService, 
@@ -58,6 +59,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
 
     this.votingService.getAllVotes(this.sessionId()).subscribe({
       next: (res) => {
+        this.quoteId = res.winningQuoteUuid;
         this.votingService.getTaskIdFromSessionId(this.sessionId()).subscribe({
           next: (task) => {
             if(task.taskUuid)
@@ -138,35 +140,49 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
           this.taskService.updateTaskAssignedContractor(winningContractorId, res.taskUuid).subscribe({
             next: () => {
 
-              const notiTrustee: Notification = {
-                notificationType: 'Vote ended',
-                message: `Voting has ended for ${res.title}`,
-                recipientType: 'trustee',
-                recipientUuid: `${res.tuuid}`,
-                isRead: false,
-                relatedSessionUuid: this.sessionId()
-              }
-              const notiContractor: Notification = {
-                notificationType: 'Vote ended',
-                message: `You have been assigned task: ${res.title}`,
-                recipientType: 'contractor',
-                recipientUuid: winningContractorId,
-                isRead: false,
-                relatedTaskUuid: res.taskUuid
-              }
-              this.notificationService.createNotifications(notiTrustee);
-              this.notificationService.createNotifications(notiContractor);
+              this.votingService.updateQuoteStatus(this.quoteId!, "APPROVED").subscribe({
+                next: () => {
 
-
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'Contractor successfully assigned task'
+                  const notiTrustee: Notification = {
+                    notificationType: 'Vote ended',
+                    message: `Voting has ended for ${res.title}`,
+                    recipientType: 'trustee',
+                    recipientUuid: `${res.tuuid}`,
+                    isRead: false,
+                    relatedSessionUuid: this.sessionId()
+                  }
+                  const notiContractor: Notification = {
+                    notificationType: 'Vote ended',
+                    message: `You have been assigned task: ${res.title}`,
+                    recipientType: 'contractor',
+                    recipientUuid: winningContractorId,
+                    isRead: false,
+                    relatedTaskUuid: res.taskUuid
+                  }
+                  this.notificationService.createNotifications(notiTrustee);
+                  this.notificationService.createNotifications(notiContractor);
+    
+    
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'Contractor successfully assigned task'
+                  });
+    
+                  setTimeout(() => {
+                    window.location.reload()
+                  }, 1500);
+                },
+                error: (err) => {
+                    console.error(err);
+                    this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error assigning contractor to task'
+                  })
+                }
               });
 
-              setTimeout(() => {
-                window.location.reload()
-              }, 1500);
             },
             error: (err) => {
               console.error(err);

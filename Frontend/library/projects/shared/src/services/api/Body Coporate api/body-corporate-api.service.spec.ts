@@ -115,15 +115,21 @@ describe('BodyCoporateApiService', () => {
         { uuid: 'c3', corporate_uuid: null, name: 'Contractor 3' }
       ] as ContractorDetails[];
 
+      const mockTrustedContractors = ['c2'];
+
       service.getAllPublicContractors(mockCorporateId).subscribe(contractors => {
         expect(contractors.length).toBe(2);
         expect(contractors[0].name).toBe('Contractor 1');
         expect(contractors[1].name).toBe('Contractor 3');
       });
 
-      const req = httpMock.expectOne(`${mockApiUrl}/contractor`);
-      expect(req.request.method).toBe('GET');
-      req.flush(mockContractors);
+      const req1 = httpMock.expectOne(`${mockApiUrl}/contractor`);
+      expect(req1.request.method).toBe('GET');
+      req1.flush(mockContractors);
+
+      const req2 = httpMock.expectOne(`${mockApiUrl}/contractorCorporate/contractors/${mockCorporateId}`);
+      expect(req2.request.method).toBe('GET');
+      req2.flush(mockTrustedContractors);
     });
   });
 
@@ -131,18 +137,16 @@ describe('BodyCoporateApiService', () => {
     it('should return contractors linked to the given corporate', () => {
       const mockCorporateId = 'bc123';
       const mockContractors = [
-        { uuid: 'c1', corporate_uuid: 'bc123', name: 'Contractor 1' },
-        { uuid: 'c2', corporate_uuid: 'bc456', name: 'Contractor 2' },
-        { uuid: 'c3', corporate_uuid: 'bc123', name: 'Contractor 3' }
-      ] as ContractorDetails[];
+        'c1', 'c2'
+      ];
 
       service.getTrustedContractors(mockCorporateId).subscribe(contractors => {
         expect(contractors.length).toBe(2);
-        expect(contractors[0].name).toBe('Contractor 1');
-        expect(contractors[1].name).toBe('Contractor 3');
+        expect(contractors[0]).toBe('c1');
+        expect(contractors[1]).toBe('c2');
       });
 
-      const req = httpMock.expectOne(`${mockApiUrl}/contractor`);
+      const req = httpMock.expectOne(`${mockApiUrl}/contractorCorporate/contractors/${mockCorporateId}`);
       expect(req.request.method).toBe('GET');
       req.flush(mockContractors);
     });
@@ -196,9 +200,9 @@ describe('BodyCoporateApiService', () => {
 
       service.updateContribution(mockBcId, mockContribution).subscribe();
 
-      const req = httpMock.expectOne(`${mockApiUrl}/body-corporates/$${mockBcId}`);
+      const req = httpMock.expectOne(`${mockApiUrl}/body-corporates/${mockBcId}`);
       expect(req.request.method).toBe('PUT');
-      expect(req.request.body).toEqual({ contribution: mockContribution });
+      expect(req.request.body).toEqual({ contributionPerSqm: mockContribution });
       req.flush({});
     });
   });
