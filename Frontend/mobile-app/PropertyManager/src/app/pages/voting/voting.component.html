@@ -2,21 +2,27 @@
   <div class="container mx-auto">
     <app-header/>
 
-    <div class = "mt-5 ml-5" *ngIf="votingTasks().length <= 0">
-      <p class = "text-md font-normal flex flex-col justify-center items-center pr-12 text-yellow-300">No tasks open for voting. Come back later</p>
-  </div>
-
-    <div class = "mt-5 ml-5" *ngIf="votingTasks().length > 0">
-      <p class = "text-lg font-normal dark:text-white">Tasks open for voting</p>
+    <div class="flex justify-center items-center mt-5" *ngIf="loading">
+      <p-progressSpinner></p-progressSpinner>
     </div>
 
-    <div class="flex flex-wrap justify-center gap-4 p-6">
-      @for(task of votingTasks(); track task.uuid)
-      {
-        <div>
-          <app-vote [task]="task"/>
-        </div>
-      }
+    <div class = "mt-5 ml-5" *ngIf="votingTasks().length <= 0 && !loading">
+      <p class = "text-md font-normal flex flex-col justify-center items-center pr-12 text-yellow-300">No tasks open for voting. Come back later</p>
+    </div>
+
+    <div *ngIf="!loading">
+      <div class = "mt-5 ml-5" *ngIf="votingTasks().length > 0">
+        <p class = "text-lg font-normal dark:text-white">Tasks open for voting</p>
+      </div>
+  
+      <div class="flex flex-wrap justify-center gap-4 p-6">
+        @for(task of votingTasks(); track task.uuid)
+        {
+          <div>
+            <app-vote [task]="task"/>
+          </div>
+        }
+      </div>
     </div>
   </div>
   <app-tab/>
