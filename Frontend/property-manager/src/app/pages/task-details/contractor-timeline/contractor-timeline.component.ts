@@ -10,6 +10,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { TableModule } from "primeng/table";
 import { forkJoin, of } from "rxjs";
 import { switchMap, catchError, tap } from "rxjs/operators";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contractor-timeline',
@@ -38,7 +39,8 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         private messageService: MessageService, 
         private imageService: ImageApiService,
         private inventoryUsageService: InventoryUsageApiService,
-        private inventoryItemService: InventoryItemApiService
+        private inventoryItemService: InventoryItemApiService,
+        private router: Router
     ) {}
 
     ngOnInit() {
@@ -160,9 +162,9 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         });
     }
 
-    navigateToReview(review: string) {
-
-    }
+    navigateToReview(type: 'write' | 'read', taskId: string) {
+        this.router.navigate(['/ratings', taskId]);
+    }   
 
     private toDate(arr: number[]): Date {
         return new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4]);
