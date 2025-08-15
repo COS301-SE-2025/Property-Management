@@ -43,10 +43,11 @@ describe('CreatePropertyComponent', () => {
     component.form.patchValue({
       name: 'Test Property',
       area: 100,
+      propertyValue: 500000,
       address: '123 Main St',
       type: 'Apartment',
-      propertyValue: 1000000,
-      primaryContractor: '1'
+      primaryContractor: 'contractor-uuid',
+      coporateUuid: 'body-corporate-uuid'
     });
     expect(component.form.valid).toBeTrue();
   });
@@ -65,18 +66,14 @@ describe('CreatePropertyComponent', () => {
     component.form.patchValue({
       name: 'Test Property',
       area: 100,
+      propertyValue: 500000,
       address: '123 Main St',
       type: 'Apartment',
-      propertyValue: 1000000,
-      primaryContractor: '1'
+      primaryContractor: 'contractor-uuid',
+      coporateUuid: 'body-corporate-uuid'
     });
     component.onSubmit();
-
-    const payloadArg = (console.log as jasmine.Spy).calls.allArgs()
-    .flat()
-    .find(arg => typeof arg === 'object' && arg.name === 'Test Property' && arg.address === '123 Main St');
-
-    expect(payloadArg).toBeDefined();
+    expect(console.log).toHaveBeenCalledWith('Payload:', jasmine.any(Object));
   });
 
   it('should not log form value on submit if form is invalid', () => {

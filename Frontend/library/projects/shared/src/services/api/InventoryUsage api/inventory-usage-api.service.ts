@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { InventoryUsage } from '../../../models/inventoryUsage.model';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryUsageApiService {
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
   constructor(private http: HttpClient) { }
 
   createInventoryUsage(itemId: string, taskId: string, quantityUsed: number): Observable<InventoryUsage>

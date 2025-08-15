@@ -1,0 +1,28 @@
+@if(this.inventoryUsage && this.inventoryUsage.length > 0)
+{
+    <ion-card class="dark:bg-gray-900 no-outline-card">
+      <ion-card-header>
+        <ion-card-title class="dark:text-white">Inventory items assigned</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p-table [value]="inventoryItem!">
+            <ng-template #header>
+            <tr>
+                <th pSortableColumn="name">
+                    Description <p-sortIcon field="name"/>
+                </th>
+                <th pSortableColumn="quantityUsed">
+                    Quantity <p-sortIcon field="quantityUsed"/>
+                </th>
+            </tr>
+            </ng-template>
+            <ng-template #body let-inventory let-rowIndex="rowIndex">
+            <tr>
+                <td class="dark:text-gray-400"> {{ inventory.name }}</td>
+                <td class="dark:text-gray-400"> {{ inventory.quantityUsed }}</td>
+            </tr>
+            </ng-template>
+        </p-table>
+      </ion-card-content>
+    </ion-card>
+}

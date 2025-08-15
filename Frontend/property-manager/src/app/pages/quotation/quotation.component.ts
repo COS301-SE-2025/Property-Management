@@ -46,7 +46,7 @@ interface FileUploadEvent {
       transition(':enter', [
         query('.animate-item', [
           style({ opacity: 0, transform: 'translateY(20px)' }),
-          stagger(100, [
+          stagger(100, [ 
             animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
           ])
         ])

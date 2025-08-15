@@ -2,13 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BuildingDetails } from '../../../models/buildingDetails.model';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BudgetApiService {
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
+
   constructor(private http: HttpClient) { }
 
   createBudget(totalBudget: number, maintenanceBudget: number, inventoryBudget:number, updatedOn: Date, buildingId: string): Observable<BuildingDetails>

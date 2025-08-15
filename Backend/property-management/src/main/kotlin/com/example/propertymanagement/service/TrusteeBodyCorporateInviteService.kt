@@ -12,6 +12,7 @@ import java.util.UUID
 class TrusteeBodyCorporateInviteService(
     private val inviteRepository: TrusteeBodyCorporateInviteRepository,
     private val trusteeRepository: TrusteeRepository,
+    private val notificationService: NotificationService
 ) {
     fun createInvite(dto: InviteDTO): InviteDTO {
         val entity =
@@ -20,7 +21,17 @@ class TrusteeBodyCorporateInviteService(
                 trusteeUuid = dto.trusteeUuid,
                 coporateUuid = dto.coporateUuid,
             )
-        return inviteRepository.save(entity).toDTO()
+        val savedInvite = inviteRepository.save(entity)
+
+        notificationService.createNotification(
+            recipientType = "trustee",
+            recipientUuid = dto.trusteeUuid,
+            notificationType = "invite",
+            message = "You have been invited to join a body corporate.",
+            relatedInviteUuid = savedInvite.inviteUuid
+        )
+        
+        return savedInvite.toDTO()
     }
 
     @Cacheable("apiCache")

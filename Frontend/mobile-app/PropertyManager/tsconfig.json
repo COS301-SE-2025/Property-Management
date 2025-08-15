@@ -19,7 +19,7 @@
     "importHelpers": true,
     "target": "es2022",
     "module": "es2020",
-    "lib": ["es2018", "dom"],
+    "lib": ["es2019", "dom"],
     "useDefineForClassFields": false,
     "paths": {
       "shared": ["../../library/projects/shared/src/public-api"],
@@ -31,5 +31,9 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "exclude": [
+    "android",
+    "ios"
+  ]
 }

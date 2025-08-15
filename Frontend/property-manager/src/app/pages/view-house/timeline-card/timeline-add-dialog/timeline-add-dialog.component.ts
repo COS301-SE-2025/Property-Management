@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ToastModule } from 'primeng/toast';
+import { SelectModule } from 'primeng/select';
 import { MultiSelectChangeEvent, MultiSelectModule } from 'primeng/multiselect'; 
 import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
@@ -20,9 +21,19 @@ import { InventoryCardComponent } from '../../inventory-card/inventory-card.comp
 
 @Component({
   selector: 'app-timeline-add-dialog',
-  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, FileUploadModule, ToastModule, MultiSelectModule, TableModule, InventoryCardComponent],
+  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, FileUploadModule, ToastModule, MultiSelectModule, TableModule, InventoryCardComponent, SelectModule],
   templateUrl: './timeline-add-dialog.component.html',
-  styles: ``,
+  styles: `
+    :host ::ng-deep .low-priority {
+      color: #4CAF50;
+    }
+    :host ::ng-deep .medium-priority {
+      color: #FFC107;
+    }
+    :host ::ng-deep .high-priority {
+      color: #F44336;
+    }
+  `,
   providers: [MessageService]
 })
 export class TimelineAddDialogComponent extends DialogComponent implements OnInit{
@@ -34,6 +45,12 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
  public inventoryItemsAvailable: Inventory[] | undefined = undefined;
  public inventoryItemsUsed: Inventory[] | undefined = undefined;
  public addError = false;
+
+ public priorities = [
+  { label: 'Low', value: 'Low', styleClass: 'low-priority'},
+  { label: 'Medium', value: 'Medium', styleClass: 'medium-priority' },
+  { label: 'High', value: 'High', styleClass: 'high-priority' }
+ ];
 
  @ViewChild(InventoryCardComponent) inventoryCard!: InventoryCardComponent;
 
@@ -57,6 +74,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       name: ['', Validators.required],
       description: ['', Validators.required],
       date: ['', Validators.required],
+      priority: ['', Validators.required]
     });
 
     //Get contractors
@@ -118,10 +136,9 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     const name = this.form.value.name;
     const des = this.form.value.description;
     const date = this.form.value.date;
+    const proirity = this.form.value.priority;
 
-    console.log(date);
-
-    this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate).subscribe({
+    this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate, proirity).subscribe({
       next: (task) => {
 
         if(this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0)

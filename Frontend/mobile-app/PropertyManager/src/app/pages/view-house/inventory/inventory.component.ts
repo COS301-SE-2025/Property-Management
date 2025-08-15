@@ -1,6 +1,6 @@
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, Input, input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IonCard, IonCardTitle, IonCardHeader, IonButton, ToastController, IonIcon, IonCardContent } from "@ionic/angular/standalone";
-import { BudgetApiService, BuildingDetails, HousesService, Inventory } from 'shared';
+import { BudgetApiService, BuildingDetails, HousesService, Inventory, InventoryUsageApiService } from 'shared';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -9,14 +9,20 @@ import { Subscription } from 'rxjs';
 import { addIcons } from 'ionicons';
 import { addOutline, removeOutline, checkmarkOutline, closeOutline  } from 'ionicons/icons';
 import { AddInventoryComponent } from './add-inventory/add-inventory.component';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
-  styles: ``,
+  styles: `
+    .dark .p-datatable-thead > tr > th {
+      background: #000000;         
+    }
+  `,
   imports: [IonButton, IonCardHeader, IonCardTitle, IonCard, FormsModule, CommonModule, TableModule, IonIcon, IonCardContent, AddInventoryComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InventoryComponent  implements OnInit, OnDestroy {
+export class InventoryComponent implements OnInit, OnDestroy {
 
   houseService = inject(HousesService);
   budgetApiService = inject(BudgetApiService);
@@ -28,8 +34,15 @@ export class InventoryComponent  implements OnInit, OnDestroy {
   editingRows: boolean[] = [];
   draftQuantities: number[] = [];
   originalQuantities: number[] = [];
+
+  @Output() itemUsage = new EventEmitter<{taskId: string, itemId: string, quantity: number}>();
+  @Output() quantitiesChanged = new EventEmitter<Inventory[]>();
+
+  @Input() capOriginal = false;
+  @Input() showAddButton = true;
+  @Input() readOnly = false;
   
-  constructor(private route: ActivatedRoute, private toastController: ToastController) {
+  constructor(private route: ActivatedRoute, private toastController: ToastController, private inventoryUsage: InventoryUsageApiService) {
     this.paramSub = this.route.paramMap.subscribe(params => {
         this.houseId = params.get('houseId');
       });
@@ -39,7 +52,6 @@ export class InventoryComponent  implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.resetState();
-    console.log(this.inventory());
   }
   ngOnDestroy()
   {
@@ -69,9 +81,12 @@ export class InventoryComponent  implements OnInit, OnDestroy {
   changeQuantity(rowIndex:number, change: number)
   {
     const val = this.draftQuantities[rowIndex] + change;
-    if(val >= 0)
+    const max = this.originalQuantities[rowIndex];
+
+    if(val >= 0 && (!this.capOriginal || val <= max))
     {
       this.draftQuantities[rowIndex] = val;
+      this.emitQuantities();
     }
   }
   async confirmAction()
@@ -96,12 +111,10 @@ export class InventoryComponent  implements OnInit, OnDestroy {
     //API call
    if(updatedItems.length > 0)
    {
-      console.log("updating api", updatedItems);
       await this.houseService.updateInventory(updatedItems);
 
       if(overallPriceDiff > 0)
       {
-        console.log("Updating budget", overallPriceDiff)
         await this.getAndUpdateBudget(overallPriceDiff);
       }
       //Toast
@@ -116,14 +129,13 @@ export class InventoryComponent  implements OnInit, OnDestroy {
 
       setTimeout(() => {
         window.location.reload();
-      }, 3000);
+      }, 2200);
     }
   }
   private async getAndUpdateBudget(overallPrice: number)
   {
     if(this.houseId)
     {
-
       this.budgetApiService.getBudgetsByBuildingId(this.houseId).subscribe(
         (bulidingDetails: BuildingDetails[]) => {
           const element = bulidingDetails[bulidingDetails.length-1];
@@ -138,7 +150,6 @@ export class InventoryComponent  implements OnInit, OnDestroy {
             maintenanceBudget: element.maintenanceBudget,
             maintenanceSpent: element.maintenanceSpent
           };
-          console.log(newBudget);
           this.budgetApiService.updateBudget(elementID, newBudget).subscribe({
             error: async (err) => {
               console.error("Couldnt update budget", err);
@@ -184,5 +195,33 @@ export class InventoryComponent  implements OnInit, OnDestroy {
     {
       event.preventDefault();
     }
+  }
+  private emitQuantities()
+  {
+    const updated = this.inventory().map((item, index) => ({
+      ...item,
+      quantityInStock: this.draftQuantities[index]
+    }));
+    this.quantitiesChanged.emit(updated);
+  }
+  //Used in modals
+  async addItemToUsage(taskId: string, itemId: string, quantity: number)
+  {
+    //Delete inventory item
+    const item = this.houseService.getInventoryById(itemId);
+    if(item)
+    {
+      this.itemUsage.emit({ taskId, itemId, quantity });
+    }
+
+    //Create inventory usage
+    this.inventoryUsage.createInventoryUsage(itemId, taskId, quantity).subscribe({
+      next: (res) => {
+        return res.usageUuid;
+      },
+      error: (err) => {
+        console.error("Error creating inventory usage", err);
+      }
+    });
   }
 }

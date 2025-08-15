@@ -28,7 +28,6 @@ describe('InventoryUsageApiService', () => {
         usageUuid: '1',
         itemUuid: 'item1',
         taskUuid: 'task1',
-        contractorUuid: 'contractor1',
         quantityUsed: 5,
         trusteeApproval: false,
         approvedDate: new Date('2025-01-01')
@@ -37,13 +36,12 @@ describe('InventoryUsageApiService', () => {
       const expectedBody = {
         itemUuid: 'item1',
         taskUuid: 'task1',
-        contractorUuid: 'contractor1',
         quantityUsed: 5
       };
 
       httpClientSpy.post.and.returnValue(of(mockUsage));
 
-      service.createInventoryUsage('item1', 'task1', 'contractor1', 5).subscribe({
+      service.createInventoryUsage('item1', 'task1', 5).subscribe({
         next: (usage) => {
           expect(usage).toEqual(mockUsage);
           expect(httpClientSpy.post).toHaveBeenCalledWith(
@@ -59,7 +57,7 @@ describe('InventoryUsageApiService', () => {
       const errorResponse = new Error('Server error');
       httpClientSpy.post.and.returnValue(throwError(() => errorResponse));
 
-      service.createInventoryUsage('item1', 'task1', 'contractor1', 5).subscribe({
+      service.createInventoryUsage('item1', 'task1', 5).subscribe({
         next: () => fail('expected error but got success'),
         error: (error) => {
           expect(error).toBe(errorResponse);
@@ -284,7 +282,7 @@ describe('InventoryUsageApiService', () => {
         next: (usages) => {
           expect(usages).toEqual(mockUsages);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/task1`
+            `${baseUrl}/inventory-usage/by-task/task1`
           );
         },
         error: () => fail('expected success but got error')
@@ -418,7 +416,7 @@ describe('InventoryUsageApiService', () => {
       httpClientSpy.post.and.returnValue(of({} as InventoryUsage));
 
       // Test with null itemUuid
-      service.createInventoryUsage(null as unknown as string, 'task1', 'contractor1', 5).subscribe({
+      service.createInventoryUsage(null as unknown as string, 'task1', 5).subscribe({
         next: (response) => {
           expect(response).toBeDefined();
         },
@@ -426,7 +424,7 @@ describe('InventoryUsageApiService', () => {
       });
 
       // Test with undefined quantity
-      service.createInventoryUsage('item1', 'task1', 'contractor1', undefined as unknown as number).subscribe({
+      service.createInventoryUsage('item1', 'task1',  undefined as unknown as number).subscribe({
         next: (response) => {
           expect(response).toBeDefined();
         },
