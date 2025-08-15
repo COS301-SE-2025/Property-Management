@@ -77,8 +77,6 @@ export class MaintenanceCardComponent implements OnInit{
       console.error("Invalid maintenance data");
       return;
     }
-    console.log("Inside show details", maintenance);
-
     this.router.navigate(['/taskDetails', maintenance.uuid]);
   }
   getMaintenanceTotal(): number {
