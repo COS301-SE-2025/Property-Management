@@ -1,3 +1,21 @@
+# Installation Manual
+
+Welcome to the Property Manager System installation guide This document provides step-by-step instructions to set up and run the application on your local machine.
+
+The system consists of:
+
+A PostgreSQL database for storing user data.
+
+A Spring Boot backend serving RESTful APIs.
+
+An Angular frontend providing a responsive user interface.
+
+You can run the application in two ways:
+
+1. Using Docker (recommended for quick setup with all services containerized).
+
+2. Manually (for development or customization, running the backend and frontend separately).
+
 ## Cloning Repository
 1. Open a terminal or command prompt.
 2. Clone the repository using the command:
