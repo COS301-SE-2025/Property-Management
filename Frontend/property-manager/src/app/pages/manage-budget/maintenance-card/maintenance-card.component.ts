@@ -58,7 +58,6 @@ export class MaintenanceCardComponent implements OnInit{
             })
           }
         });
-        console.log(this.completedTasks());
       },
       error: (err) => {
         console.error("Error getting previous tasks", err)
@@ -77,8 +76,6 @@ export class MaintenanceCardComponent implements OnInit{
       console.error("Invalid maintenance data");
       return;
     }
-    console.log("Inside show details", maintenance);
-
     this.router.navigate(['/taskDetails', maintenance.uuid]);
   }
   getMaintenanceTotal(): number {
