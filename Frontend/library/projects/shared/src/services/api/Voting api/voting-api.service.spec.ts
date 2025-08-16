@@ -246,7 +246,7 @@ describe('VotingApiService', () => {
         t_uuid: 'task-123',
         c_uuid: 'contractor-123',
         amount: 1000,
-        submitted_on: new Date(),
+        submitted_on: 1,
         doc: 'quote.pdf',
         status: 'PENDING'
       };
@@ -268,7 +268,7 @@ describe('VotingApiService', () => {
         t_uuid: 'task-123',
         c_uuid: 'contractor-123',
         amount: 1000,
-        submitted_on: new Date(),
+        submitted_on: 1,
         doc: 'quote.pdf',
         status: 'APPROVED'
       };
