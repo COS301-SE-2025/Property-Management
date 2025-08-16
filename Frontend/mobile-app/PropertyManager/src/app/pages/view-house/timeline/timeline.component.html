@@ -6,7 +6,7 @@
     <ion-card-content>
       <p-timeline [value]="timeline()" align="alternate">
           <ng-template #content let-time>
-              <div tabindex="0" role="button" class="dark:text-white" (click)="openDetailsDialog(time)" (keydown.enter)="openDetailsDialog(time)" (keydown.space)="openDetailsDialog(time)">
+              <div tabindex="0" role="button" class="dark:text-white" (click)="openDetails(time)">
                   {{ time.title }}
               </div>
           </ng-template>
@@ -21,8 +21,6 @@
               </div>
           </ng-template>
       </p-timeline>
-  
-      <app-view-task #taskModal></app-view-task>
   
       <div class = "mt-5 flex flex-col justify-center items-center">
           <button (click)="timelineAdd.openModal()">

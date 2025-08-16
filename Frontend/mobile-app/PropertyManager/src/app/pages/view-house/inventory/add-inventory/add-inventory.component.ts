@@ -27,6 +27,7 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
 
   form!: FormGroup;
   houseId = '';
+  loading = false;
   
   constructor(
     private fb: FormBuilder, 
@@ -41,6 +42,7 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.loading = false;
     this.route.params.subscribe(params => {
       this.houseId = params['houseId'] || null;
     });
@@ -61,6 +63,7 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
   override async confirm()
   {
     if(this.form.valid){
+      this.loading = true;
       const name = this.form.value.inventoryName;
       const price = this.form.value.itemPrice;
       const quantity = this.form.value.quantity;
@@ -72,18 +75,21 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
           await this.housesService.loadInventory(this.houseId);
           await this.housesService.loadBudget(this.houseId);
 
+          this.loading = false;
+
           await this.presentToast('Inventory item added succesfully', "success");
           
           this.form.reset();
           this.closeModal();
           
           setTimeout(() => {
-            this.router.navigate(['viewHouse', this.houseId]).then(() => {
+            this.router.navigate(['view-house', this.houseId]).then(() => {
               window.location.reload();
             });
-          }, 5000);
+          }, 2000);
         },
         error: async (err) => {
+          this.loading = false;
           console.error("Failed to create inventory item", err);
 
           await this.presentToast('Failed to add inventory item', "danger")
@@ -95,6 +101,12 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
   {
     this.budgetApiService.getBudgetsByBuildingId(this.houseId).subscribe(
        (bulidingDetails: BuildingDetails[]) => {
+
+        if(bulidingDetails.length ===  0)
+        {
+          return;
+        }
+
         const element = bulidingDetails[bulidingDetails.length-1];
         const elementID = element.budgetUuid;
 

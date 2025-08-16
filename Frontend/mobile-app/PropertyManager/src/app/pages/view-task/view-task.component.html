@@ -1,0 +1,66 @@
+<ion-content class="dark:bg-gray-800">
+
+    <app-header/>
+    
+    <div class="mt-5 px-5">
+        <ion-card>
+            <ion-card-header>
+                <ion-card-title>
+                    <div class="flex flex-col items-center justify-center p-3">
+                        <img [src]="imageUrl" alt="image of task" *ngIf="imageUrl; else noImg" class="max-w-[20rem]">
+                        <ng-template #noImg>
+                            <p>No image available</p>
+                        </ng-template>
+                        <div class="font-semibold pt-3">
+                            <p> {{ task?.title }}</p>
+                        </div>
+                    </div>
+                </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <div class="rounded-lg flex">
+                    <div class="p-4">
+                        <div class="text-sm pb-3">
+                            <p>Description: {{ task?.des }}</p>
+                        </div>
+                        <div class="font-semibold pb-3">
+                            <p>Due Date: {{ (task?.scheduled_date ?? '') | formatDate }}</p>
+                        </div>
+                        <div class="font-semibold pb-3" *ngIf="!contractorUser">
+                            <span>Priority:
+                                @if(task?.priority === 'Low')
+                                {
+                                    <span class="text-green-400">Low</span>
+                                }
+                                @else if(task?.priority === 'Medium')
+                                {
+                                    <span class="text-orange-400">Medium</span>
+                                }
+                                @else {
+                                    <span class="text-red-500">High</span>
+                                }
+                            </span>
+                        </div>
+                        @if(this.contractor)
+                        {
+                            <div class="font-semibold">
+                                <p>Assigned contractors: {{ contractor.name }}</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </ion-card-content>
+        </ion-card>
+    
+        <div class="flex flex-col justify-center items-center">
+            <div class="border">
+                <app-inventory-usage *ngIf="inventoryUsage?.length" 
+                                    [taskId]="this.taskId!"/>
+            </div>
+
+            <app-contractor-timeline [inventoryUsage]="inventoryUsage!"
+                                    [task]="task!"/>
+        </div>
+    </div>
+</ion-content>
+<app-tab/>
