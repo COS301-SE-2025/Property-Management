@@ -62,11 +62,12 @@ class PDFController(
         )
     }
 
-    @PostMapping("/notify-upload/{id}/{filename}/{key}")
+    @PostMapping("/notify-upload/{id}/{filename}/{key}/{cUuid}")
     fun notifyUploadComplete(
         @PathVariable id: String,
         @PathVariable filename: String,
         @PathVariable key: String,
+        @PathVariable cUuid: UUID,
     ): ResponseEntity<String> {
         val url = "https://$bucketName.s3.amazonaws.com/$key"
         val pdfMeta =
@@ -75,6 +76,7 @@ class PDFController(
                 filename = filename,
                 key = key,
                 url = url,
+                cUuid = cUuid,
             )
         PDFRepository.save(pdfMeta)
         return ResponseEntity.ok("Upload metadata saved.")
@@ -113,4 +115,15 @@ class PDFController(
         // Assuming URL is https://bucket.s3.amazonaws.com/key
         return url.substringAfter("$bucketName.s3.amazonaws.com/")
     }
+
+    @GetMapping("/{uuid}")
+    fun getByUuid(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<List<PDFMeta>> =
+        try {
+            val pdf = PDFRepository.findAllByCUuid(uuid)
+            ResponseEntity.ok(pdf)
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
+        }
 }
