@@ -131,7 +131,7 @@ body {
 }
 
 .dark-theme .p-dialog .p-float-label input {
-  background: #333;
+  background: var(--input-bg-color);
   color: var(--text-color);
   border-color: var(--surface-border);
 }

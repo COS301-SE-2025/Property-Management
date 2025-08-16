@@ -22,6 +22,8 @@ import { LandingPageComponent } from './pages/LandingPage/LandingPage.component'
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { authGuard } from './auth.guard';
+import { AssignedComponent } from './pages/assigned-projects/assigned.component';
+import { SubmittedQuotationsComponent } from './pages/submitted-quotaions/submitted-quotations.component';
 import { VotingComponent } from './pages/voting/voting.component';
 import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
 import { TaskDetailsComponent } from './pages/task-details/task-details.component';
@@ -117,7 +119,7 @@ export const routes: Routes = [
     component: ContractorHomeComponent
   },
   {
-    path: 'quotation',
+    path: 'quotation/:taskId',
     canActivate: [authGuard(['contractor'])],
     pathMatch: 'full',
     component: QuotationComponent
@@ -184,6 +186,16 @@ export const routes: Routes = [
     component: ResetPasswordComponent
   },
   {
+    path: 'assigned-projects',
+    pathMatch: 'full',
+    component: AssignedComponent
+  },
+  {
+    path: 'submitted-quotations',
+    pathMatch: 'full',
+    component: SubmittedQuotationsComponent
+  },
+    {
     path: 'notifications',
     pathMatch: 'full',
     component: NotificationsComponent

@@ -49,7 +49,7 @@ export class MaintenanceCardComponent implements OnInit{
           if(q.status === 'APPROVED')
           {
             c.amount = q.amount;
-            c.submitted_on = q.submitted_on;
+            c.submitted_on = new Date(q.submitted_on);
 
             this.contractorService.getContractorById(q.c_uuid).subscribe({
               next: (contractor) => {

@@ -9,7 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
 import { ApiService } from 'shared'; 
 import { HeaderComponent } from "../../components/header/header.component";
-
+import { ActivatedRoute } from '@angular/router';
 import { DatePicker } from 'primeng/datepicker';
 import {
   trigger,
@@ -24,6 +24,7 @@ import {
 interface FileUploadEvent {
   files: File[];
 }
+
 @Component({
   selector: 'app-quotation',
   standalone: true,
@@ -63,11 +64,12 @@ export class QuotationComponent implements OnInit{
 
   contractorId = ''; 
   taskId = ''; 
-  type = 'Started';
+  type = 'pending';
 
   constructor(
   private messageService: MessageService,
-  private apiService: ApiService
+  private apiService: ApiService,
+  private route: ActivatedRoute
 ) {
   const storedId = localStorage.getItem('contractorID');
   if (storedId) {
@@ -78,24 +80,37 @@ export class QuotationComponent implements OnInit{
 }
 
   ngOnInit(): void {
-    this.apiService.getMaintenanceTasks().subscribe({
-      next: (tasks) => {
-        const task = tasks.find(t => t.cuuid === this.contractorId);
-        if (task) {
-          this.taskId = task.uuid;
-          console.log('Matching task found:', task);
-        } else {
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'No Task Found',
-            detail: 'No maintenance task assigned to this contractor.'
-          });
-        }
-      },
-      error: (err) => {
-        console.error('Error loading tasks:', err);
-      }
+      this.route.paramMap.subscribe(params => {
+    const id = params.get('taskId');
+    if (id) {
+      this.taskId = id;
+    }
+  });
+  if (!this.taskId) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'No Task Provided',
+      detail: 'Task UUID was not provided in the URL.'
     });
+    return;
+  }
+
+  
+  this.apiService.getMaintenanceTasks().subscribe({
+    next: (tasks) => {
+      const task = tasks.find(t => t.uuid === this.taskId && t['c_uuid'] === this.contractorId);
+      if (!task) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Invalid Task',
+          detail: 'Task not assigned to this contractor.'
+        });
+      }
+    },
+    error: (err) => {
+      console.error('Error loading tasks:', err);
+    }
+  });
   }
 
   submitQuote() {
@@ -107,7 +122,6 @@ export class QuotationComponent implements OnInit{
       });
       return;
     }
-
     const submittedDate = new Date();
 
     this.apiService.addQuote(
@@ -137,7 +151,6 @@ export class QuotationComponent implements OnInit{
       }
     });
   }
-
   onUpload(event: FileUploadEvent) {
     console.log('Uploaded files:', event.files);
     this.messageService.add({

@@ -102,6 +102,15 @@ export class HeaderComponent {
       { label: 'Home', route: '/contractorHome' },
       { label: 'Quotations', route: '/quotation' }
     ]
+    ,
+    '/assigned-projects': [
+      { label: 'Home', route: '/contractorHome' },
+      { label: 'Assigned projects', route: '/assigned-projects' }
+    ],
+    '/submitted-quotations': [
+      { label: 'Home', route: '/contractorHome' },
+      { label: 'Submitted quotations', route: '/submitted-quotations' }
+    ]
   }
   };
 
@@ -270,6 +279,10 @@ export class HeaderComponent {
       { label: 'Notifications', route:'/notifications', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' || this.userType === 'contractor'},
       { label: 'Contractors', route: '/bodyCoporate/contractors', show: this.userType === 'bodyCorporate' },
       { label: 'My Profile', route: '/contractor-prof', show: this.userType === 'contractor' },
+      { label: 'Dashboard', route: this.userType === 'contractor' ? '/contractorHome' : (this.userType === 'bodyCorporate' ? '/bodyCoporate' : '/home'), show: true },
+      { label: 'Assigned projects', route: '/assigned-projects', show: this.userType === 'contractor' },
+      { label: 'Submitted quotations', route: '/submitted-quotations', show: this.userType === 'contractor' },
+      { label: 'Help', route: '/help', show: true }
     ];
   }
 }

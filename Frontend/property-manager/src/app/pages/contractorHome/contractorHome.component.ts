@@ -47,9 +47,10 @@ export class ContractorHomeComponent implements OnInit{
 
     if (!this.contractorId) {
       console.warn('Contractor ID not found in localStorage.');
+    
       return;
     }
-
+     console.log('Contractor ID:', this.contractorId);
     this.api.getMaintenanceTasks().subscribe({
       next: (tasks) => {
         
