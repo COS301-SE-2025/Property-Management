@@ -94,7 +94,7 @@ class QuoteVotingService(
         )
     }
 
-    @Cacheable("apiCache")
+    //@Cacheable("apiCache")
     fun getResults(sessionUuid: UUID): VoteSessionResult {
         val session =
             sessionRepo
@@ -135,7 +135,7 @@ class QuoteVotingService(
         )
     }
 
-    // @Cacheable("apiCache")
+    // //@Cacheable("apiCache")
     fun getAllSessions(): List<VoteSessionSummary> =
         sessionRepo.findAll().map { session ->
             VoteSessionSummary(
@@ -147,7 +147,7 @@ class QuoteVotingService(
             )
         }
 
-    @Cacheable("apiCache")
+    //@Cacheable("apiCache")
     fun getTaskId(sessionUuid: UUID): UUID {
         val session =
             sessionRepo
@@ -156,7 +156,7 @@ class QuoteVotingService(
         return session.taskUuid
     }
 
-    @Cacheable("apiCache")
+    //@Cacheable("apiCache")
     fun getSessionByTask(taskUuid: UUID): VoteSessionSummary? {
         val session = sessionRepo.findByTaskUuid(taskUuid).orElse(null)
         return session?.let {

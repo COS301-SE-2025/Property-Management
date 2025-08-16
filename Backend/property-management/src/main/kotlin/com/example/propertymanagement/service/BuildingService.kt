@@ -45,7 +45,7 @@ class BuildingService(
         return mapToResponseDto(savedBuilding)
     }
 
-    // @Cacheable("apiCache")
+    // //@Cacheable("apiCache")
     fun getAllBuildings(): List<BuildingResponseDto> = buildingRepository.findAll().map { mapToResponseDto(it) }.toList()
 
     @Cacheable(value = ["apiCache"], key = "#uuid")

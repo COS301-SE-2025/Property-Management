@@ -14,13 +14,13 @@ import java.util.UUID
 class QuoteService(
     private val repository: QuoteRepository,
 ) {
-    @Cacheable("apiCache")
+    //@Cacheable("apiCache")
     fun getAll(): List<Quote> = repository.findAll()
 
-    @Cacheable("apiCache")
+    //@Cacheable("apiCache")
     fun getById(uuid: UUID): Quote = repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
-    @Cacheable("apiCache")
+    //@Cacheable("apiCache")
     fun getQuotesByTask(taskUuid: UUID): List<Quote> = repository.findAllByTaskUuid(taskUuid)
 
     fun add(item: Quote): Quote = repository.save(item)

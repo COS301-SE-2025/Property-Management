@@ -87,7 +87,7 @@ class NotificationService(
         }
     }
 
-    @Cacheable("apiCache")
+    //@Cacheable("apiCache")
     fun getNotifications(
         recipientType: String,
         recipientUuid: UUID,

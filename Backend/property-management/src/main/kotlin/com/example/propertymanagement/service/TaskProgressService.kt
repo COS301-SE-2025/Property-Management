@@ -53,14 +53,14 @@ class TaskProgressService(
         return repository.save(updated).toResponseDTO()
     }
 
-    @Cacheable("apiCache")
+    //@Cacheable("apiCache")
     fun getTaskProgress(progressUuid: UUID): TaskProgressResponseDTO =
         repository
             .findById(progressUuid)
             .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Task progress not found") }
             .toResponseDTO()
 
-    @Cacheable("apiCache")
+    //@Cacheable("apiCache")
     fun getProgressByTask(taskUuid: UUID): List<TaskProgressResponseDTO> = repository.findByTaskUuid(taskUuid).map { it.toResponseDTO() }
 
     fun deleteTaskProgress(progressUuid: UUID) {
