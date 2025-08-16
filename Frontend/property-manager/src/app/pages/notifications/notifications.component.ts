@@ -1,5 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
-// import { HeaderComponent } from '../../components/header/header.component';
+import { Component, OnInit, signal, effect } from '@angular/core';
 import { TimelineModule } from 'primeng/timeline';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -7,7 +6,6 @@ import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe }
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InviteDialogComponent } from './invite-dialog/invite-dialog.component';
 import { MessageService } from 'primeng/api';
-// import { Toast } from 'primeng/toast';
 import { DrawerModule } from 'primeng/drawer';
 import { NotificationDrawerService } from '../../../../../library/projects/shared/src/services/notification-drawer.service';
 
@@ -48,7 +46,7 @@ import { NotificationDrawerService } from '../../../../../library/projects/share
   ],
   standalone: true
 })
-export class NotificationsComponent  implements OnInit {
+export class NotificationsComponent implements OnInit {
 
   public unreadTimeline = signal<Notification[]>([]);
   public timeline = signal<Notification[]>([]);
@@ -64,94 +62,87 @@ export class NotificationsComponent  implements OnInit {
     public drawerService: NotificationDrawerService 
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.loadTimeline();
+
+    effect(() => {
+      if (this.drawerService.drawerVisible()) {
+        this.loadTimeline();
+      }
+    });
   }
 
-  toggleDrawer() {
-    this.drawerService.toggleDrawer();
-    if (this.drawerService.drawerVisible()) {
-      this.loadTimeline();
+  loadTimeline() {
+    const type = this.getUserType();
+    if (this.userId && type) {
+      this.notificationService.getNotifications(type, this.userId).subscribe({
+        next: (noti) => {
+          const unread: Notification[] = [];
+          const read: Notification[] = [];
+
+          noti.forEach(n => {
+            if (n.isRead) {
+              read.push(n);
+            } else {
+              unread.push(n);
+            }
+          });
+
+          const sortedRead = this.sortTimeline(read);
+          const sortUnRead = this.sortTimeline(unread);
+
+          this.timeline.set(sortedRead);
+          this.unreadTimeline.set(sortUnRead);
+        },
+        error: (err) => {
+          console.error(err);
+          this.notiError = true;
+        }
+      });
     }
   }
 
-  loadTimeline()
-  {
-    const type = this.getUserType();
-    if(this.userId && type)
-    {
-        this.notificationService.getNotifications(type, this.userId).subscribe({
-            next: (noti) => {
-              const unread: Notification[] = [];
-              const read: Notification[] = [];
+  showDetails(noti: Notification) {
+    // Mark as read
+    this.notificationService.markNotificationsAsRead(noti.notificationUuid!).subscribe({
+      next: () => {
+        this.drawerService.notificationRead.emit();
 
-              noti.forEach(n => {
-                if(n.isRead)
-                {
-                  read.push(n);
-                }
-                else
-                {
-                  unread.push(n);
-                }
-              });
-
-              const sortedRead = this.sortTimeline(read);
-              const sortUnRead = this.sortTimeline(unread);
-
-              this.timeline.set(sortedRead);
-              this.unreadTimeline.set(sortUnRead);
+        if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
+          this.notificationService.getInviteById(noti.relatedInviteUuid).subscribe({
+            next: (invite) => {
+              if (invite.status === 'PENDING') {
+                this.inviteId.set(noti.relatedInviteUuid ?? null);
+                this.inviteDialogVisible = true;
+              }
             },
             error: (err) => {
               console.error(err);
-              this.notiError = true;
-            }
-        });
-    }
-  }
-
-  showDetails(noti: Notification)
-    {
-    // Mark as read
-    this.notificationService.markNotificationsAsRead(noti.notificationUuid!).subscribe({
-        next: () => {
-          this.drawerService.notificationRead.emit();
-        if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
-            // Check if invite is pending before showing dialog
-            this.notificationService.getInviteById(noti.relatedInviteUuid).subscribe({
-            next: (invite) => {
-                if (invite.status === 'PENDING') {
-                this.inviteId.set(noti.relatedInviteUuid ?? null);
-                this.inviteDialogVisible = true;
-                }
-            },
-            error: (err) => {
-                console.error(err);
-                this.messageService.add({
+              this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: 'Failed to display invite.'
-                })
+              });
             }
-            });
+          });
         }
         else if (noti.relatedTaskUuid) {
-            if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
-              this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
-              this.drawerService.closeDrawer();
-            }
+          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+            this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
+            this.drawerService.closeDrawer();
+          }
         }
         else if (noti.relatedSessionUuid) {
-            if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
-              this.router.navigate(['/voting', noti.relatedSessionUuid]);
-              this.drawerService.closeDrawer();
-            }
+          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+            this.router.navigate(['/voting', noti.relatedSessionUuid]);
+            this.drawerService.closeDrawer();
+          }
         }
         else if (noti.relatedQuoteUuid) {
-            // Contractor can see their quote they made
+          // Contractor can see their quote they made
         }
         else {
-            window.location.reload();
+          window.location.reload();
         }
       }
     });
@@ -159,53 +150,50 @@ export class NotificationsComponent  implements OnInit {
 
   private getUserType(): string | null {
     if (getCookieValue(document.cookie, 'trusteeId')) {
-        this.userId = getCookieValue(document.cookie, 'trusteeId');
-        return 'trustee';
-    } 
-    else if (getCookieValue(document.cookie, 'bodyCoporateId')) {
-        this.userId = getCookieValue(document.cookie, 'bodyCoporateId');
-        return 'bodyCorporate';
-    } 
-    else if (getCookieValue(document.cookie, 'contractorId')) {
-        this.userId = getCookieValue(document.cookie, 'contractorId');
-        return 'contractor';
+      this.userId = getCookieValue(document.cookie, 'trusteeId');
+      return 'trustee';
+    } else if (getCookieValue(document.cookie, 'bodyCoporateId')) {
+      this.userId = getCookieValue(document.cookie, 'bodyCoporateId');
+      return 'bodyCorporate';
+    } else if (getCookieValue(document.cookie, 'contractorId')) {
+      this.userId = getCookieValue(document.cookie, 'contractorId');
+      return 'contractor';
     }
     return null;
   }
 
-  private sortTimeline(notifications: Notification[]){
+  private sortTimeline(notifications: Notification[]) {
     if (!notifications || notifications.length === 0) {
-        return [];
+      return [];
     }
 
     if (notifications.length === 1 && notifications[0] && notifications[0].createdAt) {
-        const date = new Date(
+      const date = new Date(
         notifications[0].createdAt[0],
         notifications[0].createdAt[1] - 1,
         notifications[0].createdAt[2],
         notifications[0].createdAt[3],
         notifications[0].createdAt[4],
         notifications[0].createdAt[5]
-        );
-        notifications[0].createdAtDate = date;
-        return notifications;
+      );
+      notifications[0].createdAtDate = date;
+      return notifications;
     }
 
-    // this is to filter out the notifications missing createdAt
     const valid = notifications.filter(n => n && Array.isArray(n.createdAt));
     valid.forEach(n => {
-        if (n.createdAt) {
+      if (n.createdAt) {
         n.createdAtDate = new Date(
-            n.createdAt[0],
-            n.createdAt[1] - 1,
-            n.createdAt[2],
-            n.createdAt[3],
-            n.createdAt[4],
-            n.createdAt[5]
+          n.createdAt[0],
+          n.createdAt[1] - 1,
+          n.createdAt[2],
+          n.createdAt[3],
+          n.createdAt[4],
+          n.createdAt[5]
         );
-        }
+      }
     });
 
     return valid.sort((a, b) => b.createdAtDate!.getTime() - a.createdAtDate!.getTime());
-    }
+  }
 }

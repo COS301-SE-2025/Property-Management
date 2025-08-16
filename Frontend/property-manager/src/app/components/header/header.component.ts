@@ -300,7 +300,7 @@ export class HeaderComponent {
       { label: 'Home', route: homeRoute, show: true },
       { label: 'Properties', route: '/home', show: this.userType === 'bodyCorporate'},
       { label: 'Voting', route:'/voting', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' },
-      { label: 'Notifications', route:'/notifications', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' || this.userType === 'contractor'},
+      // { label: 'Notifications', route:'/notifications', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' || this.userType === 'contractor'},
       { label: 'Contractors', route: '/bodyCoporate/contractors', show: this.userType === 'bodyCorporate' },
       { label: 'My Profile', route: '/contractor-prof', show: this.userType === 'contractor' },
     ];
