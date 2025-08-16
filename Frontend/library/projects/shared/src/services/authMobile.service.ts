@@ -171,11 +171,11 @@ export class AuthMobileService {
     });
   }
 
-  logout()
+  async logout()
   {
-    this.storage.remove("userType");
-    this.storage.remove("trusteeID");
-    this.storage.remove("contractorID");
-    this.storage.remove("theme");
+    await this.storage.remove("userType");
+    await this.storage.remove("trusteeID");
+    await this.storage.remove("contractorID");
+    await this.storage.remove("theme");
   }
 }

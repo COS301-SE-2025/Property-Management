@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Notification } from "../../../public-api";
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environmentMobile } from '../../../environment';
 
 export interface InviteWithTrustee2 {
@@ -29,7 +29,7 @@ export class NotificationsApiService{
     }
     getNotifications(recipientType: string, recipientId: string)
     {
-        return this.http.get<Notification[]>(`${this.url}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}`);
+        return this.http.get<Notification[]>(`${this.url}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}`).pipe(map(res => res || []));;
     }
     markNotificationsAsRead(NotificationsId: string)
     {
