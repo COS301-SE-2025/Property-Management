@@ -15,8 +15,12 @@ klint
 
 # === Frontend (Angular/Node) ===
 Frontend/Property-Manager/node_modules
+Frontend/mobile-app/PropertyManager/node_modules
+Frontend/mobile-app/PropertyManager/dist
+Frontend/mobile-app/PropertyManager/.angular
 Frontend/Property-Manager/dist
 Frontend/Property-Manager/.angular
+Frontend/node_modules
 
 # === IDE and OS ===
 .idea/
