@@ -282,7 +282,8 @@ export class HeaderComponent {
       { label: 'Dashboard', route: this.userType === 'contractor' ? '/contractorHome' : (this.userType === 'bodyCorporate' ? '/bodyCoporate' : '/home'), show: true },
       { label: 'Assigned projects', route: '/assigned-projects', show: this.userType === 'contractor' },
       { label: 'Submitted quotations', route: '/submitted-quotations', show: this.userType === 'contractor' },
-      { label: 'Help', route: '/help', show: true }
+      { label: 'Help', route: '/help', show: true },
+      { label: 'Members', route: '/members', show: this.userType === 'bodyCorporate' }
     ];
   }
 }

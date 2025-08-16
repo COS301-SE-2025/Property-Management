@@ -92,7 +92,7 @@
         </div> -->
 
         <div class="mb-8">
-          <label for="coporateUuid" class="block mb-1 font-medium">Assign to Body Corporate *</label>
+          <label for="coporateUuid" class="block mb-1 font-medium">Assign to Body Corporate </label>
           <p-dropdown
             id="coporateUuid"
             [options]="bodyCorporates"
@@ -145,12 +145,8 @@
         <div class="mb-8">
           <div class="flex gap-4">
             <p-floatlabel class="w-full">
-              <input id="type" pInputText formControlName="type" />
+              <input id="type" pInputText formControlName="type" class="w-full col-span-2" [style]="{ width: '91%' }"/>
               <label for="type">Type</label>
-            </p-floatlabel>
-            <p-floatlabel class="w-full">
-              <input id="bodyCorporate" pInputText formControlName="bodyCorporate" />
-              <label for="bodyCorporate">Body Corporate</label>
             </p-floatlabel>
           </div>
         </div>
