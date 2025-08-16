@@ -6,7 +6,6 @@ import com.example.propertymanagement.dto.InventoryUsageResponse
 import com.example.propertymanagement.dto.UpdateInventoryUsageRequest
 import com.example.propertymanagement.model.InventoryUsage
 import com.example.propertymanagement.repository.InventoryUsageRepository
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -42,13 +41,13 @@ class InventoryUsageService(
         return mapToResponse(inventoryUsageRepository.save(updated))
     }
 
-    //@Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getAllInventoryUsage(pageable: Pageable): Page<InventoryUsageResponse> =
         inventoryUsageRepository
             .findAll(pageable)
             .map { mapToResponse(it) }
 
-    //@Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getInventoryUsageById(usageUuid: UUID): InventoryUsageResponse {
         val inventoryUsage =
             inventoryUsageRepository
@@ -107,40 +106,40 @@ class InventoryUsageService(
         return mapToResponse(savedUsage)
     }
 
-    //@Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getUsageByItemUuid(itemUuid: UUID): List<InventoryUsageResponse> =
         inventoryUsageRepository
             .findByItemUuid(itemUuid)
             .map { mapToResponse(it) }
 
-    //@Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getUsageByTaskUuid(taskUuid: UUID): List<InventoryUsageResponse> =
         inventoryUsageRepository
             .findByTaskUuid(taskUuid)
             .map { mapToResponse(it) }
 
-    //@Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getUsageByContractorUuid(contractorUuid: UUID): List<InventoryUsageResponse> =
         inventoryUsageRepository
             .findByUsedByContractorUuid(contractorUuid)
             .map { mapToResponse(it) }
 
-    //@Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getApprovedUsage(): List<InventoryUsageResponse> =
         inventoryUsageRepository
             .findByTrusteeApprovedTrue()
             .map { mapToResponse(it) }
 
-    //@Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getPendingApprovalUsage(): List<InventoryUsageResponse> =
         inventoryUsageRepository
             .findByTrusteeApprovedFalse()
             .map { mapToResponse(it) }
 
-    //@Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getTotalQuantityUsedForItem(itemUuid: UUID): Int = inventoryUsageRepository.getTotalQuantityUsedForItem(itemUuid)
 
-    //@Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getTotalQuantityUsedByContractor(contractorUuid: UUID): Int =
         inventoryUsageRepository.getTotalQuantityUsedByContractor(contractorUuid)
 
