@@ -64,7 +64,6 @@ export class InventoryItemApiService {
     return this.http.patch<Inventory>(`${this.url}/inventory/${itemId}/quantity`, quantityUpdate);
   }
   
-
   deleteInventoryItem(inventoryItem: Inventory): Observable<Inventory>
   {
     return this.http.delete<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`);

@@ -12,7 +12,7 @@ import { MessageService } from 'primeng/api';
 import { FileUploadModule, FileSelectEvent } from 'primeng/fileupload';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HousesService, Inventory, InventoryItemApiService, TaskApiService } from 'shared';
+import { HousesService, Inventory, InventoryItemApiService, Notification, NotificationsApiService, TaskApiService } from 'shared';
 import { getCookieValue } from 'shared';
 import { ImageApiService } from 'shared';
 import { ContractorApiService } from 'shared';
@@ -63,7 +63,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
   private contractorService: ContractorApiService,
   private messageService: MessageService,
   private inventoryService: InventoryItemApiService,
-  private housesService: HousesService
+  private housesService: HousesService,
+  private notificationService: NotificationsApiService
 ){
    super();
    this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
@@ -149,17 +150,33 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
         this.form.reset();
         this.closeDialog();
 
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Task added successfully'
+        const house = this.housesService.getHouseById(this.houseId);
+
+
+        const noti: Notification = {
+          notificationType: 'Task Creation',
+          message: `New task: ${name} has been added to ${house?.name}`,
+          recipientUuid: house?.coporateUuid!,
+          recipientType: 'body corporate',
+          isRead: false,
+          relatedTaskUuid: task.uuid
+        }
+        this.notificationService.createNotifications(noti).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Task added successfully'
+            });
+    
+            setTimeout(() => {
+              this.router.navigate(['viewHouse', this.houseId]).then(() => {
+                window.location.reload();
+              });
+            }, 3000);
+          }
         });
 
-        setTimeout(() => {
-          this.router.navigate(['viewHouse', this.houseId]).then(() => {
-            window.location.reload();
-          });
-        }, 3000);
       },
       error: (err) => {
         console.error("Failed to create task", err);
@@ -186,7 +203,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     this.inventoryCard.addItemToUsage(
       taskId,
       item.itemUuid,
-      item.quantityInStock
+      item.quantityInStock,
+      true
     );
 
     const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);

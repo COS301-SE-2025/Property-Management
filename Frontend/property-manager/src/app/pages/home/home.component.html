@@ -1,8 +1,11 @@
 <!-- <app-header/> -->
 
-<div class = "mt-4 ml-10">
-    <p class = "text-xl font-normal">Your properties</p>
+<div class="flex justify-center items-center mt-8">
+  <p class="text-3xl font-semibold text-white tracking-wide">
+    Your Properties
+  </p>
 </div>
+
 
 <div [@floatUp] class = "flex flex-wrap justify-center gap-8 p-8">
     @for (house of houses(); track  house.buildingUuid)

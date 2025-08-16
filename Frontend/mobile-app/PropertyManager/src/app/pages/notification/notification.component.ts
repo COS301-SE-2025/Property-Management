@@ -91,7 +91,6 @@ export class NotificationComponent  implements OnInit {
         if(noti.relatedInviteUuid && await this.getUserType() === 'trustee')
         {
           //confirm dialog pop up
-          console.log("Trying to open modal")
           this.inviteId.set(noti.relatedInviteUuid);
           this.bodyCorporateMessage.set(noti.message);
           this.inviteDialogVisible = true;

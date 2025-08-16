@@ -9,46 +9,24 @@ import { getCookieValue } from '../utils/cookie-utils';
 import { Graph } from '../models/graph.model';
 import { BudgetApiService } from './api/Budget api/budget-api.service';
 import { ImageApiService } from './api/Image api/image-api.service';
-import { Property, TaskApiService } from '../public-api';
+import { ContractorApiService, Property, TaskApiService } from '../public-api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BodyCoporateService {
 
-  //Mock data
   pendingTasks = signal<MaintenanceTask[]>([]);
 
-  lifeCycleCosts = signal<LifeCycleCost[]>([
-    {
-      type: "Building",
-      description: "Painting roof",
-      condition: "Fixed 2024",
-      timeFrame: "Year",
-      estimatedBudget: 5000
-    },
-    {
-      type: "Building",
-      description: "Gutters and pipes",
-      condition: "Leakages and loose pipes",
-      timeFrame: "6-months",
-      estimatedBudget: 10000
-    },
-    {
-      type: "Community Facilities",
-      description: "Garden equipment",
-      condition: "Fair",
-      timeFrame: "Year",
-      estimatedBudget: 7000
-    }
-  ]);
+  lifeCycleCosts = signal<LifeCycleCost[]>([]);
 
   fundContribution = signal<ReserveFund[]>([]);
   maintenanceGraph = signal<Graph>({} as Graph);
   contractorDetails = signal<ContractorDetails[]>([]);
   buildings = signal<Property[]>([]);
+  contribution = signal<number>(0);
 
-  constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService){
+  constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService, private contractorService: ContractorApiService){
   }
 
   async loadHouses(bcId: string)
@@ -118,6 +96,8 @@ export class BodyCoporateService {
         firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId)),
         firstValueFrom(this.bodyCoporateApiService.getBodyCoporate(bcId))
       ]);
+
+      this.contribution.set(bc.contributionPerSqm);
 
       const reserveFunds = buildings
         .filter((building): building is typeof building & { area: number } => typeof building.area === 'number')
@@ -197,35 +177,34 @@ export class BodyCoporateService {
     this.contractorDetails.set([]);
 
     try{
-      const contractors = await firstValueFrom(
+      const contractorIds = await firstValueFrom(
         this.bodyCoporateApiService.getTrustedContractors(bcId)
       );
 
-      const contractorsWithImages = await Promise.all(
-        contractors.map(async (c) => {
-          if(c.img) 
-          {
-            console.log(c.img);
-            try{
-              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.img));
-              return { 
-                ...c, 
-                img: imageUrl
-              };
-            }
-            catch(err){
+      const contractors = await Promise.all(
+        contractorIds.map(async (c) => {
+          const contractor = await firstValueFrom(
+            this.contractorService.getContractorById(c)
+          );
+
+          if (contractor.img) {
+            try {
+              contractor.img = await firstValueFrom(
+                this.imageApiService.getImage(contractor.img)
+              );
+            } catch (err) {
               console.error("Error loading images", err);
-              return {
-                ...c, 
-                img: ""
-              };
+              contractor.img = "assets/images/no_image.png";
             }
+          } else {
+            contractor.img = "assets/images/no_image.png";
           }
-          return c;
+
+          return contractor;
         })
       );
 
-      this.contractorDetails.set(contractorsWithImages);
+      this.contractorDetails.set(contractors);
     }
     catch(err){
       console.error("Error loading trusted contractors", err);
@@ -305,5 +284,9 @@ export class BodyCoporateService {
   getBodyCorporate(bcId: string)
   {
     return this.bodyCoporateApiService.getBodyCoporate(bcId);
+  }
+  makeContractorTrusted(bcId:string, contractorId: string)
+  {
+    return this.bodyCoporateApiService.makeContractorTrusted(contractorId, bcId);
   }
 }

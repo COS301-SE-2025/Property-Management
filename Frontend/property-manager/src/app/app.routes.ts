@@ -15,7 +15,7 @@ import { BcHomeComponent } from './pages/bc-home/bc-home.component';
 import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.component';
 import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
 import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
-// import { RatingsComponent } from './pages/ratings/ratings-page.component';
+import { RatingsComponent } from './pages/ratings/ratings.component';
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
@@ -24,7 +24,7 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { authGuard } from './auth.guard';
 import { VotingComponent } from './pages/voting/voting.component';
 import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
-import { TimelineDetailsComponent } from './pages/view-house/timeline-details/timeline-details.component';
+import { TaskDetailsComponent } from './pages/task-details/task-details.component';
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 
 export const routes: Routes = [
@@ -77,9 +77,9 @@ export const routes: Routes = [
   },
   {
     path:'taskDetails/:taskId',
-    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    canActivate: [authGuard(['trustee', 'bodyCorporate', 'contractor'])],
     pathMatch: 'full',
-    component: TimelineDetailsComponent
+    component: TaskDetailsComponent
   },
   { path: 'create-property',
     canActivate: [authGuard(['trustee', 'bodyCorporate'])],
@@ -157,13 +157,17 @@ export const routes: Routes = [
     pathMatch: 'full',
     component: ManageMembersComponent
   },
-  //still working on this
-  // {
-  //   path: 'ratings',
-  //   canActivate: [authGuard(['bodyCorporate'])],
-  //   pathMatch: 'full',
-  //   component: RatingsComponent
-  // },
+  {
+    path: 'ratings',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: RatingsComponent
+  },
+  {
+  path: 'ratings/:taskId',
+  canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+  component: RatingsComponent
+  },
   {
     path: 'landingPage',
     pathMatch: 'full',

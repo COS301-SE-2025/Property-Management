@@ -1,14 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-
 import { InventoryItemApiService } from './inventory-item-api.service';
 import { HttpClient } from '@angular/common/http';
 import { Inventory } from '../../../models/inventory.model';
 import { of, throwError } from 'rxjs';
+import { environmentMobile } from '../../../environment';
 
 describe('InventoryItemApiService', () => {
   let service: InventoryItemApiService;
   let httpClientSpy: jasmine.SpyObj<HttpClient>;
-  const url = '/api';
+  const url = environmentMobile.apiUrl;
 
   beforeEach(() => {
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put', 'patch', 'delete']);

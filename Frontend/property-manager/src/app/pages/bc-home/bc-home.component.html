@@ -4,7 +4,49 @@
     <div [@floatUp] class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <app-pending-task-card [tasks]="bodyCoporateService.pendingTasks()"/>
         <app-life-cycle-card/>
-        <app-reserve-fund-card [schedule]="bodyCoporateService.fundContribution()"/>
+        <app-reserve-fund-card [schedule]="bodyCoporateService.fundContribution()" [contri]="bodyCoporateService.contribution()"/>
         <app-maintenance-graph-card [bcData]="bodyCoporateService.maintenanceGraph()"/>
     </div>
 </div>
+
+<button
+  class="fixed bottom-8 right-8 z-50 bg-yellow-400 hover:bg-yellow-500 text-black rounded-full shadow-lg w-16 h-16 flex items-center justify-center text-l font-bold transition duration-200"
+  (click)="showInviteModal = true"
+  aria-label="Invite Trustee"
+>
+  <span class="material-icons">Invite</span>
+</button>
+
+<div
+  *ngIf="showInviteModal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+>
+  <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow p-6 relative">
+    <button
+      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
+      (click)="showInviteModal = false"
+      aria-label="Close"
+    >
+      &times;
+    </button>
+    <h3 class="text-lg font-bold mb-4 dark:text-white">Invite Trustee to Body Corporate</h3>
+    <p-dropdown
+      [options]="trusteeOptions"
+      optionLabel="name"
+      optionValue="uuid"
+      [(ngModel)]="selectedTrusteeUuid"
+      placeholder="Select a trustee"
+      class="w-full mb-4"
+    ></p-dropdown>
+    <button
+      type="button"
+      class="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded font-semibold w-full"
+      [disabled]="!selectedTrusteeUuid"
+      (click)="sendInviteToTrustee()"
+    >
+      Send Invite
+    </button>
+    <p *ngIf="inviteMessage" class="mt-2 text-green-600 dark:text-green-400">{{ inviteMessage }}</p>
+  </div>
+</div>
+<p-toast/>

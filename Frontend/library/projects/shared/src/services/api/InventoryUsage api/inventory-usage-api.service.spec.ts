@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { InventoryUsage } from '../../../models/inventoryUsage.model';
 import { InventoryUsageApiService } from './inventory-usage-api.service';
+import { environmentMobile } from '../../../environment';
 
 describe('InventoryUsageApiService', () => {
   let service: InventoryUsageApiService;
   let httpClientSpy: jasmine.SpyObj<HttpClient>;
-  const baseUrl = '/api';
+  const baseUrl = environmentMobile.apiUrl;
 
   beforeEach(() => {
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['post', 'get', 'put', 'delete', 'patch']);

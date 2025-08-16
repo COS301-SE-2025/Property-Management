@@ -45,7 +45,6 @@ export class HousesService {
   addToTasks(task: MaintenanceTask)
   {
     this.timeline.set([...this.timeline(), task]);
-    console.log(this.timeline());
     this.sortTimeline();
   }
 

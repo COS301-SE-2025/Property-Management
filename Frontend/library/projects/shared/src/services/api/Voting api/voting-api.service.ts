@@ -62,11 +62,13 @@ export class VotingApiService{
     {
         return this.http.get<Quote>(`${this.url}/vote/${quoteId}`);
     }
-    updateQuote(quoteId: string, status: string, quote: Quote)
+    updateQuoteStatus(quoteId: string, status: string)
     {
+        const date = new Date();
+        const submittedOn = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
         const req = {
             status: status,
-            submitted_on: quote.submitted_on
+            submitted_on: submittedOn
         }
         return this.http.put<Quote>(`${this.url}/quote/${quoteId}`, req);
     }

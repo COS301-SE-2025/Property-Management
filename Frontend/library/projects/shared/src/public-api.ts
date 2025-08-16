@@ -22,6 +22,9 @@ export * from './services/storage.service';
 export * from './services/voting.service';
 export * from './services/api/Notifications api/notifications-api.service';
 export * from './services/api/Life Cycle Cost api/life-cycleCost-api.service';
+export * from './services/api/Ratings api/ratings-api.service';
+export * from './services/api/Task Progress api/task-progress.service';
+
 
 //Models
 export * from './models/bodyCoporate.model';
@@ -42,8 +45,8 @@ export * from './models/voting.model';
 export * from './models/AssignedContractor.model'
 export * from './models/quote.model';
 export * from './models/Notifications.model';
-
-
+export * from './models/Progress.model';
+export * from './models/TrustedContractor.model';
 
 //Utils
 export * from './utils/cookie-utils';
