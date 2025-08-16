@@ -99,14 +99,8 @@ export class AuthMobileService {
       this.contractorLoginRequest(email, password).subscribe({
         next: (result) => {
          const contractorId = result.userId;
-          const idToken = result.idToken;
-          const expireDate = new Date();
-          expireDate.setDate(expireDate.getDate() + 1);
-
-          document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
-          document.cookie = `contractorId=${contractorId}; expires=${expireDate.toUTCString()}; path=/`;
-          document.cookie = `userType=contractor; expires=${expireDate.toUTCString()}; path=/`;
-      
+          
+         this.storage.set('contractorId', contractorId);
 
           resolve(result);
         },

@@ -18,6 +18,7 @@ export class CreateBudgetComponent extends ModalComponent implements OnInit{
 
   houseId: string | null = null;
   form!: FormGroup;
+  loading = false;
 
   public date = new Date();
 
@@ -26,6 +27,7 @@ export class CreateBudgetComponent extends ModalComponent implements OnInit{
    }
 
   ngOnInit() {
+    this.loading = false;
     this.route.params.subscribe(params => {
       this.houseId = params['houseId'] || null;
     });
@@ -44,12 +46,14 @@ export class CreateBudgetComponent extends ModalComponent implements OnInit{
   override async confirm() {
     if(this.form.valid)
     {
+      this.loading = true;
       const inventoryBudget = this.form.value.inventory;
       const maintenanceBudget = this.form.value.maintenance;
       const totalBudget = inventoryBudget + maintenanceBudget;
   
       this.budgetApiService.createBudget(totalBudget, maintenanceBudget, inventoryBudget, this.date, this.houseId!).subscribe({
-        next: async (response) => {
+        next: async () => {
+          this.loading = false;
           this.form.reset();
           this.closeModal();
 
@@ -60,8 +64,8 @@ export class CreateBudgetComponent extends ModalComponent implements OnInit{
           });
         },
         error: async (err) => {
+          this.loading = false;
           console.error("Failed to create budget", err);
-
           await this.presentToast('Failed to create budget', "danger");
         }
       });

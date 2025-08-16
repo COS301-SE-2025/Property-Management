@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonButton, IonItem, IonIcon, IonList, IonLabel, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
+import { IonContent, IonButton, IonItem, IonIcon, IonList, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { StorageService } from 'shared';
-import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from 'src/app/components/tab/tab.component';
 import { addIcons } from 'ionicons';
 import { moonOutline, sunnyOutline, textOutline, helpOutline, logOutOutline } from 'ionicons/icons';
@@ -12,7 +11,7 @@ import { ThemeService } from 'src/app/services/theme.service';
   selector: 'app-profile',
   standalone: true,
   imports: [
-    IonIcon, IonItem, IonButton, IonLabel, HeaderComponent, TabComponent, IonContent, IonList, IonSelect, IonSelectOption
+    IonIcon, IonItem, IonButton, TabComponent, IonContent, IonList, IonSelect, IonSelectOption
   ],
   templateUrl: './profile.component.html',
   styles: ``,

@@ -34,6 +34,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   form!: FormGroup;
   houseId = '';
   selectedFile: File | null = null;
+  loading = false;
   
   public capturedPhoto: string | null = null;
   public contractors: ContractorDetails[] | undefined = undefined;
@@ -69,6 +70,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.loading = false;
     this.route.params.subscribe(params => {
       this.houseId = params['houseId'] || null;
     });
@@ -117,6 +119,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   override async confirm() {
     if(this.form.valid)
     {
+      this.loading = true;
       this.addError = false;
       let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
 
@@ -150,7 +153,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
           {
             this.handleInventory(task.uuid);
           }
-
+          this.loading = false;
           this.form.reset();
           this.closeModal();
 
@@ -178,12 +181,14 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
             },
             error: (err) => {
               console.error("Failed to create task", err);
+              this.loading = false;
               this.addError = true;
             }
           })
         },
         error: (err) => {
           console.error("Failed to create task", err);
+          this.loading = false;
           this.addError = true;
         }
       });
@@ -202,39 +207,39 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
     this.inventoryItemsUsed = this.inventoryItemsAvailable.filter(item =>
       selectedIds.includes(item.itemUuid)
     );
- }
- private handleInventory(taskId: string)
- {
-  if(!this.inventoryItemsUsed) return;
+  }
+  private handleInventory(taskId: string)
+  {
+    if(!this.inventoryItemsUsed) return;
 
-  this.inventoryItemsUsed.forEach(item => {
-    this.inventoryCard.addItemToUsage(
-      taskId,
-      item.itemUuid,
-      item.quantityInStock
-    );
+    this.inventoryItemsUsed.forEach(item => {
+      this.inventoryCard.addItemToUsage(
+        taskId,
+        item.itemUuid,
+        item.quantityInStock
+      );
 
-    const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
-    if(org)
-    {
-      org.quantityInStock -= item.quantityInStock;
-      if(org.quantityInStock <= 0)
+      const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
+      if(org)
       {
-        this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
+        org.quantityInStock -= item.quantityInStock;
+        if(org.quantityInStock <= 0)
+        {
+          this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
 
-        this.housesService.deleteInvetoryItem(item);
+          this.housesService.deleteInvetoryItem(item);
+        }
+        else
+        {
+          this.housesService.updateInventory([org]);
+        }
       }
-      else
-      {
-        this.housesService.updateInventory([org]);
-      }
-    }
-  });
- }
- onQuantitiesChanged(updated: Inventory[])
- {
-  this.inventoryItemsUsed = updated;
- }
+    });
+  }
+  onQuantitiesChanged(updated: Inventory[])
+  {
+    this.inventoryItemsUsed = updated;
+  }
   private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
     const toast = await this.toastController.create({
       message,

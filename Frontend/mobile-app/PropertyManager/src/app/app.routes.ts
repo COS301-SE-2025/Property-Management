@@ -39,6 +39,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/manage-budget/manage-budget.component').then(m => m.ManageBudgetComponent)
     },
     {
+        path: 'view-task/:taskId',
+        loadComponent: () => import('./pages/view-task/view-task.component').then(m => m.ViewTaskComponent)
+    },
+    {
         path: 'profile',
         loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent)
     },
