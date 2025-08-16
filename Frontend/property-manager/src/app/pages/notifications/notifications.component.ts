@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, effect } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef, effect, inject } from '@angular/core';
 import { TimelineModule } from 'primeng/timeline';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -60,16 +60,27 @@ export class NotificationsComponent implements OnInit {
     private notificationService: NotificationsApiService,
     private messageService: MessageService,
     public drawerService: NotificationDrawerService 
-  ) {}
+  ) {
+    this.drawerService.fetchNotifications.subscribe(() => {
+      //console.log('fetchNotifications event received, calling loadTimeline');
+      this.loadTimeline();
+    });
+    this.drawerService.notificationRead.subscribe(() => {
+      //console.log('notificationRead event received, calling loadTimeline');
+      this.loadTimeline();
+    });
 
-  ngOnInit() {
-    this.loadTimeline();
 
     effect(() => {
       if (this.drawerService.drawerVisible()) {
+        //console.log('Effect triggered: Drawer is visible, calling loadTimeline');
         this.loadTimeline();
       }
     });
+  }
+
+  ngOnInit() {
+    this.loadTimeline();
   }
 
   loadTimeline() {

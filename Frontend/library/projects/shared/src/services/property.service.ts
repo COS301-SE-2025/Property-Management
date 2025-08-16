@@ -8,11 +8,10 @@ export interface CreateBuildingPayload {
   address: string;
   type: string;
   propertyValue: number;
-  // primaryContractor: string;
   latestInspectionDate?: string;
   trusteeUuid?: string;
   propertyImageId?: string | null;
-  coporateUuid?: string | null;
+  coporateUuid?: string | null; 
   area: number;
 }
 
@@ -27,7 +26,7 @@ export interface Building {
   area: number;
   buildingUuid?: string;
   trusteeUuid: string;
-  coporateUuid?: string | null;
+  coporateUuid?: string | null; 
 }
 
 export interface ImageUploadResponse {
@@ -47,9 +46,7 @@ export interface InviteWithTrustee {
 
 @Injectable({ providedIn: 'root' })
 export class PropertyService {
-  // private apiUrl = 'http://localhost:8080/api/buildings';
   private apiUrl = `${environmentMobile.apiUrl}/buildings`;
-  // private imageUploadUrl = 'http://localhost:8080/api/images/upload';
   private imageUploadUrl = `${environmentMobile.apiUrl}/images/upload`;
 
   constructor(private http: HttpClient) {}
@@ -89,7 +86,7 @@ export class PropertyService {
     return this.http.get<any>(`/api/body-corporates/${coporateUuid}`);
   }
 
-  sendInvite(payload: { trusteeUuid: string; coporateUuid: string }) {
-    return this.http.post('/api/invites', payload);
+  sendInvite(payload: { trusteeUuid: string; coporateUuid: string }): Observable<any> {
+    return this.http.post(`${environmentMobile.apiUrl}/invites`, payload);
   }
 }

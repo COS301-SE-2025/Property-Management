@@ -161,6 +161,10 @@ export class HeaderComponent {
 
   openNotifications() {
     this.notificationDrawerService.toggleDrawer(); 
+    if (this.notificationDrawerService.drawerVisible()) {
+      console.log('Drawer is opening, triggering fetch');
+      this.notificationDrawerService.triggerFetch();
+    }
   }
 
   private loadUnreadCount() {

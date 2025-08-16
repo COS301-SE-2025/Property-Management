@@ -262,6 +262,24 @@ button.bg-yellow-500 {
   color: #111 !important;
 }
 
+.dark-theme .propertyYellow-bg button {
+  //background-color: var(--dialog-bg); 
+  color: var(--text-color); 
+  border-color: var(--border-color); 
+}
+
+.dark-theme .propertyYellow-bg button a {
+  color: #000000;
+}
+
+.dark-theme .propertyYellow-bg button:hover {
+  background-color: var(--card-hover); 
+}
+
+.dark-theme .propertyYellow-bg button:hover a {
+  color: var(--text-color); 
+}
+
 .dark-theme .router-link-active,
 .dark-theme .text-yellow-500 {
   color: #facc15 !important;

@@ -13,7 +13,6 @@ import java.util.UUID
 class ContractorService(
     private val repository: ContractorRepository,
 ) {
-    
     fun getAll(): List<Contractor> = repository.findAll()
 
     @Cacheable(value = ["apiCache"], key = "#uuid")
