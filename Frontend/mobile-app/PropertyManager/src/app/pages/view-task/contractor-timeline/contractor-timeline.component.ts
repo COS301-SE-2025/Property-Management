@@ -45,7 +45,6 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
     this.themeService.darkMode$.subscribe(mode => {
         this.darkMode = mode;
     });
-    console.log(this.contractorUser); 
   }
 
   ngOnChanges(changes: SimpleChanges) {

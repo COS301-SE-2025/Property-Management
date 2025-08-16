@@ -1,7 +1,7 @@
-  <ion-card class="p-4 dark:bg-gray-900 no-outline-card flex items-start">
+  <ion-card class="p-4 dark:bg-gray-900 no-outline-card flex flex-col items-center">
     <p class="text-lg flex flex-col justify-center items-center font-semibold pb-4">Contractor timeline</p>
     <div>
-        <p class="flex flex-col justify-center items-start text-yellow-400 text-md p-3" *ngIf="timeline().length === 0 && !contractorUser">No updates from contractors yet, come back later</p>
+        <p class="flex flex-col justify-center items-center text-yellow-400 text-md p-3" *ngIf="timeline().length === 0 && !contractorUser">No updates from contractors yet, come back later</p>
         <p-timeline [value]="timeline()" align="left">
             <ng-template #marker let-time>
                <ng-container *ngIf="time.progressPercentage < 50">
@@ -40,7 +40,7 @@
     {
         <div class = "mt-4 flex flex-col justify-center items-center">
             <button (click)="inventoryAddDialog.openModal()">
-                <img class = "h-8 w-8" [src]="darkMode ? 'assets/icons/add_circle.svg' : 'assets/icons/add_circle_gray.svg'" alt="add inventory">
+                <img class = "h-8 w-8" [src]="darkMode ? 'assets/icons/add_circle_gray.svg' : 'assets/icons/add_circle.svg'" alt="add inventory">
             </button>
             <app-progress-dialog #inventoryAddDialog [taskId]="this.task.uuid" [inventoryItemsAvailable]="usageUsedByContractor"/>
         </div>

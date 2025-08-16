@@ -1,4 +1,4 @@
-<ion-modal>
+<ion-modal [isOpen]="displayModal">
   <ng-template>
     <ion-header class="bg-white dark:bg-gray-700">
        <ion-toolbar>
@@ -14,12 +14,12 @@
       <form [formGroup]="form" (ngSubmit)="confirm()" class="mx-auto max-w-lg">
         <div class="flex flex-col justify-center items-center">
             <div class="flex flex-col mx-5 gap-2 mt-5 pb-5">
-                <label for="progress-description" class="font-bold">Task progression update</label>
-                <textarea id="progress-description" class = "border rounded w-60 mx-auto h-10 px-2" formControlName = "description" required></textarea>
+                <label for="progress-description" class="font-bold dark:text-gray-300">Task progression update</label>
+                <textarea id="progress-description" class = "border rounded w-60 mx-auto h-5 px-2" formControlName = "description" required></textarea>
             </div>
             <div class="mb-4">
                 <div class="flex flex-col justify-center items-center">
-                    <p class="font-bold pb-2">Declare inventory items used</p>
+                    <p class="font-bold pb-2 dark:text-gray-300">Declare inventory items used</p>
                     <div class="flex justify-center">
                         <p-multiselect 
                             id="inventoryItems" 
@@ -54,8 +54,8 @@
                     ></app-inventory>
                 </div>
             </div>
-            <div class="pt-6 flex flex-col justify-center items-center">
-              <p class="dark:text-gray-200">Take image of the task</p>
+            <div class="pt-2 flex flex-col justify-center items-center">
+              <p class="dark:text-gray-300">Take image of the task</p>
               <ion-button (click)="capturePhoto()" fill="clear">
                 <ion-icon name="camera-outline"></ion-icon>
               </ion-button>
@@ -69,12 +69,12 @@
             </div>
           </div>
             <div class="flex flex-col mx-5 gap-2 mt-5 pb-5">
-                <label for="progress-number" class="font-bold">Estimate how far you are (0-100%)</label>
+                <label for="progress-number" class="font-bold dark:text-gray-300">Estimate how far you are (0-100%)</label>
                 <input id="progress-number" type="number" class = "border rounded px-2" formControlName = "progress" required>
             </div>
             <div class = "flex justify-end mt-3">
                 <button type="submit" 
-                    class = "px-3 py-2 rounded cursor-pointer  hover:translate-y-1 transition-transform duration-200"
+                    class = "px-3 py-2 rounded cursor-pointer"
                     [class.bg-black]="form.valid"
                     [class.bg-gray-200]="!form.valid"
                     [class.text-white]="form.valid"

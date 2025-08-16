@@ -1,5 +1,5 @@
 import { Component, DoCheck, Input, input } from '@angular/core';
-import { IonHeader, IonContent, IonToolbar, IonIcon, IonButton, IonButtons, IonModal } from "@ionic/angular/standalone";
+import { IonHeader, IonContent, IonToolbar, IonIcon, IonButton, IonButtons, IonModal, ToastController } from "@ionic/angular/standalone";
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { addIcons } from 'ionicons';
 import { CommonModule } from '@angular/common';
@@ -36,7 +36,8 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
     private inventoryUsageService: InventoryUsageApiService,
     private taskService: TaskApiService,
     private storageService: StorageService,
-    private photoService: PhotoService 
+    private photoService: PhotoService,
+    private toastController: ToastController 
   ) { 
     super();
     this.form = this.fb.group({
@@ -100,12 +101,7 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
         catch(err)
         {
           console.error("Image upload failed", err);
-
-          // this.messageService.add({
-          //   severity: 'error',
-          //   summary: 'Error',
-          //   detail: 'Failed to upload image, please try again'
-          // });
+          await this.presentToast('Failed to upload image, please try again', "warning");
         }
       }
 
@@ -114,53 +110,82 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
       const progress = this.form.value.progress;
       const id = await this.storageService.get('contractorId');
 
-      // TODO change so that contractor can select multiple items in usage
-      this.taskProgressService.createProgress(id, this.taskId(), imageId, des, itemsUsed.itemUuid, itemsUsed.quantity, progress).subscribe({
-        next: () => {
-
-          this.taskService.getTaskById(this.taskId()).subscribe({
-            next: (res) => {
-              
-              const noti: Notification = {
-                notificationType: "Task progress updated",
-                message: `Contractor has updated progress on ${res.title}`,
-                recipientType: 'trustee',
-                recipientUuid: res.tuuid,
-                isRead: false,
-                relatedTaskUuid: this.taskId()
+      if(itemsUsed)
+      {
+        // TODO change so that contractor can select multiple items in usage
+        this.taskProgressService.createProgress(id, this.taskId(), imageId, des, progress, itemsUsed.itemUuid, itemsUsed.quantity).subscribe({
+          next: () => {
+  
+            this.taskService.getTaskById(this.taskId()).subscribe({
+              next: (res) => {
+                
+                const noti: Notification = {
+                  notificationType: "Task progress updated",
+                  message: `Contractor has updated progress on ${res.title}`,
+                  recipientType: 'trustee',
+                  recipientUuid: res.tuuid,
+                  isRead: false,
+                  relatedTaskUuid: this.taskId()
+                }
+                this.notificationService.createNotifications(noti).subscribe({
+                  next: async () => {
+                    await this.presentToast('Task progress successfully added', "success")
+  
+                    this.closeModal();
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 2000);
+                  },
+                  error: async() => {
+                    await this.presentToast('Task progress unsuccessfully recorded', "danger");
+                  } 
+                })
+              },
+              error: async() => {
+                await this.presentToast('Task progress unsuccessfully recorded', "danger");
               }
-              this.notificationService.createNotifications(noti).subscribe({
-                next: () => {
-                  // this.messageService.add({
-                  //   severity: 'success',
-                  //   summary: 'Success',
-                  //   detail: 'Task progress successfully added'
-                  // });
-
-                  this.closeModal();
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 2000);
-                },
-                error: () => {
-                  // this.messageService.add({
-                  //   severity: 'error',
-                  //   summary: 'Error',
-                  //   detail: 'Task progress unsuccessfully added'
-                  // });
-                } 
-              })
-            },
-            error: () => {
-              // this.messageService.add({
-              //   severity: 'error',
-              //   summary: 'Error',
-              //   detail: 'Task progress unsuccessfully added'
-              // });
-            }
-          })
-        }
-      });
+            })
+          }
+        });
+      }
+      else
+      {
+        // TODO change so that contractor can select multiple items in usage
+        this.taskProgressService.createProgress(id, this.taskId(), imageId, des, progress).subscribe({
+          next: () => {
+  
+            this.taskService.getTaskById(this.taskId()).subscribe({
+              next: (res) => {
+                
+                const noti: Notification = {
+                  notificationType: "Task progress updated",
+                  message: `Contractor has updated progress on ${res.title}`,
+                  recipientType: 'trustee',
+                  recipientUuid: res.tuuid,
+                  isRead: false,
+                  relatedTaskUuid: this.taskId()
+                }
+                this.notificationService.createNotifications(noti).subscribe({
+                  next: async() => {
+                    await this.presentToast('Task progress succesfully recorded', "success")
+  
+                    this.closeModal();
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 2000);
+                  },
+                  error: async() => {
+                    await this.presentToast('Task progress unsuccessfully recorded', "danger");
+                  } 
+                })
+              },
+              error: async () => {
+                await this.presentToast('Task progress unsuccessfully recorded', "danger");
+              }
+            })
+          }
+        });
+      }
     }
   }
   override closeModal(): void {
@@ -231,5 +256,14 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
   {
     this.capturedPhoto = null;
     this.selectedFile = null;
+  }
+  private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,      
+      position: 'top'
+    });
+    await toast.present();
   }
 }
