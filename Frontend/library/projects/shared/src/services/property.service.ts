@@ -50,7 +50,7 @@ export class PropertyService {
   // private apiUrl = 'http://localhost:8080/api/buildings';
   private apiUrl = `${environmentMobile.apiUrl}/buildings`;
   // private imageUploadUrl = 'http://localhost:8080/api/images/upload';
-  private imageUploadUrl = `${this.apiUrl}/images/upload`;
+  private imageUploadUrl = `${environmentMobile.apiUrl}/images/upload`;
 
   constructor(private http: HttpClient) {}
 
