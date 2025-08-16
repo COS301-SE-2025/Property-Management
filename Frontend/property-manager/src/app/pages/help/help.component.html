@@ -1,15 +1,14 @@
 <!-- <app-header></app-header> -->
 
-
 <div class="relative min-h-screen bg-white">
 
-  
-   <div 
-    class="absolute inset-x-0 top-0 h-90 bg-cover bg-center blur-sm opacity-70 bg-[url('/assets/images/background.jpg')]
+  <!-- Background image -->
+  <div 
+    class="absolute inset-x-0 top-0 h-90 blur-sm opacity-70 help-background
            after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:h-16 after:bg-gradient-to-t after:from-white after:to-transparent"
   ></div>
   
-  <div class="relative p-8" [@fadeInStagger] >
+  <div class="relative p-8" [@fadeInStagger]>
     <!-- Title -->
     <div class="ml-15 mb-20 animate-item">
       <h2 class="text-3xl font-semibold font-lato text-black">Help settings</h2>
@@ -20,30 +19,35 @@
     <div class="flex flex-wrap justify-center gap-8 animate-item">
       <!-- Reset Password -->
       <a [routerLink]="['/reset-password']"
-        class="flex flex-col items-center bg-white justify-center border border-black text-black rounded-lg px-8 py-8 hover:bg-yellow-100 hover:mb-2 transition w-56" [ngStyle]="{'background-color': 'var(--bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)'}">
-        <img src="/assets/icons/screwdriver2.svg" alt="Reset" class="h-20 w-20 mb-2" />
+        class="flex flex-col items-center bg-white justify-center border border-black text-black rounded-lg px-8 py-8 hover:bg-yellow-100 hover:mb-2 transition w-56" 
+        [ngStyle]="{'background-color': 'var(--bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)'}">
+        <img src="assets/icons/screwdriver2.svg" alt="Reset" class="h-20 w-20 mb-2" />
         <span class="font-semibold text-lg font-lato">Reset password</span>
       </a>
 
       <!-- FAQs -->
       <button
-        class="flex flex-col items-center bg-white justify-center border border-black text-black rounded-lg px-8 py-8 hover:bg-yellow-100 hover:mb-2 transition w-56" [ngStyle]="{'background-color': 'var(--bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)'}">
-        <img src="/assets/icons/chat2.svg" alt="FAQs" class="h-20 w-20 mb-2" />
+        class="flex flex-col items-center bg-white justify-center border border-black text-black rounded-lg px-8 py-8 hover:bg-yellow-100 hover:mb-2 transition w-56" 
+        [ngStyle]="{'background-color': 'var(--bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)'}">
+        <img src="assets/icons/chat2.svg" alt="FAQs" class="h-20 w-20 mb-2" />
         <span class="font-semibold text-lg font-lato">FAQs</span>
       </button>
 
       <!-- User Manual -->
       <a
-          href="https://github.com/COS301-SE-2025/Property-Management/blob/main/docs/Demo%202%20Documentation/User%20Manual%20Document.md"
-          target="_blank"
-          rel="noopener noreferrer"
-        class="flex flex-col items-center bg-white justify-center border border-black text-black rounded-lg px-8 py-8 hover:bg-yellow-100 hover:mb-2 transition w-56" [ngStyle]="{'background-color': 'var(--bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)'}">
-        <img src="/assets/icons/user-question.svg" alt="Manual" class="h-20 w-20 mb-2" />
+        href="https://github.com/COS301-SE-2025/Property-Management/blob/main/docs/Demo%202%20Documentation/User%20Manual%20Document.md"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex flex-col items-center bg-white justify-center border border-black text-black rounded-lg px-8 py-8 hover:bg-yellow-100 hover:mb-2 transition w-56" 
+        [ngStyle]="{'background-color': 'var(--bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)'}">
+        <img src="assets/icons/user-question.svg" alt="Manual" class="h-20 w-20 mb-2" />
         <span class="font-semibold text-lg font-lato">User manual</span>
-    </a>
+      </a>
     </div>
-     <div class="mt-24 mb-12 animate-item">
-      <div class="max-w-3xl mx-auto bg-white  p-8 ">
+
+    <!-- Contact Section -->
+    <div class="mt-24 mb-12 animate-item">
+      <div class="max-w-3xl mx-auto bg-white p-8">
         <h3 class="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

@@ -16,6 +16,20 @@
   --dialog-mask-bg: rgba(0, 0, 0, 0.4);
 }
 
+.help-background {
+  background-image: url("/assets/images/background.jpg");
+  background-size: cover;
+  background-position: center;
+  filter: blur(4px);
+  opacity: 0.7;
+  height: 22.5rem; // adjust to your h-90 equivalent
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+
 .propertyYellow-bg {
   background-color: var(--property-yellow);
 }

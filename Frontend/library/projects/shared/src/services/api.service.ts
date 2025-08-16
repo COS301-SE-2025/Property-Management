@@ -128,6 +128,7 @@ export class ApiService {
     return this.http.get<Quote[]>(`${this.url}/quote`);
   }
 
+
   addQuote(
   t_uuid: string,
   c_uuid: string,
