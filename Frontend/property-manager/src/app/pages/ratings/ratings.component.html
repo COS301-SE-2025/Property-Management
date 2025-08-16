@@ -9,23 +9,24 @@
   <div class="border rounded-lg p-12 shadow-sm max-w-4xl mx-auto" [ngStyle]="{ 'background-color': 'var(--card-bg)', 'color': 'var(--text-color)' }">
     <form (ngSubmit)="submitRating()" #ratingForm="ngForm" class="grid grid-cols-2 gap-4">
       <div class="flex flex-col space-y-6 col-span-2">
-        <b><label for="task">Select a Task *</label></b>
+        <b><label for="task">Task *</label></b>
         <div class="mb-8">
           <p-floatlabel>
-            <select
+            <input
               id="task"
-              [(ngModel)]="selectedTaskUuid"
-              name="task"
-              required
-              class="custom-select" style="width: 91%;">
-              <option *ngFor="let task of tasks" [value]="task.uuid">{{ task.name }}</option>
-            </select>
+              pInputText
+              [value]="selectedTask?.name"
+              readonly
+              class="w-full col-span-2"
+              style="width: 91%;"
+            />
+            <label for="task">Task</label>
           </p-floatlabel>
         </div>
 
         <div class="mb-8" style="margin-top: 3.5rem;" *ngIf="selectedTask">
           <p-floatlabel>
-            <input id="contractor" pInputText [value]="selectedTask.contractor.name" readonly class="w-full col-span-2" style="width: 91%; " />
+            <input id="contractor" pInputText [value]="contractorName" readonly class="w-full col-span-2" style="width: 91%; " />
             <label for="contractor">Contractor</label>
           </p-floatlabel>
         </div>
@@ -37,7 +38,7 @@
             id="rating"
             name="rating"
             min="1"
-            max="10"
+            max="5"
             [(ngModel)]="selectedRating"
             class="w-full custom-slider"
             style="width: 91%;"
@@ -53,10 +54,8 @@
         </div>
 
         <div class="flex justify-end mt-0 col-span-2" style= "margin-right: 72px;">
-          <button type="submit" [disabled]="!selectedTaskUuid"
-            class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded font-semibold flex items-center gap-2"
-            [class.opacity-50]="!selectedTaskUuid"
-            [class.cursor-not-allowed]="!selectedTaskUuid">
+          <button type="submit"
+            class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded font-semibold flex items-center gap-2">
             Submit Rating
           </button>
         </div>
