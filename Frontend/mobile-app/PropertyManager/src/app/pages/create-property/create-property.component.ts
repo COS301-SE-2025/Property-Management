@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TabComponent } from 'src/app/components/tab/tab.component';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { ImageApiService, PropertyService, StorageService } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
@@ -35,7 +35,7 @@ export class CreatePropertyComponent {
   private storage = inject(StorageService);
   private imageService = inject(ImageApiService);
 
-  constructor() {
+  constructor(private toastController: ToastController) {
     this.form = this.fb.group({
       name: ['', Validators.required],
       area: ['', [Validators.required, Validators.min(0)]],
@@ -121,7 +121,6 @@ export class CreatePropertyComponent {
     //Upload file
     if(this.selectedImageFile)
     {
-      console.log('uploading image');
       const upload = await this.imageService.uploadImage(this.selectedImageFile).toPromise();
 
       if(upload)
@@ -145,6 +144,8 @@ export class CreatePropertyComponent {
     try {
       await this.propertyService.createProperty(payload).toPromise();
       this.isSubmitting = false;
+
+      await this.presentToast('Successfully created property', "success");
       this.router.navigate(['/home']).then(() => {
         window.location.reload();
       });
@@ -152,5 +153,14 @@ export class CreatePropertyComponent {
       this.submissionError = 'Failed to create property.';
       this.isSubmitting = false;
     }
+  }
+  private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,      
+      position: 'top'
+    });
+    await toast.present();
   }
 }
