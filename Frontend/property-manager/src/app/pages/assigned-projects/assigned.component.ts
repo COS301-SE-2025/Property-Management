@@ -39,6 +39,7 @@ import { MaintenanceTask } from 'shared';
 
 export class AssignedComponent implements OnInit{
    
+    //Fixing build
   tasks: MaintenanceTask[] = [];
   contractorId = localStorage.getItem('contractorID');
   constructor(private api: ApiService) {}
