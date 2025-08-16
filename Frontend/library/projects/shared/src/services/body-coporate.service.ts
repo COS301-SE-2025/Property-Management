@@ -219,7 +219,8 @@ export class BodyCoporateService {
         this.bodyCoporateApiService.getAllPublicContractors(bcId)
       );
       const contractorsWithImages = await Promise.all(
-        contractors.map(async (c) => {
+        contractors.filter(c => c.status).map(async (c) => {
+
           if(c.img) 
           {
             try{

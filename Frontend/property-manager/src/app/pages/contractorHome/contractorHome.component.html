@@ -1,5 +1,9 @@
 <app-header></app-header>
 
+<div class="flex justify-center items-center mt-10" *ngIf="loading">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
 <div class="min-h-screen bg-white relative"
     [@fadeInStagger]="true"
     [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">

@@ -7,7 +7,7 @@ import { environmentMobile } from '../../../environment';
 describe('TaskProgresApiService', () => {
   let service: TaskProgresApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:4200/api/task-progress';
+  const mockApiUrl = 'http://localhost:8080/api/task-progress';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -48,9 +48,9 @@ describe('TaskProgresApiService', () => {
         'task-123',
         'image-123',
         'Completed first phase',
+        50,
         'inventory-123',
-        10,
-        50
+        10
       ).subscribe(progress => {
         expect(progress.progressUuid).toBe('progress-123');
       });
@@ -87,8 +87,6 @@ describe('TaskProgresApiService', () => {
         'task-123',
         '', // empty imageId
         'Completed first phase',
-        '', // empty inventoryUsageId
-        0, // zero quantity
         50
       ).subscribe(progress => {
         expect(progress.progressUuid).toBe('progress-123');
@@ -100,8 +98,6 @@ describe('TaskProgresApiService', () => {
         taskUuid: 'task-123',
         imageId: '',
         workDescription: 'Completed first phase',
-        inventoryUsageUuid: '',
-        quantityUsed: 0,
         progressPercentage: 50
       });
       req.flush(mockResponse);

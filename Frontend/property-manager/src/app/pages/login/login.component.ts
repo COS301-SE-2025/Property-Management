@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from 'shared';
+import { AuthService, ContractorApiService, getCookieValue } from 'shared';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -27,7 +27,7 @@ export class LoginComponent {
 
   public selectedUserType = 'bodyCorporate';
 
-  constructor(private authService: AuthService, private router: Router){}
+  constructor(private authService: AuthService, private router: Router, private contractorService: ContractorApiService){}
 
   togglePassword()
   {
@@ -79,13 +79,23 @@ export class LoginComponent {
 
       // contractorProfileComplete is still checked in localStorage, 
       // but userType is now determined from the Cognito token
-      const profileComplete = localStorage.getItem('contractorProfileComplete');
-      if (profileComplete === 'true') {
-        this.router.navigate(['/contractorHome']);
-      } else {
-        this.router.navigate(['/contractor-prof']);
-      }
-      return;
+      const contractorId = getCookieValue(document.cookie, 'contractorId');
+
+      this.contractorService.getContractorById(contractorId!).subscribe({
+        next: (res) => {
+          if(res.status)
+          {
+            this.router.navigate(['/contractorHome']);
+            return;
+          }
+          else
+          {
+            this.router.navigate(['/contractor-prof']);
+            return;
+          }
+        }
+      });
+      this.router.navigate(['/contractor-prof']);
     } catch (error) {
       console.warn('Contractor login failed:', error);
 
