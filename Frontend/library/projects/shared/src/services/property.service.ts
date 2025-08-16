@@ -8,7 +8,7 @@ export interface CreateBuildingPayload {
   address: string;
   type: string;
   propertyValue: number;
-  primaryContractor: string;
+  // primaryContractor: string;
   latestInspectionDate?: string;
   trusteeUuid?: string;
   propertyImageId?: string | null;

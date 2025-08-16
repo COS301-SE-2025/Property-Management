@@ -20,7 +20,7 @@ import { DrawerComponent } from 'src/app/components/drawer/drawer.component';
   templateUrl: './create-property.component.html',
   styleUrls: ['./create-property.component.scss']
 })
-export class CreatePropertyComponent implements OnInit {
+export class CreatePropertyComponent {
   form: FormGroup;
   contractors: Contractor[] = [];
   capturedPhoto: string | null = null;
@@ -46,7 +46,7 @@ export class CreatePropertyComponent implements OnInit {
       city: [''],
       province: [''],
       type: ['', Validators.required],
-      primaryContractor: [''],
+      // primaryContractor: [''],
       bodyCorporate: [''],
       image: [null],
     });
@@ -54,9 +54,9 @@ export class CreatePropertyComponent implements OnInit {
     addIcons({ cameraOutline, trashOutline });
   }
 
-  async ngOnInit() {
-    this.loadContractors();
-  }
+  // async ngOnInit() {
+  //   this.loadContractors();
+  // }
 
   loadContractors(): void {
     this.contractorService.getAllContractors().subscribe({
@@ -136,7 +136,7 @@ export class CreatePropertyComponent implements OnInit {
       address: fullAddress,
       type: formValue.type,
       propertyValue: Number(formValue.propertyValue),
-      primaryContractor: formValue.primaryContractor,
+      // primaryContractor: formValue.primaryContractor,
       bodyCorporate: formValue.bodyCorporate,
       area: Number(formValue.area),
       propertyImageId: imageId,

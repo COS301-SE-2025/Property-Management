@@ -43,7 +43,7 @@
           <ion-input formControlName="type" placeholder="Type *"></ion-input>
         </ion-item>
       </div>
-      <ion-label class="font-semibold dark:text-white" style="display: block; padding-top: 5px;">
+      <!-- <ion-label class="font-semibold" style="display: block; padding-top: 5px;">
         Primary Contractors *
       </ion-label>
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
@@ -52,8 +52,8 @@
             {{ contractor.name }} - {{ contractor.services }}
           </ion-select-option>
         </ion-select>
-      </ion-item>
-      <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
+      </ion-item> -->
+      <ion-item class="rounded-lg border border-gray-300">
         <ion-input formControlName="bodyCorporate" placeholder="Invite members"></ion-input>
       </ion-item>
       <ion-item *ngIf="submissionError">
