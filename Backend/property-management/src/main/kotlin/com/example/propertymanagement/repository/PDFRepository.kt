@@ -10,8 +10,8 @@ import java.util.UUID
 
 interface PDFRepository : JpaRepository<PDFMeta, String>{
 
-    @Query("SELECT p FROM pdf_meta p WHERE p.contractor_uuid = :cUuid")
-    fun findAllByContractorUuid(
+    @Query("SELECT p FROM PDFMeta p WHERE p.cUuid = :cUuid")
+    fun findAllByCUuid(
         @Param("cUuid") cUuid: UUID,
     ): List<PDFMeta>
 }

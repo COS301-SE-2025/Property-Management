@@ -121,7 +121,7 @@ class PDFController(
         @PathVariable uuid: UUID,
     ): ResponseEntity<List<PDFMeta>> =
     try {
-        val pdf = PDFRepository.findAllByContractorUuid(uuid)
+        val pdf = PDFRepository.findAllByCUuid(uuid)
         ResponseEntity.ok(pdf)
     } catch (e: NoSuchElementException) {
         ResponseEntity.notFound().build()
