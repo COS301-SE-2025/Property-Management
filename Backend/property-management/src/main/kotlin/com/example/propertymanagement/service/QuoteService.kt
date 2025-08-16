@@ -2,7 +2,6 @@ package com.example.propertymanagement.service
 
 import com.example.propertymanagement.model.Quote
 import com.example.propertymanagement.repository.QuoteRepository
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -14,13 +13,13 @@ import java.util.UUID
 class QuoteService(
     private val repository: QuoteRepository,
 ) {
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getAll(): List<Quote> = repository.findAll()
 
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getById(uuid: UUID): Quote = repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getQuotesByTask(taskUuid: UUID): List<Quote> = repository.findAllByTaskUuid(taskUuid)
 
     fun add(item: Quote): Quote = repository.save(item)
@@ -32,6 +31,7 @@ class QuoteService(
         status: String,
         amount: BigDecimal,
         doc: String,
+        expiry_date: Date,
     ): Quote {
         val newQuote =
             Quote(
@@ -41,6 +41,7 @@ class QuoteService(
                 status = status,
                 amount = amount,
                 doc = doc,
+                expiry_date = expiry_date,
             )
         return add(newQuote)
     }
@@ -58,6 +59,7 @@ class QuoteService(
                 submitted_on = newItem.submitted_on ?: existing.submitted_on,
                 status = newItem.status ?: existing.status,
                 doc = newItem.doc ?: existing.doc,
+                expiry_date = newItem.expiry_date ?: existing.expiry_date,
             )
         return repository.save(updated)
     }
