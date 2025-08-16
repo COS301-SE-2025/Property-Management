@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../../components/header/header.component';
 import { PropertyService, InviteWithTrustee } from 'shared';
 
 @Component({
   selector: 'app-manage-members',
   standalone: true,
-  imports: [CommonModule, HeaderComponent],
+  imports: [CommonModule],
   templateUrl: './manage-members.component.html'
 })
 export class ManageMembersComponent implements OnInit {

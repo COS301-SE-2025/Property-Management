@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { HeaderComponent } from "../../components/header/header.component";
 import { PendingTaskCardComponent } from "./pending-task-card/pending-task-card.component";
 import { BodyCoporateService, getCookieValue } from 'shared';
 import { LifeCycleCardComponent } from "./life-cycle-card/life-cycle-card.component";
@@ -17,7 +16,6 @@ import { Toast } from "primeng/toast";
 @Component({
   selector: 'app-bc-home',
   imports: [
-    HeaderComponent, 
     PendingTaskCardComponent, 
     LifeCycleCardComponent, 
     ReserveFundCardComponent, 

@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'shared';
 import { Quote } from 'shared';
-import { HeaderComponent } from "../../components/header/header.component";
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-submitted-quotations',
   templateUrl: './submitted-quotations.component.html',
   standalone: true,
-  imports: [HeaderComponent, CommonModule, NgClass, NgStyle]
+  imports: [CommonModule, NgClass, NgStyle]
 })
 export class SubmittedQuotationsComponent implements OnInit {
   quotes: Quote[] = [];

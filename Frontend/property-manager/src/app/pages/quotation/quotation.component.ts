@@ -8,7 +8,6 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
 import { ApiService, getCookieValue } from 'shared'; 
-import { HeaderComponent } from "../../components/header/header.component";
 import { ActivatedRoute } from '@angular/router';
 import { DatePicker } from 'primeng/datepicker';
 import {
@@ -35,7 +34,6 @@ interface FileUploadEvent {
     CardModule,
     CommonModule,
     ToastModule,
-    HeaderComponent,
     FileUpload,
     DatePicker
   ],

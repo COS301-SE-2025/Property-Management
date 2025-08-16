@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { StepOneComponent } from './step-one.component';
 import { StepTwoComponent } from './step-two.component';
 import { StepThreeComponent } from './step-three.component';
-import { HeaderComponent } from '../../components/header/header.component';
 import { ContractorService } from 'shared';
 import { ContractorDetails } from 'shared';
 import { getCookieValue } from 'shared';
@@ -15,7 +14,7 @@ import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-contractor-profile',
   standalone: true,
-  imports: [CommonModule, StepOneComponent, StepTwoComponent, StepThreeComponent, HeaderComponent, ToastModule],
+  imports: [CommonModule, StepOneComponent, StepTwoComponent, StepThreeComponent, ToastModule],
   templateUrl: './contractor-profile.component.html',
   styleUrls: ['./contractor-profile.component.scss'],
   providers: [MessageService]
@@ -227,7 +226,7 @@ export class ContractorProfileComponent implements OnInit {
     this.imageError = false;
   }
 
-  onStepOneComplete(data: { name: string, email: string, phone: string, address: string, city: string, suburb: string, postalCode: string, status: boolean }) {
+  onStepOneComplete(data: { name: string; email: string; phone: string; address: string; city: string; suburb: string; postalCode: string; status: boolean }) {
     this.contractor.name = data.name;
     this.contractor.email = data.email;
     this.contractor.phone = data.phone;
@@ -243,7 +242,7 @@ export class ContractorProfileComponent implements OnInit {
     });
   }
 
-  onStepTwoComplete(data: { reg_number: string, descriptionSkills: string, services: string }) {
+  onStepTwoComplete(data: { reg_number: string; descriptionSkills: string; services: string }) {
     this.contractor.reg_number = data.reg_number;
     this.contractor.description = data.descriptionSkills;
     this.contractor.services = data.services;
@@ -261,8 +260,8 @@ export class ContractorProfileComponent implements OnInit {
     this.submitProfile();
   }
 
-  onStepThreeImagesSelected(file: File) {
-    const event = { target: { files: [file] } } as unknown as Event;
+  onStepThreeImagesSelected(files: FileList) {
+    const event = { target: { files } } as unknown as Event;
     this.onFileSelected(event, true);
   }
 }

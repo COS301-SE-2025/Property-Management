@@ -1,12 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { HeaderComponent } from "../../components/header/header.component";
 import { BodyCoporateService, getCookieValue } from 'shared';
 import { ContractorCardComponent } from './contractor-card/contractor-card.component';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-bc-contractors',
-  imports: [HeaderComponent, ContractorCardComponent],
+  imports: [ContractorCardComponent],
   templateUrl: './bc-contractors.component.html',
   styles: ``
 })
