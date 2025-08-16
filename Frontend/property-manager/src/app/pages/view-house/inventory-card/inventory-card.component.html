@@ -1,8 +1,8 @@
-<div class="flex flex-col items-center justify-center pt-5 p-4 bg-gray-300 dark:bg-gray-500 rounded-xl shadow-md">
+<div class="flex flex-col items-center justify-center pt-5 p-4 bg-gray-300 dark:bg-gray-500 rounded-xl">
     <p-toast></p-toast>
     <p-card class="text-center bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md">
         <ng-template #title>Inventory</ng-template>
-        <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '28rem' }">
+        <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '25rem' }">
             <ng-template #header>
                 <tr>
                     <th pSortableColumn="name">Description <p-sortIcon field="name"/></th>
