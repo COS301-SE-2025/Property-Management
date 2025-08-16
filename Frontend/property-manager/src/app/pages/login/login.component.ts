@@ -6,11 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { BaseIcon } from "primeng/icons/baseicon";
 
 @Component({
   selector: 'app-login',
-  imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule, BaseIcon],
+  imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule],
   templateUrl: './login.component.html',
   styles: ``,
 })

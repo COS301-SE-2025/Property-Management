@@ -13,6 +13,7 @@ import { CommonModule, NgClass, NgStyle } from '@angular/common';
 export class SubmittedQuotationsComponent implements OnInit {
   quotes: Quote[] = [];
 
+  //Fixing
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {

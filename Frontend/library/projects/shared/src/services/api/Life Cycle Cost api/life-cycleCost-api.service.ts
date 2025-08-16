@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 export interface CreateLifecycleCostRequest {
     coporateUuid: string;
@@ -46,7 +46,7 @@ export class LifecycleCostService {
     }
 
    getByCorporate(corporateUuid: string): Observable<LifecycleCostResponse[]> {
-        return this.http.get<LifecycleCostResponse[]>(`${this.url}/lifecycle-cost/coporate/${corporateUuid}`);
+        return this.http.get<LifecycleCostResponse[]>(`${this.url}/lifecycle-cost/coporate/${corporateUuid}`).pipe(map(res => res || []));
     }
 
     update(uuid: string, request: UpdateLifecycleCostRequest): Observable<LifecycleCostResponse> {

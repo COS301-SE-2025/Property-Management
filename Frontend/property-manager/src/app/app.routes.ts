@@ -162,9 +162,14 @@ export const routes: Routes = [
   },
   {
     path: 'ratings',
-    canActivate: [authGuard(['bodyCorporate'])],
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
     pathMatch: 'full',
     component: RatingsComponent
+  },
+  {
+  path: 'ratings/:taskId',
+  canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+  component: RatingsComponent
   },
   {
     path: 'landingPage',
