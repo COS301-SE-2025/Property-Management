@@ -11,15 +11,15 @@ import java.util.UUID
 class TrusteeService(
     private val repository: TrusteeRepository,
 ) {
-    @Cacheable("apiCache")
+    
     fun getAll(): List<Trustee> = repository.findAll()
 
-    @Cacheable("apiCache")
+    
     fun getById(id: UUID): Trustee = repository.findById(id).orElseThrow { NoSuchElementException("Item not found: $id") }
 
     fun add(item: Trustee): Trustee = repository.save(item)
 
-    @Cacheable("apiCache")
+    
     fun getByUuid(uuid: UUID): Trustee =
         repository.findByTrusteeUuid(uuid).orElseThrow { NoSuchElementException("Trustee not found: $uuid") }
 
@@ -67,7 +67,7 @@ class TrusteeService(
 
     fun delete(id: UUID) = repository.deleteById(id)
 
-    @Cacheable("apiCache")
+    
     fun getByEmail(email: String): Trustee =
         repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
 }

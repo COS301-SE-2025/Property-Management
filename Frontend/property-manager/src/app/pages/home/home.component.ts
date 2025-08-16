@@ -30,6 +30,8 @@ export class HomeComponent implements OnInit{
   houses = signal<Property[]>([]);
   private houseService = inject(HousesService);
   private bodyCoporateService = inject(BodyCoporateService);
+  bcUser = false;
+  
   constructor(private router: Router) {}
 
   async ngOnInit(){
@@ -38,11 +40,13 @@ export class HomeComponent implements OnInit{
     if(!id)
     {
       id = getCookieValue(document.cookie, 'bodyCoporateId');
+      this.bcUser = true;
       await this.bodyCoporateService.loadHouses(id);
       this.houses.set(this.bodyCoporateService.buildings());
     }
     else
     {
+      this.bcUser = false;
       await this.houseService.loadHouses(id);
       this.houses.set(this.houseService.houses());
     }

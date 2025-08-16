@@ -14,7 +14,10 @@
             <app-house-card [house]="house"/>
         </div>
     }
-    <button (click)="RouteToCreateProperty()" class = "cursor-pointer hover:translate-y-1 transition-transform duration-200">
-        <img class= "w-16 h-16" src= "assets/icons/add_circle.svg" alt="">
-    </button>
+    @if(!bcUser)
+    {
+      <button (click)="RouteToCreateProperty()" class = "cursor-pointer hover:translate-y-1 transition-transform duration-200">
+          <img class= "w-16 h-16" src= "assets/icons/add_circle.svg" alt="">
+      </button>
+    }
 </div>

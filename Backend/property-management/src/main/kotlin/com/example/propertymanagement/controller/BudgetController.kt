@@ -19,7 +19,6 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/budgets")
-@CrossOrigin(origins = ["*"])
 class BudgetController(
     private val budgetService: BudgetService,
 ) {
