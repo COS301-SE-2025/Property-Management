@@ -42,29 +42,30 @@ export class LoginComponent{
     this.passwordLimit = false;
 
     try{
-      await this.authService.trusteeLogin(this.email, this.password);
+     const trustee = await this.authService.trusteeLogin(this.email, this.password);
+     if(trustee){
       this.router.navigate(['/home']);
       return;
+     }
     }
     catch(err){
       console.warn('Trustee login failed', err);
     }
 
     try{
-      await this.authService.contractorLogin(this.email, this.password);
-      this.router.navigate(['/contractor-home']);
-      return;
+      const contractor = await this.authService.contractorLogin(this.email, this.password);
+      if(contractor)
+      {
+        this.router.navigate(['/contractor-home']);
+        return;
+      }
     }
-    catch(err){
-      console.warn('Contractor login failed', err);
+    catch(err) {
+  console.warn('Contractor login failed', err);
 
       if(err instanceof HttpErrorResponse && !err.error)
       {
         this.serverError = true;
-      }
-      else if(err instanceof HttpErrorResponse && err.error.error.includes('Password attempts exceeded'))
-      {
-        this.passwordLimit = true;
       }
       else
       {

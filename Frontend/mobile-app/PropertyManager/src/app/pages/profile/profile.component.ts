@@ -3,15 +3,15 @@ import { IonContent, IonButton, IonItem, IonIcon, IonList, IonSelect, IonSelectO
 import { StorageService } from 'shared';
 import { TabComponent } from 'src/app/components/tab/tab.component';
 import { addIcons } from 'ionicons';
-import { moonOutline, sunnyOutline, textOutline, helpOutline, logOutOutline } from 'ionicons/icons';
-import { Router } from '@angular/router';
+import { moonOutline, sunnyOutline, textOutline, helpOutline, logOutOutline,documentTextOutline } from 'ionicons/icons';
+import { Router, RouterModule } from '@angular/router';
 import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
-    IonIcon, IonItem, IonButton, TabComponent, IonContent, IonList, IonSelect, IonSelectOption
+    IonIcon, IonItem, IonButton, TabComponent, IonContent, IonList, IonSelect, IonSelectOption,RouterModule
   ],
   templateUrl: './profile.component.html',
   styles: ``,
@@ -19,16 +19,17 @@ import { ThemeService } from 'src/app/services/theme.service';
 export class ProfileComponent implements OnInit {
   public darkMode = false;
   public fontSize: string = 'normal'; // 'normal', 'large', 'small'
+   public userType: string | null= '';
 
   constructor(
     private storage: StorageService,
     private router: Router,
     private theme: ThemeService
   ) {
-    addIcons({ moonOutline, sunnyOutline, textOutline, helpOutline, logOutOutline });
+    addIcons({ moonOutline, sunnyOutline, textOutline, helpOutline, logOutOutline,documentTextOutline });
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.theme.darkMode$.subscribe(mode => {
       this.darkMode = mode;
       this.applyTheme();
@@ -37,9 +38,12 @@ export class ProfileComponent implements OnInit {
     this.storage.get('fontSize').then(font => {
       this.fontSize = font || 'normal';
       this.applyFontSize();
-    });
-  }
 
+      
+    });
+      this.userType = await this.storage.get('userType') || '';
+  }
+   
   changeTheme(): void {
     this.theme.toggleTheme();
     // ThemeService should emit the new value, triggering applyTheme via subscription

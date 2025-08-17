@@ -5,5 +5,6 @@ export interface Quote {
   amount: number;
   doc: string;            
   status: string;         
-  submitted_on: number;   
+  submitted_on: number;
+  expiry_date: string;   
 }
