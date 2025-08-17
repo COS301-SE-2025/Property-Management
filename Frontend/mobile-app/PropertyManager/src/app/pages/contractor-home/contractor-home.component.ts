@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {  RouterModule } from '@angular/router';
-import { IonContent } from '@ionic/angular/standalone';
+import { Router, RouterModule } from '@angular/router';
+import { IonContent, IonImg } from '@ionic/angular/standalone';
 import { ApiService } from 'shared';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from 'src/app/components/tab/tab.component';
@@ -13,6 +13,9 @@ import {
   query,
   stagger
 } from '@angular/animations';
+import { MaintenanceTask } from 'shared';
+import { catchError, forkJoin, map, of } from 'rxjs';
+import { StorageService } from 'shared';
 
 @Component({
   selector: 'app-contractor-home',
@@ -22,7 +25,8 @@ import {
     IonContent,
     RouterModule,
     HeaderComponent,
-    TabComponent
+    TabComponent,
+    IonImg
   ],
   templateUrl: './contractor-home.component.html',
   styles: ``,
@@ -41,44 +45,53 @@ import {
 })
 export class ContractorHomeComponent implements OnInit {
   private api = inject(ApiService);
-  // tasks: MaintenanceTask2[] = [];
-  contractorId = this.api.getCookieValue('contractorId');
+  private storage = inject(StorageService);
+  tasks: MaintenanceTask[] = [];
+  contractorId: string | null = null;
 
+  constructor(private router: Router) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.contractorId = await this.storage.get('contractorID');
     if (!this.contractorId) {
-      console.warn('Contractor ID not found in localStorage.');
+      console.warn('Contractor ID not found in storage.');
       return;
     }
 
-    // this.api.getMaintenanceTasks().subscribe({
-    //   next: (tasks) => {
-        // const filteredTasks = tasks.filter(task => (task as MaintenanceTask2).c_uuid === this.contractorId);
+  
+    this.api.getContractorMaintenanceTasks(this.contractorId).subscribe({
+      next: (tasks) => {
+        const taskRequests = tasks.map(task => {
+          const taskWithDefault = {
+            ...task,
+            img: 'assets/images/default.jpeg'
+          };
 
-// const taskRequests = filteredTasks.map(task =>
-//   task.img
-//     ? this.api.getPresignedImageUrl(task.img).pipe(
-//         map(imageUrl => ({ ...(task as MaintenanceTask2), img: imageUrl || 'assets/images/default.jpeg' })),
-//         catchError(() => of({ ...(task as MaintenanceTask2), img: 'assets/images/default.jpeg' }))
-//       )
-//     : of({ ...(task as MaintenanceTask2), img: 'assets/images/default.jpeg' })
-// );
+          if (task.img) {
+            return this.api.getPresignedImageUrl(task.imageUuid ?? '').pipe(
+              map(imageUrl => ({
+                ...task,
+                img: imageUrl || 'assets/images/default.jpeg'
+              })),
+              catchError(() => of(taskWithDefault))
+            );
+          }
+          return of(taskWithDefault);
+        });
 
-// forkJoin(taskRequests).subscribe(taskList => {
-//   this.tasks = taskList as MaintenanceTask2[];
-// });
-//       },
-//       error: err => console.error('Failed to load tasks', err)
-//     });
-//   }
-
-//   goToQuotationPage(task: MaintenanceTask2) {
-   
-//      this.router.navigate(['/quotation', task.t_uuid]);
-//   }
-
-//   constructor(private router: Router) {}
-// }
-      // }
-    }
+        forkJoin(taskRequests).subscribe(taskList => {
+          this.tasks = taskList;
+        });
+      },
+      error: err => console.error('Failed to load tasks', err)
+    });
   }
+
+  goToQuotationPage(task: MaintenanceTask) {
+    this.router.navigate(['/quotation', task['taskUuid']]);
+  }
+
+  handleImageError(task: MaintenanceTask) {
+    task.imageUuid = 'assets/images/default.jpeg';
+  }
+}
