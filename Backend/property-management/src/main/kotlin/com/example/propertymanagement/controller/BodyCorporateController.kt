@@ -8,7 +8,6 @@ import com.example.propertymanagement.dto.LoginRequest
 import com.example.propertymanagement.dto.LoginResponse
 import com.example.propertymanagement.dto.UpdateBodyCorporateRequest
 import com.example.propertymanagement.service.BodyCorporateService
-import com.example.propertymanagement.service.CognitoService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -32,7 +31,6 @@ import java.util.UUID
 @RequestMapping("/api/body-corporates")
 class BodyCorporateController(
     private val bodyCorporateService: BodyCorporateService,
-    private val cognitoService: CognitoService,
 ) {
     @PostMapping("/register")
     fun registerBodyCorporate(
@@ -179,31 +177,5 @@ class BodyCorporateController(
     fun getBodyCorporateStatistics(): ResponseEntity<BodyCorporateService.BodyCorporateStatistics> {
         val statistics = bodyCorporateService.getBodyCorporateStatistics()
         return ResponseEntity.ok(statistics)
-    }
-
-    data class PasswordResetRequest(
-        val email: String,
-    )
-
-    data class PasswordResetConfirmRequest(
-        val email: String,
-        val confirmationCode: String,
-        val newPassword: String,
-    )
-
-    @PostMapping("/auth/password-reset-request")
-    fun passwordResetRequest(
-        @RequestBody request: PasswordResetRequest,
-    ): ResponseEntity<Map<String, String>> {
-        cognitoService.initiatePasswordReset(request.email)
-        return ResponseEntity.ok(mapOf("message" to "Password reset code sent to your email."))
-    }
-
-    @PostMapping("/auth/password-reset-confirm")
-    fun passwordResetConfirm(
-        @RequestBody request: PasswordResetConfirmRequest,
-    ): ResponseEntity<Map<String, String>> {
-        cognitoService.confirmPasswordReset(request.email, request.confirmationCode, request.newPassword)
-        return ResponseEntity.ok(mapOf("message" to "Password has been reset successfully."))
     }
 }

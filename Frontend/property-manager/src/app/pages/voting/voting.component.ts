@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from '../../components/header/header.component';
 import { getCookieValue, MaintenanceTask, Voting, VotingService, FormatDatePipe } from 'shared';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TableModule, TableRowSelectEvent  } from "primeng/table";
@@ -12,7 +13,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-voting',
-  imports: [CommonModule, TableModule, FormatDatePipe, FormsModule, TagModule, DropdownModule, SelectModule, ProgressSpinnerModule],
+  imports: [HeaderComponent, CommonModule, TableModule, FormatDatePipe, FormsModule, TagModule, DropdownModule, SelectModule, ProgressSpinnerModule],
   templateUrl: './voting.component.html',
   styles: `
     .due-date-normal{

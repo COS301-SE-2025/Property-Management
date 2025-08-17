@@ -165,30 +165,4 @@ class ContractorController(
 
     // Optional: API key generator utility
     private fun generateApiKey(): String = UUID.randomUUID().toString().replace("-", "")
-
-    data class PasswordResetRequest(
-        val email: String,
-    )
-
-    data class PasswordResetConfirmRequest(
-        val email: String,
-        val confirmationCode: String,
-        val newPassword: String,
-    )
-
-    @PostMapping("/auth/password-reset-request")
-    fun passwordResetRequest(
-        @RequestBody request: PasswordResetRequest,
-    ): ResponseEntity<Map<String, String>> {
-        cognitoService.initiatePasswordReset(request.email)
-        return ResponseEntity.ok(mapOf("message" to "Password reset code sent to your email."))
-    }
-
-    @PostMapping("/auth/password-reset-confirm")
-    fun passwordResetConfirm(
-        @RequestBody request: PasswordResetConfirmRequest,
-    ): ResponseEntity<Map<String, String>> {
-        cognitoService.confirmPasswordReset(request.email, request.confirmationCode, request.newPassword)
-        return ResponseEntity.ok(mapOf("message" to "Password has been reset successfully."))
-    }
 }

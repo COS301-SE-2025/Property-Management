@@ -1,4 +1,6 @@
+<app-header />
 <p-toast></p-toast>
+
 <div class="px-10 py-8" [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
   <h2 class="text-2xl font-bold mb-2">Contractor Profile</h2>
   <div class="h-1 w-64 bg-yellow-400 mb-6"></div>
@@ -18,8 +20,8 @@
       <div>
         <ng-container [ngSwitch]="step">
           <app-step-one *ngSwitchCase="1" (next)="onStepOneComplete($event)"></app-step-one>
-          <app-step-two *ngSwitchCase="2" (back)="step = 1" (next)="onStepTwoComplete($event)"></app-step-two>
-          <app-step-three *ngSwitchCase="3" (back)="step = 2" (done)="onStepThreeComplete($event)" (imagesSelected)="onStepThreeImagesSelected($event)"></app-step-three>
+          <app-step-two *ngSwitchCase="2" (next)="onStepTwoComplete($event)" (back)="step = 1"></app-step-two>
+          <app-step-three *ngSwitchCase="3" (back)="step = 2" (done)="onStepThreeComplete($event)"></app-step-three>
         </ng-container>
       </div>
       <div *ngIf="step === 1" class="flex flex-col items-center justify-start gap-4 py-14">

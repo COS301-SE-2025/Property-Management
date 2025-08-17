@@ -8,6 +8,7 @@ import { BodyCoporateService } from 'shared';
 // import { TaskDialogComponent } from '../../task-dialog/task-dialog.component';
 // import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HeaderComponent } from '../../../components/header/header.component';
 import { ContractorDetails } from 'shared';
 import { FormatPhoneNumberPipe } from "shared";
 import { getCookieValue } from 'shared';
@@ -16,7 +17,7 @@ import { ImageApiService } from 'shared';
 
 @Component({
   selector: 'app-contractor-details',
-  imports: [CommonModule, TableModule, ListboxModule, FormatPhoneNumberPipe, ToastModule],
+  imports: [CommonModule, TableModule, ListboxModule, HeaderComponent, FormatPhoneNumberPipe, ToastModule],
   templateUrl: './contractor-details.component.html',
   styles: ``,
   providers: [MessageService]

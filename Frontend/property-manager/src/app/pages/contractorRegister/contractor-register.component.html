@@ -1,3 +1,5 @@
+<div class = "flex w-full justify-center items-center h-screen">
+       <div class="flex w-full h-screen shadow-lg rounded-none overflow-hidden border">
 
           <div class="w-2/6 bg-white flex flex-col items-center justify-center p-6">
           <img class="h-40 mb-4" src="assets/images/logo.png" alt="App logo">
@@ -50,19 +52,17 @@
             <div *ngIf="emptyField || userError || serverError" class="pl-20">
               <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">Email or password missing</p>
 
-              <p *ngIf="userError" class="text-red-500 py-1 font-semibold rounded">Email or password incorrect</p
+              <p *ngIf="userError" class="text-red-500 py-1 font-semibold rounded">Email or password incorrect</p>
 
-      <div *ngIf="errors.server" class="flex flex-col justify-center items-center">
-        <p role="alert" class="text-red-500 py-1 font-semibold rounded">{{ errors.server }}</p>
-      </div>
+              <p *ngIf="serverError" class="text-red-500 py-1 font-semibold rounded">Internal server error</p>
+            </div>
 
-      <div class="text-center text-sm space-y-2">
-        <a class="block" href="">Forgot password?</a>
-        <a class="font-semibold" href="/registerHub">Create Account?</a>
-        <br>
-        <a class="font-bold" href="/login">Login?</a>
+            <div class = "text-center text-sm space-y-2">
+              <a class = "block" href="">Forgot password?</a>
+              <a class = "font-semibold" href="/registerHub">Create Account?</a>
+              <br>
+              <a class = "font-bold" href="/login">Login?</a>
+            </div>
+        </div>
       </div>
-    </div>
   </div>
-</div>
-```

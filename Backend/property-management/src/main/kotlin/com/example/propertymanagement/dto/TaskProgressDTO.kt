@@ -1,7 +1,7 @@
 package com.example.propertymanagement.dto
 
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.util.UUID
 
 data class CreateTaskProgressDTO(
@@ -25,7 +25,7 @@ data class UpdateTaskProgressDTO(
 
 data class TaskProgressResponseDTO(
     val progressUuid: UUID,
-    val submissionDate: LocalDateTime,
+    val submissionDate: OffsetDateTime,
     val contractorUuid: UUID,
     val taskUuid: UUID,
     val imageId: String?,
@@ -34,5 +34,5 @@ data class TaskProgressResponseDTO(
     val inventoryUsageUuid: UUID?,
     val quantityUsed: Int?,
     val remarks: String?,
-    val lastUpdated: LocalDateTime,
+    val lastUpdated: OffsetDateTime,
 )

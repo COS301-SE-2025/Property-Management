@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { StepOneComponent } from './step-one.component';
 import { StepTwoComponent } from './step-two.component';
 import { StepThreeComponent } from './step-three.component';
+import { HeaderComponent } from '../../components/header/header.component';
 import { ContractorService } from 'shared';
 import { ContractorDetails } from 'shared';
 import { getCookieValue } from 'shared';
@@ -14,14 +15,16 @@ import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-contractor-profile',
   standalone: true,
-  imports: [CommonModule, StepOneComponent, StepTwoComponent, StepThreeComponent, ToastModule],
+  imports: [CommonModule, StepOneComponent, StepTwoComponent, StepThreeComponent, HeaderComponent, ToastModule],
   templateUrl: './contractor-profile.component.html',
   styleUrls: ['./contractor-profile.component.scss'],
-  providers: [MessageService]
+  providers: [MessageService] 
 })
+
+
 export class ContractorProfileComponent implements OnInit {
   public isDarkMode = false;
-  public imagePreviewUrl: string | null = null;
+  public imagePreviewUrl: string | null = null; 
   public imageError = false;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
@@ -43,16 +46,11 @@ export class ContractorProfileComponent implements OnInit {
     img: '',
   };
 
-  constructor(
-    private contractorService: ContractorService,
-    private imageService: ImageApiService,
-    private router: Router,
-    private messageService: MessageService
-  ) {}
+  constructor(private contractorService: ContractorService, private imageService: ImageApiService, private router: Router, private messageService: MessageService) {}
 
   step = 1;
 
-  ngOnInit() {
+   ngOnInit() {
     this.isDarkMode = document.documentElement.classList.contains('dark-theme');
     const contractorId = getCookieValue(document.cookie, 'contractorId');
     if (contractorId) {
@@ -65,10 +63,13 @@ export class ContractorProfileComponent implements OnInit {
                 this.imagePreviewUrl = imageUrl;
               },
               error: (err) => {
+
                 if(contractor.status === false)
                 {
                   this.resetImage();
-                } else {
+                }
+                else
+                {
                   console.error('Error loading image:', err);
                   this.imageError = true;
                 }
@@ -89,99 +90,68 @@ export class ContractorProfileComponent implements OnInit {
     this.contractorService.updateContractor(contractorId, this.contractor).subscribe({
       next: () => {
         // localStorage.setItem('contractorProfileComplete', 'true'); 
+
         this.messageService.add({
           severity: 'success',
           summary: 'Profile Complete',
-          detail: 'Your profile is now complete!',
-          life: 3000
-        });
-        setTimeout(() => {
-          this.router.navigate(['/contractor']);
-        }, 1500);
+          detail: 'Your profile is now complete!'
+       });
+
+       setTimeout(() => {
+        this.router.navigate(['/contractor']);
+       }, 1500);
+
       },
       error: (err) => {
         this.messageService.add({
-          severity: 'error',
+          severity: 'danger',
           summary: 'Profile',
-          detail: 'Error occurred during profile creation, Please try again',
-          life: 3000
-        });
-        console.error(err);
+          detail: 'Error occured during profile creation, Please try again'
+       });
+
+       console.error(err);
       }
     });
   }
 
-  onFileSelected(event: Event, isStepThree: boolean = false) {
+  async onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files && input.files[0];
     if (file) {
       if (file.size > 3 * 1024 * 1024) {
         this.imageError = true;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'File size exceeds 3MB limit. Please select a smaller file.',
-          life: 3000
-        });
-        if (!isStepThree) {
-          this.fileInput.nativeElement.value = '';
-        }
+        alert('File size exceeds 3MB limit. Please select a smaller file.');
         return;
       }
 
       if (!file.type.startsWith('image/')) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Please upload an image file',
-          life: 3000
-        });
+        alert('Please upload an image file');
+        this.fileInput.nativeElement.value = '';
         this.imageError = true;
-        if (!isStepThree) {
-          this.fileInput.nativeElement.value = '';
-        }
         return;
       }
 
       console.log("File selected:", file.name);
 
-      if (!isStepThree) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imagePreviewUrl = e.target?.result as string;
-          this.imageError = false;
-        };
-        reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagePreviewUrl = e.target?.result as string;
+        this.imageError = false; 
       }
-
-      // Upload to server
+      reader.readAsDataURL(file);
+      //Upload to server
       this.imageService.uploadImage(file).subscribe({
         next: (response) => {
           console.log("File successfully uploaded:", response);
           this.contractor.img = response.imageId;
           this.loadImage(response.imageId);
-          if (isStepThree) {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Images uploaded',
-              life: 3000
-            });
-          }
         },
         error: (err) => {
           console.error('Error uploading image:', err);
           this.imageError = true;
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: isStepThree ? 'Failed to upload image, try again' : 'Error uploading image. Please try again.',
-            life: 3000
-          });
+          alert('Error uploading image. Please try again.');
           this.imagePreviewUrl = null;
-          if (!isStepThree) {
-            this.fileInput.nativeElement.value = '';
-          }
+          this.fileInput.nativeElement.value = ''; 
         }
       });
     }
@@ -191,12 +161,13 @@ export class ContractorProfileComponent implements OnInit {
     this.imageService.getImage(imageId).subscribe({
       next: (imageUrl) => {
         this.imagePreviewUrl = imageUrl;
-        this.imageError = false;
+        this.imageError = false; 
         const img = new Image();
         img.src = imageUrl;
         img.onerror = () => {
           console.error('Pre-signed URL expired or invalid for image:', imageId);
           this.imageError = true;
+
           this.imageService.getImage(imageId).subscribe({
             next: (newUrl) => {
               this.imagePreviewUrl = newUrl;
@@ -220,12 +191,12 @@ export class ContractorProfileComponent implements OnInit {
 
   resetImage() {
     this.imagePreviewUrl = null;
-    this.fileInput.nativeElement.value = '';
+    this.fileInput.nativeElement.value = ''; 
     this.contractor.img = '';
     this.imageError = false;
   }
 
-  onStepOneComplete(data: { name: string; email: string; phone: string; address: string; city: string; suburb: string; postalCode: string; status: boolean }) {
+  onStepOneComplete(data: {name: string, email: string, phone: string, address: string, city: string, suburb: string, postalCode: string, status: boolean}){
     this.contractor.name = data.name;
     this.contractor.email = data.email;
     this.contractor.phone = data.phone;
@@ -233,34 +204,30 @@ export class ContractorProfileComponent implements OnInit {
     this.contractor.city = data.city;
     this.contractor.status = data.status;
     this.step = 2;
+
     this.messageService.add({
       severity: 'success',
       summary: 'Step 1 Complete',
-      detail: 'Your details have been saved.',
-      life: 3000
+      detail: 'Your details have been saved.'
     });
   }
 
-  onStepTwoComplete(data: { reg_number: string; descriptionSkills: string; services: string }) {
+  onStepTwoComplete(data: {reg_number: string, descriptionSkills: string, services: string})
+  {
     this.contractor.reg_number = data.reg_number;
     this.contractor.description = data.descriptionSkills;
     this.contractor.services = data.services;
     this.step = 3;
+
     this.messageService.add({
       severity: 'success',
       summary: 'Step 2 Complete',
-      detail: 'Registration details saved.',
-      life: 3000
+      detail: 'Registration details saved.'
     });
   }
 
-  onStepThreeComplete(data: { description: string }) {
+  onStepThreeComplete(data: {description: string}) {
     this.contractor.project_history = data.description;
     this.submitProfile();
-  }
-
-  onStepThreeImagesSelected(files: FileList) {
-    const event = { target: { files } } as unknown as Event;
-    this.onFileSelected(event, true);
   }
 }

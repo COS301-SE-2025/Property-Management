@@ -128,22 +128,21 @@ export class ApiService {
     return this.http.get<Quote[]>(`${this.url}/quote`);
   }
 
-
   addQuote(
-  taskUuid: string,
-  contractorUuid: string,
-  submittedOn: Date,
+  t_uuid: string,
+  c_uuid: string,
+  submitted_on: Date,
   status: string,
   amount: number,
-  documentUrl: string
+  doc: string
 ): Observable<Quote> {
   const quote = {
-    taskUuid: taskUuid,
-    contractorUuid: contractorUuid,
-    submittedOn: submittedOn.toISOString(), // ensure ISO string format
-    status: status,
-    amount: amount,
-    documentUrl: documentUrl
+    t_uuid,
+    c_uuid,
+    submitted_on: submitted_on.toISOString(), // ensure ISO string format
+    status,
+    amount,
+    doc
   };
   return this.http.post<Quote>(`${this.url}/quote`, quote);
 }

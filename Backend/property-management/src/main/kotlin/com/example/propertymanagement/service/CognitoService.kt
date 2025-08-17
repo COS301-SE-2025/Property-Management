@@ -9,9 +9,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityPr
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminInitiateAuthRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AuthFlowType
-import software.amazon.awssdk.services.cognitoidentityprovider.model.ConfirmForgotPasswordRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ConfirmSignUpRequest
-import software.amazon.awssdk.services.cognitoidentityprovider.model.ForgotPasswordRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.SignUpRequest
 
 @Service
@@ -106,30 +104,4 @@ class CognitoService(
         val accessToken: String,
         val refreshToken: String,
     )
-
-    fun initiatePasswordReset(username: String) {
-        val request =
-            ForgotPasswordRequest
-                .builder()
-                .clientId(clientId)
-                .username(username)
-                .build()
-        cognitoClient.forgotPassword(request)
-    }
-
-    fun confirmPasswordReset(
-        username: String,
-        confirmationCode: String,
-        newPassword: String,
-    ) {
-        val request =
-            ConfirmForgotPasswordRequest
-                .builder()
-                .clientId(clientId)
-                .username(username)
-                .confirmationCode(confirmationCode)
-                .password(newPassword)
-                .build()
-        cognitoClient.confirmForgotPassword(request)
-    }
 }

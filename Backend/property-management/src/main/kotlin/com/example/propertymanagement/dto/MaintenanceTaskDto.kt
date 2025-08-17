@@ -54,5 +54,4 @@ data class QuoteCreateDto(
     val contractorUuid: UUID,
     val submittedOn: Date? = Date(System.currentTimeMillis()),
     val status: String = "SUBMITTED",
-    val expiryDate: Date? = Date(System.currentTimeMillis() + (14L * 24 * 60 * 60 * 1000)),
 )
