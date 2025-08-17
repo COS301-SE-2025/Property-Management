@@ -15,7 +15,7 @@ import {
   selector: 'app-submitted-quotations',
   templateUrl: './submitted-quotations.component.html',
   standalone: true,
-  imports: [HeaderComponent, CommonModule, NgClass, NgStyle],
+  imports: [ CommonModule, NgClass, NgStyle],
   animations: [
         trigger('fadeInStagger', [
             transition(':enter', [
