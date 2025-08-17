@@ -80,5 +80,13 @@ export const routes: Routes = [
     {
         path: 'notifications',
         loadComponent: () => import('./pages/notification/notification.component').then(m => m.NotificationComponent)
+    },
+    {
+        path:'assigned-tasks',
+        loadComponent: () => import('./pages/assigned-projects/assigned.component').then(m => m.AssignedComponent)
+    },
+    {
+        path:'submitted-quotations',
+        loadComponent: () => import('./pages/submitted-quotations/submitted-quotations.component').then(m => m.SubmittedQuotationsComponent)    
     }
 ];

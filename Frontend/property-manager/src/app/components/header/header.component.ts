@@ -1,13 +1,15 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { afterNextRender, Component, effect, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { AuthService } from 'shared';
+import { AuthService, NotificationsApiService, Notification, getCookieValue } from 'shared';
 import { NavigationEnd, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { filter } from 'rxjs';
 import { BreadCrumbService } from '../breadcrumb/breadcrumb.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
+import { NotificationDrawerService } from '../../../../../library/projects/shared/src/services/notification-drawer.service';
+
 
 type UserType = 'contractor' | 'bodyCorporate' | 'trustee' | null;
 
@@ -50,6 +52,7 @@ export class HeaderComponent {
   public items: MenuItem[] = [];
   public isContractor = false; 
   public isBodyCorporate = false; 
+  public unreadCount = 0;
 
   @ViewChild('profileDropDown') profileDropDown!: ElementRef;
   @ViewChild('settingsDropDown') settingsDropDown!: ElementRef;
@@ -87,13 +90,6 @@ export class HeaderComponent {
     ]
   },
   'contractor': {
-    '/home': [
-      { label: 'Home', route: '/contractorHome' }
-    ],
-    '/contractorHome': [
-      { label: 'Home', route: '/contractorHome' },
-      { label: 'Contractor Dashboard', route: '/contractorHome' }
-    ],
     '/contractor-prof': [
       { label: 'Home', route: '/contractorHome' },
       { label: 'Profile', route: '/contractor-prof' }
@@ -102,17 +98,27 @@ export class HeaderComponent {
       { label: 'Home', route: '/contractorHome' },
       { label: 'Quotations', route: '/quotation' }
     ]
+    ,
+    '/assigned-projects': [
+      { label: 'Home', route: '/contractorHome' },
+      { label: 'Assigned projects', route: '/assigned-projects' }
+    ],
+    '/submitted-quotations': [
+      { label: 'Home', route: '/contractorHome' },
+      { label: 'Submitted quotations', route: '/submitted-quotations' }
+    ]
   }
   };
 
   userType: UserType = null;
   navLinks: NavLink[] = [];
 
-  constructor(private authService: AuthService, private router: Router, private elementRef: ElementRef, private breadCrumbService: BreadCrumbService){
+  constructor(private authService: AuthService, private router: Router, private elementRef: ElementRef, private breadCrumbService: BreadCrumbService, private notificationDrawerService: NotificationDrawerService, private notificationService: NotificationsApiService){
     const saved = localStorage.getItem('darkMode');
 
     this.userType = this.authService.getUserType() as UserType;
     this.setNavLinks();
+    this.loadUnreadCount();
 
     if(saved !== null)
     {
@@ -142,6 +148,39 @@ export class HeaderComponent {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
       this.updateBreadcrumbs(event.url);
     });
+
+    this.notificationDrawerService.notificationRead.subscribe(() => this.loadUnreadCount());
+  }
+
+  openNotifications() {
+    this.notificationDrawerService.toggleDrawer(); 
+    if (this.notificationDrawerService.drawerVisible()) {
+      console.log('Drawer is opening, triggering fetch');
+      this.notificationDrawerService.triggerFetch();
+    }
+  }
+
+  private loadUnreadCount() {
+    const userId = this.getUserId();
+    const type = this.userType;
+    if (userId && type) {
+      this.notificationService.getNotifications(type, userId).subscribe({
+        next: (noti: Notification[]) => {
+          this.unreadCount = noti.filter(n => !n.isRead).length;
+        },
+        error: (err) => {
+          console.error('Error fetching unread count:', err);
+        }
+      });
+    }
+  }
+
+  private getUserId(): string | null {
+    return (
+      getCookieValue(document.cookie, 'trusteeId') ||
+      getCookieValue(document.cookie, 'bodyCoporateId') ||
+      getCookieValue(document.cookie, 'contractorId')
+    );
   }
 
   dropDownProfile()
@@ -267,9 +306,12 @@ export class HeaderComponent {
       { label: 'Home', route: homeRoute, show: true },
       { label: 'Properties', route: '/home', show: this.userType === 'bodyCorporate'},
       { label: 'Voting', route:'/voting', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' },
-      { label: 'Notifications', route:'/notifications', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' || this.userType === 'contractor'},
+      // { label: 'Notifications', route:'/notifications', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' || this.userType === 'contractor'},
       { label: 'Contractors', route: '/bodyCoporate/contractors', show: this.userType === 'bodyCorporate' },
       { label: 'My Profile', route: '/contractor-prof', show: this.userType === 'contractor' },
+      { label: 'Assigned projects', route: '/assigned-projects', show: this.userType === 'contractor' },
+      { label: 'Submitted quotations', route: '/submitted-quotations', show: this.userType === 'contractor' },
+      { label: 'Members', route: '/members', show: this.userType === 'bodyCorporate' }
     ];
   }
 }

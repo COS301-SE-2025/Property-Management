@@ -9,7 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { ContractorService } from 'shared';
+import { ContractorApiService } from 'shared';
 import { getCookieValue } from 'shared';
 import { TaskApiService } from 'shared'; 
 import { Rating } from '../../../../../library/projects/shared/src/models/rating.model';
@@ -45,11 +45,14 @@ export class RatingsComponent implements OnInit {
   comment: string = '';
   trusteeUuid: string = '';
 
+  selectedTask?: Task;
+  contractorName: string = '';
+
   constructor(
     private ratingService: RatingService,
     private taskApiService: TaskApiService,
     private messageService: MessageService,
-    private contractorService: ContractorService,
+    private contractorService: ContractorApiService,
     private route: ActivatedRoute 
   ) {}
 
@@ -57,15 +60,57 @@ export class RatingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.trusteeUuid = getCookieValue(document.cookie, 'trusteeId') || '';
-    
+
     this.route.paramMap.subscribe(params => {
-        const taskId = params.get('taskId');
-        if (taskId) {
-            this.selectedTaskUuid = taskId;
-            this.loadContractors();
-            this.loadTasks();
+      const taskId = params.get('taskId');
+      if (taskId) {
+
+        this.taskApiService.getTaskById(taskId).subscribe({
+          next: (task: MaintenanceTask) => {
+            this.selectedTask = {
+              uuid: task.uuid,
+              name: task.title,
+              contractor: { uuid: task.cuuid ?? '', name: '' }
+            };
+            this.tasks = [{
+              uuid: task.uuid,
+              name: task.title,
+              contractor: { uuid: task.cuuid ?? '', name: '' }
+            }];
+            if (task.cuuid) {
+              this.contractorService.getContractorById(task.cuuid).subscribe({
+                next: (contractor: any) => {
+                  this.selectedTask!.contractor.name = contractor.name;
+                  this.contractorName = contractor.name;
+                  this.contractors = [{ uuid: contractor.uuid, name: contractor.name }];
+                  this.loadRatingsHistory();
+                },
+                error: () => {
+                  this.selectedTask!.contractor.name = 'N/A';
+                  this.contractorName = 'N/A';
+                  this.contractors = [{ uuid: task.cuuid ?? '', name: 'N/A' }];
+                  this.loadRatingsHistory();
+                }
+              });
+            } else {
+              this.selectedTask.contractor.name = 'N/A';
+              this.contractorName = 'N/A';
+              this.contractors = [];
+              this.loadRatingsHistory();
+            }
+          },
+          error: () => {
+            this.selectedTask = undefined;
+            this.contractorName = '';
+            this.contractors = [];
             this.loadRatingsHistory();
-        }
+          }
+        });
+      } else {
+        this.loadContractors();
+        this.loadTasks();
+        this.loadRatingsHistory();
+      }
     });
   }
 
@@ -122,12 +167,9 @@ export class RatingsComponent implements OnInit {
     });
   }
 
-  get selectedTask(): Task | undefined {
-    return this.tasks.find(t => t.uuid === this.selectedTaskUuid);
-  }
 
- submitRating() {
-    if (!this.selectedTask || !this.trusteeUuid) return;
+  submitRating() {
+    if (!this.selectedTask) return;
     const payload: RatingPayload = {
       contractorUuid: this.selectedTask.contractor.uuid,
       comment: this.comment,
@@ -143,9 +185,16 @@ export class RatingsComponent implements OnInit {
           detail: 'Your rating has been submitted successfully.'
         });
         this.loadRatingsHistory();
-        this.selectedTaskUuid = '';
+
+        if (!this.route.snapshot.paramMap.get('taskId')) {
+          this.selectedTask = undefined;
+        }
         this.selectedRating = 5;
         this.comment = '';
+
+        setTimeout(() => {
+          window.location.reload
+        }, 1800);
       },
       error: () => {
         this.messageService.add({

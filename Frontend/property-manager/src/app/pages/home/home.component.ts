@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../../components/header/header.component';
 import { HouseCardComponent } from "./house/house-card.component";
 import { BodyCoporateService, getCookieValue, HousesService, Property } from 'shared';
 import { Router } from '@angular/router';
@@ -8,7 +7,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 
 @Component({
   selector: 'app-home',
-  imports: [HeaderComponent, HouseCardComponent, CommonModule],
+  imports: [HouseCardComponent, CommonModule],
   templateUrl: './home.component.html',
   styles: ``,
   animations: [
@@ -31,6 +30,8 @@ export class HomeComponent implements OnInit{
   houses = signal<Property[]>([]);
   private houseService = inject(HousesService);
   private bodyCoporateService = inject(BodyCoporateService);
+  bcUser = false;
+  
   constructor(private router: Router) {}
 
   async ngOnInit(){
@@ -39,11 +40,13 @@ export class HomeComponent implements OnInit{
     if(!id)
     {
       id = getCookieValue(document.cookie, 'bodyCoporateId');
+      this.bcUser = true;
       await this.bodyCoporateService.loadHouses(id);
       this.houses.set(this.bodyCoporateService.buildings());
     }
     else
     {
+      this.bcUser = false;
       await this.houseService.loadHouses(id);
       this.houses.set(this.houseService.houses());
     }

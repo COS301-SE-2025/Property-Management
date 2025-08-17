@@ -101,7 +101,8 @@ export class AuthMobileService {
          const contractorId = result.userId;
           
          this.storage.set('contractorId', contractorId);
-
+         this.storage.set('idToken', result.idToken);
+         this.storage.set('userType', 'contractor');
           resolve(result);
         },
         error: (error) => {

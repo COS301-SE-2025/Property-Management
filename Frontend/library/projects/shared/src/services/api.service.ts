@@ -128,23 +128,24 @@ export class ApiService {
     return this.http.get<Quote[]>(`${this.url}/quote`);
   }
 
+
   addQuote(
-  t_uuid: string,
-  c_uuid: string,
-  submitted_on: Date,
+  taskUuid: string,
+  contractorUuid: string,
+  submittedOn: Date,
   status: string,
   amount: number,
-  doc: string
+  documentUrl: string
 ): Observable<Quote> {
   const quote = {
-    t_uuid,
-    c_uuid,
-    submitted_on: submitted_on.toISOString(), // ensure ISO string format
-    status,
-    amount,
-    doc
+    taskUuid: taskUuid,
+    contractorUuid: contractorUuid,
+    submittedOn: submittedOn.toISOString(), // ensure ISO string format
+    status: status,
+    amount: amount,
+    documentUrl: documentUrl
   };
-  return this.http.post<Quote>(`${this.url}/quote`, quote);
+  return this.http.post<Quote>(`${this.url}/maintenance/quotes`, quote);
 }
 
 
@@ -180,4 +181,15 @@ updateCookie(name: string, value: string, days: number = 1): void {
 
   document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expireDate.toUTCString()}; path=/`;
 } 
+
+getContractorMaintenanceTasks(contractorUuid: string, isBodyCorporate: boolean = true): Observable<MaintenanceTask[]> {
+  const headers = {
+    'isBodyCorporate': isBodyCorporate.toString()
+  };
+
+  return this.http.get<MaintenanceTask[]>(
+    `${this.url}/maintenance/contractor/${contractorUuid}`,
+    { headers: headers }
+  );
+}
 }

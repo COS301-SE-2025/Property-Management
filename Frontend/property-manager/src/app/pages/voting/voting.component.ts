@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from '../../components/header/header.component';
 import { getCookieValue, MaintenanceTask, Voting, VotingService, FormatDatePipe } from 'shared';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TableModule, TableRowSelectEvent  } from "primeng/table";
@@ -13,7 +12,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-voting',
-  imports: [HeaderComponent, CommonModule, TableModule, FormatDatePipe, FormsModule, TagModule, DropdownModule, SelectModule, ProgressSpinnerModule],
+  imports: [CommonModule, TableModule, FormatDatePipe, FormsModule, TagModule, DropdownModule, SelectModule, ProgressSpinnerModule],
   templateUrl: './voting.component.html',
   styles: `
     .due-date-normal{
@@ -112,7 +111,7 @@ export class VotingComponent  implements OnInit {
     } 
     else if (this.bcUser && taskType === 'Pending initial approval' && 'uuid' in task) 
     {
-      this.router.navigate(['/voting', task.uuid, '/approval']);
+      this.router.navigate(['/voting', task.uuid, 'approval']);
     } 
     else if (this.bcUser && 'uuid' in task) 
     {

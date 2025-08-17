@@ -19,4 +19,5 @@ data class QuoteDto(
     val t_uuid: UUID,
     val c_uuid: UUID,
     val doc: String,
+    val expiry_date: Date,
 )

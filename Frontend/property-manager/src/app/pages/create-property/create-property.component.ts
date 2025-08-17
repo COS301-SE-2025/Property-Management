@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
@@ -20,7 +19,6 @@ import { MessageService } from 'primeng/api';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HeaderComponent,
     InputTextModule,
     FloatLabelModule,
     DropdownModule,
@@ -62,8 +60,8 @@ export class CreatePropertyComponent implements OnInit {
       city: [''],
       province: [''],
       type: ['', Validators.required],
-      primaryContractor: ['', Validators.required],
-      coporateUuid: ['', Validators.required],
+      // primaryContractor: ['', Validators.required],
+      coporateUuid: [''],
       bodyCorporate: [''],
       image: [null],
     });
@@ -78,7 +76,7 @@ export class CreatePropertyComponent implements OnInit {
         this.submissionError = 'Authentication error: Please log in again.';
       }
     }
-    this.loadContractors();
+    // this.loadContractors();
     this.loadBodyCorporates();
   }
 
@@ -131,10 +129,10 @@ export class CreatePropertyComponent implements OnInit {
     }
 
     const formValue = this.form.value;
-    if (!formValue.primaryContractor) {
-      this.submissionError = 'Please select a Primary Contractor.';
-      return;
-    }
+    // if (!formValue.primaryContractor) {
+    //   this.submissionError = 'Please select a Primary Contractor.';
+    //   return;
+    // }
 
     this.isSubmitting = true;
     this.submissionError = null;
@@ -168,7 +166,7 @@ export class CreatePropertyComponent implements OnInit {
       address: fullAddress,
       type: formValue.type as string,
       propertyValue: Number(formValue.propertyValue),
-      primaryContractor: formValue.primaryContractor,
+      // primaryContractor: formValue.primaryContractor,
       latestInspectionDate: new Date().toISOString().split('T')[0],
       trusteeUuid: this.trusteeUuid as string,
       coporateUuid: formValue.coporateUuid,

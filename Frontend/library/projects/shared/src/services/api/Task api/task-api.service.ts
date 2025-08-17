@@ -31,12 +31,13 @@ export class TaskApiService {
       imageUuid: imgId,
       createdByUuid: createdId,
       approvalStatus: "PENDING",
-      proirity: proirity
+      priority: proirity
     };
+    console.log(req);
 
     return this.http.post<MaintenanceTask>(`${this.url}/maintenance/create`, req, { headers }).pipe(map( res => ({
       ...res,
-      uuid: res['taskUuid']
+      uuid: res['taskUuid'] as string
     })
     ));
   } 
