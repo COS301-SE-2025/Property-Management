@@ -237,11 +237,11 @@ The Owner accesses the registration page, enters their details, and submits the 
 
 ## 4.2 Contractor Register
 **Service Contract Name:** contractorRegister
-**Parameters:** { name: string, email: string, string address, password: string, phone: string}
+**Parameters:** { email: string,password: string}
 
 **Pre-conditions:**
 - The user must not be a registered user.
-- User information (name, email, address,password,phone) must be provided.
+- User information ( email,password) must be provided.
 
 **Post-conditions:**
 - A registered user is created.
@@ -304,9 +304,95 @@ Owner clicks a property card and views a property.
 **Scenario:**
 Owner logs in then clicks add property button he then fills in form and creates a new property.
 
-## 4.6 Create a quotation
+## 4.6 View Body corpoarate Dashboard
+**Service Contract Name:** bcDashboard
+**Parameters:** { }
+
+**Pre-conditions:**
+- Body Corporate must be logged in.
+
+**Post-conditions:**
+- Body Corprorate views Dashboard
+
+
+**Actors:**
+- Body Corporate
+
+**Scenario:**
+This is a dashboard of the overall body corporate. From here you can see pending tasks, life-cycle cost analysis, reserve-fund contribution schedule and the 10-year maintenance graph. All will be updated dynamically as more properties are added to the body corporate except for life-cycle costs.
+
+## 4.7 Adding a Life-cycle cost
+**Service Contract Name:** addLifeCycleCost
+**Parameters:** {Type of grouping: string,  Description of the item: String, Condition of the item: string, Time frame for maintenance : int,Estimated budget required for this task: in }
+
+**Pre-conditions:**
+- Body Corporate must be logged in and then click on a project.
+
+**Post-conditions:**
+- BC added new life-cycle cost.
+
+**Actors:**
+- Body Corporate
+
+**Scenario:**
+To add a new lifecycle cost, simply fill in the form with the required details. Start by selecting the Type of grouping (such as repair, replacement, or upgrade). You can then provide a Description of the item to explain what the cost relates to, followed by the Condition of the item to indicate its current state. Next, enter the Time frame for maintenance to show when the task is expected, and finally add the Estimated budget required for this task. Once all the details are completed, save the entry to record the lifecycle cost. 
+
+## 4.8 View Trustee Home
+**Service Contract Name:** trusteeHome
+**Parameters:** { }
+
+**Pre-conditions:**
+- Trustee must be logged in and then click on a project.
+
+**Post-conditions:**
+- Trustee can view properties 
+
+**Actors:**
+- Trsutee
+
+**Scenario:**
+- This is the home page of the trustee user and the properties page for body corporate users where they can view and create properties. To create a new property click the plus icon and fill in the form.
+
+## 4.9 Add new inventory item
+**Service Contract Name:** addInventory
+**Parameters:** {inventory item name: String, Price for one: int, Quantity brought: int, Bought on: Date }
+
+**Pre-conditions:**
+- Trustee must be logged in and then click on a project.
+
+**Post-conditions:**
+- Added new inventory item
+
+**Actors:**
+- Trustee
+
+**Scenario:**
+Trustees can add inventory items to their properties which contractors can use on maintenance tasks if it has been allocated. By filling in the fields and clicking add item a new inventory item is added to the table. The quantity can be changed by using the actions button found in the view house page. This will also dynamically decrease the budget.
+
+## 4.10  Adding a maintenance task
+
+**Service Contract Name:** addMaintainenceTask
+**Parameters:** {Task name: String, Task description: String, Inventory items: string, picture: file, due date: Date, priority: string }
+
+**Pre-conditions:**
+- Trustee must be logged in and then click on a project.
+
+**Post-conditions:**
+- A maintainence task is created.
+
+**Actors:**
+- Trustee
+
+**Scenario:**
+Trustee can add maintenance tasks to their properties by filling in all the fields including uploading an image of the actual task for the contractor to see. Once added the body corporate user would first have to approve  of the task and assign trusted contractor before voting can commence 
+
+
+ 
+
+
+## 4.10 Create a quotation
 **Service Contract Name:** createQoutation
-**Parameters:** {name: string, proffesion: string, address: string, number: string, email: string, amount: int }
+**Parameters:** {Expiration date: Date, Issue date: Date, Qoute no: string, amount: int }
 
 **Pre-conditions:**
 - Contractor must be logged in and then click on a project.
