@@ -1,6 +1,7 @@
 export interface MaintenanceTask{
     [x: string]: any;
     uuid: string;
+    taskUuid?: string;
     title: string;
     des: string;
     status: string;
@@ -11,6 +12,7 @@ export interface MaintenanceTask{
     tuuid: string;
     cuuid?: string;
     img?: string; 
+    imageUuid?: string; 
     createdByUuid?: string | null;
     priority?: string;
 }
