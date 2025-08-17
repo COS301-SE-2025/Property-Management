@@ -100,7 +100,7 @@ export class AuthMobileService {
         next: (result) => {
          const contractorId = result.userId;
           
-         this.storage.set('contractorID', contractorId);
+         this.storage.set('contractorId', contractorId);
          this.storage.set('idToken', result.idToken);
          this.storage.set('userType', 'contractor');
           resolve(result);
