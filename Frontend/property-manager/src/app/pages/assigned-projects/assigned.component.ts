@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
+import { RouterLink} from '@angular/router';
+import { HeaderComponent } from "../../components/header/header.component";
 import { CommonModule } from '@angular/common';
 import {
   trigger,
@@ -10,14 +12,14 @@ import {
   query,
   stagger
 } from '@angular/animations';
-import { ApiService } from 'shared';
+import { ApiService, getCookieValue } from 'shared';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { MaintenanceTask } from 'shared';
 
 @Component({
     selector: 'app-contractor-assigned-projects',
-    imports: [CardModule, ButtonModule, CommonModule],
+    imports: [CardModule, ButtonModule, RouterLink, HeaderComponent, CommonModule],
     standalone: true,
     templateUrl: `./assigned.component.html`,
     styles: ``,
@@ -39,7 +41,7 @@ export class AssignedComponent implements OnInit{
    
     //Fixing build
   tasks: MaintenanceTask[] = [];
-  contractorId = localStorage.getItem('contractorID');
+  contractorId = getCookieValue(document.cookie, 'contractorId');
   constructor(private api: ApiService) {}
 
   ngOnInit() {

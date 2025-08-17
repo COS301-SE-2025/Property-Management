@@ -1,6 +1,7 @@
 import { Component, effect, OnInit, signal } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import { HeaderComponent } from "../../components/header/header.component";
 import { getCookieValue, HousesService } from 'shared';
 import { ActivatedRoute } from '@angular/router';
 import { CardModule } from 'primeng/card';
@@ -12,7 +13,7 @@ import { UpdateHouseDialogComponent } from './update-house-dialog/update-house-d
 
 @Component({
   selector: 'app-view-house',
-  imports: [CommonModule, CardModule, InventoryCardComponent, BudgetCardComponent, TimelineCardComponent, UpdateHouseDialogComponent],
+  imports: [HeaderComponent, CommonModule, CardModule, InventoryCardComponent, BudgetCardComponent, TimelineCardComponent, UpdateHouseDialogComponent],
   templateUrl: './view-house.component.html',
   styles: ``,
   animations: [

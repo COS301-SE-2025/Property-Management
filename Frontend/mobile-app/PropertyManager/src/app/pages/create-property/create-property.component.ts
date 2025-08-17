@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TabComponent } from 'src/app/components/tab/tab.component';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { ImageApiService, PropertyService, StorageService } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
@@ -11,14 +11,15 @@ import { PhotoService } from 'src/app/services/photo.service';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
 
+
 @Component({
   selector: 'app-create-property',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent ],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent],
   templateUrl: './create-property.component.html',
   styleUrls: ['./create-property.component.scss']
 })
-export class CreatePropertyComponent implements OnInit {
+export class CreatePropertyComponent {
   form: FormGroup;
   contractors: Contractor[] = [];
   capturedPhoto: string | null = null;
@@ -34,7 +35,7 @@ export class CreatePropertyComponent implements OnInit {
   private storage = inject(StorageService);
   private imageService = inject(ImageApiService);
 
-  constructor() {
+  constructor(private toastController: ToastController) {
     this.form = this.fb.group({
       name: ['', Validators.required],
       area: ['', [Validators.required, Validators.min(0)]],
@@ -44,7 +45,7 @@ export class CreatePropertyComponent implements OnInit {
       city: [''],
       province: [''],
       type: ['', Validators.required],
-      primaryContractor: [''],
+      // primaryContractor: [''],
       bodyCorporate: [''],
       image: [null],
     });
@@ -52,9 +53,9 @@ export class CreatePropertyComponent implements OnInit {
     addIcons({ cameraOutline, trashOutline });
   }
 
-  async ngOnInit() {
-    this.loadContractors();
-  }
+  // async ngOnInit() {
+  //   this.loadContractors();
+  // }
 
   loadContractors(): void {
     this.contractorService.getAllContractors().subscribe({
@@ -120,7 +121,6 @@ export class CreatePropertyComponent implements OnInit {
     //Upload file
     if(this.selectedImageFile)
     {
-      console.log('uploading image');
       const upload = await this.imageService.uploadImage(this.selectedImageFile).toPromise();
 
       if(upload)
@@ -134,7 +134,7 @@ export class CreatePropertyComponent implements OnInit {
       address: fullAddress,
       type: formValue.type,
       propertyValue: Number(formValue.propertyValue),
-      primaryContractor: formValue.primaryContractor,
+      // primaryContractor: formValue.primaryContractor,
       bodyCorporate: formValue.bodyCorporate,
       area: Number(formValue.area),
       propertyImageId: imageId,
@@ -144,6 +144,8 @@ export class CreatePropertyComponent implements OnInit {
     try {
       await this.propertyService.createProperty(payload).toPromise();
       this.isSubmitting = false;
+
+      await this.presentToast('Successfully created property', "success");
       this.router.navigate(['/home']).then(() => {
         window.location.reload();
       });
@@ -151,5 +153,14 @@ export class CreatePropertyComponent implements OnInit {
       this.submissionError = 'Failed to create property.';
       this.isSubmitting = false;
     }
+  }
+  private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,      
+      position: 'top'
+    });
+    await toast.present();
   }
 }

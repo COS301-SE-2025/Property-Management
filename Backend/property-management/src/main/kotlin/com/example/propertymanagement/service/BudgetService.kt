@@ -50,7 +50,7 @@ class BudgetService(
         return budgets.map { mapToResponseDto(it) }
     }
 
-    // @Cacheable("apiCache")
+    @Cacheable("apiCache")
     fun getAllBudgets(): List<BudgetResponseDto> {
         val budgets = budgetRepository.findAll()
         return budgets.map { mapToResponseDto(it) }

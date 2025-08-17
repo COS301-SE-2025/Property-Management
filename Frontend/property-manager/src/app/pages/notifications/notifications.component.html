@@ -1,65 +1,42 @@
-<p-drawer
-  [visible]="drawerService.drawerVisible()"
-  (onHide)="drawerService.closeDrawer()"
-  position="right"
-  header="Notifications"
-  [modal]="true"
-  [dismissible]="true"
-  [style]="{ 'background-color': 'var(--dialog-bg)', 'color': 'var(--dialog-content-text)' }"
->
-  <div class="flex flex-col justify-start items-start">
-    <h1 class="text-xl">All Notifications</h1>
-    <div class="w-[8.5rem] h-1 bg-yellow-300 mt-2"></div>
+<app-header/>
+
+<div class="ml-8 my-8">
+    <h1 class="font-semibold text-2xl">All Notifications</h1>
+    <div class="w-[12rem] h-1 bg-yellow-300 mt-2"></div>
 
     <div *ngIf="notiError">
-      <p class="text-red-500">Error getting notifications, please try again</p>
+        <p class="text-red-500">Error getting notifications, please try again</p>
     </div>
 
-    <div [@floatUp] *ngIf="!notiError" class="mt-5">
-      <div class="space-y-2">
-        <p class="text-lg pb-2">Unread</p>
-        <p-timeline [value]="unreadTimeline()" align="left">
-          <ng-template #content let-time>
-            <div
-              tabindex="0"
-              role="button"
-              (click)="showDetails(time)"
-              (keydown.enter)="showDetails(time)"
-              (keydown.space)="showDetails(time)"
-              class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded"
-            >
-              {{ time.createdAtDate | formatTime }} <br /> {{ time.message }}
-            </div>
-          </ng-template>
-          <ng-template #marker let-time>
-            <div class="flex items-center justify-center w-4 h-4 rounded-full shadow-md bg-white-200">
-              <i class="pi pi-clock text-gray-800"></i>
-            </div>
-          </ng-template>
+    <div [@floatUp] *ngIf="!notiError" class="flex flex-col justify-center items-start w-full space-y-4 pl-14">
+        <p class="text-xl pt-7">Unread</p>
+        <p-timeline [value]="unreadTimeline()">
+            <ng-template #content let-time>
+                <div class="cursor-pointer hover:underline hover:translate-y-0.5 transition-transform duration-200 min-w-[20rem]" tabindex="0" role="button" (click)="showDetails(time)" (keydown.enter)="showDetails(time)" (keydown.space)="showDetails(time)">
+                    {{ time.createdAtDate | formatTime }}  <br>  {{ time.message }}
+                </div>
+            </ng-template>
+            <ng-template #marker let-time>
+                <div class="flex items-center justify-center w-6 h-6 rounded-full shadow-md bg-white-200">
+                    <i class="pi pi-clock text-gray-800"></i>
+                </div>
+            </ng-template>
         </p-timeline>
-      </div>
 
-      <p class="text-lg pb-3 pt-5">Recent</p>
-      <p-timeline [value]="timeline()">
-        <ng-template #content let-time>
-          <div
-            tabindex="0"
-            role="button"
-            (click)="showDetails(time)"
-            (keydown.enter)="showDetails(time)"
-            (keydown.space)="showDetails(time)"
-            class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded"
-          >
-            {{ time.createdAtDate | formatTime }} <br /> {{ time.message }}
-          </div>
-        </ng-template>
-        <ng-template #marker let-time>
-          <div class="flex items-center justify-center w-5 h-5 rounded-full shadow-md bg-white-200">
-            <img src="assets/icons/task_done.svg" alt="Read" class="w-5 h-5" />
-          </div>
-        </ng-template>
-      </p-timeline>
+        <p class="text-xl py-2">Recent</p>
+        <p-timeline [value]="timeline()"> 
+            <ng-template #content let-time>
+                <div class="cursor-pointer hover:underline hover:translate-y-0.5 transition-transform duration-200 min-w-[20rem]" tabindex="0" role="button" (click)="showDetails(time)" (keydown.enter)="showDetails(time)" (keydown.space)="showDetails(time)">
+                    {{ time.createdAtDate | formatTime }} <br> {{ time.message }}
+                </div>
+            </ng-template>
+            <ng-template #marker let-time>
+                <div class="flex items-center justify-center w-6 h-6 rounded-full shadow-md bg-white-200">
+                    <i class="pi pi-check text-yellow-400"></i>
+                </div>
+            </ng-template>
+        </p-timeline>
     </div>
-  </div>
-  <app-invite-dialog [display]="inviteDialogVisible" [inviteId]="inviteId() ?? ''" />
-</p-drawer>
+</div>
+<app-invite-dialog [inviteId]="inviteId() ?? ''" [display]="inviteDialogVisible"></app-invite-dialog>
+<p-toast/>

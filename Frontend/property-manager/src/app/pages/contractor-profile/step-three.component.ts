@@ -119,18 +119,10 @@ import { FormsModule } from '@angular/forms';
 export class StepThreeComponent {
   @Output() back = new EventEmitter<void>();
   @Output() done = new EventEmitter<{ description: string }>();
-  @Output() imagesSelected = new EventEmitter<FileList>();
 
   description = '';
 
   emitRelevantData() {
     this.done.emit({ description: this.description });
-  }
-
-  onImageSelect(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.imagesSelected.emit(input.files);
-    }
   }
 }

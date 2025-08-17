@@ -9,5 +9,5 @@ import { CommonModule } from '@angular/common';
   styles: ``
 })
 export class RegisterHubComponent {
-
+    darkMode = localStorage.getItem('darkMode') === 'true';
 }

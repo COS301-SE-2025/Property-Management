@@ -6,9 +6,10 @@ import com.example.propertymanagement.dto.UpdateTaskProgressDTO
 import com.example.propertymanagement.exception.RestException
 import com.example.propertymanagement.model.TaskProgress
 import com.example.propertymanagement.repository.TaskProgressRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.util.UUID
 
 @Service
@@ -46,20 +47,20 @@ class TaskProgressService(
                 imageId = dto.imageId ?: existing.imageId,
                 quantityUsed = dto.quantityUsed ?: existing.quantityUsed,
                 remarks = dto.remarks ?: existing.remarks,
-                lastUpdated = LocalDateTime.now(),
+                lastUpdated = OffsetDateTime.now(),
             )
 
         return repository.save(updated).toResponseDTO()
     }
 
-    // @Cacheable("apiCache")
+    @Cacheable("apiCache")
     fun getTaskProgress(progressUuid: UUID): TaskProgressResponseDTO =
         repository
             .findById(progressUuid)
             .orElseThrow { RestException(HttpStatus.NOT_FOUND, "Task progress not found") }
             .toResponseDTO()
 
-    // @Cacheable("apiCache")
+    @Cacheable("apiCache")
     fun getProgressByTask(taskUuid: UUID): List<TaskProgressResponseDTO> = repository.findByTaskUuid(taskUuid).map { it.toResponseDTO() }
 
     fun deleteTaskProgress(progressUuid: UUID) {

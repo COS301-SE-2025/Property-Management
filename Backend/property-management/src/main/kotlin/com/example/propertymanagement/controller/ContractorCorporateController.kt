@@ -45,18 +45,6 @@ class ContractorCorporateController(
             ResponseEntity.notFound().build()
         }
 
-    @GetMapping("/contractors/{bodyCorporateUuid}")
-    fun getContractorUuidsByBodyCorporate(
-        @PathVariable bodyCorporateUuid: UUID,
-    ): ResponseEntity<List<UUID>> {
-        val contractorUuids = service.getContractorUuidsByBodyCorporateUuid(bodyCorporateUuid)
-        return if (contractorUuids.isEmpty()) {
-            ResponseEntity.notFound().build()
-        } else {
-            ResponseEntity.ok(contractorUuids)
-        }
-    }
-
     data class ContractorCorporateDto(
         val contractorUuid: UUID,
         val bodyCorporateUuid: UUID,

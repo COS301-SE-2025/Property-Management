@@ -3,6 +3,16 @@ import { Injectable } from '@angular/core';
 import { environmentMobile } from '../../../environment';
 import { TaskProgress } from '../../../public-api';
 
+interface CreateProgressRequest {
+  contractorUuid: string;
+  taskUuid: string;
+  imageId: string;
+  workDescription: string;
+  progressPercentage: number;
+  inventoryUsageUuid?: string; 
+  quantityUsed?: number; 
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -11,18 +21,17 @@ export class TaskProgresApiService{
 
     constructor(private http: HttpClient){}
 
-    createProgress(contractorId: string, taskId: string, imageId: string, workDescription: string, inventoryUsageId: string, quantityUsed: number, progress: number)
+    createProgress(contractorId: string, taskId: string, imageId: string, workDescription: string, progress: number, inventoryUsageId?: string, quantityUsed?: number)
     {
-        const req = {
+        const req: CreateProgressRequest = {
             contractorUuid: contractorId,
             taskUuid: taskId,
             imageId: imageId,
             workDescription: workDescription,
-            inventoryUsageUuid: inventoryUsageId,
-            quantityUsed: quantityUsed,
-            progressPercentage: progress
-        }
-        console.log(req);
+            progressPercentage: progress,
+            ...(inventoryUsageId && { inventoryUsageUuid: inventoryUsageId }),
+            ...(quantityUsed !== undefined && { quantityUsed })
+        };
         return this.http.post<TaskProgress>(`${this.url}`, req);
     }
     getTaskProgressById(progressId: string)

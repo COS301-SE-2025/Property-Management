@@ -4,6 +4,7 @@ import com.example.propertymanagement.dto.InviteDTO
 import com.example.propertymanagement.model.TrusteeBodyCorporateInvite
 import com.example.propertymanagement.repository.TrusteeBodyCorporateInviteRepository
 import com.example.propertymanagement.repository.TrusteeRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -29,14 +30,16 @@ class TrusteeBodyCorporateInviteService(
             message = "You have been invited to join a body corporate.",
             relatedInviteUuid = savedInvite.inviteUuid,
         )
-
         return savedInvite.toDTO()
     }
 
+    @Cacheable("apiCache")
     fun getInviteById(inviteUuid: UUID): InviteDTO? = inviteRepository.findById(inviteUuid).orElse(null)?.toDTO()
 
+    @Cacheable("apiCache")
     fun getInvitesForTrustee(trusteeUuid: UUID): List<InviteDTO> = inviteRepository.findAllByTrusteeUuid(trusteeUuid).map { it.toDTO() }
 
+    @Cacheable("apiCache")
     fun getAcceptedTrusteesForBodyCorporate(coporateUuid: UUID): List<InviteDTO> =
         inviteRepository.findAllByCoporateUuidAndStatus(coporateUuid, "ACCEPTED").map { it.toDTO() }
 
@@ -49,6 +52,7 @@ class TrusteeBodyCorporateInviteService(
         return inviteRepository.save(updated).toDTO()
     }
 
+    @Cacheable("apiCache")
     fun getAllInvitations(): List<InviteDTO> = inviteRepository.findAll().map { it.toDTOWithTrustee(trusteeRepository) }
 }
 

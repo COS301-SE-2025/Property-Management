@@ -75,6 +75,17 @@ export class InviteDialogComponent {
       if (!this.inviteId) return;
       this.propertyService.updateInviteStatus(this.inviteId, 'REJECTED').subscribe({
         next: () => {
+        const id = getCookieValue(document.cookie, 'trusteeId');
+        const noti: Notification = {
+        notificationType: 'INVITE DECLINED',
+        message: 'You have declined the invitation to join the body corporate.',
+        recipientType: 'trustee',
+        recipientUuid: id,
+        isRead: false,
+        relatedInviteUuid: this.inviteId
+      };
+      this.notificationService.createNotifications(noti).subscribe();
+
           this.messageService.add({
             severity: 'info',
             summary: 'Invite Declined',

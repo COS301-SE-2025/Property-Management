@@ -1,13 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'shared';
 import { Quote } from 'shared';
+import { HeaderComponent } from "../../components/header/header.component";
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
+import {
+  trigger,
+  transition,
+  style,
+  animate,
+  query,
+  stagger
+} from '@angular/animations';
 
 @Component({
   selector: 'app-submitted-quotations',
   templateUrl: './submitted-quotations.component.html',
   standalone: true,
-  imports: [CommonModule, NgClass, NgStyle]
+  imports: [HeaderComponent, CommonModule, NgClass, NgStyle],
+  animations: [
+        trigger('fadeInStagger', [
+            transition(':enter', [
+                query('.animate-item', [
+                    style({ opacity: 0, transform: 'translateY(20px)' }),
+                    stagger(100, [
+                        animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+                    ])
+                ])
+            ])
+        ])
+    ]
 })
 export class SubmittedQuotationsComponent implements OnInit {
   quotes: Quote[] = [];

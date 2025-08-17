@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
@@ -28,19 +29,20 @@ class PDFController(
     @Value("\${aws.bucket-name:default-bucket}")
     lateinit var bucketName: String
 
-    @GetMapping("/presigned-upload/{filename}")
+    @GetMapping("/presigned-upload")
     fun generatePresignedUploadUrl(
-        @PathVariable filename: String,
+        @RequestParam filename: String,
+        @RequestParam contentType: String,
     ): ResponseEntity<Map<String, String>> {
         val id = UUID.randomUUID().toString()
-        val key = "uploads-$id-$filename"
+        val key = "uploads/$id-$filename"
 
         val putObjectRequest =
             PutObjectRequest
                 .builder()
                 .bucket(bucketName)
                 .key(key)
-                .contentType("application/pdf")
+                .contentType(contentType)
                 .build()
 
         val presignRequest =
@@ -62,12 +64,11 @@ class PDFController(
         )
     }
 
-    @PostMapping("/notify-upload/{id}/{filename}/{key}/{cUuid}")
+    @PostMapping("/notify-upload")
     fun notifyUploadComplete(
-        @PathVariable id: String,
-        @PathVariable filename: String,
-        @PathVariable key: String,
-        @PathVariable cUuid: UUID,
+        @RequestParam id: String,
+        @RequestParam filename: String,
+        @RequestParam key: String,
     ): ResponseEntity<String> {
         val url = "https://$bucketName.s3.amazonaws.com/$key"
         val pdfMeta =
@@ -76,7 +77,6 @@ class PDFController(
                 filename = filename,
                 key = key,
                 url = url,
-                cUuid = cUuid,
             )
         PDFRepository.save(pdfMeta)
         return ResponseEntity.ok("Upload metadata saved.")
@@ -115,15 +115,4 @@ class PDFController(
         // Assuming URL is https://bucket.s3.amazonaws.com/key
         return url.substringAfter("$bucketName.s3.amazonaws.com/")
     }
-
-    @GetMapping("/{uuid}")
-    fun getByUuid(
-        @PathVariable uuid: UUID,
-    ): ResponseEntity<List<PDFMeta>> =
-        try {
-            val pdf = PDFRepository.findAllByCUuid(uuid)
-            ResponseEntity.ok(pdf)
-        } catch (e: NoSuchElementException) {
-            ResponseEntity.notFound().build()
-        }
 }

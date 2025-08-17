@@ -7,7 +7,8 @@ import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
-import { ApiService, getCookieValue } from 'shared'; 
+import { ApiService } from 'shared'; 
+import { HeaderComponent } from "../../components/header/header.component";
 import { ActivatedRoute } from '@angular/router';
 import { DatePicker } from 'primeng/datepicker';
 import {
@@ -34,6 +35,7 @@ interface FileUploadEvent {
     CardModule,
     CommonModule,
     ToastModule,
+    HeaderComponent,
     FileUpload,
     DatePicker
   ],
@@ -69,7 +71,7 @@ export class QuotationComponent implements OnInit{
   private apiService: ApiService,
   private route: ActivatedRoute
 ) {
-  const storedId = getCookieValue(document.cookie, 'contractorID');
+  const storedId = localStorage.getItem('contractorID');
   if (storedId) {
     this.contractorId = storedId;
   } else {
