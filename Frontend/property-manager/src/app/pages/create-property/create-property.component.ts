@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
@@ -20,7 +19,6 @@ import { MessageService } from 'primeng/api';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HeaderComponent,
     InputTextModule,
     FloatLabelModule,
     DropdownModule,

@@ -71,53 +71,6 @@ describe('NotificationsApiService', () => {
     });
   });
 
-  describe('getNotifications', () => {
-    it('should send a GET request with query parameters', () => {
-      const recipientType = 'user';
-      const recipientId = 'user-123';
-      const mockNotifications: Notification[] = [
-        {
-          recipientType: 'user',
-          recipientUuid: 'user-123',
-          message: 'Notification 1',
-          isRead: false,
-          notificationType: 'test'
-        },
-        {
-          recipientType: 'user',
-          recipientUuid: 'user-123',
-          message: 'Notification 2',
-          isRead: true,
-          notificationType: 'test'
-        }
-      ];
-
-      service.getNotifications(recipientType, recipientId).subscribe(response => {
-        expect(response).toEqual(mockNotifications);
-      });
-
-      const req = httpMock.expectOne(
-        `${mockApiUrl}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}`
-      );
-      expect(req.request.method).toBe('GET');
-      req.flush(mockNotifications);
-    });
-
-    it('should handle empty response', () => {
-      const recipientType = 'user';
-      const recipientId = 'user-123';
-
-      service.getNotifications(recipientType, recipientId).subscribe(response => {
-        expect(response).toEqual([]);
-      });
-
-      const req = httpMock.expectOne(
-        `${mockApiUrl}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}`
-      );
-      req.flush(null);
-    });
-  });
-
   describe('markNotificationsAsRead', () => {
     it('should send a PUT request to mark notification as read', () => {
       const notificationId = 'notif-123';

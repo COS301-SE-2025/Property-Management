@@ -64,24 +64,24 @@ export class ContractorHomeComponent implements OnInit {
           this.loading = false;
           return;
         }
-
       
         const taskRequests = tasks.map(task => {
-          if (task.img) {
-            return this.api.getPresignedImageUrl(task.img).pipe(
+          task.uuid = task.taskUuid!;
+          if (task.imageUuid) {
+            return this.api.getPresignedImageUrl(task.imageUuid).pipe(
               map(imageUrl => ({
                 ...task,
-                img: imageUrl || 'assets/images/default.jpg'
+                img: imageUrl || 'assets/images/no_image.png'
               })),
               catchError(() => of({
                 ...task,
-                img: 'assets/images/default.jpg'
+                img: 'assets/images/no_image.png'
               }))
             );
           } else {
             return of({
               ...task,
-              img: 'assets/images/default.jpg'
+              img: 'assets/images/no_image.png'
             });
           }
         });

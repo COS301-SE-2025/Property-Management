@@ -96,7 +96,7 @@ export class AssignedComponent implements OnInit {
         const taskRequests = filteredTasks.map(task => {
           const taskWithDefault = {
             ...task,
-            img: 'assets/images/default.jpeg'
+            img: 'assets/images/no_image.png'
           };
 
           if (task.img) {
@@ -120,10 +120,10 @@ export class AssignedComponent implements OnInit {
   }
 
   handleImageError(task: MaintenanceTask) {
-    task.img = 'assets/images/default.jpeg';
+    task.img = 'assets/images/no_image.png';
   }
 
   goToQuotationPage(task: MaintenanceTask) {
-    this.router.navigate(['/taskDetails', task['taskUuid']]);
+    this.router.navigate(['/view-task', task['taskUuid']]);
   }
 }

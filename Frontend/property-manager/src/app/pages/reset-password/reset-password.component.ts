@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { ButtonModule } from 'primeng/button';
-import { RouterLink} from '@angular/router';
-import { HeaderComponent } from "../../components/header/header.component";
 import {
   trigger,
   transition,
@@ -16,7 +14,7 @@ import {
 import { FormsModule } from '@angular/forms';
 @Component({
     selector: 'app-resetpage',
-    imports: [ButtonModule, RouterLink, HeaderComponent,  FormsModule, CommonModule],
+    imports: [ButtonModule, FormsModule, CommonModule],
     standalone: true,
     templateUrl: `./reset-password.component.html`,
     styles: ``,

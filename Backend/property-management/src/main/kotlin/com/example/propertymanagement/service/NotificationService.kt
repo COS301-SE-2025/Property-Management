@@ -10,7 +10,6 @@ import com.example.propertymanagement.repository.QuoteRepository
 import com.example.propertymanagement.repository.QuoteVoteSessionRepository
 import com.example.propertymanagement.repository.TrusteeBodyCorporateInviteRepository
 import com.example.propertymanagement.repository.TrusteeRepository
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -36,7 +35,7 @@ class NotificationService(
         relatedSessionUuid: UUID? = null,
         relatedInviteUuid: UUID? = null,
     ): NotificationDTO {
-        if (recipientType !in listOf("trustee", "contractor", "bodycorporate")) {
+        if (recipientType !in listOf("trustee", "contractor", "bodycoporate")) {
             throw RestException(HttpStatus.BAD_REQUEST, "Invalid recipient type")
         }
 
@@ -87,7 +86,6 @@ class NotificationService(
         }
     }
 
-    @Cacheable("apiCache")
     fun getNotifications(
         recipientType: String,
         recipientUuid: UUID,

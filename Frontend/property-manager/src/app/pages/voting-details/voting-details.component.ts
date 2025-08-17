@@ -1,5 +1,4 @@
-import { Component, effect, OnDestroy, OnInit, signal } from '@angular/core';
-import { HeaderComponent } from '../../components/header/header.component';
+import { Component, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +21,7 @@ import { VotingResultsComponent } from './voting-results/voting-results.componen
 
 @Component({
   selector: 'app-voting-details',
-  imports: [HeaderComponent, CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast, TableModule, QuoteDetailsComponent, ToggleButtonModule, FormsModule, VotingResultsComponent],
+  imports: [CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast, TableModule, QuoteDetailsComponent, ToggleButtonModule, FormsModule, VotingResultsComponent],
   templateUrl: './voting-details.component.html',
   providers: [MessageService, ConfirmationService],
   styles: `
@@ -67,7 +66,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
 
   public voteResult = false;
   public awaitFinal = false;
-  
+
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
@@ -157,6 +156,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
             if(res.taskUuid)
               {
                 this.taskId = res.taskUuid;
+                this.taskName = res.title;
+                this.trusteeId = res.tuuid;
                 
                 this.taskService.getTaskById(this.taskId).subscribe({
                   next: (res) => {
@@ -204,6 +205,10 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
                               {
                                 this.contractorService.getContractorById(this.task()?.cuuid!).subscribe({
                                   next: (c) => {
+                                    if(this.contractors()?.some(ct => ct.uuid === c.uuid))
+                                    {
+                                      return;
+                                    }
                                     this.contractors.set([]);
 
                                      const contractorDetails: AssignedContractor = {
@@ -344,7 +349,7 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
             const noti: Notification = {
               notificationType: 'Vote submitted',
               message: `Vote has been cast for task: ${this.taskName!}`,
-              recipientType: isTrusteee ? 'trustee' : 'body corporate',
+              recipientType: isTrusteee ? 'trustee' : 'bodycoporate',
               recipientUuid: userId,
               isRead: false,
               relatedSessionUuid: sessionId

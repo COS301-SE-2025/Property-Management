@@ -1,4 +1,4 @@
-<app-header/>
+<!-- <app-header/> -->
 
 <div class="flex flex-col items-center justify-center pb-10 pl-5 pr-5 mt-10">
     <div [@floatUp] class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -30,18 +30,16 @@
       &times;
     </button>
     <h3 class="text-lg font-bold mb-4 dark:text-white">Invite Trustee to Body Corporate</h3>
-    <p-dropdown
-      [options]="trusteeOptions"
-      optionLabel="name"
-      optionValue="uuid"
-      [(ngModel)]="selectedTrusteeUuid"
-      placeholder="Select a trustee"
-      class="w-full mb-4"
-    ></p-dropdown>
+    <input
+      type="email"
+      [(ngModel)]="trusteeEmail"
+      placeholder="Enter trustee email"
+      class="w-full mb-4 p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+    />
     <button
       type="button"
       class="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded font-semibold w-full"
-      [disabled]="!selectedTrusteeUuid"
+      [disabled]="!trusteeEmail"
       (click)="sendInviteToTrustee()"
     >
       Send Invite

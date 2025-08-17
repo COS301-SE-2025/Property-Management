@@ -52,26 +52,25 @@ export class ContractorHomeComponent implements OnInit {
   constructor(private router: Router) {}
 
   async ngOnInit() {
-    this.contractorId = await this.storage.get('contractorID');
+    this.contractorId = await this.storage.get('contractorId');
     if (!this.contractorId) {
       console.warn('Contractor ID not found in storage.');
       return;
     }
-
   
     this.api.getContractorMaintenanceTasks(this.contractorId).subscribe({
       next: (tasks) => {
         const taskRequests = tasks.map(task => {
           const taskWithDefault = {
             ...task,
-            img: 'assets/images/default.jpeg'
+            img: 'assets/images/no_image.png'
           };
 
-          if (task.img) {
+          if (task.imageUuid) {
             return this.api.getPresignedImageUrl(task.imageUuid ?? '').pipe(
               map(imageUrl => ({
                 ...task,
-                img: imageUrl || 'assets/images/default.jpeg'
+                img: imageUrl || 'assets/images/no_image.png'
               })),
               catchError(() => of(taskWithDefault))
             );
@@ -92,6 +91,6 @@ export class ContractorHomeComponent implements OnInit {
   }
 
   handleImageError(task: MaintenanceTask) {
-    task.imageUuid = 'assets/images/default.jpeg';
+    task.imageUuid = 'assets/images/no_image.png';
   }
 }

@@ -10,6 +10,7 @@ export interface MaintenanceTask{
     approvalStatus: string;
     buuid: string;
     tuuid: string;
+    trusteeUuid?: string;
     cuuid?: string;
     img?: string; 
     imageUuid?: string; 

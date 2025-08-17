@@ -7,6 +7,16 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
+//interface for error objects 
+interface FormErrors {
+  corporateName: string;
+  contributionPerSqm: string;
+  email: string;
+  contactNumber: string;
+  password: string;
+  server: string;
+}
+
 @Component({
   selector: 'app-register-body-corporate',
   standalone: true,
@@ -22,10 +32,14 @@ export class RegisterBodyCorporateComponent {
   public password = '';
   public passwordVisible = false;
 
-  public emptyField = false;
-  public userError = false;
-  public serverError = false;
-  public errorMessage = '';
+  public errors: FormErrors = {
+    corporateName: '',
+    contributionPerSqm: '',
+    email: '',
+    contactNumber: '',
+    password: '',
+    server: ''
+  };
 
   constructor(
     private authService: AuthService,
@@ -36,28 +50,82 @@ export class RegisterBodyCorporateComponent {
     this.passwordVisible = !this.passwordVisible;
   }
 
+  private isValidContactNumber(contactNumber: string): boolean {
+    const contactNumberRegex = /^0[0-9]{9}$/;
+    return contactNumberRegex.test(contactNumber);
+  }
+
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
   async register(): Promise<void> {
-    if (!this.corporateName || !this.contributionPerSqm || !this.email || !this.contactNumber || !this.password) {
-      this.emptyField = true;
-      return;
+    // Reset errors
+    this.errors = {
+      corporateName: '',
+      contributionPerSqm: '',
+      email: '',
+      contactNumber: '',
+      password: '',
+      server: ''
+    };
+
+    let hasError = false;
+
+    // Validate corporateName
+    if (!this.corporateName) {
+      this.errors.corporateName = 'Body Corporate Name is required.';
+      hasError = true;
     }
 
+    // Validate contributionPerSqm
     const contributionPerSqmValue = parseFloat(this.contributionPerSqm);
-    if (isNaN(contributionPerSqmValue) || contributionPerSqmValue <= 0) {
-      this.userError = true;
-      return;
+    if (!this.contributionPerSqm) {
+      this.errors.contributionPerSqm = 'Contribution per square meter is required.';
+      hasError = true;
+    } else if (isNaN(contributionPerSqmValue) || contributionPerSqmValue <= 0) {
+      this.errors.contributionPerSqm = 'Contribution per square meter must be a valid positive number.';
+      hasError = true;
     }
 
-    this.userError = false;
-    this.serverError = false;
-    this.emptyField = false;
-    this.errorMessage = '';
+    // Validate email
+    if (!this.email) {
+      this.errors.email = 'Email is required.';
+      hasError = true;
+    } else if (!this.isValidEmail(this.email)) {
+      this.errors.email = 'Email must contain an @ symbol and a valid domain (e.g., example@domain.com).';
+      hasError = true;
+    }
+
+    // Validate contactNumber
+    if (!this.contactNumber) {
+      this.errors.contactNumber = 'Contact number is required.';
+      hasError = true;
+    } else if (!this.isValidContactNumber(this.contactNumber)) {
+      if (!this.contactNumber.startsWith('0')) {
+        this.errors.contactNumber = 'Contact number must start with 0.';
+      } else if (this.contactNumber.length !== 10) {
+        this.errors.contactNumber = 'Contact number must be exactly 10 digits long.';
+      } else {
+        this.errors.contactNumber = 'Contact number must contain only digits.';
+      }
+      hasError = true;
+    }
+
+    // Validate password
+    if (!this.password) {
+      this.errors.password = 'Password is required.';
+      hasError = true;
+    }
+
+    if (hasError) {
+      return;
+    }
 
     let normalizedContactNumber = this.contactNumber;
     if (normalizedContactNumber.startsWith('0')) {
       normalizedContactNumber = '+27' + normalizedContactNumber.substring(1);
-    } else if (!normalizedContactNumber.startsWith('+27')) {
-      normalizedContactNumber = '+27' + normalizedContactNumber;
     }
 
     try {
@@ -79,17 +147,10 @@ export class RegisterBodyCorporateComponent {
       });
     } catch (error: unknown) {
       console.error('Registration error:', error);
-      
       if (error instanceof HttpErrorResponse) {
-        this.errorMessage = error.error?.message || error.message || 'Registration failed. Please try again later.';
-        if (error.status === 400 || error.error?.code === 'NotAuthorizedException') {
-          this.userError = true;
-        } else {
-          this.serverError = true;
-        }
-      }else {
-        this.errorMessage = 'An unexpected error occurred.';
-        this.serverError = true;
+        this.errors.server = error.error?.message || error.message || 'Registration failed. Please try again later.';
+      } else {
+        this.errors.server = 'An unexpected error occurred.';
       }
     }
   }
