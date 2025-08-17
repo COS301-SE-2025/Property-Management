@@ -386,11 +386,72 @@ Trustees can add inventory items to their properties which contractors can use o
 **Scenario:**
 Trustee can add maintenance tasks to their properties by filling in all the fields including uploading an image of the actual task for the contractor to see. Once added the body corporate user would first have to approve  of the task and assign trusted contractor before voting can commence 
 
+## 4.11 Viewing a maintenance task
+**Service Contract Name:** viewMaintainenceTask
+**Parameters:** {}
 
+**Pre-conditions:**
+- trustee or body corporate must be logged in and then click on a project.
+
+**Post-conditions:**
+- User can view mainteneance task.
+
+**Actors:**
+- trustee and body corporate 
+
+**Scenario:**
+Once a task has been created the trustee and body corporate user can view the task details which includes the inventory items assigned and the contractor timeline which including all progression made on the actual task. Contractor users can add to this timeline
  
+## 4.12 Creating a budget
+**Service Contract Name:** createBudget
+**Parameters:** {Inventory budget allocation: int, Maintainance budget allocation: int }
+
+**Pre-conditions:**
+- Trustee must be logged in and then click on a project.
+
+**Post-conditions:**
+- A budget will have been created.
+
+**Actors:**
+- Trustee
+
+**Scenario:**
+If you haven't created a budget yet you will be greeted with this dialog for creating the budget.
+
+## 4.13 Manage budget
+**Service Contract Name:** manageBudget
+**Parameters:** {}
+
+**Pre-conditions:**
+- Must have created budget already
+
+**Post-conditions:**
+- you can edit the budget
+
+**Actors:**
+- Trustee
+
+**Scenario:**
+This is a view of the budget of a specific property, where a trustee can edit budgets by clicking on the pencil icons. Two types of budgets exist, inventory and maintenance budgets. Each budget displays how money is being spent in the property. 
+
+## 4.14 View Contractor Home
+**Service Contract Name:** viewContractorHome
+**Parameters:** {}
+
+**Pre-conditions:**
+- Contractor must be logged in.
+
+**Post-conditions:**
+- Contractor can view avilable projects
+
+**Actors:**
+- Contractor
+
+**Scenario:**
+This is where the contractor sees available projects and clicks on one of the cards to submit a quotation.
 
 
-## 4.10 Create a quotation
+## 4.15 Create a quotation
 **Service Contract Name:** createQoutation
 **Parameters:** {Expiration date: Date, Issue date: Date, Qoute no: string, amount: int }
 
@@ -406,7 +467,85 @@ Trustee can add maintenance tasks to their properties by filling in all the fiel
 **Scenario:**
 A contractor creates a new quote by clicking on a available project.
 
- 
+## 4.16 View submitted quotations
+**Service Contract Name:** viewSubmittedQoutation
+**Parameters:** { }
+
+**Pre-conditions:**
+- Must have submitted a quotation.
+
+**Post-conditions:**
+- You van view your submitted quotations.
+
+**Actors:**
+- Contractor
+
+**Scenario:**
+Once the contractor has completed a quote they will show up on the submitted quotations with the status.
+
+## 4.17 Notifications
+**Service Contract Name:** notifications
+**Parameters:** { }
+
+**Pre-conditions:**
+- Must log in.
+
+**Post-conditions:**
+- You can view notifications.
+
+**Actors:**
+- Contractor, Body coporate, Trustee.
+
+**Scenario:**
+This is the notification hub for all users, here you can see all activity happening in the property manager app. Clicking on a notification takes you to where the notification occurred. Selecting an unread notification marks it at read.
+
+## 4.18 Contractor Profile
+**Service Contract Name:** contractorProfile
+**Parameters:** { Full name: string, Email Address: string, Phone number: string, Address: string, City: string, Suburb: string, Postal code: string, image: file  }
+
+**Pre-conditions:**
+- Must log in forn the first time.
+
+**Post-conditions:**
+- Your details are now recorded.
+
+**Actors:**
+- Contractor.
+
+**Scenario:**
+This page provides a detailed view of a contractor’s information. It includes their name, contact details, address, services offered, and any relevant registration or license numbers. You can also view uploaded certifications and past project history. If you have the correct permissions (e.g., trustee or property manager), you can update their profile details, upload new documents, or make changes to their listed services. This page is useful for verifying contractor qualifications and tracking their relationship with the body corporate over time.
+
+## 4.19 Ratings
+**Service Contract Name:** ratings
+**Parameters:** { }
+
+**Pre-conditions:**
+- Be logged in have a contractor who has finished a task.
+
+**Post-conditions:**
+- Your rating is saved.
+
+**Actors:**
+- Contractor.
+
+**Scenario:**
+The Ratings page is where trustees and property managers can evaluate contractor performance after a task has been completed. Start by selecting the completed task from the task dropdown list. The associated contractor’s details will automatically populate. Use the rating slider to assign a score based on quality of work, timeliness, and overall satisfaction. You may also provide written feedback in the comment section to highlight strengths or suggest improvements. When all information is entered, click submit to record the rating. These ratings help inform future contractor selections and maintain quality standards.
+
+## 4.20 Members
+**Service Contract Name:** members
+**Parameters:** { }
+
+**Pre-conditions:**
+- Be logged in.
+
+**Post-conditions:**
+- You can invite trustees into your Body coporate.
+
+**Actors:**
+- Body coporate.
+
+**Scenario:**
+The Manage Members page allows you to oversee all individuals within your body corporate. It lists members by name, role (trustee, property manager, etc.), and current status. You can view invitation statuses to see who has accepted, declined, or not yet responded. Trustees can approve or remove members as needed and send new invitations to prospective members via email. This page helps ensure that the body corporate keeps up to date with this.
 
 <br />
 <br />
