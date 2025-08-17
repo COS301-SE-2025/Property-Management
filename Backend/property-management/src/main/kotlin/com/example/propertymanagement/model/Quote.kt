@@ -26,4 +26,6 @@ data class Quote(
     val t_uuid: UUID? = null,
     @Column(name = "contractor_uuid")
     val c_uuid: UUID? = null,
+    @Column(name = "expiry_date", nullable = false)
+    val expiry_date: Date,
 )

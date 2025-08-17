@@ -15,3 +15,26 @@ h2 {
   border-radius: 50%;
 }
 
+:host ::ng-deep .p-toast {
+  z-index: 1000;
+}
+
+:host ::ng-deep .p-toast-message-success {
+  background: #28a745;
+  border: none;
+  color: #fff;
+}
+
+:host ::ng-deep .p-toast-message-error {
+  background: #dc3545;
+  border: none;
+  color: #fff;
+}
+
+:host-context(.dark-theme) ::ng-deep .p-toast-message-success {
+  background: #218838;
+}
+
+:host-context(.dark-theme) ::ng-deep .p-toast-message-error {
+  background: #c82333;
+}

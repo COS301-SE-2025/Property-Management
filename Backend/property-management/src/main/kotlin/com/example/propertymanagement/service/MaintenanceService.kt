@@ -11,7 +11,6 @@ import com.example.propertymanagement.repository.ContractorRepository
 import com.example.propertymanagement.repository.ImageRepository
 import com.example.propertymanagement.repository.MaintenanceRepository
 import com.example.propertymanagement.repository.MaintenancetaskContractorRepository
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.Date
@@ -39,18 +38,19 @@ class MaintenanceService(
         val contractorUuid: UUID,
         val submittedOn: Date? = Date(System.currentTimeMillis()),
         val status: String = "SUBMITTED",
+        val expiryDate: Date? = Date(System.currentTimeMillis() + (14L * 24 * 60 * 60 * 1000)),
     )
 
-    // @Cacheable("apiCache")
+    // // @Cacheable("apiCache")
     fun getAll(): List<Maintenance> = repository.findAll().toList()
 
     fun add(item: Maintenance): Maintenance = repository.save(item)
 
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getByUuid(uuid: UUID): Maintenance =
         repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Maintenance not found: $uuid") }
 
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getTasksByTrustee(tUuid: UUID): List<Maintenance> = repository.findAllBytUuid(tUuid)
 
     fun add(
@@ -239,13 +239,13 @@ class MaintenanceService(
         }
     }
 
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getTasksByCorporate(coporateUuid: UUID): List<MaintenanceTaskResponseDto> =
         repository.findByCorporateUuid(coporateUuid).map {
             mapToResponseDto(it)
         }
 
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getTasksForContractor(contractorUuid: UUID): List<MaintenanceTaskResponseDto> {
         val contractorTasks = taskContractorRepository.findByContractorUuid(contractorUuid)
         val taskUuids = contractorTasks.filter { !it.quoteSubmitted }.map { it.taskUuid }
@@ -268,6 +268,7 @@ class MaintenanceService(
                 status = quoteDto.status,
                 amount = quoteDto.amount.toBigDecimal(),
                 doc = quoteDto.documentUrl ?: "",
+                expiry_date = quoteDto.expiryDate ?: Date(System.currentTimeMillis() + (14L * 24 * 60 * 60 * 1000)),
             )
 
         val updated =
@@ -279,7 +280,7 @@ class MaintenanceService(
         taskContractorRepository.save(updated)
     }
 
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getContractorsForTask(taskUuid: UUID): List<MaintenancetaskContractor> = taskContractorRepository.findByTaskUuid(taskUuid)
 
     private fun mapToResponseDto(task: Maintenance): MaintenanceTaskResponseDto =

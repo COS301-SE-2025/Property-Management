@@ -5,7 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.math.BigDecimal
-import java.time.OffsetDateTime
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
@@ -15,7 +15,7 @@ data class TaskProgress(
     @Column(name = "progress_uuid", updatable = false, nullable = false)
     val progressUuid: UUID = UUID.randomUUID(),
     @Column(name = "submission_date", nullable = false)
-    val submissionDate: OffsetDateTime = OffsetDateTime.now(),
+    val submissionDate: LocalDateTime = LocalDateTime.now(),
     @Column(name = "contractor_uuid", nullable = false)
     val contractorUuid: UUID,
     @Column(name = "task_uuid", nullable = false)
@@ -33,5 +33,5 @@ data class TaskProgress(
     @Column(name = "remarks", columnDefinition = "TEXT")
     val remarks: String? = null,
     @Column(name = "last_updated")
-    val lastUpdated: OffsetDateTime = OffsetDateTime.now(),
+    val lastUpdated: LocalDateTime = LocalDateTime.now(),
 )
