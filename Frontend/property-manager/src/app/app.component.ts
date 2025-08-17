@@ -18,7 +18,7 @@ import { filter } from 'rxjs';
     <router-outlet></router-outlet>
   `
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit {
   hideHeader = false;
   private noHeaderRoutes = ['/login', '/register', '/landingPage', '/registerHub', '/contractorRegister', '/register-owner', '/register-body-corporate', '/verifyEmail', '/reset-password'];
 
@@ -33,11 +33,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     ).subscribe((event: NavigationEnd) => {
       this.updateHeaderVisibility(event.urlAfterRedirects);
     });
-  }
-
-  ngAfterViewInit() {
-    // console.log('app-header elements after view init:', document.querySelectorAll('app-header').length);
-    // console.log('Header container visible:', !this.hideHeader);
   }
 
   private updateHeaderVisibility(url: string) {
