@@ -60,20 +60,15 @@ export class LoginComponent{
     catch(err) {
   console.warn('Contractor login failed', err);
 
-  if (err instanceof HttpErrorResponse) {
-    if (!err.error) {
-      this.serverError = true;
-    } 
-    else if (err.error?.error?.includes?.('Password attempts exceeded')) {
-      this.passwordLimit = true;
+      if(err instanceof HttpErrorResponse && !err.error)
+      {
+        this.serverError = true;
+      }
+      else
+      {
+        this.userError = true;
+      }
     }
-    else {
-      this.userError = true;
-    }
-  } else {
-    this.userError = true;
-  }
-}
     finally{
       this.loading = false;
     }
