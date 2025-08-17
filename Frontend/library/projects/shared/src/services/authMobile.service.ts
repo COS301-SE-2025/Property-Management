@@ -100,8 +100,9 @@ export class AuthMobileService {
         next: (result) => {
          const contractorId = result.userId;
           
-         this.storage.set('contractorId', contractorId);
-
+         this.storage.set('contractorID', contractorId);
+         this.storage.set('idToken', result.idToken);
+         this.storage.set('userType', 'contractor');
           resolve(result);
         },
         error: (error) => {
@@ -164,12 +165,24 @@ export class AuthMobileService {
         });
     });
   }
+  async getUserType(): Promise<string | null> {
+    if(await this.storage.get('trusteeId'))
+    {
+      return 'trustee';
+    }
+    else if(await this.storage.get('contractorId'))
+    {
+      return 'contractor';
+    }
+    return null;
+  }
 
   async logout()
   {
     await this.storage.remove("userType");
-    await this.storage.remove("trusteeID");
-    await this.storage.remove("contractorID");
+    await this.storage.remove("trusteeId");
+    await this.storage.remove("contractorId");
     await this.storage.remove("theme");
+    await this.storage.remove("fontSize");
   }
 }

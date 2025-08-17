@@ -8,32 +8,32 @@
     </div>
 
     <div *ngIf="tasks.length > 0; else noTasks" class="mt-6 flex flex-wrap justify-center gap-5 p-4">
-      <div *ngFor="let task of tasks"
-        class=" animate-item w-[10rem] h-[15rem] shadow-md rounded-xl overflow-hidden bg-white"
-        (click)="goToQuotationPage(task)">
-
+      <ion-card 
+        *ngFor="let task of tasks" 
+        class="animate-item project-card bg-white"
+        (click)="goToQuotationPage(task)"
+      >
         <ion-img
-  src="{{task.imageUuid}}"
-  alt="Project Image"
-  class="project-image w-full"
-  (ionError)="handleImageError(task)"
-></ion-img>
+          src="{{task.img}}"
+          alt="Project Image"
+          class="project-image w-full"
+          (ionError)="handleImageError(task)"
+        />
         <div class="p-3">
           <h3 class="text-black text-lg font-semibold">{{ task.title || 'Untitled Task' }}</h3>
           <p class="text-sm text-gray-600 mt-2">{{ task.des || 'No description' }}</p>
         </div>
-      </div>
+      </ion-card>
     </div>
 
     <ng-template #noTasks>
       <div class="flex flex-col items-center justify-center mt-20 text-gray-400 text-center animate-item">
-        <img src="assets/icons/default.svg" alt="No tasks" class="w-24 h-24 mb-4 opacity-60" />
+        <ion-icon name="folder-open-outline" class="no-tasks-icon"></ion-icon>
         <p class="text-xl font-semibold mb-2">No projects available</p>
         <p class="text-sm">Check back later or contact your admin for assistance.</p>
       </div>
     </ng-template>
 
-
+    <app-tab />
   </div>
-  <app-tab />
 </ion-content>

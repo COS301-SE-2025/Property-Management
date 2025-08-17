@@ -1,6 +1,5 @@
-import { Component, OnInit,inject } from '@angular/core';
-import { IonTabBar, IonTabButton, IonIcon, IonTabs } from '@ionic/angular/standalone'
-import { ApiService } from 'shared';
+import { Component, OnInit, inject } from '@angular/core';
+import { IonTabBar, IonTabButton, IonIcon, IonTabs } from '@ionic/angular/standalone';
 import { NgIf } from '@angular/common';
 import { StorageService } from 'shared';
 
@@ -12,16 +11,12 @@ import { StorageService } from 'shared';
 })
 export class TabComponent implements OnInit {
   public darkMode = false;
+  public type: string = "";
 
-  constructor(private storage: StorageService){
-     this.type = this.api.getCookieValue('userType') || '';
-  }
-  private api = inject(ApiService);
-  type: string ="";
-  
-  
-  async ngOnInit()
-  {
+  private storage = inject(StorageService);
+
+  async ngOnInit() {
+    this.type = await this.storage.get('userType') || '';
     const theme = await this.storage.get('theme');
     this.darkMode = theme === 'dark';
   }

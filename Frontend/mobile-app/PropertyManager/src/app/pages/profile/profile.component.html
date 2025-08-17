@@ -17,6 +17,14 @@
           </ion-button>
         }
       </ion-item>
+         @if (userType === 'contractor') {
+        <ion-item>
+          <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/submitted-quotations">
+            <ion-icon slot="start" name="document-text-outline"></ion-icon>
+            Submitted Quotations
+          </ion-button>
+        </ion-item>
+      }
       <ion-item>
         <ion-button [color]="darkMode? 'light': 'dark'" fill="clear">
             <ion-icon slot="start" name="text-outline"></ion-icon>
