@@ -208,6 +208,7 @@ export class AuthService {
       email,
       password
     };
+   console.log("contractorLoginRequest", req);
     return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req);
   }
 
