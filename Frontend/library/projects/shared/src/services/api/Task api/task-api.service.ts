@@ -36,7 +36,7 @@ export class TaskApiService {
 
     return this.http.post<MaintenanceTask>(`${this.url}/maintenance/create`, req, { headers }).pipe(map( res => ({
       ...res,
-      uuid: res['taskUuid']
+      uuid: res['taskUuid'] ?? ''
     })
     ));
   } 
