@@ -2,6 +2,8 @@ package com.example.propertymanagement.service
 
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.repository.ContractorRepository
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.NoSuchElementException
@@ -13,9 +15,11 @@ class ContractorService(
 ) {
     fun getAll(): List<Contractor> = repository.findAll()
 
+    @Cacheable(value = ["apiCache"], key = "#uuid")
     fun getByUuid(uuid: UUID): Contractor =
         repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
+    @CacheEvict(value = ["apiCache"], key = "#uuid")
     fun updateByUuid(
         uuid: UUID,
         update: Contractor,
@@ -44,10 +48,13 @@ class ContractorService(
     }
 
     @Transactional
+    @CacheEvict(value = ["apiCache"], key = "#uuid")
     fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
 
+    @CacheEvict(value = ["apiCache"], allEntries = true)
     fun add(item: Contractor): Contractor = repository.save(item)
 
+    @CacheEvict(value = ["apiCache"], allEntries = true)
     fun addUser(
         name: String,
         contact_info: String,
@@ -84,6 +91,7 @@ class ContractorService(
         return add(newUser)
     }
 
+    @Cacheable(value = ["apiCache"], key = "'email_'+#email")
     fun getByEmail(email: String): Contractor =
         repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
 

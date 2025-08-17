@@ -2,11 +2,12 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { InventoryItemApiService } from './inventory-item-api.service';
 import { Inventory } from '../../../models/inventory.model';
+import { environmentMobile } from '../../../environment';
 
 describe('InventoryItemApiService Integration Tests', () => {
   let service: InventoryItemApiService;
   let httpMock: HttpTestingController;
-  const url = '/api';
+  const url = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -246,7 +247,7 @@ describe('InventoryItemApiService Integration Tests', () => {
       };
 
       service.updateInventoryItemQuantity(
-        { ...updatedItem, quantityInStock: 10 }, 
+        updatedItem.itemUuid, 
         5, 
         'add'
       ).subscribe(item => {
@@ -270,7 +271,7 @@ describe('InventoryItemApiService Integration Tests', () => {
       };
 
       service.updateInventoryItemQuantity(
-        { ...updatedItem, quantityInStock: 10 }, 
+        updatedItem.itemUuid, 
         5, 
         'subtract'
       ).subscribe(item => {
@@ -283,7 +284,7 @@ describe('InventoryItemApiService Integration Tests', () => {
 
     it('should handle invalid quantityInStock operation', () => {
       service.updateInventoryItemQuantity(
-        { itemUuid: '1', name: 'Chair', unit: 'pcs', quantityInStock: 10, price: 50, buildingUuid: 'bldg1' }, 
+        '1',
         5, 
         'invalid-op'
       ).subscribe(

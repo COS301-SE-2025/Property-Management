@@ -1,18 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { Property } from '../../../models/property.model';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { ReserveFund } from '../../../models/reserveFund.model';
 import { BodyCoporate } from '../../../models/bodyCoporate.model';
 import { ContractorDetails } from '../../../models/contractorDetails.model';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BodyCoporateApiService {
 
-  private url = '/api';
+  // private url = '/api';
+  private url = environmentMobile.apiUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -51,24 +53,23 @@ export class BodyCoporateApiService {
 
     return response;
   }
-  getAllPublicContractors(coporateId: string): Observable<ContractorDetails[]>
+  private getAllContractors(): Observable<ContractorDetails[]>
   {
-    return this.http.get<ContractorDetails[]>(`${this.url}/contractor`).pipe(
-      map(contractor => {
-        return contractor.filter(c => {
-          return c.corporate_uuid !== coporateId
-        });
-      })
-    );
+    return this.http.get<ContractorDetails[]>(`${this.url}/contractor`);
   }
-  getTrustedContractors(coporateId: string): Observable<ContractorDetails[]>
+  getTrustedContractors(coporateId: string): Observable<string[]>
   {
-    return this.http.get<ContractorDetails[]>(`${this.url}/contractor`).pipe(
-      map(contractor => {
-        return contractor.filter(c => {
-          return c.corporate_uuid === coporateId
-        });
-      })
+    return this.http.get<string[]>(`${this.url}/contractorCorporate/contractors/${coporateId}`);
+  }
+  getAllPublicContractors(corporateId: string): Observable<ContractorDetails[]>
+  {
+    return forkJoin({
+      all: this.getAllContractors(),
+      trusted: this.getTrustedContractors(corporateId)
+    }).pipe(
+      map(({ all, trusted}) => 
+        all.filter(contractor => !trusted.includes(contractor.uuid))
+      )
     );
   }
   updateContractorDetails(contractor: ContractorDetails): Observable<ContractorDetails>
@@ -85,5 +86,18 @@ export class BodyCoporateApiService {
     contractor.img = imageId;
 
     return this.http.put<ContractorDetails>(`${this.url}/contractor/${contractor.uuid}`, contractor);
+  }
+  updateContribution(bcId: string, contribution: number)
+  {
+    return this.http.put(`${this.url}/body-corporates/${bcId}`, { contributionPerSqm: contribution });
+  }
+  makeContractorTrusted(contractorId: string, bcId: string)
+  {
+    const req = { 
+      contractorUuid: contractorId,
+      bodyCorporateUuid: bcId
+    };
+
+    return this.http.post(`${this.url}/contractorCorporate`, req);
   }
 }

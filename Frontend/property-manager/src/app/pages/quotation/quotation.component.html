@@ -1,4 +1,4 @@
-<app-header></app-header>
+<!-- <app-header></app-header> -->
 <p-toast></p-toast>
 
 <div class="min-h-screen p-8" [@fadeInStagger] [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
@@ -42,11 +42,12 @@
 </div>
 
     <!-- Submit Button -->
-    <button
-      (click)="submitQuote()"
-      label="Create Quotation"
-      class="bg-yellow-300 text-black font-semibold text-lg px-16 py-3 ml-25 rounded shadow hover:bg-yellow-400 transition text-sm"
-
-    > Create Quote</button>
+     <div class="flex flex-col justify-center items-center">
+       <button
+         (click)="submitQuote()"
+         label="Create Quotation"
+         class="bg-yellow-300 text-black font-semibold text-lg px-16 py-3 ml-25 rounded shadow hover:bg-yellow-400 transition"
+       > Create Quote</button>
+     </div>
   </div>
 </div>

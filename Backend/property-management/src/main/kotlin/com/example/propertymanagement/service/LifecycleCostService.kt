@@ -9,6 +9,7 @@ import com.example.propertymanagement.repository.LifecycleCostRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.util.UUID
+// import org.springframework.cache.annotation.Cacheable
 
 @Service
 class LifecycleCostService(

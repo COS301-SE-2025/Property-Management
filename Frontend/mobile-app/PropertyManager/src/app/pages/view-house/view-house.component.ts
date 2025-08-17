@@ -9,12 +9,13 @@ import { TabComponent } from "src/app/components/tab/tab.component";
 import { BudgetComponent } from "./budget/budget.component";
 import { InventoryComponent } from "./inventory/inventory.component";
 import { TimelineComponent } from "./timeline/timeline.component";
+import { UpdateHouseComponent } from '../home/update-house/update-house.component';
 
 @Component({
   selector: 'app-view-house',
   templateUrl: './view-house.component.html',
   styles: ``,
-  imports: [IonContent, TabComponent, HeaderComponent, CommonModule, BudgetComponent, InventoryComponent, TimelineComponent],
+  imports: [IonContent, TabComponent, HeaderComponent, CommonModule, BudgetComponent, InventoryComponent, TimelineComponent, UpdateHouseComponent],
   animations: [
     trigger('floatUp', [
       state('void', style({
@@ -74,7 +75,6 @@ export class ViewHouseComponent  implements OnInit {
 
      const sub = this.route.paramMap.subscribe(async params => {
       const houseId = params.get('houseId');
-      console.log(houseId);
       
       try{
         await Promise.all([

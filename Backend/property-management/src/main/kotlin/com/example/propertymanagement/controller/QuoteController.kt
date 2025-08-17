@@ -36,6 +36,7 @@ class QuoteController(
     fun getQuotesByTask(
         @PathVariable taskUuid: UUID,
     ): List<Quote> = service.getQuotesByTask(taskUuid)
+
     @PostMapping
     fun createQuote(
         @RequestBody quoteDto: QuoteDto,
@@ -47,6 +48,7 @@ class QuoteController(
             quoteDto.status,
             quoteDto.amount,
             quoteDto.doc,
+            quoteDto.expiry_date,
         )
 
     @PutMapping("/{uuid}")

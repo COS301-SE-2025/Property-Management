@@ -1,19 +1,22 @@
-<app-header/>
+<!-- <app-header/> -->
 
 <div class= "flex flex-col items-center pt-10">
     
     <div *ngIf = "!findHouse" class = "pb-200">
         <p class = "text-yellow-500 font-semibold">Could not load house. Please try again</p>
     </div>
-
-    <div class="px-4 space-y-8">
-        <div class = "w-full mx-auto">
-            <img [src]="house()?.propertyImage" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="">
-            <p class = "text-center text-xl font-bold mt-4"> {{ house()?.name }}</p>
+    <div class="space-y-8">
+        <div class="flex items-center justify-center">
+            <div class="relative inline-block">
+                <img [src]="house()?.propertyImage" class="w-60 h-43 mx-auto object-cover mt-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow" alt="">
+                <button class="absolute top-5 -right-5 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="updateHouse.openDialog()">
+                    <img *ngIf="!house()?.coporateUuid" src="assets/icons/screwdriver.svg" class="w-5 h-5">
+                </button>
+                <app-update-house-dialog #updateHouse [houseId]="house()?.buildingUuid!"/>
+            </div>
         </div>
-
-        <!-- 3 cards -->
-        <div [@floatUp] class = "grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pb-3"> 
+        <p class="text-center text-3xl font-bold mt-4 text-gray-800 dark:text-gray-100 truncate" title="{{ house()?.name }}">{{ house()?.name }}</p>
+        <div [@floatUp] class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pb-3 px-3">
             <app-inventory-card class="shadow-md dark:bg-[#444]" [inventory]="houseService.inventory()"/>
             <app-budget-card [budget]="houseService.budgets()"/>
             <app-timeline-card [timeline]="houseService.timeline()"/>

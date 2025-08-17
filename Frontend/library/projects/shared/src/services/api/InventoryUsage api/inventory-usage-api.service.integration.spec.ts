@@ -2,11 +2,12 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { InventoryUsageApiService } from './inventory-usage-api.service';
 import { InventoryUsage } from '../../../models/inventoryUsage.model';
+import { environmentMobile } from '../../../environment';
 
 describe('InventoryUsageApiService Integration Tests', () => {
   let service: InventoryUsageApiService;
   let httpMock: HttpTestingController;
-  const url = '/api';
+  const url = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,7 +29,6 @@ describe('InventoryUsageApiService Integration Tests', () => {
         usageUuid: '1',
         itemUuid: 'item1',
         taskUuid: 'task1',
-        contractorUuid: 'contractor1',
         quantityUsed: 5,
         trusteeApproval: false,
         approvedDate: new Date('2025-01-01')
@@ -37,11 +37,10 @@ describe('InventoryUsageApiService Integration Tests', () => {
       const expectedBody = {
         itemUuid: 'item1',
         taskUuid: 'task1',
-        contractorUuid: 'contractor1',
         quantityUsed: 5
       };
 
-      service.createInventoryUsage('item1', 'task1', 'contractor1', 5).subscribe(usage => {
+      service.createInventoryUsage('item1', 'task1', 5).subscribe(usage => {
         expect(usage).toEqual(mockUsage);
       });
 
@@ -52,7 +51,7 @@ describe('InventoryUsageApiService Integration Tests', () => {
     });
 
     it('should handle validation error when creating usage record', () => {
-      service.createInventoryUsage('', 'task1', 'contractor1', -1).subscribe(
+      service.createInventoryUsage('', 'task1',  -1).subscribe(
         () => fail('should have failed with 400 error'),
         (error) => {
           expect(error.status).toBe(400);
@@ -252,7 +251,7 @@ describe('InventoryUsageApiService Integration Tests', () => {
         expect(usages).toEqual(mockUsages);
       });
 
-      const req = httpMock.expectOne(`${url}/inventory-usage/task1`);
+      const req = httpMock.expectOne(`${url}/inventory-usage/by-task/task1`);
       expect(req.request.method).toBe('GET');
       req.flush(mockUsages);
     });

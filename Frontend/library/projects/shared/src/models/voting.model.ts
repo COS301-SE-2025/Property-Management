@@ -8,3 +8,14 @@ export interface Voting extends MaintenanceTask{
     votingEndsAtDate?: Date;
     isActive: boolean;
 }
+
+export interface VotingResults{
+    sessionUuid: string;
+    taskUuid: string;
+    votingEnded: boolean;
+    winningQuoteUuid: string | null;
+    results: Array<{
+        quoteUuid: string;
+        votesFor: number;
+    }>;
+}

@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
@@ -6,10 +6,12 @@ import { DialogComponent } from '../../../../components/dialog/dialog.component'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LifecycleCostService, CreateLifeCycleCostRequest } from 'shared';
 import { AuthService } from 'shared';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-add-cost-dialog',
   imports: [DialogModule, CommonModule, ReactiveFormsModule],
+  providers: [MessageService],
   templateUrl: './add-cost-dialog.component.html',
   styles: ``
 })
@@ -23,8 +25,8 @@ export class AddCostDialogComponent extends DialogComponent {
 
   constructor(
     private lifecycleCostService: LifecycleCostService,
-    private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private messageService: MessageService
   ) {  
     super();
     this.form = this.fb.group({
@@ -79,6 +81,12 @@ export class AddCostDialogComponent extends DialogComponent {
       next: (response) => {
         console.log('Cost added successfully:', response);
         this.costAdded.emit(); 
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Successfully added life-cycle cost',
+        })
         this.closeDialog();
       },
       error: (error) => {

@@ -1,29 +1,89 @@
-<app-header/>
+<!-- <app-header/> -->
 
-<div class = "mt-4 ml-10" *ngIf="votingTasks().length > 0">
-    <p class = "text-xl font-normal">Tasks open for voting</p>
+<div class="flex justify-center items-center mt-10" *ngIf="loading">
+  <p-progressSpinner></p-progressSpinner>
 </div>
 
-<div class="flex flex-wrap justify-center gap-8 p-8">
-  @for(task of votingTasks(); track task.uuid)
-  {
-    <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
-      <app-voting-card [task]="task" [type]="'voting'"/>
-    </div>
-  }
+<div class = "mt-10 ml-10" *ngIf="!loading && votingTasks().length <= 0 && pendingTasks().length <= 0 && finalApproval().length <= 0 && approvedTasks().length <= 0">
+    <p class = "text-xl font-normal flex flex-col justify-center items-center pr-12 text-yellow-300">No tasks open for voting. Come back later</p>
 </div>
 
-<div  *ngIf="bcUser">
-  <div class="mt-3 ml-12" *ngIf="pendingTasks().length > 0">
-    <p class="text-xl font-normal">Tasks pending approval</p>
-  </div>
-  
-  <div class="flex flex-wrap justify-center gap-8 p-8">
-    @for(task of pendingTasks(); track task.uuid)
-    {
-      <div class="hover:translate-y-1 transition-transform duration-200 hover:shadow-lg">
-        <app-voting-card [task]="task" [type]="'approval'"/>
-      </div>
-    }
-  </div>
+<div *ngIf="!loading" [@floatUp] class="flex flex-col justify-center items-center mt-10">
+  <p-table [value]="allTasks" showGridlines selectionMode="single" (onRowSelect)="showDetails($event)" [metaKeySelection]="false" [globalFilterFields]="['priorty', 'type']" dataKey="uuid" [tableStyle]="{ 'min-width' : '65rem' }">
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="title">
+          Title <p-sortIcon field="title"/>
+        </th>
+        <th pSortableColumn="scheduled_date">
+          Deadline date <p-sortIcon field="scheduled_date"/>
+        </th>
+        <th pSortableColumn="priority">
+          Priority<p-sortIcon field="priority"/>
+        </th>
+        <th pSortableColumn="type">
+          Task Stage <p-sortIcon field="type"/>
+        </th>
+      </tr>
+      <tr>
+        <th>
+           <p-columnFilter type="text" field="title" placeholder="Type to search" ariaLabel="Filter Name" filterOn="input"></p-columnFilter>
+        </th>
+        <th></th>
+        <th>
+          <p-columnFilter field="priority" matchMode="equals" [showMenu]="false">
+            <ng-template #filter let-value let-filter="filterCallback">
+              <p-select [ngModel]="value" [options]="priorityOptions" (onChange)="filter($event.value)" placeholder="Priorites" [showClear]="true">
+                <ng-template let-option #item>
+                  <p-tag [value]="option.value" [severity]="getSeverity(option.value)"/>
+                </ng-template>
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter field="type" matchMode="equals" [showMenu]="false">
+            <ng-template #filter let-value let-filter="filterCallback">
+              <p-select [ngModel]="value" [options]="typeOptions" (onChange)="filter($event.value)" placeholder="Task Stage" [showClear]="true" [style]="{ 'min-width': '12rem' }">
+                <ng-template let-option #item>
+                  <p-tag [value]="option.value" [severity]="getSeverity(option.value)"/>
+                </ng-template>
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-task>
+      <tr [pSelectableRow]="task">
+        <td>{{ task.title }}</td>
+        <td [class]="changeDueDate(task)">{{ task.scheduled_date | formatDate }}</td>
+
+        @if(task.priority === 'Low')
+        {
+          <td>
+            <p-tag [value]="task.priority" severity="success"/>
+          </td>
+        }
+        @else if(task.priority === 'Medium')
+        {
+          <td>
+            <p-tag [value]="task.priority" severity="warn"/>
+          </td>
+        }
+        @else if(task.priority === 'High')
+        {
+          <td>
+            <p-tag [value]="task.priority" severity="danger"/>
+          </td>
+        }
+        @else {
+          <td>
+            <p-tag value="N/A" severity="secondary"/>
+          </td>
+        }
+        <td>{{ task.type }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

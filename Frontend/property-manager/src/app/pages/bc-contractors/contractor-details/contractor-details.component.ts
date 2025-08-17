@@ -8,7 +8,6 @@ import { BodyCoporateService } from 'shared';
 // import { TaskDialogComponent } from '../../task-dialog/task-dialog.component';
 // import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderComponent } from '../../../components/header/header.component';
 import { ContractorDetails } from 'shared';
 import { FormatPhoneNumberPipe } from "shared";
 import { getCookieValue } from 'shared';
@@ -17,7 +16,7 @@ import { ImageApiService } from 'shared';
 
 @Component({
   selector: 'app-contractor-details',
-  imports: [CommonModule, TableModule, ListboxModule, HeaderComponent, FormatPhoneNumberPipe, ToastModule],
+  imports: [CommonModule, TableModule, ListboxModule, FormatPhoneNumberPipe, ToastModule],
   templateUrl: './contractor-details.component.html',
   styles: ``,
   providers: [MessageService]
@@ -92,10 +91,8 @@ export class ContractorDetailsComponent implements OnInit{
     if (contractor !== null) 
     {
       const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
-      contractor.corporate_uuid = bcId;
-      console.log(contractor);
 
-      this.bodyCoporateService.updateContractor(contractor).subscribe({
+      this.bodyCoporateService.makeContractorTrusted(bcId, contractor.uuid).subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',
@@ -106,7 +103,7 @@ export class ContractorDetailsComponent implements OnInit{
             this.router.navigate(['bodyCoporate/contractors']).then(() => {
               window.location.reload();
             });
-          }, 2500);
+          }, 2000);
         },
         error: () => {
           this.messageService.add({

@@ -1,4 +1,4 @@
-<app-header/>
+<!-- <app-header/> -->
 
 <div class= "flex flex-col items-center pt-10">
     
@@ -12,7 +12,7 @@
     </div>
 
     <!-- 3 cards -->
-     <div class= "pb-10 pl-20">
+     <div class= "pb-10 flex flex-col justify-center items-center">
          <app-graph-card [budgetGraphData]="houseService.budgetGraph()"/>
      </div>
      <div *ngIf="!loading()" [@floatUp] class = "grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">

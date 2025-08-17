@@ -1,7 +1,7 @@
-import { Component, input, OnInit, signal } from '@angular/core';
+import { Component, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
-import { DialogComponent } from 'property-manager/src/app/components/dialog/dialog.component';
+import { DialogComponent } from '../../../components/dialog/dialog.component';
 import { Contractor, ContractorApiService, Quote, TaskApiService, FormatDatePipe } from 'shared';
 
 @Component({
@@ -17,7 +17,10 @@ export class QuoteDetailsComponent extends DialogComponent implements OnInit {
   
   public quoteError = false;
   public contractorDetails = signal<Contractor | undefined>(undefined);
+  public contractorQuotes = signal<Record<string, string>>({});
   public quote = signal<Quote | undefined>(undefined);
+
+  @Output() quoteSelected = new EventEmitter<string>();
 
   constructor(private taskService: TaskApiService, private contractorService: ContractorApiService) { 
     super();
@@ -59,5 +62,12 @@ export class QuoteDetailsComponent extends DialogComponent implements OnInit {
       this.quoteError = true;
     }
   }
-
+  override openDialog()
+  {
+    super.openDialog();
+    if(this.quote())
+    {
+      this.quoteSelected.emit(this.quote()!.uuid);
+    }
+  }
 }

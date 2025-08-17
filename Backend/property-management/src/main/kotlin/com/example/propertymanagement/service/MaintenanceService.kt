@@ -38,15 +38,19 @@ class MaintenanceService(
         val contractorUuid: UUID,
         val submittedOn: Date? = Date(System.currentTimeMillis()),
         val status: String = "SUBMITTED",
+        val expiryDate: Date? = Date(System.currentTimeMillis() + (14L * 24 * 60 * 60 * 1000)),
     )
 
-    fun getAll(): List<Maintenance> = repository.findAll()
+    // // @Cacheable("apiCache")
+    fun getAll(): List<Maintenance> = repository.findAll().toList()
 
     fun add(item: Maintenance): Maintenance = repository.save(item)
 
+    // @Cacheable("apiCache")
     fun getByUuid(uuid: UUID): Maintenance =
         repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Maintenance not found: $uuid") }
 
+    // @Cacheable("apiCache")
     fun getTasksByTrustee(tUuid: UUID): List<Maintenance> = repository.findAllBytUuid(tUuid)
 
     fun add(
@@ -59,6 +63,7 @@ class MaintenanceService(
         img: UUID,
         tUuid: UUID,
         cUuid: UUID,
+        priority: String,
     ): Maintenance {
         val newTask =
             Maintenance(
@@ -72,6 +77,7 @@ class MaintenanceService(
                 img = img,
                 tUuid = tUuid,
                 cUuid = cUuid,
+                priority = priority,
             )
         return add(newTask)
     }
@@ -94,6 +100,7 @@ class MaintenanceService(
                 tUuid = newItem.tUuid,
                 cUuid = newItem.cUuid,
                 approvalStatus = newItem.approvalStatus,
+                priority = newItem.priority,
             )
         return repository.save(updated)
     }
@@ -113,7 +120,6 @@ class MaintenanceService(
                 IllegalArgumentException("Building not found: ${dto.buildingUuid}")
             }
 
-        // Validate imageUuid
         var imageUuid: UUID? = null
         dto.imageUuid?.let { id ->
             if (!imageRepository.existsById(id)) {
@@ -126,7 +132,6 @@ class MaintenanceService(
             }
         }
 
-        // Validate contractorUuid
         if (dto.contractorUuid != null && (!isBodyCorporate && (building.coporateUuid != null || !isOwner))) {
             throw IllegalStateException(
                 "Trustees cannot assign contractors unless they are the owner and the building has no body corporate",
@@ -147,6 +152,7 @@ class MaintenanceService(
                 tUuid = dto.trusteeUuid,
                 cUuid = if (isOwner && building.coporateUuid == null) dto.contractorUuid else null,
                 approvalStatus = if (building.coporateUuid == null) "APPROVED" else "PENDING",
+                priority = dto.priority ?: "Low",
             )
 
         val savedTask = repository.save(task)
@@ -164,7 +170,6 @@ class MaintenanceService(
             throw IllegalStateException("Only body corporates can update approval status")
         }
 
-        // Validate imageUuid
         var imageUuid: UUID? = task.img
         dto.imageUuid?.let { id ->
             if (!imageRepository.existsById(id)) {
@@ -190,6 +195,7 @@ class MaintenanceService(
                 approvalStatus = dto.approvalStatus ?: task.approvalStatus,
                 cUuid = if (dto.approvalStatus == "APPROVED") dto.contractorUuid ?: task.cUuid else task.cUuid,
                 img = imageUuid ?: task.img,
+                priority = dto.priority ?: task.priority,
             )
 
         val savedTask = repository.save(updatedTask)
@@ -233,11 +239,13 @@ class MaintenanceService(
         }
     }
 
+    // @Cacheable("apiCache")
     fun getTasksByCorporate(coporateUuid: UUID): List<MaintenanceTaskResponseDto> =
         repository.findByCorporateUuid(coporateUuid).map {
             mapToResponseDto(it)
         }
 
+    // @Cacheable("apiCache")
     fun getTasksForContractor(contractorUuid: UUID): List<MaintenanceTaskResponseDto> {
         val contractorTasks = taskContractorRepository.findByContractorUuid(contractorUuid)
         val taskUuids = contractorTasks.filter { !it.quoteSubmitted }.map { it.taskUuid }
@@ -260,6 +268,7 @@ class MaintenanceService(
                 status = quoteDto.status,
                 amount = quoteDto.amount.toBigDecimal(),
                 doc = quoteDto.documentUrl ?: "",
+                expiry_date = quoteDto.expiryDate ?: Date(System.currentTimeMillis() + (14L * 24 * 60 * 60 * 1000)),
             )
 
         val updated =
@@ -271,6 +280,7 @@ class MaintenanceService(
         taskContractorRepository.save(updated)
     }
 
+    // @Cacheable("apiCache")
     fun getContractorsForTask(taskUuid: UUID): List<MaintenancetaskContractor> = taskContractorRepository.findByTaskUuid(taskUuid)
 
     private fun mapToResponseDto(task: Maintenance): MaintenanceTaskResponseDto =
@@ -287,5 +297,6 @@ class MaintenanceService(
             imageUuid = task.img.toString(),
             trusteeUuid = task.tUuid,
             contractorUuid = task.cUuid,
+            priority = task.priority,
         )
 }

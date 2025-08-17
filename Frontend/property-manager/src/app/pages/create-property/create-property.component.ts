@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
 import { Router } from '@angular/router';
-import { PropertyService, CreateBuildingPayload, ImageUploadResponse } from 'shared';
+import { PropertyService, CreateBuildingPayload, ImageUploadResponse, getCookieValue } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -20,7 +19,6 @@ import { MessageService } from 'primeng/api';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HeaderComponent,
     InputTextModule,
     FloatLabelModule,
     DropdownModule,
@@ -38,6 +36,8 @@ export class CreatePropertyComponent implements OnInit {
 
   trusteeUuid: string | null = null;
   coporateUuid: string | null = null;
+
+  bodyCorporates: any[] = [];
 
   contractors: Contractor[] = [];
   isDarkMode = false;
@@ -60,7 +60,8 @@ export class CreatePropertyComponent implements OnInit {
       city: [''],
       province: [''],
       type: ['', Validators.required],
-      primaryContractor: ['', Validators.required],
+      // primaryContractor: ['', Validators.required],
+      coporateUuid: ['', Validators.required],
       bodyCorporate: [''],
       image: [null],
     });
@@ -68,19 +69,45 @@ export class CreatePropertyComponent implements OnInit {
 
   ngOnInit(): void {
     this.isDarkMode = document.documentElement.classList.contains('dark-theme');
-    this.trusteeUuid = localStorage.getItem('trusteeID');
-    this.coporateUuid = localStorage.getItem('bodyCoporateID');
+    this.trusteeUuid = getCookieValue(document.cookie, 'trusteeId');
     if (!this.trusteeUuid) {
-      this.submissionError = 'Authentication error: Please log in again.';
+      this.coporateUuid = getCookieValue(document.cookie, 'bodyCoporateID');
+      if(!this.coporateUuid) {
+        this.submissionError = 'Authentication error: Please log in again.';
+      }
     }
-    this.loadContractors();
+    // this.loadContractors();
+    this.loadBodyCorporates();
   }
 
-  loadContractors(): void {
+  private loadContractors(): void {
     this.contractorService.getAllContractors().subscribe({
-      next: (data: Contractor[]) => this.contractors = data,
-      error: (err: HttpErrorResponse) => console.error('Failed to load contractors:', err)
+      next: (data: Contractor[]) => {
+        this.contractors = data;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Failed to load contractors:', err);
+      }
     });
+  }
+
+  loadBodyCorporates(): void {
+    if (this.trusteeUuid) {
+      this.propertyService.getBodyCorporatesForTrustee(this.trusteeUuid).subscribe({
+        next: async (invites: any[]) => {
+          const acceptedInvites = invites.filter(invite => invite.status === 'ACCEPTED');
+          const bodyCorporatePromises = acceptedInvites.map(invite =>
+            this.propertyService.getBodyCorporateByUuid(invite.coporateUuid).toPromise()
+          );
+          const bodyCorporateDetails = await Promise.all(bodyCorporatePromises);
+          this.bodyCorporates = bodyCorporateDetails.map(bc => ({
+            coporateName: bc.corporateName,
+            coporateUuid: bc.corporateUuid
+          }));
+        },
+        error: (err: HttpErrorResponse) => console.error('Failed to load body corporates:', err)
+      });
+    }
   }
 
   onFileSelected(event: Event): void {
@@ -102,10 +129,10 @@ export class CreatePropertyComponent implements OnInit {
     }
 
     const formValue = this.form.value;
-    if (!formValue.primaryContractor) {
-      this.submissionError = 'Please select a Primary Contractor.';
-      return;
-    }
+    // if (!formValue.primaryContractor) {
+    //   this.submissionError = 'Please select a Primary Contractor.';
+    //   return;
+    // }
 
     this.isSubmitting = true;
     this.submissionError = null;
@@ -139,10 +166,10 @@ export class CreatePropertyComponent implements OnInit {
       address: fullAddress,
       type: formValue.type as string,
       propertyValue: Number(formValue.propertyValue),
-      primaryContractor: formValue.primaryContractor,
+      // primaryContractor: formValue.primaryContractor,
       latestInspectionDate: new Date().toISOString().split('T')[0],
       trusteeUuid: this.trusteeUuid as string,
-      coporateUuid: this.coporateUuid ?? null,
+      coporateUuid: formValue.coporateUuid,
       propertyImageId: propertyImageId,
       area: Number(formValue.area)
     };
@@ -153,7 +180,16 @@ export class CreatePropertyComponent implements OnInit {
     this.propertyService.createProperty(payload).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.router.navigate(['/home']);
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Property Created',
+          detail: 'The property was created successfully.'
+        });
+
+        setTimeout(() => {
+          this.router.navigate(['/home']).then(() => window.location.reload);
+        }, 2000)
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error creating property:', err);
@@ -166,10 +202,5 @@ export class CreatePropertyComponent implements OnInit {
       }
     });
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Property Created',
-      detail: 'The property was created successfully.'
-    });
   }
 }

@@ -1,14 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-
 import { InventoryItemApiService } from './inventory-item-api.service';
 import { HttpClient } from '@angular/common/http';
 import { Inventory } from '../../../models/inventory.model';
 import { of, throwError } from 'rxjs';
+import { environmentMobile } from '../../../environment';
 
 describe('InventoryItemApiService', () => {
   let service: InventoryItemApiService;
   let httpClientSpy: jasmine.SpyObj<HttpClient>;
-  const url = '/api';
+  const url = environmentMobile.apiUrl;
 
   beforeEach(() => {
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put', 'patch', 'delete']);
@@ -272,11 +272,7 @@ describe('InventoryItemApiService', () => {
 
       httpClientSpy.patch.and.returnValue(of(updatedItem));
 
-      service.updateInventoryItemQuantity(
-        { ...updatedItem, quantityInStock: 10, price: 50 }, 
-        5, 
-        'add'
-      ).subscribe({
+      service.updateInventoryItemQuantity( updatedItem.itemUuid, 5, 'add').subscribe({
         next: (item) => {
           expect(item.quantityInStock).toBe(15);
           expect(httpClientSpy.patch).toHaveBeenCalledWith(
@@ -300,11 +296,7 @@ describe('InventoryItemApiService', () => {
 
       httpClientSpy.patch.and.returnValue(of(updatedItem));
 
-      service.updateInventoryItemQuantity(
-        { ...updatedItem, quantityInStock: 10, price: 50 }, 
-        5, 
-        'subtract'
-      ).subscribe({
+      service.updateInventoryItemQuantity(updatedItem.itemUuid, 5, 'subtract').subscribe({
         next: (item) => {
           expect(item.quantityInStock).toBe(5);
         },
@@ -316,11 +308,7 @@ describe('InventoryItemApiService', () => {
       const errorResponse = { status: 400, message: 'Invalid operation' };
       httpClientSpy.patch.and.returnValue(throwError(() => errorResponse));
 
-      service.updateInventoryItemQuantity(
-        { itemUuid: '1', name: 'Chair', unit: 'pcs', quantityInStock: 10, price: 50, buildingUuid: 'bldg1' }, 
-        5, 
-        'invalid-op'
-      ).subscribe({
+      service.updateInventoryItemQuantity('1', 10,'invalid-op').subscribe({
         next: () => fail('expected error but got item'),
         error: (error) => {
           expect(error.status).toBe(400);

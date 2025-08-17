@@ -4,7 +4,7 @@ Backend\property-management\src\main\resources\application.properties
 *.properties
 config.env
 .env
-.env.*
+.env.* 
 
 # Build directories
 /build/
@@ -17,6 +17,8 @@ klint
 Frontend/node_modules
 Frontend/dist
 Frontend/.angular
+Frontend/property-management/node_modules
+node_modules/
 
 # === Mobile App (Ionic) ===
 mobile-app/PropertyManager/node_modules
@@ -35,3 +37,14 @@ Thumbs.db
 *.swp
 *~
 Backend/property-management/src/main/resources/application.properties
+node_modules
+Frontend/angular.json
+Frontend/package-lock.json
+Frontend/package.json
+package-lock.json
+package.json
+Frontend/package-lock.json
+Frontend/package.json
+Frontend/package-lock.json
+Frontend/angular.json
+
