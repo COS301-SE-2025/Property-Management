@@ -96,7 +96,7 @@ export class ContractorProfileComponent implements OnInit {
           life: 3000
         });
         setTimeout(() => {
-          this.router.navigate(['/contractor']);
+          this.router.navigate(['/contractorHome']);
         }, 1500);
       },
       error: (err) => {

@@ -145,7 +145,7 @@ export class ApiService {
     amount: amount,
     documentUrl: documentUrl
   };
-  return this.http.post<Quote>(`${this.url}/quote`, quote);
+  return this.http.post<Quote>(`${this.url}/maintenance/quotes`, quote);
 }
 
 

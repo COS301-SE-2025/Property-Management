@@ -46,6 +46,7 @@ export interface InviteWithTrustee {
 
 @Injectable({ providedIn: 'root' })
 export class PropertyService {
+  private inviteApiUrl = environmentMobile.apiUrl;
   private apiUrl = `${environmentMobile.apiUrl}/buildings`;
   private imageUploadUrl = `${environmentMobile.apiUrl}/images/upload`;
 
@@ -63,7 +64,7 @@ export class PropertyService {
   }
 
   getInvitations(): Observable<InviteWithTrustee[]> {
-    return this.http.get<InviteWithTrustee[]>('/invites');
+    return this.http.get<InviteWithTrustee[]>(`${this.inviteApiUrl}/invites`);
   }
 
   cancelInvite(inviteUuid: string): Observable<any> {

@@ -69,11 +69,11 @@ export class QuotationComponent implements OnInit{
   private apiService: ApiService,
   private route: ActivatedRoute
 ) {
-  const storedId = getCookieValue(document.cookie, 'contractorID');
+  const storedId = getCookieValue(document.cookie, 'contractorId');
   if (storedId) {
     this.contractorId = storedId;
   } else {
-    console.warn('Contractor ID not found in localStorage.');
+    console.warn('Contractor ID not found in cookie.');
   }
 }
 
@@ -121,15 +121,10 @@ export class QuotationComponent implements OnInit{
       return;
     }
     const submittedDate = new Date();
+    console.log(this.taskId);
+    console.log(this.contractorId);
 
-    this.apiService.addQuote(
-      this.taskId,
-      this.contractorId,
-      submittedDate,
-      this.type,
-      Number(this.totalAmount),
-      this.quoteNo
-    ).subscribe({
+    this.apiService.addQuote(this.taskId,this.contractorId,submittedDate,this.type,Number(this.totalAmount),this.quoteNo).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
