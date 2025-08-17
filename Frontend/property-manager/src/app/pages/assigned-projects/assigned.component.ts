@@ -12,7 +12,7 @@ import {
   query,
   stagger
 } from '@angular/animations';
-import { ApiService } from 'shared';
+import { ApiService, getCookieValue } from 'shared';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { MaintenanceTask } from 'shared';
@@ -41,7 +41,7 @@ export class AssignedComponent implements OnInit{
    
     //Fixing build
   tasks: MaintenanceTask[] = [];
-  contractorId = localStorage.getItem('contractorID');
+  contractorId = getCookieValue(document.cookie, 'contractorId');
   constructor(private api: ApiService) {}
 
   ngOnInit() {
