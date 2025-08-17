@@ -1,0 +1,56 @@
+<ion-content class="dark:bg-gray-700">
+  <app-header></app-header>
+
+  <div class="ion-padding" [@fadeInStagger]>
+    <div class="animate-item">
+      <h1 class="text-2xl font-bold dark:text-white">Submitted Quotations</h1>
+      <div class="w-24 h-1 bg-yellow-300 mt-2"></div>
+    </div>
+
+    <ion-list *ngIf="quotes.length > 0; else noQuotes" class="mt-6 dark:bg-gray-700">
+      <ion-card *ngFor="let quote of quotes; let i = index" class="animate-item rounded-xl w-[18rem] h-[18rem] bg-white shadow-md">
+        <ion-card-header class="rounded-t-xl">
+          <ion-card-title class="text-center">
+            Quote #{{ i + 1 }}
+          </ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content class="rounded-b-xl">
+          <ion-list lines="none">
+            <ion-item>
+              <ion-label>Amount:</ion-label>
+              <ion-label slot="end">{{quote.amount | currency:'ZAR':'symbol-narrow':'1.2-2'}}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Status:</ion-label>
+              <ion-badge slot="end" [color]="getStatusColor(quote.status)">
+                {{quote.status}}
+              </ion-badge>
+            </ion-item>
+            <ion-item>
+              <ion-label>Submitted:</ion-label>
+              <ion-label slot="end">{{quoteDate(quote)}}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Expires:</ion-label>
+              <ion-label slot="end">{{expiryDate(quote)}}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Document:</ion-label>
+              <ion-label slot="end">{{quote.doc}}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+
+    <ng-template #noQuotes>
+      <div class="flex flex-col items-center justify-center mt-20 text-center text-gray-400 animate-item">
+        <ion-icon name="folder-open-outline" class="w-24 h-24 mb-4 opacity-60"></ion-icon>
+        <p class="text-xl font-semibold mb-2">No Quotes available</p>
+        <p class="text-sm">You have not submitted any quotes</p>
+      </div>
+    </ng-template>
+  </div>
+  <app-tab></app-tab>
+</ion-content>
