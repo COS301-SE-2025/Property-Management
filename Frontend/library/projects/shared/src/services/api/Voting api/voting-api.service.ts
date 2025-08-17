@@ -9,6 +9,8 @@ import { environmentMobile } from '../../../environment';
 export class VotingApiService{
     // private url = '/api/vote';
     private url = `${environmentMobile.apiUrl}/vote`;
+    private quoteUrl = environmentMobile.apiUrl;
+
     constructor(private http: HttpClient){}
 
     getSessionDetails(sessionId: string)
@@ -64,12 +66,9 @@ export class VotingApiService{
     }
     updateQuoteStatus(quoteId: string, status: string)
     {
-        const date = new Date();
-        const submittedOn = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
         const req = {
-            status: status,
-            submitted_on: submittedOn
+            status: status
         }
-        return this.http.put<Quote>(`${this.url}/quote/${quoteId}`, req);
+        return this.http.patch<Quote>(`${this.quoteUrl}/quote/${quoteId}`, req);
     }
 }

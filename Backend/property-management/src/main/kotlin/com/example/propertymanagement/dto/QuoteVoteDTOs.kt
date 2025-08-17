@@ -21,6 +21,7 @@ data class QuoteVoteResult(
     val quoteUuid: UUID,
     val votesFor: Int,
     val votesAgainst: Int,
+    val averageRating: Double?,
 )
 
 data class VoteSessionResult(

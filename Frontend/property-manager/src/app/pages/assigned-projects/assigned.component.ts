@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { RouterLink} from '@angular/router';
-import { HeaderComponent } from "../../components/header/header.component";
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import {
   trigger,
   transition,
@@ -19,7 +18,7 @@ import { MaintenanceTask } from 'shared';
 
 @Component({
     selector: 'app-contractor-assigned-projects',
-    imports: [CardModule, ButtonModule, RouterLink, HeaderComponent, CommonModule],
+    imports: [CardModule, ButtonModule, CommonModule, RouterModule],
     standalone: true,
     templateUrl: `./assigned.component.html`,
     styles: ``,
@@ -55,8 +54,9 @@ export class AssignedComponent implements OnInit{
       next: (tasks) => {
         
         const filteredTasks = tasks.filter(task => 
-          task['c_uuid'] === this.contractorId
+          task['cuuid'] === this.contractorId
         );
+        console.log(filteredTasks);
 
         if (filteredTasks.length === 0) {
           this.tasks = []; 

@@ -191,6 +191,10 @@ export class RatingsComponent implements OnInit {
         }
         this.selectedRating = 5;
         this.comment = '';
+
+        setTimeout(() => {
+          window.location.reload
+        }, 1800);
       },
       error: () => {
         this.messageService.add({

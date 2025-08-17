@@ -48,6 +48,7 @@ class QuoteController(
             quoteDto.status,
             quoteDto.amount,
             quoteDto.doc,
+            quoteDto.expiry_date,
         )
 
     @PutMapping("/{uuid}")

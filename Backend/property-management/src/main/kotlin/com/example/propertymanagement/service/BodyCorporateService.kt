@@ -193,7 +193,7 @@ class BodyCorporateService(
             .findByTotalBudgetGreaterThanEqual(minBudget)
             .map { it.toResponse() }
 
-    @Cacheable("apiCache")
+    // @Cacheable("apiCache")
     fun getBodyCorporateStatistics(): BodyCorporateStatistics {
         val totalCount = bodyCorporateRepository.countAllBodyCorporates()
         val totalBudget = bodyCorporateRepository.sumAllTotalBudgets() ?: BigDecimal.ZERO
