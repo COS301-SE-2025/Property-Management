@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 export class ContractorRegisterComponent {
     public email = "";
     public password = "";
-    public contactNumber = "";
+    //public contactNumber = "";
     public passwordVisible = false;
 
     public emptyField = false;
@@ -32,7 +32,7 @@ export class ContractorRegisterComponent {
     }
     
   async register(): Promise<void> {
-    if (!this.email || !this.contactNumber || !this.password) {
+    if (!this.email || !this.password) {
       this.emptyField = true;
       return;
     }
@@ -44,8 +44,7 @@ export class ContractorRegisterComponent {
     try {
       const result = await this.authService.contractorRegister(
         this.email,
-        this.password,
-        this.contactNumber
+        this.password
       );
 
     

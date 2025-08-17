@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <polygon id="mobile-a" points="0 0 0 4 10 4 10 0"/>
+    <path id="mobile-c" d="M2,0 L12,0 C13.1045695,0 14,0.976833273 14,2.18181818 L14,21.8181818 C14,23.0231667 13.1045695,24 12,24 L2,24 C0.8954305,24 0,23.0231667 0,21.8181818 L0,2.18181818 C0,0.976833273 0.8954305,0 2,0 Z M2,2 L2,22 L12,22 L12,2 L2,2 Z M7,21 C6.44771525,21 6,20.5522847 6,20 C6,19.4477153 6.44771525,19 7,19 C7.55228475,19 8,19.4477153 8,20 C8,20.5522847 7.55228475,21 7,21 Z M6,4.5 C5.72385763,4.5 5.5,4.27614237 5.5,4 C5.5,3.72385763 5.72385763,3.5 6,3.5 L8,3.5 C8.27614237,3.5 8.5,3.72385763 8.5,4 C8.5,4.27614237 8.27614237,4.5 8,4.5 L6,4.5 Z"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd" transform="translate(5)">
+    <g transform="translate(2 18)">
+      <mask id="mobile-b" fill="#ffffff">
+        <use xlink:href="#mobile-a"/>
+      </mask>
+      <use fill="#D8D8D8" xlink:href="#mobile-a"/>
+      <g fill="#FFA0A0" mask="url(#mobile-b)">
+        <rect width="24" height="24" transform="translate(-7 -18)"/>
+      </g>
+    </g>
+    <mask id="mobile-d" fill="#ffffff">
+      <use xlink:href="#mobile-c"/>
+    </mask>
+    <use fill="#000000" fill-rule="nonzero" xlink:href="#mobile-c"/>
+    <g fill="#7600FF" mask="url(#mobile-d)">
+      <rect width="24" height="24" transform="translate(-5)"/>
+    </g>
+  </g>
+</svg>
