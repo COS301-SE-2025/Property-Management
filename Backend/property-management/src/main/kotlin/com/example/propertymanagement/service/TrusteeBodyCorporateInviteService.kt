@@ -10,8 +10,8 @@ import java.util.UUID
 @Service
 class TrusteeBodyCorporateInviteService(
     private val inviteRepository: TrusteeBodyCorporateInviteRepository,
-    private val trusteeRepository: TrusteeRepository ,
-    private val notificationService: NotificationService
+    private val trusteeRepository: TrusteeRepository,
+    private val notificationService: NotificationService,
 ) {
     fun createInvite(dto: InviteDTO): InviteDTO {
         val entity =
