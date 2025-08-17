@@ -180,4 +180,15 @@ updateCookie(name: string, value: string, days: number = 1): void {
 
   document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expireDate.toUTCString()}; path=/`;
 } 
+
+getContractorMaintenanceTasks(contractorUuid: string, isBodyCorporate: boolean = true): Observable<MaintenanceTask[]> {
+  const headers = {
+    'isBodyCorporate': isBodyCorporate.toString()
+  };
+
+  return this.http.get<MaintenanceTask[]>(
+    `${this.url}/maintenance/contractor/${contractorUuid}`,
+    { headers: headers }
+  );
+}
 }
