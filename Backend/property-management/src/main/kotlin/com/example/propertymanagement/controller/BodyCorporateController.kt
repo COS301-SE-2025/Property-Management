@@ -4,11 +4,11 @@ import com.example.propertymanagement.dto.BodyCorporateRegistrationResponse
 import com.example.propertymanagement.dto.BodyCorporateResponse
 import com.example.propertymanagement.dto.ConfirmRegistrationRequest
 import com.example.propertymanagement.dto.CreateBodyCorporateRequest
-import com.example.propertymanagement.service.CognitoService
 import com.example.propertymanagement.dto.LoginRequest
 import com.example.propertymanagement.dto.LoginResponse
 import com.example.propertymanagement.dto.UpdateBodyCorporateRequest
 import com.example.propertymanagement.service.BodyCorporateService
+import com.example.propertymanagement.service.CognitoService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest

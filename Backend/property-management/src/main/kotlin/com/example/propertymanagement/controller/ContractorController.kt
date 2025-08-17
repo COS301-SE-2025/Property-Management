@@ -166,7 +166,6 @@ class ContractorController(
     // Optional: API key generator utility
     private fun generateApiKey(): String = UUID.randomUUID().toString().replace("-", "")
 
-
     data class PasswordResetRequest(
         val email: String,
     )
@@ -175,7 +174,7 @@ class ContractorController(
         val email: String,
         val confirmationCode: String,
         val newPassword: String,
-    ) 
+    )
 
     @PostMapping("/auth/password-reset-request")
     fun passwordResetRequest(
