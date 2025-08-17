@@ -1,11 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { HeaderComponent } from "../../../components/header/header.component";
 import { ContractorCardComponent } from "../contractor-card/contractor-card.component";
 import { BodyCoporateService, getCookieValue } from 'shared';
 
 @Component({
   selector: 'app-public-contractors',
-  imports: [HeaderComponent, ContractorCardComponent],
+  imports: [ContractorCardComponent],
   templateUrl: './public-contractors.component.html',
   styles: ``
 })

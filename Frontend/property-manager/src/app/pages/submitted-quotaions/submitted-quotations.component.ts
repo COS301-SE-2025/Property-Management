@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'shared';
 import { Quote } from 'shared';
-import { HeaderComponent } from "../../components/header/header.component";
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
 import {
   trigger,

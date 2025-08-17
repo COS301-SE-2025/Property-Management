@@ -29,7 +29,8 @@ export class NotificationsApiService{
     }
     getNotifications(recipientType: string, recipientId: string)
     {
-        return this.http.get<Notification[]>(`${this.url}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}`).pipe(map(res => res || []));;
+        const cacheBuster = Date.now();
+        return this.http.get<Notification[]>(`${this.url}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}&_=${cacheBuster}`).pipe(map(res => res || []));
     }
     markNotificationsAsRead(NotificationsId: string)
     {

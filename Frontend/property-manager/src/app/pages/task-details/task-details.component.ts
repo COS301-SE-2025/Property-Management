@@ -2,7 +2,6 @@ import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaintenanceTask, ContractorDetails, ContractorApiService, ImageApiService, FormatDatePipe, InventoryItemApiService, InventoryUsageApiService, TaskApiService, InventoryUsage, Inventory, getCookieValue } from 'shared';
 import { ActivatedRoute } from '@angular/router';
-import { HeaderComponent } from '../../components/header/header.component';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
@@ -14,7 +13,7 @@ import { ContractorTimelineComponent } from "./contractor-timeline/contractor-ti
   selector: 'app-timeline-details',
   templateUrl: './task-details.component.html',
   styles: ``,
-  imports: [FormatDatePipe, CommonModule, HeaderComponent, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent],
+  imports: [FormatDatePipe, CommonModule, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent],
 })
 export class TaskDetailsComponent implements OnInit, OnDestroy {
 

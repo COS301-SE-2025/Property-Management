@@ -1,7 +1,6 @@
 import { Component, effect, OnInit, signal } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from "../../components/header/header.component";
 import { GraphCardComponent } from './graph-card/graph-card.component';
 import { InventoryBudgetCardComponent } from './inventory-budget-card/inventory-budget-card.component';
 import { MaintenanceCardComponent } from "./maintenance-card/maintenance-card.component";
@@ -12,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-manage-budget',
-  imports: [HeaderComponent, CommonModule, GraphCardComponent, InventoryBudgetCardComponent, MaintenanceCardComponent],
+  imports: [CommonModule, GraphCardComponent, InventoryBudgetCardComponent, MaintenanceCardComponent],
   templateUrl: './manage-budget.component.html',
   styles: ``,
   animations: [

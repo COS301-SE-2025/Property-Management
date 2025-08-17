@@ -1,5 +1,4 @@
 import { Component, effect, OnDestroy, OnInit, signal } from '@angular/core';
-import { HeaderComponent } from '../../components/header/header.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +21,7 @@ import { VotingResultsComponent } from './voting-results/voting-results.componen
 
 @Component({
   selector: 'app-voting-details',
-  imports: [HeaderComponent, CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast, TableModule, QuoteDetailsComponent, ToggleButtonModule, FormsModule, VotingResultsComponent],
+  imports: [CardModule, FormatDatePipe, MultiSelect, CommonModule, InventoryUsageComponent, ReactiveFormsModule, ConfirmDialogModule, ButtonModule, Toast, TableModule, QuoteDetailsComponent, ToggleButtonModule, FormsModule, VotingResultsComponent],
   templateUrl: './voting-details.component.html',
   providers: [MessageService, ConfirmationService],
   styles: `
