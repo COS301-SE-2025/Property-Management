@@ -64,7 +64,7 @@ export class ContractorProfileComponent implements OnInit {
               },
               error: (err) => {
 
-                if(localStorage.getItem('contractorProfileComplete') === 'false' || !localStorage.getItem('contractorProfileComplete'))
+                if(contractor.status === false)
                 {
                   this.resetImage();
                 }
@@ -86,12 +86,10 @@ export class ContractorProfileComponent implements OnInit {
 
   submitProfile() {
     const contractorId = getCookieValue(document.cookie, 'contractorId');
-    console.log(this.contractor);
-    console.log(contractorId);
 
     this.contractorService.updateContractor(contractorId, this.contractor).subscribe({
       next: () => {
-        localStorage.setItem('contractorProfileComplete', 'true'); 
+        // localStorage.setItem('contractorProfileComplete', 'true'); 
 
         this.messageService.add({
           severity: 'success',

@@ -13,7 +13,7 @@
             <th pSortableColumn="quantityInStock">
                 Quantity <p-sortIcon field="quantityInStock"/>
             </th>
-            <th pSortableColumn="price">
+            <th pSortableColumn="price" *ngIf="showPrice">
                 Price <p-sortIcon field="price"/>
             </th>
             <th>Actions</th>
@@ -23,23 +23,23 @@
         <tr>
             <td class="dark:text-gray-400">{{ inventory.name }}</td>
             <td class="dark:text-gray-400">
-                @if(editingRows[rowIndex])
+                @if(editingItems.get(inventory.itemUuid))
                 {
-                    <input type="number" [(ngModel)]="draftQuantities[rowIndex]" min="0" class="w-20 p-1 border rounded" (keydown)="preventNegative($event)">
+                    <input type="number" [ngModel]="draftQuantities.get(inventory.itemUuid)" min="0" class="w-20 p-1 border rounded" (keydown)="preventNegative($event)">
                 }
                 @else {
                     {{ inventory.quantityInStock }}
                 }
             </td>
-            <td>R {{ inventory.price }}</td>
+            <td *ngIf="showPrice">R {{ inventory.price }}</td>
             <td>
-                @if(editingRows[rowIndex])
+                @if(editingItems.get(inventory.itemUuid))
                 {
                     <div class="flex gap-2">
                         <ion-button color="warning" size="small" (click)="changeQuantity(rowIndex, 1)">
                           <ion-icon name="add-outline"></ion-icon>
                         </ion-button>
-                        <ion-button color="warning" size="small" (click)="changeQuantity(rowIndex, -1)" [disabled]="draftQuantities[rowIndex] <= 0">
+                        <ion-button color="warning" size="small" (click)="changeQuantity(rowIndex, -1)" [disabled]="draftQuantities.get(inventory.itemUuid)! <= 0">
                           <ion-icon name="remove-outline"></ion-icon>
                         </ion-button>
                     </div>

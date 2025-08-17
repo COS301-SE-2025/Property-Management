@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { PropertyService, InviteWithTrustee } from 'shared';
+import { NotificationsApiService, Notification } from 'shared';
 
 @Component({
   selector: 'app-manage-members',
@@ -13,7 +14,9 @@ export class ManageMembersComponent implements OnInit {
   invitations: InviteWithTrustee[] = [];
   activeMembers: InviteWithTrustee[] = [];
 
-  constructor(private propertyService: PropertyService) {}
+  constructor(private propertyService: PropertyService,
+    private notificationService: NotificationsApiService 
+  ) {}
 
   ngOnInit() {
     this.propertyService.getInvitations().subscribe(data => {
@@ -37,6 +40,16 @@ export class ManageMembersComponent implements OnInit {
         i.inviteUuid === invite.inviteUuid ? { ...i, status: 'REJECTED' } : i
       );
       this.activeMembers = this.activeMembers.filter(i => i.inviteUuid !== invite.inviteUuid);
+
+      const noti: Notification = {
+        notificationType: 'INVITE REVOKED',
+        message: `Your membership in the body corporate has been revoked.`,
+        recipientType: 'trustee',
+        recipientUuid: invite.trusteeUuid,
+        isRead: false,
+        relatedInviteUuid: invite.inviteUuid
+      };
+      this.notificationService.createNotifications(noti).subscribe();
     });
   }
 }

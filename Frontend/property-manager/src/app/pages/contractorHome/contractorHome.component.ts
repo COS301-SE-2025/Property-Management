@@ -16,10 +16,11 @@ import { ApiService, getCookieValue } from 'shared';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { MaintenanceTask } from 'shared';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
     selector: 'app-contractor-home',
-    imports: [CardModule, ButtonModule, RouterLink, HeaderComponent, CommonModule],
+    imports: [CardModule, ProgressSpinnerModule, ButtonModule, RouterLink, HeaderComponent, CommonModule],
     standalone: true,
     templateUrl: `./contractorHome.component.html`,
     styles: ``,
@@ -41,16 +42,18 @@ export class ContractorHomeComponent implements OnInit{
    
   tasks: MaintenanceTask[] = [];
   contractorId = getCookieValue(document.cookie, 'contractorId');
+  loading = false;
+
   constructor(private api: ApiService) {}
 
   ngOnInit() {
 
+    this.loading = true;
     if (!this.contractorId) {
-      console.warn('Contractor ID not found in localStorage.');
+      console.warn('Contractor ID not found.');
     
       return;
     }
-     console.log('Contractor ID:', this.contractorId);
     this.api.getMaintenanceTasks().subscribe({
       next: (tasks) => {
         
@@ -89,5 +92,6 @@ export class ContractorHomeComponent implements OnInit{
       },
       error: err => console.error('Failed to load tasks', err)
     });
+    this.loading = false;
   }
 }

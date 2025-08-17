@@ -63,7 +63,7 @@ export class CreatePropertyComponent implements OnInit {
       province: [''],
       type: ['', Validators.required],
       // primaryContractor: ['', Validators.required],
-      coporateUuid: ['', Validators.required],
+      coporateUuid: [''],
       bodyCorporate: [''],
       image: [null],
     });

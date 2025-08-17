@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
@@ -16,18 +16,30 @@ import { Toast } from "primeng/toast";
   styles: ``,
   providers: [MessageService]
 })
-export class ReserveFundDialogComponent extends DialogComponent {
+export class ReserveFundDialogComponent extends DialogComponent implements OnInit {
 
-  form: FormGroup;
+  form!: FormGroup;
   addError = false;
   isSubmitting = false;
+  updatedContribution = 0;
   originalContribution = input.required<number>();
 
   constructor(private fb: FormBuilder, private bodyCorporateService: BodyCoporateApiService, private messageService: MessageService) {  
     super();
+  }
+  ngOnInit()
+  {
     this.form = this.fb.group({
-      contri: ['', [Validators.required, Validators.min(0), Validators.max(100)]]
+      contri: [this.originalContribution(), [Validators.required, Validators.min(0), Validators.max(100)]]
     });
+    this.updatedContribution = this.originalContribution();
+  }
+  override openDialog(): void {
+      this.form.patchValue({
+        contri: this.originalContribution()
+      });
+      this.updatedContribution = this.originalContribution();
+      super.openDialog()
   }
   override closeDialog(): void {
     super.closeDialog();
