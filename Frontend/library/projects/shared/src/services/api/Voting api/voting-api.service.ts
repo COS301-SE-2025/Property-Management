@@ -1,12 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Voting } from '../../../public-api';
+import { Quote, Voting, VotingResults } from '../../../public-api';
+import { environmentMobile } from '../../../environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class VotingApiService{
-    private url = '/api/vote';
+    // private url = '/api/vote';
+    private url = `${environmentMobile.apiUrl}/vote`;
     constructor(private http: HttpClient){}
 
     getSessionDetails(sessionId: string)
@@ -39,5 +41,35 @@ export class VotingApiService{
     getTaskFromSessionId(sessionId: string)
     {
         return this.http.get<Voting>(`${this.url}/session/${sessionId}/task`);
+    }
+    castVote(sessionId: string, quoteId: string, voterId: string, isTrustee: boolean)
+    {
+        const req = { 
+         sessionUuid: sessionId,
+         quoteUuid: quoteId,
+         voterUuid: voterId,
+         isTrustee: isTrustee,
+         voteFor: true   
+        };
+
+        return this.http.post(`${this.url}`, req, { responseType: 'text' });
+    }
+    getVoteResults(sessionId: string)
+    {
+        return this.http.get<VotingResults>(`${this.url}/session/${sessionId}/results`);
+    }
+    getQuote(quoteId: string)
+    {
+        return this.http.get<Quote>(`${this.url}/vote/${quoteId}`);
+    }
+    updateQuoteStatus(quoteId: string, status: string)
+    {
+        const date = new Date();
+        const submittedOn = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+        const req = {
+            status: status,
+            submitted_on: submittedOn
+        }
+        return this.http.put<Quote>(`${this.url}/quote/${quoteId}`, req);
     }
 }

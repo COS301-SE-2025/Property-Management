@@ -24,20 +24,34 @@
             </p-floatlabel>
 
             <div class = "flex flex-col justify-center items-center hover:translate-y-1 transition-transform duration-200">
-                <button (click)="login()" class = "bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Login</button>
+                <button (click)="login()" [disabled]="loading" class = "bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">
+                    <ng-container *ngIf="!loading; else loadingTemplate">
+                        Login
+                    </ng-container>
+                    <ng-template #loadingTemplate>
+                         <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" 
+                             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+                            </path>
+                        </svg>
+                    </ng-template>
+                </button>
             </div>
 
-            <div *ngIf="emptyField || userError || serverError" class="pl-20">
-                <p *ngIf="emptyField" class="text-red-500 py-1 font-semibold rounded">Email or password missing</p>
+            <div *ngIf="emptyField || userError || serverError" class="flex flex-col items-center justify-center">
+                <p *ngIf="emptyField" class="text-red-500 dark:text-red-500 py-1 font-semibold rounded">Email or password missing</p>
 
                 <p *ngIf="userError" class="text-red-500 py-1 font-semibold rounded">Email or password incorrect</p>
 
                 <p *ngIf="serverError" class="text-red-500 py-1 font-semibold rounded">Internal server error</p>
+
+                <p *ngIf="passwordLimit" class="text-red-500 py-1 font-semibold rounded">Password attempt limit reached. Try again later</p>
             </div>
 
             <div class = "text-center text-sm space-y-2 dark:text-black">
                 <a class = "block hover:underline" href="">Forgot password?</a>
-                <a class = "font-semibold hover:underline" href = "/registerHub">Create Account?</a>
+                <a class = "font-semibold hover:underline dark:text-black" href = "/registerHub">Create Account?</a>
             </div>
         </div>
     </div>

@@ -5,7 +5,6 @@ import { ViewHouseComponent } from './pages/view-house/view-house.component';
 import { RegisterOwnerComponent } from './pages/register-owner/register-owner.component';
 import { RegisterBodyCorporateComponent } from './pages/register-body-corporate/register-body-corporate.component';
 import { CreatePropertyComponent } from './pages/create-property/create-property.component';
-
 import { ContractorRegisterComponent } from './pages/contractorRegister/contractorRegister.component';
 import { ContractorHomeComponent } from './pages/contractorHome/contractorHome.component';
 import { QuotationComponent } from './pages/quotation/quotation.component';
@@ -15,17 +14,20 @@ import { RegisterHubComponent } from './pages/register-hub/register-hub.componen
 import { BcHomeComponent } from './pages/bc-home/bc-home.component';
 import { BcContractorsComponent } from './pages/bc-contractors/bc-contractors.component';
 import { ContractorDetailsComponent } from './pages/bc-contractors/contractor-details/contractor-details.component';
+import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
+import { RatingsComponent } from './pages/ratings/ratings.component';
 import { PublicContractorsComponent } from './pages/bc-contractors/public-contractors/public-contractors.component';
 import { ContractorProfileComponent } from './pages/contractor-profile/contractor-profile.component';
-import { ManageMembersComponent } from './pages/manage-members/manage-members.component';
-
 import { LandingPageComponent } from './pages/LandingPage/LandingPage.component';
 import { HelpComponent } from './pages/help/help.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { authGuard } from './auth.guard';
+import { AssignedComponent } from './pages/assigned-projects/assigned.component';
+import { SubmittedQuotationsComponent } from './pages/submitted-quotaions/submitted-quotations.component';
 import { VotingComponent } from './pages/voting/voting.component';
 import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
-import { TimelineDetailsComponent } from './pages/view-house/timeline-details/timeline-details.component';
+import { TaskDetailsComponent } from './pages/task-details/task-details.component';
+import { NotificationsComponent } from './pages/notifications/notifications.component';
 
 export const routes: Routes = [
   {
@@ -77,9 +79,9 @@ export const routes: Routes = [
   },
   {
     path:'taskDetails/:taskId',
-    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    canActivate: [authGuard(['trustee', 'bodyCorporate', 'contractor'])],
     pathMatch: 'full',
-    component: TimelineDetailsComponent
+    component: TaskDetailsComponent
   },
   { path: 'create-property',
     canActivate: [authGuard(['trustee', 'bodyCorporate'])],
@@ -117,7 +119,7 @@ export const routes: Routes = [
     component: ContractorHomeComponent
   },
   {
-    path: 'quotation',
+    path: 'quotation/:taskId',
     canActivate: [authGuard(['contractor'])],
     pathMatch: 'full',
     component: QuotationComponent
@@ -158,6 +160,17 @@ export const routes: Routes = [
     component: ManageMembersComponent
   },
   {
+    path: 'ratings',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    pathMatch: 'full',
+    component: RatingsComponent
+  },
+  {
+  path: 'ratings/:taskId',
+  canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+  component: RatingsComponent
+  },
+  {
     path: 'landingPage',
     pathMatch: 'full',
     component: LandingPageComponent
@@ -171,5 +184,20 @@ export const routes: Routes = [
     path: 'reset-password',
     pathMatch: 'full',
     component: ResetPasswordComponent
+  },
+  {
+    path: 'assigned-projects',
+    pathMatch: 'full',
+    component: AssignedComponent
+  },
+  {
+    path: 'submitted-quotations',
+    pathMatch: 'full',
+    component: SubmittedQuotationsComponent
+  },
+    {
+    path: 'notifications',
+    pathMatch: 'full',
+    component: NotificationsComponent
   }
 ];

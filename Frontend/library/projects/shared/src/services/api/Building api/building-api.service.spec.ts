@@ -3,11 +3,12 @@ import { BuildingApiService } from './building-api.service';
 import { HttpClient } from '@angular/common/http';
 import { Property } from '../../../models/property.model';
 import { of, throwError } from 'rxjs';
+import { environmentMobile } from '../../../environment';
 
 describe('BuildingApiService', () => {
   let service: BuildingApiService;
   let httpClientSpy: jasmine.SpyObj<HttpClient>
-  const url = '/api';
+  const url = environmentMobile.apiUrl;
 
   beforeEach(() => {
 
@@ -38,7 +39,7 @@ describe('BuildingApiService', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
       };
 
       const expectedBody: Property = {
@@ -50,7 +51,7 @@ describe('BuildingApiService', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
       };
 
       httpClientSpy.post.and.returnValue(of(mockProperty));
@@ -111,7 +112,8 @@ describe('BuildingApiService', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
+        trusteeUuid: '1'
       }];
 
       httpClientSpy.get.and.returnValue(of(mockProperty));
@@ -151,7 +153,8 @@ describe('BuildingApiService', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
+        trusteeUuid: '1'
       };
 
       httpClientSpy.get.and.returnValue(of(mockProperty));
@@ -192,25 +195,27 @@ describe('BuildingApiService', () => {
         latestInspectionDate: '2023-06-01',
         propertyImage: 'img2',
         trustees: '2',
-        area: 2
+        area: 2,
+        coporateUuid: '2'
       };
 
       const expectedBody = {
         name: 'Updated Building',
-        address: '456 New St',
-        type: 'Residential',
-        propertyValue: 750000,
-        primaryContractors: [2],
-        latestInspectionDate: '2023-06-01',
-        trusteeUuid: '2',
-        propertyImageId: 'img2'
+        propertyImage: 'img2',
+        coporateUuid: '2'
       };
 
       httpClientSpy.put.and.returnValue(of(mockProperty));
 
-      service.updateBuilding(mockProperty, '1', '2').subscribe({
+      service.updateBuilding('1', 'Updated Building', 'img2', '2').subscribe({
         next: (response) => {
-          expect(response).toEqual(mockProperty);
+          expect(response).toEqual({
+            ...mockProperty,
+            buildingUuid: '1',
+            name: 'Updated Building',
+            propertyImage: 'img2',
+            coporateUuid: '2'
+          });
           expect(httpClientSpy.put).toHaveBeenCalledWith(
             `${url}/buildings/1`,
             expectedBody
@@ -231,13 +236,14 @@ describe('BuildingApiService', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
+        trusteeUuid: '1'
       };
 
       const errorResponse = new Error('Update failed');
       httpClientSpy.put.and.returnValue(throwError(() => errorResponse));
 
-      service.updateBuilding(mockProperty, '1', '1').subscribe({
+      service.updateBuilding('1', 'Test Building', 'img', '1').subscribe({
         next: () => fail('expected error but got success'),
         error: (error) => {
           expect(error).toBe(errorResponse);
@@ -258,7 +264,8 @@ describe('BuildingApiService', () => {
         latestInspectionDate: '2023-01-01',
         propertyImage: 'img1',
         trustees: '1',
-        area: 2
+        area: 2,
+        trusteeUuid: '1'
       };
 
       httpClientSpy.delete.and.returnValue(of(mockProperty));
@@ -300,7 +307,8 @@ describe('BuildingApiService', () => {
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
           trustees: '1',
-          area: 2
+          area: 2,
+          trusteeUuid: '1'
         }
       ];
 
@@ -344,7 +352,8 @@ describe('BuildingApiService', () => {
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
           trustees: '1',
-          area: 2
+          area: 2,
+          trusteeUuid: '1'
         }
       ];
 
@@ -386,7 +395,8 @@ describe('BuildingApiService', () => {
           latestInspectionDate: '2023-01-01',
           propertyImage: 'img1',
           trustees: '1',
-          area: 2
+          area: 2,
+          trusteeUuid: '1'
         }
       ];
 

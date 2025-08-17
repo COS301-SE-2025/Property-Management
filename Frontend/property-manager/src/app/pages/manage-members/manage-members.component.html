@@ -1,4 +1,4 @@
-<app-header />
+<!-- <app-header /> -->
 <div class="min-h-screen" [ngStyle]="{ 'background-color': 'var(--bg-color)' }">
   <div class="pt-6 px-10">
     <h2 class="text-3xl font-bold mb-2" [ngStyle]="{ 'color': 'var(--text-color)' }">Manage Members</h2>
@@ -26,14 +26,15 @@
               <td>{{ invite.status }}</td>
               <td>
                 <button
-                  *ngIf="invite.status === 'Pending' || invite.status === 'Rejected'"
+                  *ngIf="invite.status?.toUpperCase() === 'PENDING'"
                   type="button"
                   class="text-xs px-4 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow transition"
                   (click)="cancelInvite(invite)">
                   Cancel
                 </button>
+
                 <button
-                  *ngIf="invite.status === 'Accepted'"
+                  *ngIf="invite.status?.toUpperCase() === 'ACCEPTED'"
                   type="button"
                   class="text-xs px-4 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow transition"
                   (click)="revokeInvite(invite)">

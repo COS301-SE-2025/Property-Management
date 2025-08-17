@@ -4,134 +4,70 @@ import { LifeCycleCost } from '../models/lifeCycleCost.model';
 import { ContractorDetails } from '../models/contractorDetails.model';
 import { ReserveFund } from '../models/reserveFund.model';
 import { BodyCoporateApiService } from './api/Body Coporate api/body-coporate-api.service';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { getCookieValue } from '../utils/cookie-utils';
 import { Graph } from '../models/graph.model';
 import { BudgetApiService } from './api/Budget api/budget-api.service';
 import { ImageApiService } from './api/Image api/image-api.service';
-import { Property, TaskApiService } from '../public-api';
+import { ContractorApiService, Property, TaskApiService } from '../public-api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BodyCoporateService {
 
-  //Mock data
   pendingTasks = signal<MaintenanceTask[]>([]);
 
-  lifeCycleCosts = signal<LifeCycleCost[]>([
-    {
-      type: "Building",
-      description: "Painting roof",
-      condition: "Fixed 2024",
-      timeFrame: "Year",
-      estimatedBudget: 5000
-    },
-    {
-      type: "Building",
-      description: "Gutters and pipes",
-      condition: "Leakages and loose pipes",
-      timeFrame: "6-months",
-      estimatedBudget: 10000
-    },
-    {
-      type: "Community Facilities",
-      description: "Garden equipment",
-      condition: "Fair",
-      timeFrame: "Year",
-      estimatedBudget: 7000
-    }
-  ]);
+  lifeCycleCosts = signal<LifeCycleCost[]>([]);
 
   fundContribution = signal<ReserveFund[]>([]);
   maintenanceGraph = signal<Graph>({} as Graph);
   contractorDetails = signal<ContractorDetails[]>([]);
   buildings = signal<Property[]>([]);
-  bcId = '';
+  contribution = signal<number>(0);
 
-  constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService){
-    this.bcId = getCookieValue(document.cookie, 'bodyCoporateId');
+  constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService, private contractorService: ContractorApiService){
   }
 
-  async loadHouses()
+  async loadHouses(bcId: string)
   {
     if(this.buildings().length > 0) {
       return;
     }
 
     try{
-      this.buildings.set([]);
-      const buildings = await firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId));
+      const buildings = await firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId));
 
       const buildingImages = await Promise.all(
         buildings.map(async b => {
-          if(b.propertyImage)
-          {
-            try{
-              const url = await firstValueFrom(this.imageApiService.getImage(b.propertyImage));
-              return { ...b, propertyImage: url};
-            }
-            catch(error)
-            {
-              console.error("Error fetching images", error);
-              return { ...b, propertyImage: 'assets/images/no_image.png'};
-            }
+          try{
+            const url = b.propertyImage ? await firstValueFrom(this.imageApiService.getImage(b.propertyImage)) : 'assets/images/no_image.png';
+            return { ...b, propertyImage: url };
           }
-          else
-          {
-            return { ...b, propertyImage: 'assets/images/no_image.png'}; 
+          catch(err) {
+            console.error("Error fetching image for building", b.buildingUuid, err);
+            return {...b, propertyImage: 'assets/images/no_image.png' };
           }
         })
-      )
+      );
       this.buildings.set(buildingImages);
     }
     catch(error){
       console.error("Error fetching buildings", error);
+      this.buildings.set([]);
     }
-
-   this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId).subscribe({
-    next: (res) => {
-      res.forEach(b => {
-        if(b.propertyImage)
-        {
-          this.imageApiService.getImage(b.propertyImage).subscribe(url => {
-            this.buildings.update(curr => [
-              ...curr,
-              {
-                ...b,
-                propertyImage: url
-              }
-            ]); 
-          });
-        }
-        else
-        {
-          this.buildings.update(curr => [
-            ...curr,
-            {
-              ...b,
-              propertyImage: 'assets/images/no_image.png'
-            }
-          ]);
-        }
-      });
-    },
-    error: (err) => {
-      console.error("Couldnt fetch buildings", err)
-    }
-   })
   } 
 
   async addToTask(task: MaintenanceTask): Promise<void> {
     this.pendingTasks.update(tasks => [...tasks, task]);
   }
 
-  async loadPendingTasks(): Promise<void> {
+  async loadPendingTasks(bcId: string): Promise<void> {
 
     this.pendingTasks.set([]);
     try {
       const buildings = await firstValueFrom(
-        this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)
+        this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId)
       );
 
       const buildingUuids: string[] = buildings
@@ -153,13 +89,15 @@ export class BodyCoporateService {
       console.error('Failed to load buildings', error);
     }
   }
-  async loadFundContribution(): Promise<void> {
+  async loadFundContribution(bcId: string): Promise<void> {
 
     try {
       const [buildings, bc] = await Promise.all([
-        firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)),
-        firstValueFrom(this.bodyCoporateApiService.getBodyCoporate(this.bcId))
+        firstValueFrom(this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId)),
+        firstValueFrom(this.bodyCoporateApiService.getBodyCoporate(bcId))
       ]);
+
+      this.contribution.set(bc.contributionPerSqm);
 
       const reserveFunds = buildings
         .filter((building): building is typeof building & { area: number } => typeof building.area === 'number')
@@ -178,11 +116,11 @@ export class BodyCoporateService {
       this.fundContribution.set([]);
     }
   }
-  async loadGraph():Promise<void>
+  async loadGraph(bcId: string):Promise<void>
   {
    try{
     const buildings = await firstValueFrom(
-      this.bodyCoporateApiService.getBuildingsLinkedtoBC(this.bcId)
+      this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId)
     );
 
     const budgetPromise = buildings
@@ -234,52 +172,51 @@ export class BodyCoporateService {
     console.error("Failed to load graph data", error);
    }
   }
-  async loadTrustedContractors(): Promise<void>
+  async loadTrustedContractors(bcId: string): Promise<void>
   {
     this.contractorDetails.set([]);
 
     try{
-      const contractors = await firstValueFrom(
-        this.bodyCoporateApiService.getTrustedContractors(this.bcId)
+      const contractorIds = await firstValueFrom(
+        this.bodyCoporateApiService.getTrustedContractors(bcId)
       );
 
-      const contractorsWithImages = await Promise.all(
-        contractors.map(async (c) => {
-          if(c.img) 
-          {
-            console.log(c.img);
-            try{
-              const imageUrl = await firstValueFrom(this.imageApiService.getImage(c.img));
-              return { 
-                ...c, 
-                img: imageUrl
-              };
-            }
-            catch(err){
+      const contractors = await Promise.all(
+        contractorIds.map(async (c) => {
+          const contractor = await firstValueFrom(
+            this.contractorService.getContractorById(c)
+          );
+
+          if (contractor.img) {
+            try {
+              contractor.img = await firstValueFrom(
+                this.imageApiService.getImage(contractor.img)
+              );
+            } catch (err) {
               console.error("Error loading images", err);
-              return {
-                ...c, 
-                img: ""
-              };
+              contractor.img = "assets/images/no_image.png";
             }
+          } else {
+            contractor.img = "assets/images/no_image.png";
           }
-          return c;
+
+          return contractor;
         })
       );
 
-      this.contractorDetails.set(contractorsWithImages);
+      this.contractorDetails.set(contractors);
     }
     catch(err){
       console.error("Error loading trusted contractors", err);
     }
   } 
-  async loadPublicContractors(): Promise<void>
+  async loadPublicContractors(bcId: string): Promise<void>
   {
     this.contractorDetails.set([]);
 
     try{
       const contractors = await firstValueFrom(
-        this.bodyCoporateApiService.getAllPublicContractors(this.bcId)
+        this.bodyCoporateApiService.getAllPublicContractors(bcId)
       );
       const contractorsWithImages = await Promise.all(
         contractors.map(async (c) => {
@@ -337,5 +274,19 @@ export class BodyCoporateService {
         }
       });
     });
+  }
+  getBodyCorporateName(bcId: string): Observable<string>
+  {
+    return this.bodyCoporateApiService.getBodyCoporate(bcId).pipe(
+      map(res => res.corporateName)
+    );
+  }
+  getBodyCorporate(bcId: string)
+  {
+    return this.bodyCoporateApiService.getBodyCoporate(bcId);
+  }
+  makeContractorTrusted(bcId:string, contractorId: string)
+  {
+    return this.bodyCoporateApiService.makeContractorTrusted(contractorId, bcId);
   }
 }

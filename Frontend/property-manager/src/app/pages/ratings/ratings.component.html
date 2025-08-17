@@ -1,0 +1,93 @@
+<app-header />
+<p-toast></p-toast>
+
+<div class="px-10 py-8" [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
+  <h2 class="text-2xl font-bold mb-2">Rate a Contractor</h2>
+  <div class="h-1 w-64 bg-yellow-400 mb-6"></div>
+  <div class="h-1 w-64 mb-6" [ngStyle]="{ 'background-color': 'var(--accent-color)' }"></div>
+
+  <div class="border rounded-lg p-12 shadow-sm max-w-4xl mx-auto" [ngStyle]="{ 'background-color': 'var(--card-bg)', 'color': 'var(--text-color)' }">
+    <form (ngSubmit)="submitRating()" #ratingForm="ngForm" class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-6 col-span-2">
+        <b><label for="task">Select a Task *</label></b>
+        <div class="mb-8">
+          <p-floatlabel>
+            <select
+              id="task"
+              [(ngModel)]="selectedTaskUuid"
+              name="task"
+              required
+              class="custom-select" style="width: 91%;">
+              <option *ngFor="let task of tasks" [value]="task.uuid">{{ task.name }}</option>
+            </select>
+          </p-floatlabel>
+        </div>
+
+        <div class="mb-8" style="margin-top: 3.5rem;" *ngIf="selectedTask">
+          <p-floatlabel>
+            <input id="contractor" pInputText [value]="selectedTask.contractor.name" readonly class="w-full col-span-2" style="width: 91%; " />
+            <label for="contractor">Contractor</label>
+          </p-floatlabel>
+        </div>
+
+        <div class="mb-8" *ngIf="selectedTask">
+          <label for="rating" class="block mb-1 font-medium">Rating *</label>
+          <input
+            type="range"
+            id="rating"
+            name="rating"
+            min="1"
+            max="10"
+            [(ngModel)]="selectedRating"
+            class="w-full custom-slider"
+            style="width: 91%;"
+          />
+          <span class="ml-2 font-semibold">{{ selectedRating }}</span>
+        </div>
+
+        <div class="mb-8" *ngIf="selectedTask">
+          <p-floatlabel>
+            <textarea id="comment" name="comment" [(ngModel)]="comment" rows="3" class="w-full col-span-2 border rounded px-3 py-2" style="width: 91%;" placeholder="Add a comment (optional)"></textarea>
+            <label for="comment">Comment</label>
+          </p-floatlabel>
+        </div>
+
+        <div class="flex justify-end mt-0 col-span-2" style= "margin-right: 72px;">
+          <button type="submit" [disabled]="!selectedTaskUuid"
+            class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded font-semibold flex items-center gap-2"
+            [class.opacity-50]="!selectedTaskUuid"
+            [class.cursor-not-allowed]="!selectedTaskUuid">
+            Submit Rating
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="max-w-4xl mx-auto mt-12">
+    <h3 class="text-xl font-bold mb-4">Ratings History</h3>
+    <table class="w-full border rounded shadow-sm" [ngStyle]="{ 'background-color': 'var(--card-bg)', 'color': 'var(--text-color)' }">
+      <thead>
+        <tr class="bg-yellow-100 dark:bg-yellow-400/60">
+          <th class="py-2 px-4 text-left">Task</th>
+          <th class="py-2 px-4 text-left">Contractor</th>
+          <th class="py-2 px-4 text-left">Rating</th>
+          <th class="py-2 px-4 text-left">Comment</th>
+          <th class="py-2 px-4 text-left">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rating of ratingsHistory" class="border-b">
+          <td class="py-2 px-4">{{ rating.taskName || 'N/A' }}</td>
+          <td class="py-2 px-4">{{ rating.contractorName || 'N/A' }}</td>
+          <td class="py-2 px-4">{{ rating.rating }}</td>
+          <td class="py-2 px-4">{{ rating.comment }}</td>
+          <td class="py-2 px-4">{{ rating.createdAt ? (rating.createdAt | date:'yyyy-MM-dd') : '' }}</td>
+        </tr>
+        <tr *ngIf="ratingsHistory.length === 0">
+          <td colspan="5" class="py-4 text-center text-gray-500">No ratings found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

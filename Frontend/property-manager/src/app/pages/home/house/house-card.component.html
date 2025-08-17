@@ -1,9 +1,13 @@
-<div class = "shadow-md rounded-lg border w-[18rem] text-center">
-    <button class = "cursor-pointer" (click)="viewHouse(house().buildingUuid!)">
+<div class="bg-gray-600 dark:bg-gray-600 shadow-lg rounded-xl border border-gray-200 dark:border-gray-400 w-[22rem] text-center transition-all duration-200 hover:shadow-xl hover:-translate-y-1">
+    <button class="cursor-pointer w-full focus:outline-none" (click)="viewHouse(house().buildingUuid!)">
         <p-card>
-            <img [src] = "house().propertyImage" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="" rel="preconnect">
-            <p class = "text-lg font-bold mt-4"> {{ house().name }}</p>
-            <p class = "text-gray-600 mb-4" [ngStyle]="{ 'color':'var(--text-color)' }"> {{ house().address }}</p>
+            <img [src]="house().propertyImage" class="w-64 h-48 object-cover rounded-xl border border-gray-600 dark:border-gray-800 shadow mx-auto mt-6 mb-4" alt="Property Image" rel="preconnect">
+            <p class="text-xl font-semibold mt-2 text-gray-900 dark:text-gray-100">{{ house().name }}</p>
+            <p class="text-base mb-3 text-gray-500 dark:text-gray-400" [ngStyle]="{'color': 'var(--text-color)'}">{{ house().address }}</p>
+            <p class="inline-block px-4 py-1 rounded-full text-sm font-medium bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800 shadow-sm" *ngIf="!house().coporateUuid; else bodyCorporate">Owner</p>
+            <ng-template #bodyCorporate>
+                <p class="inline-block px-4 py-1 rounded-full text-sm font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800 shadow-sm mt-2">Part of body corporate: {{ bcName() }}</p>
+            </ng-template>
         </p-card>
     </button>
 </div>

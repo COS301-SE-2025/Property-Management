@@ -20,4 +20,6 @@ data class Rating(
     val taskUuid: UUID? = null,
     @Column(name = "trustee_uuid")
     val trusteeUuid: UUID? = null,
+    // @Column(name = "created_at")
+    // val createdAt: java.sql.Timestamp? = java.sql.Timestamp(System.currentTimeMillis()),
 )

@@ -5,14 +5,60 @@
 
 :root {
   --property-yellow: #FFE372;
+  --bg-color: #ffffff;
+  --text-color: #111111;
+  --border-color: #e5e7eb;
+  --dialog-bg: #ffffff;
+  --dialog-header-bg: #f7f7f7;
+  --dialog-header-text: #111111;
+  --dialog-content-text: #333333;
+  --dialog-border: #e5e7eb;
+  --dialog-mask-bg: rgba(0, 0, 0, 0.4);
 }
+
+.help-background {
+  background-image: url("/assets/images/background.jpg");
+  background-size: cover;
+  background-position: center;
+  filter: blur(4px);
+  opacity: 0.7;
+  height: 22.5rem; // adjust to your h-90 equivalent
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
 
 .propertyYellow-bg {
   background-color: var(--property-yellow);
 }
 
+// ::ng-deep .p-drawer {
+//   background-color: #facc15 !important; 
+// }
+
 ::ng-deep .p-drawer {
-  background-color: #facc15 !important; 
+  background-color: var(--dialog-bg);
+  color: var(--dialog-content-text);
+  border-left: 1px solid var(--dialog-border);
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.3);
+}
+
+::ng-deep .p-drawer .p-drawer-header {
+  background: var(--dialog-header-bg);
+  color: var(--dialog-header-text);
+  border-bottom: 1px solid var(--dialog-border);
+  padding: 1rem;
+}
+
+::ng-deep .p-drawer .p-drawer-content {
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+::ng-deep .p-drawer-mask {
+  background-color: var(--dialog-mask-bg);
 }
 
 .custom-upload-button .p-button {
@@ -29,7 +75,7 @@
   --border-color: #000000;
 
   --dark-background: #3d444d;      
-  --dark-card-background: #2d3436;        
+  --dark-card-background: #3d444d;        
   --text-color: #FDFDFD;          
   --card-border: #000000;  
   --card-hover: #4a5568;
@@ -47,6 +93,7 @@
   --dialog-border: #444;
   --dialog-mask-bg: rgba(0, 0, 0, 0.7);
 }
+
 :root, .dark-theme {
   transition: all 0.5s ease;
 }
@@ -61,7 +108,7 @@ body {
 }
 
 .dark-theme .p-card{
-  background: var(--datatable-border);
+  background: #595964;
   color: var(--text-color);
 }
 .dark-theme .bg-gray-50  {
@@ -131,7 +178,7 @@ body {
 }
 
 .dark-theme .p-dialog .p-float-label input {
-  background: #333;
+  background: var(--input-bg-color);
   color: var(--text-color);
   border-color: var(--surface-border);
 }
@@ -171,7 +218,6 @@ body {
 .dark-theme .p-datepicker-weekday {
   color: var(--text-color); 
 }
-
 
 .dark-theme .p-dialog button {
   background-color: #444;
@@ -216,18 +262,86 @@ button.bg-yellow-500 {
   color: #111 !important;
 }
 
+.dark-theme .propertyYellow-bg button {
+  //background-color: var(--dialog-bg); 
+  color: var(--text-color); 
+  border-color: var(--border-color); 
+}
+
+.dark-theme .propertyYellow-bg button a {
+  color: #000000;
+}
+
+.dark-theme .propertyYellow-bg button:hover {
+  background-color: var(--card-hover); 
+}
+
+.dark-theme .propertyYellow-bg button:hover a {
+  color: var(--text-color); 
+}
+
 .dark-theme .router-link-active,
 .dark-theme .text-yellow-500 {
   color: #facc15 !important;
 }
 
 .dark-theme .nav-link,
-.dark-theme .font-semibold,
 .dark-theme .text-gray-700 {
   color: #f3f4f6 !important; 
 }
 
-.dark-theme .nav-link:hover,
-.dark-theme .font-semibold:hover {
+.dark-theme .text-gray-700:hover {
   color: #facc15 !important;
+}
+
+.custom-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #ffda47; 
+  border-radius: 4px;
+  outline: none;
+}
+
+select.custom-select {
+  background: #f7f7f7;
+  color: #111;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+select.custom-select:focus {
+  border-color: #facc15;
+}
+
+option.custom-option {
+  background: #f7f7f7 !important;
+  color: #111 !important;
+}
+
+.dark-theme select.custom-select,
+.dark-theme option.custom-option {
+  background: #feffac !important;
+  color: #111 !important;
+  border-color: #facc15;
+}
+
+.custom-select {
+  background: #f7f7f7;
+  color: #111;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.dark-theme .custom-select {
+  background: #8e8e8e !important;
+  color: #ffffff !important;
+  border-color: #facc15;
 }

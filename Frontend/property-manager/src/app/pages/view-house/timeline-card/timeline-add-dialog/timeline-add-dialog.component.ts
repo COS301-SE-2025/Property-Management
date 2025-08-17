@@ -5,13 +5,14 @@ import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ToastModule } from 'primeng/toast';
+import { SelectModule } from 'primeng/select';
 import { MultiSelectChangeEvent, MultiSelectModule } from 'primeng/multiselect'; 
 import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { FileUploadModule, FileSelectEvent } from 'primeng/fileupload';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HousesService, Inventory, InventoryItemApiService, TaskApiService } from 'shared';
+import { HousesService, Inventory, InventoryItemApiService, Notification, NotificationsApiService, TaskApiService } from 'shared';
 import { getCookieValue } from 'shared';
 import { ImageApiService } from 'shared';
 import { ContractorApiService } from 'shared';
@@ -20,9 +21,19 @@ import { InventoryCardComponent } from '../../inventory-card/inventory-card.comp
 
 @Component({
   selector: 'app-timeline-add-dialog',
-  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, FileUploadModule, ToastModule, MultiSelectModule, TableModule, InventoryCardComponent],
+  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, FileUploadModule, ToastModule, MultiSelectModule, TableModule, InventoryCardComponent, SelectModule],
   templateUrl: './timeline-add-dialog.component.html',
-  styles: ``,
+  styles: `
+    :host ::ng-deep .low-priority {
+      color: #4CAF50;
+    }
+    :host ::ng-deep .medium-priority {
+      color: #FFC107;
+    }
+    :host ::ng-deep .high-priority {
+      color: #F44336;
+    }
+  `,
   providers: [MessageService]
 })
 export class TimelineAddDialogComponent extends DialogComponent implements OnInit{
@@ -35,6 +46,12 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
  public inventoryItemsUsed: Inventory[] | undefined = undefined;
  public addError = false;
 
+ public priorities = [
+  { label: 'Low', value: 'Low', styleClass: 'low-priority'},
+  { label: 'Medium', value: 'Medium', styleClass: 'medium-priority' },
+  { label: 'High', value: 'High', styleClass: 'high-priority' }
+ ];
+
  @ViewChild(InventoryCardComponent) inventoryCard!: InventoryCardComponent;
 
  constructor(
@@ -46,7 +63,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
   private contractorService: ContractorApiService,
   private messageService: MessageService,
   private inventoryService: InventoryItemApiService,
-  private housesService: HousesService
+  private housesService: HousesService,
+  private notificationService: NotificationsApiService
 ){
    super();
    this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
@@ -57,6 +75,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       name: ['', Validators.required],
       description: ['', Validators.required],
       date: ['', Validators.required],
+      priority: ['', Validators.required]
     });
 
     //Get contractors
@@ -118,10 +137,9 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     const name = this.form.value.name;
     const des = this.form.value.description;
     const date = this.form.value.date;
+    const proirity = this.form.value.priority;
 
-    console.log(date);
-
-    this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate).subscribe({
+    this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate, proirity).subscribe({
       next: (task) => {
 
         if(this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0)
@@ -132,17 +150,33 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
         this.form.reset();
         this.closeDialog();
 
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Task added successfully'
+        const house = this.housesService.getHouseById(this.houseId);
+
+
+        const noti: Notification = {
+          notificationType: 'Task Creation',
+          message: `New task: ${name} has been added to ${house?.name}`,
+          recipientUuid: house?.coporateUuid!,
+          recipientType: 'body corporate',
+          isRead: false,
+          relatedTaskUuid: task.uuid
+        }
+        this.notificationService.createNotifications(noti).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Task added successfully'
+            });
+    
+            setTimeout(() => {
+              this.router.navigate(['viewHouse', this.houseId]).then(() => {
+                window.location.reload();
+              });
+            }, 3000);
+          }
         });
 
-        setTimeout(() => {
-          this.router.navigate(['viewHouse', this.houseId]).then(() => {
-            window.location.reload();
-          });
-        }, 3000);
       },
       error: (err) => {
         console.error("Failed to create task", err);
@@ -169,7 +203,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     this.inventoryCard.addItemToUsage(
       taskId,
       item.itemUuid,
-      item.quantityInStock
+      item.quantityInStock,
+      true
     );
 
     const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);

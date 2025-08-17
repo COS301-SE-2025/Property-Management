@@ -1,6 +1,6 @@
 <app-header/>
 
-<ion-content>
+<ion-content class="dark:bg-gray-800">
   <div class= "flex flex-col justify-center items-center">
       
       <div *ngIf = "!findHouse" class = "pb-200">
@@ -9,7 +9,7 @@
   
       <div class="px-4 space-y-2">
         <div class = "w-full mx-auto pt-5">
-            <p class = "text-center text-lg font-semibold">Budget for {{ house()?.name }}</p>
+            <p class = "text-center text-lg font-semibold dark:text-white">Budget for {{ house()?.name }}</p>
         </div>
     
         <!-- 3 cards -->
