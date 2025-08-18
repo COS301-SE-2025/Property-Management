@@ -175,9 +175,9 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
                     detail: 'Task has successfully been assigned'
                   });
     
-                  // setTimeout(() => {
-                  //   window.location.reload()
-                  // }, 1500);
+                  setTimeout(() => {
+                    window.location.reload()
+                  }, 1500);
                 },
                 error: (err) => {
                     console.error(err);
