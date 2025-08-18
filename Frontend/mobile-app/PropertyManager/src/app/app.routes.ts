@@ -88,5 +88,14 @@ export const routes: Routes = [
     {
         path:'submitted-quotations',
         loadComponent: () => import('./pages/submitted-quotations/submitted-quotations.component').then(m => m.SubmittedQuotationsComponent)    
+    },
+    {
+        path:'help',
+        loadComponent: () => import('./pages/help/help.component').then(m => m.HelpPage)  
+    }
+    ,
+    {
+        path:'reset-password',
+        loadComponent: () => import('./pages/reset-password/password-reset.component').then(m => m.PasswordResetPage)
     }
 ];
