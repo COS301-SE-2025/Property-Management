@@ -259,8 +259,11 @@ export class ContractorProfileComponent implements OnInit {
     this.submitProfile();
   }
 
-  onStepThreeImagesSelected(files: FileList) {
-    const event = { target: { files } } as unknown as Event;
-    this.onFileSelected(event, true);
+  onStepThreeImagesSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input && input.files) {
+    const files: FileList = input.files;
+    // handle selected images using files
   }
+}
 }
