@@ -47,16 +47,6 @@ export class ResetPasswordComponent  {
     ) {}
 
   async resetPassword() {
-    // console.log(`Resetting password for ${this.email}`);
-    // this.authService.resetContractorPasswordRequest(this.email).subscribe({
-    //   next: res => {
-    //     this.message = res.message;
-    //   },
-    //   error: err => {
-    //     this.message = 'Error sending reset code.';
-    //     console.error(err)
-    //   }
-    // });
     this.authService.resetContractorPasswordRequest(this.email).subscribe({
       next: (res) => {
         console.log("Success:", res);
