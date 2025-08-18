@@ -9,7 +9,7 @@
     <p class="font-semibold">Total amount: R{{ quote()?.amount}}</p>
     <div class="flex flex-col justify-center items-center">
       <p>Quote:</p>
-      <p class="text-blue-400 cursor-pointer">{{ quote()?.doc}}</p>
+      <a [href]="quote()?.doc">View Quote Document</a>
     </div>
   </div>
 </p-dialog>
