@@ -29,7 +29,7 @@ export class BodyCoporateApiService {
     return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`).pipe(
       map(tasks => {
         return tasks.filter(task => {
-          return task.buuid === buildingId && (task.status.includes('pending') || task.status.includes('OPEN'))
+          return (task.buuid === buildingId && !task.cuuid)
         });
       })
     );
