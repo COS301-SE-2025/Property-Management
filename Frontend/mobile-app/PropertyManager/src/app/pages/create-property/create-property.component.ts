@@ -88,6 +88,17 @@ export class CreatePropertyComponent implements OnInit {
     }
   }
 
+  loadContractors(): void {
+  this.contractorService.getAllContractors().subscribe({
+    next: (contractors: Contractor[]) => {
+      this.contractors = contractors;
+    },
+    error: () => {
+      this.contractors = [];
+    }
+  });
+}
+
   async capturePhoto(): Promise<void>
   {
     try {
@@ -160,7 +171,7 @@ export class CreatePropertyComponent implements OnInit {
     catch(err)
     {
       this.isSubmitting = false;
-      this.submissionError = 'Failed to create property';
+      this.submissionError = 'Failed to create property.';
     }
   }
   private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
@@ -172,4 +183,20 @@ export class CreatePropertyComponent implements OnInit {
     });
     await toast.present();
   }
+
+  onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+    this.selectedImageFile = file;
+    this.form.patchValue({ image: file });
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.capturedPhoto = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
 }
+}
+
