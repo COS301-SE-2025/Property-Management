@@ -46,7 +46,8 @@ export class AuthMobileService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req);
+    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req,
+    { withCredentials: true });
   }
 
   trusteeRegister(
@@ -78,7 +79,8 @@ export class AuthMobileService {
       contactNumber
     };
 
-    return this.http.post<trusteeRegisterResponse>(`${this.url}/trustee/auth/register`, req);
+    return this.http.post<trusteeRegisterResponse>(`${this.url}/trustee/auth/register`, req,
+    { withCredentials: true });
   }
 
   confirmTrusteeRegistration(username: string, code: string): Promise<{ message: string }> {
@@ -119,7 +121,8 @@ export class AuthMobileService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req);
+    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req,
+    { withCredentials: true });
   }
 
   contractorRegister(
@@ -151,7 +154,8 @@ export class AuthMobileService {
       contactNumber
     };
 
-    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req);
+    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req,
+    { withCredentials: true });
   }
 
   confirmContractorRegistration(username: string, code: string): Promise<{ message: string }> {
