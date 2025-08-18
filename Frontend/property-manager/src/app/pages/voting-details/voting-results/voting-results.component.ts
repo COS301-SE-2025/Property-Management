@@ -160,14 +160,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
                     relatedTaskUuid: res.taskUuid
                   }
                   this.notificationService.createNotifications(notiTrustee);
-                  this.notificationService.createNotifications(notiContractor).subscribe({
-                    next: (res) => {
-                      console.log(res);
-                    },
-                    error: (err) => {
-                      console.error(err);
-                    }
-                  });
+                  this.notificationService.createNotifications(notiContractor);
 
                    this.messageService.add({
                     severity: 'success',
