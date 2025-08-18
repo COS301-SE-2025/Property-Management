@@ -89,9 +89,10 @@ class PDFController(
         @PathVariable cUuid: UUID,
         @PathVariable type: String,
     ): ResponseEntity<String> {
-        val pdf = PDFRepository.findByCUuidAndType(cUuid, type).orElseThrow {
-        NoSuchElementException("PDF not found with id $cUuid and type $type")
-    }
+        val pdf =
+            PDFRepository.findByCUuidAndType(cUuid, type).orElseThrow {
+                NoSuchElementException("PDF not found with id $cUuid and type $type")
+            }
 
         val getObjectRequest =
             GetObjectRequest

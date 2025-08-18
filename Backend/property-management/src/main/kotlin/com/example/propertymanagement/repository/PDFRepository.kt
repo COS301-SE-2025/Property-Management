@@ -13,5 +13,8 @@ interface PDFRepository : JpaRepository<PDFMeta, String> {
         @Param("cUuid") cUuid: UUID,
     ): List<PDFMeta>
 
-    fun findByCUuidAndType(cUuid: UUID, type: String): Optional<PDFMeta>
+    fun findByCUuidAndType(
+        cUuid: UUID,
+        type: String,
+    ): Optional<PDFMeta>
 }
