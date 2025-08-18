@@ -64,7 +64,7 @@ export class CreatePropertyComponent implements OnInit {
     if (!this.trusteeUuid) {
       this.coporateUuid = getCookieValue(document.cookie, 'bodyCoporateID');
       if(!this.coporateUuid) {
-        this.submissionError = 'Authentication error: Please log in again.';
+        // this.submissionError = 'Authentication error: Please log in again.';
       }
     }
     // this.loadContractors();
