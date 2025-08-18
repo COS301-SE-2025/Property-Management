@@ -29,6 +29,16 @@
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
         <ion-input formControlName="address" placeholder="Street Address *"></ion-input>
       </ion-item>
+      <ion-label class="font-semibold" style="display: block; padding-top: 5px; padding-left: 5px;">
+        Assign to Body Corporate
+      </ion-label>
+      <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
+        <ion-select formControlName="coporateUuid" placeholder="Select a body corporate" interface="action-sheet">
+          <ion-select-option *ngFor="let corp of bodyCorporates" [value]="corp.coporateUuid">
+            {{ corp.coporateName }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
       <div class="grid grid-cols-2 gap-4">
         <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
           <ion-input formControlName="suburb" placeholder="Suburb"></ion-input>
@@ -53,9 +63,9 @@
           </ion-select-option>
         </ion-select>
       </ion-item> -->
-      <ion-item class="rounded-lg border border-gray-300">
+      <!-- <ion-item class="rounded-lg border border-gray-300">
         <ion-input formControlName="bodyCorporate" placeholder="Invite members"></ion-input>
-      </ion-item>
+      </ion-item> -->
       <ion-item *ngIf="submissionError">
         <ion-text color="danger">{{ submissionError }}</ion-text>
       </ion-item>

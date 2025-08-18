@@ -4,9 +4,10 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TabComponent } from 'src/app/components/tab/tab.component';
 import { IonicModule, ToastController } from '@ionic/angular';
-import { ImageApiService, PropertyService, StorageService } from 'shared';
+import { ImageApiService, PropertyService, StorageService, getCookieValue } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
+import { HttpErrorResponse } from '@angular/common/http';
 import { PhotoService } from 'src/app/services/photo.service';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
@@ -19,13 +20,17 @@ import { cameraOutline, trashOutline } from 'ionicons/icons';
   templateUrl: './create-property.component.html',
   styleUrls: ['./create-property.component.scss']
 })
-export class CreatePropertyComponent {
+export class CreatePropertyComponent implements OnInit {
   form: FormGroup;
   contractors: Contractor[] = [];
   capturedPhoto: string | null = null;
   selectedImageFile: File | null = null;
   isSubmitting = false;
   submissionError: string | null = null;
+  bodyCorporates: any[] = [];
+
+  trusteeUuid: string | null = null;
+  coporateUuid: string | null = null;
 
   private fb = inject(FormBuilder);
   private propertyService = inject(PropertyService);
@@ -46,6 +51,7 @@ export class CreatePropertyComponent {
       province: [''],
       type: ['', Validators.required],
       // primaryContractor: [''],
+      coporateUuid: [''],
       bodyCorporate: [''],
       image: [null],
     });
@@ -53,9 +59,17 @@ export class CreatePropertyComponent {
     addIcons({ cameraOutline, trashOutline });
   }
 
-  // async ngOnInit() {
-  //   this.loadContractors();
-  // }
+  ngOnInit(): void {
+    this.trusteeUuid = getCookieValue(document.cookie, 'trusteeId');
+    if (!this.trusteeUuid) {
+      this.coporateUuid = getCookieValue(document.cookie, 'bodyCoporateID');
+      if(!this.coporateUuid) {
+        this.submissionError = 'Authentication error: Please log in again.';
+      }
+    }
+    // this.loadContractors();
+    this.loadBodyCorporates();
+  }
 
   loadContractors(): void {
     this.contractorService.getAllContractors().subscribe({
@@ -63,6 +77,26 @@ export class CreatePropertyComponent {
       error: () => this.contractors = []
     });
   }
+
+    loadBodyCorporates(): void {
+    if (this.trusteeUuid) {
+      this.propertyService.getBodyCorporatesForTrustee(this.trusteeUuid).subscribe({
+        next: async (invites: any[]) => {
+          const acceptedInvites = invites.filter(invite => invite.status === 'ACCEPTED');
+          const bodyCorporatePromises = acceptedInvites.map(invite =>
+            this.propertyService.getBodyCorporateByUuid(invite.coporateUuid).toPromise()
+          );
+          const bodyCorporateDetails = await Promise.all(bodyCorporatePromises);
+          this.bodyCorporates = bodyCorporateDetails.map(bc => ({
+            coporateName: bc.corporateName,
+            coporateUuid: bc.corporateUuid
+          }));
+        },
+        error: (err: HttpErrorResponse) => console.error('Failed to load body corporates:', err)
+      });
+    }
+  }
+
   async capturePhoto(): Promise<void>
   {
     try {
