@@ -169,11 +169,11 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
               detail: 'Task added successfully'
             });
     
-            // setTimeout(() => {
-            //   this.router.navigate(['viewHouse', this.houseId]).then(() => {
-            //     window.location.reload();
-            //   });
-            // }, 3000);
+            setTimeout(() => {
+              this.router.navigate(['viewHouse', this.houseId]).then(() => {
+                window.location.reload();
+              });
+            }, 2000);
           }
         });
 

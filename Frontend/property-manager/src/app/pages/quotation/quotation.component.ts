@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FileUpload } from 'primeng/fileupload';
 import { ApiService, getCookieValue } from 'shared'; 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DatePicker } from 'primeng/datepicker';
 import {
   trigger,
@@ -67,7 +67,8 @@ export class QuotationComponent implements OnInit{
   constructor(
   private messageService: MessageService,
   private apiService: ApiService,
-  private route: ActivatedRoute
+  private route: ActivatedRoute,
+  private router: Router
 ) {
   const storedId = getCookieValue(document.cookie, 'contractorId');
   if (storedId) {
@@ -97,13 +98,13 @@ export class QuotationComponent implements OnInit{
   this.apiService.getMaintenanceTasks().subscribe({
     next: (tasks) => {
       const task = tasks.find(t => t.uuid === this.taskId && t['c_uuid'] === this.contractorId);
-      if (!task) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Invalid Task',
-          detail: 'Task not assigned to this contractor.'
-        });
-      }
+      // if (!task) {
+      //   this.messageService.add({
+      //     severity: 'warn',
+      //     summary: 'Invalid Task',
+      //     detail: 'Task not assigned to this contractor.'
+      //   });
+      // }
     },
     error: (err) => {
       console.error('Error loading tasks:', err);
@@ -121,8 +122,6 @@ export class QuotationComponent implements OnInit{
       return;
     }
     const submittedDate = new Date();
-    console.log(this.taskId);
-    console.log(this.contractorId);
 
     this.apiService.addQuote(this.taskId,this.contractorId,submittedDate,this.type,Number(this.totalAmount),this.quoteNo).subscribe({
       next: () => {
@@ -133,6 +132,10 @@ export class QuotationComponent implements OnInit{
         });
         this.quoteNo = '';
         this.totalAmount = '';
+
+        setTimeout(() => {
+          this.router.navigate(['/contractorHome']);
+        }, 1800);
       },
       error: (err) => {
         console.error(err);
