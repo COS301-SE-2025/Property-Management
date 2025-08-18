@@ -258,9 +258,13 @@ export class ContractorProfileComponent implements OnInit {
     this.contractor.project_history = data.description;
     this.submitProfile();
   }
-
-  onStepThreeImagesSelected(files: FileList) {
-    const event = { target: { files } } as unknown as Event;
-    this.onFileSelected(event, true);
+  
+  onStepThreeImagesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input?.files) {
+      const files: FileList = input.files;
+      console.log(files);
+    }
   }
+
 }
