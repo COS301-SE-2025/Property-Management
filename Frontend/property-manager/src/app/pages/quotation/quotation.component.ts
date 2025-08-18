@@ -98,13 +98,13 @@ export class QuotationComponent implements OnInit{
   this.apiService.getMaintenanceTasks().subscribe({
     next: (tasks) => {
       const task = tasks.find(t => t.uuid === this.taskId && t['c_uuid'] === this.contractorId);
-      if (!task) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Invalid Task',
-          detail: 'Task not assigned to this contractor.'
-        });
-      }
+      // if (!task) {
+      //   this.messageService.add({
+      //     severity: 'warn',
+      //     summary: 'Invalid Task',
+      //     detail: 'Task not assigned to this contractor.'
+      //   });
+      // }
     },
     error: (err) => {
       console.error('Error loading tasks:', err);
