@@ -62,12 +62,13 @@ class PDFController(
         )
     }
 
-    @PostMapping("/notify-upload/{id}/{filename}/{key}/{cUuid}")
+    @PostMapping("/notify-upload/{id}/{filename}/{key}/{cUuid}/{type}")
     fun notifyUploadComplete(
         @PathVariable id: String,
         @PathVariable filename: String,
         @PathVariable key: String,
         @PathVariable cUuid: UUID,
+        @PathVariable type: String,
     ): ResponseEntity<String> {
         val url = "https://$bucketName.s3.amazonaws.com/$key"
         val pdfMeta =
@@ -77,16 +78,20 @@ class PDFController(
                 key = key,
                 url = url,
                 cUuid = cUuid,
+                type = type,
             )
         PDFRepository.save(pdfMeta)
         return ResponseEntity.ok("Upload metadata saved.")
     }
 
-    @GetMapping("/presigned/{id}")
+    @GetMapping("/presigned/{cUuid}/{type}")
     fun getPresignedUrl(
-        @PathVariable id: String,
+        @PathVariable cUuid: UUID,
+        @PathVariable type: String,
     ): ResponseEntity<String> {
-        val pdf = PDFRepository.findById(id).orElseThrow()
+        val pdf = PDFRepository.findByCUuidAndType(cUuid, type).orElseThrow {
+        NoSuchElementException("PDF not found with id $cUuid and type $type")
+    }
 
         val getObjectRequest =
             GetObjectRequest

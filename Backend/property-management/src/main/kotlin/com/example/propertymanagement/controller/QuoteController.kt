@@ -81,7 +81,6 @@ class QuoteController(
                 doc = dto.doc ?: existing.doc,
                 t_uuid = dto.t_uuid ?: existing.t_uuid,
                 c_uuid = dto.c_uuid ?: existing.c_uuid,
-                expiry_date = dto.expiry_date ?: existing.expiry_date,
             )
 
         return ResponseEntity.ok(service.update(uuid, updated))

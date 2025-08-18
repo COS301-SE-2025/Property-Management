@@ -150,22 +150,20 @@ export class QuotationComponent implements OnInit{
 async onUpload(event: FileUploadEvent) {
   const file = event.files[0]; // Assuming single file upload
   if (!file) return;
-
   try {
-    await this.apiService.uploadPDF(file, this.contractorId);
-
+    await this.apiService.uploadPDF(file, this.contractorId, "Quote");
     this.messageService.add({
       severity: 'success',
       summary: 'Upload Complete',
       detail: `${file.name} uploaded successfully`
     });
-
   } catch (err) {
     console.error('PDF upload failed:', err);
     this.messageService.add({
       severity: 'error',
       summary: 'Upload Failed',
       detail: `Failed to upload ${file.name}`
+     
     });
   }
 }

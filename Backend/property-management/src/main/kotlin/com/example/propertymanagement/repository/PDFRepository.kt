@@ -4,6 +4,7 @@ import com.example.propertymanagement.model.PDFMeta
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.util.Optional
 import java.util.UUID
 
 interface PDFRepository : JpaRepository<PDFMeta, String> {
@@ -11,4 +12,6 @@ interface PDFRepository : JpaRepository<PDFMeta, String> {
     fun findAllByCUuid(
         @Param("cUuid") cUuid: UUID,
     ): List<PDFMeta>
+
+    fun findByCUuidAndType(cUuid: UUID, type: String): Optional<PDFMeta>
 }

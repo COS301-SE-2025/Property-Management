@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Inventory } from '../models/inventory.model';
-// import { Building } from '../models/building.model';
+import { PDFupload } from '../models/PDF.model';
 import { Budget } from '../models/budget.model';
 import { Contractor } from '../models/contractor.model';
 import { Quote } from '../models/quote.model';
@@ -195,7 +195,7 @@ getContractorMaintenanceTasks(contractorUuid: string, isBodyCorporate: boolean =
   );
 }
 
-async uploadPDF(file: File, uuid: string): Promise<void> {
+async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
     try {
       const presignResponse: any = await firstValueFrom(
         this.http.get(`${this.url}/upload/presigned-upload/${file.name}`)
@@ -219,8 +219,13 @@ async uploadPDF(file: File, uuid: string): Promise<void> {
       console.log('PDF uploaded to S3');
 
       await firstValueFrom(
-        this.http.post(`${this.url}/upload/notify-upload/${id}/${file.name}/${key}/${uuid}`, {})
+        this.http.post(
+          `${this.url}/upload/notify-upload/${id}/${file.name}/${key}/${uuid}/${type}`,
+          {},
+          { responseType: 'text' } // <- this is the key
+        )
       );
+
 
       console.log('Backend notified and metadata saved');
 
@@ -229,5 +234,13 @@ async uploadPDF(file: File, uuid: string): Promise<void> {
       throw error; // Let the component handle errors
     }
   }
+
+  getQuote(contractorUuid: string, type: string): Observable<string>{
+    alert("We are in the getQuote Function");
+    return this.http.get(`${this.url}/upload/presigned/${contractorUuid}/${type}`, {
+      responseType: 'text'
+    });
+  }
+
 
 }
