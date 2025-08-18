@@ -247,6 +247,11 @@ export class HeaderComponent {
     const baseUrl = url.split('?')[0].split('#')[0];
     const pathParts = baseUrl.split('/').filter(part => part);
 
+    if (baseUrl === '/home' || baseUrl === '/contractorHome' || baseUrl === '/bodyCoporate') {
+      this.items = [];
+      return;
+    }
+
     const houseId = pathParts[0] === 'viewHouse' || pathParts[0] === 'manageBudget' ? pathParts[1] : null;
 
     const userRoutes = this.routeMap[this.userType];
