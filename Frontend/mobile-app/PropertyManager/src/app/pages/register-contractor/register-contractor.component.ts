@@ -9,13 +9,13 @@ import { StorageService } from 'shared';
 @Component({
   selector: 'app-register',
   imports: [CommonModule, FormsModule, IonInput, IonItem],
-  templateUrl: './register.component.html',
+  templateUrl: './register-contractor.component.html',
   styles: ``
 })
-export class RegisterComponent {
+export class RegisterContractorComponent {
   public email = "";
   public password = "";
-  public contactNumber = ""; 
+  public contactNumber = "";
   public passwordVisible = false;
 
   public emptyField = false;
@@ -35,7 +35,7 @@ export class RegisterComponent {
 
   async register()
   {
-    if(!this.email || !this.password || !this.contactNumber)
+    if(!this.email || !this.password || !this.contactNumber) 
     {
       this.emptyField = true;
       return;
@@ -46,7 +46,7 @@ export class RegisterComponent {
     this.emptyField = false;
 
     try{
-      const result = await this.authService.trusteeRegister(this.email, this.password, this.contactNumber);
+      const result = await this.authService.contractorRegister(this.email, this.password, this.contactNumber); 
 
       this.storage.set('pendingUsername', result.username);
 
