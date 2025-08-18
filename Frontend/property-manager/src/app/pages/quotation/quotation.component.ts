@@ -165,6 +165,7 @@ async onUpload(event: FileUploadEvent) {
       detail: `Failed to upload ${file.name}`
      
     });
+    
   }
 }
 }
