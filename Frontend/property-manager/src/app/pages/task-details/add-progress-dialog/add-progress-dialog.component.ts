@@ -39,8 +39,6 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
       super();
       this.form = this.fb.group({
         description: ['', Validators.required],
-        inventoryItemsUsed: [[]],
-        inventoryQuantities: this.fb.group({}),
         progress: ['', [Validators.required, Validators.min(0), Validators.max(100)]]
       });
     }
@@ -80,6 +78,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
 
     async onSubmit()
     {
+      this.form.markAllAsTouched();
       if(this.form.valid)
       {
         this.addError = false;
@@ -111,106 +110,57 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
         const progress = this.form.value.progress;
         const id = getCookieValue(document.cookie, 'contractorId');
 
-        if(itemsUsed)
-        {
-          // TODO change so that contractor can select multiple items in usage
-          this.taskProgressService.createProgress(id, this.taskId(), imageId, des, progress, itemsUsed.itemUuid, itemsUsed.quantity).subscribe({
-            next: () => {
-    
-              this.taskService.getTaskById(this.taskId()).subscribe({
-                next: (res) => {
-                  
-                  const noti: Notification = {
-                    notificationType: "Task progress updated",
-                    message: `Contractor has updated progress on ${res.title}`,
-                    recipientType: 'trustee',
-                    recipientUuid: res.tuuid,
-                    isRead: false,
-                    relatedTaskUuid: this.taskId()
-                  }
-                  this.notificationService.createNotifications(noti).subscribe({
-                    next: () => {
-                      this.messageService.add({
-                        severity: 'success',
-                        summary: 'Success',
-                        detail: 'Task progress successfully added'
-                      });
-    
-                      this.closeDialog();
-                      setTimeout(() => {
-                        window.location.reload();
-                      }, 2000);
-                    },
-                    error: () => {
-                      this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'Task progress unsuccessfully added'
-                      });
-                    } 
-                  })
-                },
-                error: () => {
-                  this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Task progress unsuccessfully added'
-                  });
+        // TODO change so that contractor can select multiple items in usage
+        this.taskProgressService.createProgress(id, this.taskId(), imageId, des, progress).subscribe({
+          next: () => {
+  
+            this.taskService.getTaskById(this.taskId()).subscribe({
+              next: (res) => {
+                
+                const noti: Notification = {
+                  notificationType: "Task progress updated",
+                  message: `Contractor has updated progress on ${res.title}`,
+                  recipientType: 'trustee',
+                  recipientUuid: res.tuuid,
+                  isRead: false,
+                  relatedTaskUuid: this.taskId()
                 }
-              })
-            }
-          });
-        }
-        else
-        {
-          // TODO change so that contractor can select multiple items in usage
-          this.taskProgressService.createProgress(id, this.taskId(), imageId, des, progress).subscribe({
-            next: () => {
-    
-              this.taskService.getTaskById(this.taskId()).subscribe({
-                next: (res) => {
-                  
-                  const noti: Notification = {
-                    notificationType: "Task progress updated",
-                    message: `Contractor has updated progress on ${res.title}`,
-                    recipientType: 'trustee',
-                    recipientUuid: res.tuuid,
-                    isRead: false,
-                    relatedTaskUuid: this.taskId()
-                  }
-                  this.notificationService.createNotifications(noti).subscribe({
-                    next: () => {
-                      this.messageService.add({
-                        severity: 'success',
-                        summary: 'Success',
-                        detail: 'Task progress successfully added'
-                      });
-    
-                      this.closeDialog();
-                      setTimeout(() => {
-                        window.location.reload();
-                      }, 2000);
-                    },
-                    error: () => {
-                      this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'Task progress unsuccessfully added'
-                      });
-                    } 
-                  })
-                },
-                error: () => {
-                  this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Task progress unsuccessfully added'
-                  });
-                }
-              })
-            }
-          });
-        }
+                this.notificationService.createNotifications(noti).subscribe({
+                  next: () => {
+                    this.messageService.add({
+                      severity: 'success',
+                      summary: 'Success',
+                      detail: 'Task progress successfully added'
+                    });
+  
+                    this.closeDialog();
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 2000);
+                  },
+                  error: () => {
+                    this.messageService.add({
+                      severity: 'error',
+                      summary: 'Error',
+                      detail: 'Task progress unsuccessfully added'
+                    });
+                  } 
+                })
+              },
+              error: () => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Task progress unsuccessfully added'
+                });
+              }
+            })
+          }
+        });
+      }
+      else
+      {
+        this.addError = true;
       }
     }
     onFileSelect(event: FileSelectEvent)

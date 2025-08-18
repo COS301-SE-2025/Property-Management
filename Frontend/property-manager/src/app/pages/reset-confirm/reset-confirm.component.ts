@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-verify-email',
+  selector: 'app-reset-confirm',
   imports: [CommonModule, FormsModule],
   templateUrl: './reset-confirm.component.html',
   styles: ``
