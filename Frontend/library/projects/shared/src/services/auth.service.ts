@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
+import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, resetPasswordResponse, trusteeRegisterResponse } from '../models/Auth.model';
 import { TokenUtilService } from '../services/token-util.service';
 
 @Injectable({
@@ -290,5 +290,27 @@ getUserType(): string | null {
     deleteCookie("bodyCoporateId");
     deleteCookie("trusteeId");
     deleteCookie("contractorId");
+  }
+
+  resetContractorPasswordRequest(
+    email: string
+  ): Observable<resetPasswordResponse> {
+    const req = {
+      email
+    };
+    return this.http.post<resetPasswordResponse>(`${this.url}/contractor/auth/password-reset-request`, req);
+  }
+
+  confirmContractorResetPasswordRequest(
+    email: string,
+    confirmationCode: string,
+    newPassword: string
+  ): Observable<resetPasswordResponse> {
+    const req = {
+      email,
+      confirmationCode,
+      newPassword
+    };
+    return this.http.post<resetPasswordResponse>(`${this.url}/contractor/auth/password-reset-confirm`, req);
   }
 }

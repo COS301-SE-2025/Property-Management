@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class RestConfirmComponent {
 
-  public verificationCode = '';
+  public confirmationCode = '';
   public username = '';
   public userType = '';
 
@@ -24,7 +24,7 @@ export class RestConfirmComponent {
   }
 
   async sendCode(): Promise<void> {
-    if(!this.verificationCode) {
+    if(!this.confirmationCode) {
       this.emptyField = true;
       return;
     }
