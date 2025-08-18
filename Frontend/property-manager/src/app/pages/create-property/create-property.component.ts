@@ -199,6 +199,12 @@ export class CreatePropertyComponent implements OnInit {
           err.status === 500 ? 'Server error.' :
           'Failed to create property.';
         this.isSubmitting = false;
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Errpr',
+          detail: 'The property was unsuccessfully created.'
+        });
       }
     });
 

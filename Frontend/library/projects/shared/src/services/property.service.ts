@@ -54,7 +54,7 @@ export class PropertyService {
 
   createProperty(data: CreateBuildingPayload): Observable<Building> {
     console.log('POST', this.apiUrl, 'Payload:', data);
-    return this.http.post<Building>(`${this.apiUrl}/buildings`, data); 
+    return this.http.post<Building>(`${this.apiUrl}`, data); 
   }
 
   uploadImage(file: File): Observable<ImageUploadResponse> {
@@ -68,26 +68,26 @@ export class PropertyService {
   }
 
   cancelInvite(inviteUuid: string): Observable<any> {
-    return this.http.delete(`/invites/${inviteUuid}`);
+    return this.http.delete(`${this.inviteApiUrl}/invites/${inviteUuid}`);
   }
 
   revokeInvite(inviteUuid: string): Observable<any> {
-    return this.http.put(`/invites/${inviteUuid}/status?status=Revoked`, {});
+    return this.http.put(`${this.inviteApiUrl}/invites/${inviteUuid}/status?status=Revoked`, {});
   }
 
   updateInviteStatus(inviteUuid: string, status: string): Observable<any> {
-    return this.http.put(`/invites/${inviteUuid}/status?status=${status}`, {});
+    return this.http.put(`${this.inviteApiUrl}/invites/${inviteUuid}/status?status=${status}`, {});
   }
 
   getBodyCorporatesForTrustee(trusteeUuid: string) {
-    return this.http.get<any[]>(`invites/trustee/${trusteeUuid}`);
+    return this.http.get<any[]>(`${this.inviteApiUrl}/invites/trustee/${trusteeUuid}`);
   }
 
   getBodyCorporateByUuid(coporateUuid: string) {
-    return this.http.get<any>(`/body-corporates/${coporateUuid}`);
+    return this.http.get<any>(`${this.inviteApiUrl}/body-corporates/${coporateUuid}`);
   }
 
   sendInvite(payload: { trusteeUuid: string; coporateUuid: string }) {
-    return this.http.post('/invites', payload);
+    return this.http.post(`${this.inviteApiUrl}/invites`, payload);
   }
 }

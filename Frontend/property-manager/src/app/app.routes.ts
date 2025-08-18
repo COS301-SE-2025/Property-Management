@@ -28,6 +28,7 @@ import { VotingComponent } from './pages/voting/voting.component';
 import { VotingDetailsComponent } from './pages/voting-details/voting-details.component';
 import { TaskDetailsComponent } from './pages/task-details/task-details.component';
 import { NotificationsComponent } from './pages/notifications/notifications.component';
+import { RestConfirmComponent } from './pages/reset-confirm/reset-confirm.component';
 
 export const routes: Routes = [
   {
@@ -64,6 +65,11 @@ export const routes: Routes = [
     path: 'verifyEmail',
     pathMatch: 'full',
     component: VerifyEmailComponent
+  },
+  {
+    path:'reset-password-confirmation',
+    pathMatch: 'full',
+    component: RestConfirmComponent
   },
   {
     path: 'home',

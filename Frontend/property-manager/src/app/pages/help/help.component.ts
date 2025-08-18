@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink} from '@angular/router';
-import { HeaderComponent } from "../../components/header/header.component";
 import { AccordionModule } from 'primeng/accordion';
 import { MenuItem } from 'primeng/api';
 
@@ -17,7 +16,7 @@ import {
 
 @Component({
     selector: 'app-help-page',
-    imports: [ ButtonModule, RouterLink, HeaderComponent, CommonModule,AccordionModule ],
+    imports: [ ButtonModule, RouterLink, CommonModule,AccordionModule ],
     standalone: true,
     templateUrl: `./help.component.html`,
     styles: ``,

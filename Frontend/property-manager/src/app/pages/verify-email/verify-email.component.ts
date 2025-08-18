@@ -34,7 +34,7 @@ export class VerifyEmailComponent {
       this.userType = storedUserType;
     } else {
       console.error('No user type found.');
-      this.router.navigate(['/register-body-corporate']);
+      this.router.navigate(['']);
     }
   }
 
@@ -48,16 +48,12 @@ export class VerifyEmailComponent {
     this.errorMessage = '';
 
     try {
-      console.log(this.userType);
       if(this.userType === 'bodyCorporate') {
         const result = await this.authService.confirmBodyCoporateRegistration(this.username, this.verificationCode);
-        console.log('Email verification successful:', result);
       }else if(this.userType === 'trustee') {
         const result = await this.authService.confirmTrusteeRegistration(this.username, this.verificationCode);
-        console.log('Email verification successful:', result);
       } else if(this.userType === 'contractor') {
         const result = await this.authService.confirmContractorRegistration(this.username, this.verificationCode);
-        console.log('Email verification successful:', result);
       }else {
         console.error('Unknown user type:', this.userType);
         this.errorMessage = 'Invalid user type. Please register again.';

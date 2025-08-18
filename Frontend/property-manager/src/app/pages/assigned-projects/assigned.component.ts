@@ -56,7 +56,6 @@ export class AssignedComponent implements OnInit{
         const filteredTasks = tasks.filter(task => 
           task['cuuid'] === this.contractorId
         );
-        console.log(filteredTasks);
 
         if (filteredTasks.length === 0) {
           this.tasks = []; 
