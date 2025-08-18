@@ -258,13 +258,12 @@ export class ContractorProfileComponent implements OnInit {
     this.contractor.project_history = data.description;
     this.submitProfile();
   }
+
   
   onStepThreeImagesSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input?.files) {
       const files: FileList = input.files;
-      console.log(files);
     }
   }
-
 }

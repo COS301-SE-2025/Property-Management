@@ -21,7 +21,7 @@
                         <span class="text-black">{{ task.title || 'Property' }}</span>
                     </ng-template>
                     <ng-template #subtitle>
-                        <span class="text-black">{{ task.des || 'Maintenance Task' }}</span>
+                        <span class="text-black truncate block w-full">{{ task.des || 'No description' }}</span>
                     </ng-template>
                     <ng-template #footer>
                         <div class="flex gap-4 mt-1">

@@ -1,11 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
-import { ApiService, StorageService } from 'shared';
 import { MessageService } from 'primeng/api';
-import { HeaderComponent } from 'src/app/components/header/header.component';
-import { TabComponent } from "src/app/components/tab/tab.component";
+import { ToastModule } from 'primeng/toast';
+import { FileUpload } from 'primeng/fileupload';
+import { ApiService, getCookieValue } from 'shared'; 
+import { ActivatedRoute, Router } from '@angular/router';
+import { DatePicker } from 'primeng/datepicker';
 import {
   trigger,
   transition,
@@ -14,24 +18,34 @@ import {
   query,
   stagger
 } from '@angular/animations';
-import { addIcons } from 'ionicons';
-import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline } from 'ionicons/icons';
-import { ActivatedRoute, Router } from '@angular/router';
 
 
+interface FileUploadEvent {
+  files: File[];
+}
 
 @Component({
   selector: 'app-quotation',
   standalone: true,
-  imports: [FormsModule, CommonModule, IonicModule,HeaderComponent, TabComponent],
+  imports: [
+    FormsModule,
+    InputTextModule,
+    ButtonModule,
+    CardModule,
+    CommonModule,
+    ToastModule,
+    FileUpload,
+    DatePicker
+  ],
   providers: [MessageService],
-  templateUrl: './quotation.component.html',
-  animations: [
+  templateUrl: `./quotation.component.html`,
+  styles: ``,
+   animations: [
     trigger('fadeInStagger', [
       transition(':enter', [
         query('.animate-item', [
           style({ opacity: 0, transform: 'translateY(20px)' }),
-          stagger(100, [
+          stagger(100, [ 
             animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
           ])
         ])
@@ -39,106 +53,118 @@ import { ActivatedRoute, Router } from '@angular/router';
     ])
   ]
 })
-export class QuotationComponent implements OnInit {
-  private api = inject(ApiService);
-  private route = inject(ActivatedRoute);
-  t_uuid: string = '';
 
-  IssueDate: Date = new Date();
-  expirationDate: string="";
-  quoteNo: string="";
-  totalAmount: number=0;
-  file: File | null = null;
-  filePreviewUrl: string | null = null;
-  isImage: boolean = false;
-  showIssueDate = false;
-  showExpirationDate = false;
-  // UI states
-  toastOpen = false;
-  toastMsg = '';
-  toastColor: 'success' | 'danger' = 'success';
-  loading = false;
-  previewOpen = false;
-  contractorId: string = "";
+export class QuotationComponent implements OnInit{
+  IssueDate = '';
+  expirationDate = '';
+  quoteNo = '';
+  totalAmount = '';
 
-  constructor(private storageService: StorageService, private router: Router){}
+  contractorId = ''; 
+  taskId = ''; 
+  type = 'pending';
 
-  async ngOnInit() {
-    addIcons({
-      'calendar-outline': calendarOutline,
-      'newspaper-outline': newspaperOutline,
-      'wallet-outline': walletOutline,
-      'cloud-upload-outline': cloudUploadOutline
-    
-    });
-    this.contractorId =  await this.storageService.get('contractorId');
-    this.t_uuid = this.route.snapshot.paramMap.get('t_uuid') ?? '';
-    console.log('Contractor ID:', this.contractorId);
-    console.log('Task UUID:', this.t_uuid);
+  constructor(
+  private messageService: MessageService,
+  private apiService: ApiService,
+  private route: ActivatedRoute,
+  private router: Router
+) {
+  const storedId = getCookieValue(document.cookie, 'contractorId');
+  if (storedId) {
+    this.contractorId = storedId;
+  } else {
+    console.warn('Contractor ID not found in cookie.');
   }
+}
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.filePreviewUrl = reader.result as string;
-        this.isImage = file.type.startsWith('image');
-      };
-      reader.readAsDataURL(file);
+  ngOnInit(): void {
+      this.route.paramMap.subscribe(params => {
+    const id = params.get('taskId');
+    if (id) {
+      this.taskId = id;
     }
+  });
+  if (!this.taskId) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'No Task Provided',
+      detail: 'Task UUID was not provided in the URL.'
+    });
+    return;
   }
 
-  openPreviewModal() {
-    this.previewOpen = true;
+  
+  this.apiService.getMaintenanceTasks().subscribe({
+    next: (tasks) => {
+      const task = tasks.find(t => t.uuid === this.taskId && t['c_uuid'] === this.contractorId);
+      // if (!task) {
+      //   this.messageService.add({
+      //     severity: 'warn',
+      //     summary: 'Invalid Task',
+      //     detail: 'Task not assigned to this contractor.'
+      //   });
+      // }
+    },
+    error: (err) => {
+      console.error('Error loading tasks:', err);
+    }
+  });
   }
 
-  closePreviewModal() {
-    this.previewOpen = false;
-  }
-
-  async submitQuote() {
-    if (!this.IssueDate || !this.expirationDate || !this.quoteNo || !this.totalAmount) {
-      this.showToast('Please fill in all fields and upload a file.', 'danger');
+  submitQuote() {
+    if (!this.taskId || !this.IssueDate || !this.expirationDate || !this.quoteNo || !this.totalAmount) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Please fill in all required fields and ensure task is assigned.'
+      });
       return;
     }
+    const submittedDate = new Date();
 
-    try {
-      this.loading = true;
+    this.apiService.addQuote(this.taskId,this.contractorId,submittedDate,this.type,Number(this.totalAmount),this.quoteNo).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Quote Created',
+          detail: `Quote #${this.quoteNo} has been submitted.`
+        });
+        this.quoteNo = '';
+        this.totalAmount = '';
 
-       
-      await this.api.addQuote(
-        this.t_uuid,
-        this.contractorId,
-        this.IssueDate,
-        this.expirationDate,
-        this.totalAmount,
-        this.quoteNo
-      ).subscribe({
-        next: () => {
-          this.showToast('Quotation submitted successfully!', 'success');
-
-          setTimeout(() => {
-            this.router.navigate(['/contractor-home'])
-          }, 1500);
-        },
-        error: (err) => {
-          console.error(err);
-          this.showToast('Error submitting quotation.', 'danger');
-        }
-      });
-       
-      
-    } catch (err) {
-      this.showToast('Error submitting quotation.', 'danger');
-    } finally {
-      this.loading = false;
-    }
+        setTimeout(() => {
+          this.router.navigate(['/contractorHome']);
+        }, 1800);
+      },
+      error: (err) => {
+        console.error(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to create quote.'
+        });
+      }
+    });
   }
-
-  showToast(message: string, color: 'success' | 'danger') {
-    this.toastMsg = message;
-    this.toastColor = color;
-    this.toastOpen = true;
+async onUpload(event: FileUploadEvent) {
+  const file = event.files[0]; // Assuming single file upload
+  if (!file) return;
+  try {
+    await this.apiService.uploadPDF(file, this.contractorId, "Quote");
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Upload Complete',
+      detail: `${file.name} uploaded successfully`
+    });
+  } catch (err) {
+    console.error('PDF upload failed:', err);
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Upload Failed',
+      detail: `Failed to upload ${file.name}`
+     
+    });
   }
+}
 }
