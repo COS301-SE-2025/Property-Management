@@ -99,10 +99,6 @@ export class RegisterOwnerComponent {
     }
 
     let normalizedContactNumber = this.contactNumber;
-    if (normalizedContactNumber.startsWith('0')) {
-      normalizedContactNumber = '+27' + normalizedContactNumber.substring(1);
-    }
-
     try {
       const result = await this.authService.trusteeRegister(
         this.email,
