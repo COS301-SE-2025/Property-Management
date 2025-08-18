@@ -160,11 +160,24 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
                     relatedTaskUuid: res.taskUuid
                   }
                   this.notificationService.createNotifications(notiTrustee);
-                  this.notificationService.createNotifications(notiContractor);
+                  this.notificationService.createNotifications(notiContractor).subscribe({
+                    next: (res) => {
+                      console.log(res);
+                    },
+                    error: (err) => {
+                      console.error(err);
+                    }
+                  });
+
+                   this.messageService.add({
+                    severity: 'success',
+                    summary: 'success',
+                    detail: 'Task has successfully been assigned'
+                  });
     
-                  setTimeout(() => {
-                    window.location.reload()
-                  }, 1500);
+                  // setTimeout(() => {
+                  //   window.location.reload()
+                  // }, 1500);
                 },
                 error: (err) => {
                     console.error(err);
