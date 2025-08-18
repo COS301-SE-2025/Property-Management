@@ -5,14 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-verify-email',
+  selector: 'app-reset-confirm',
   imports: [CommonModule, FormsModule],
   templateUrl: './reset-confirm.component.html',
   styles: ``
 })
 export class RestConfirmComponent {
 
-  public verificationCode = '';
+  public confirmationCode = '';
   public username = '';
   public userType = '';
 
@@ -24,7 +24,7 @@ export class RestConfirmComponent {
   }
 
   async sendCode(): Promise<void> {
-    if(!this.verificationCode) {
+    if(!this.confirmationCode) {
       this.emptyField = true;
       return;
     }

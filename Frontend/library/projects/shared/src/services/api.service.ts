@@ -1,14 +1,16 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Inventory } from '../models/inventory.model';
-// import { Building } from '../models/building.model';
+import { PDFupload } from '../models/PDF.model';
 import { Budget } from '../models/budget.model';
 import { Contractor } from '../models/contractor.model';
 import { Quote } from '../models/quote.model';
 import { BuildingDetails } from '../models/buildingDetails.model';
 import { MaintenanceTask } from '../models/maintenanceTask.model';
 import { environmentMobile } from '../environment';
+import { firstValueFrom } from 'rxjs';
+
 
 export interface Trustee {
   trustee_id?: number;
@@ -192,4 +194,52 @@ getContractorMaintenanceTasks(contractorUuid: string, isBodyCorporate: boolean =
     { headers: headers }
   );
 }
+
+async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
+    try {
+      const presignResponse: any = await firstValueFrom(
+        this.http.get(`${this.url}/upload/presigned-upload/${file.name}`)
+      );
+
+      const uploadUrl = presignResponse.uploadUrl; // S3 URL
+      const key = presignResponse.fileKey;
+      const id = presignResponse.id;
+
+      console.log('Presigned URL:', uploadUrl);
+
+      await firstValueFrom(
+        this.http.put(uploadUrl, file, {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/pdf'
+          }),
+          responseType: 'text' // S3 PUT returns empty body
+        })
+      );
+
+      console.log('PDF uploaded to S3');
+
+      await firstValueFrom(
+        this.http.post(
+          `${this.url}/upload/notify-upload/${id}/${file.name}/${key}/${uuid}/${type}`,
+          {},
+          { responseType: 'text' } // <- this is the key
+        )
+      );
+
+
+      console.log('Backend notified and metadata saved');
+
+    } catch (error) {
+      console.error('PDF upload failed:', error);
+      throw error; // Let the component handle errors
+    }
+  }
+
+  getQuote(contractorUuid: string, type: string): Observable<string>{
+    return this.http.get(`${this.url}/upload/presigned/${contractorUuid}/${type}`, {
+      responseType: 'text'
+    });
+  }
+
+
 }

@@ -249,7 +249,8 @@ describe('VotingApiService', () => {
         amount: 1000,
         submitted_on: 1,
         doc: 'quote.pdf',
-        status: 'PENDING'
+        status: 'PENDING',
+        expiry_date: ''
       };
 
       service.getQuote('quote-123').subscribe(quote => {
@@ -271,7 +272,8 @@ describe('VotingApiService', () => {
         amount: 1000,
         submitted_on: 1,
         doc: 'quote.pdf',
-        status: 'APPROVED'
+        status: 'APPROVED',
+        expiry_date: ''
       };
 
       service.updateQuoteStatus('quote-123', 'APPROVED').subscribe(quote => {

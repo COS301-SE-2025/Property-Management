@@ -13,9 +13,9 @@
         (click)="goToQuotationPage(task)">
 
         <ion-img
-  src="{{task.imageUuid}}"
+  src="{{task.img}}"
   alt="Project Image"
-  class="project-image w-full"
+  class="project-image w-full h-36 object-cover"
   (ionError)="handleImageError(task)"
 ></ion-img>
         <div class="p-3">

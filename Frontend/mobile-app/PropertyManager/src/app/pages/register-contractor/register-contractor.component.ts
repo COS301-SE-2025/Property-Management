@@ -9,13 +9,13 @@ import { StorageService } from 'shared';
 @Component({
   selector: 'app-register',
   imports: [CommonModule, FormsModule, IonInput, IonItem, IonInputPasswordToggle],
-  templateUrl: './register.component.html',
+  templateUrl: './register-contractor.component.html',
   styles: ``
 })
-export class RegisterComponent {
+export class RegisterContractorComponent {
   public email = "";
   public password = "";
-  public contactNumber = ""; 
+  public contactNumber = "";
   public passwordVisible = false;
 
   public emptyField = false;
@@ -35,7 +35,7 @@ export class RegisterComponent {
 
   async register()
   {
-    if(!this.email || !this.password || !this.contactNumber)
+    if(!this.email || !this.password || !this.contactNumber) 
     {
       this.emptyField = true;
       return;
@@ -46,12 +46,16 @@ export class RegisterComponent {
     this.emptyField = false;
 
     try{
-      const result = await this.authService.trusteeRegister(this.email, this.password, this.contactNumber);
+      const result = await this.authService.contractorRegister(this.email, this.password, this.contactNumber); 
 
       this.storage.set('pendingUsername', result.username);
-      this.storage.set('userType', 'trustee');
+      this.storage.set('userType', 'contractor');
 
-      this.router.navigate(['/verifyEmail']);
+      this.router.navigate(['/verifyEmail'], {
+        state: {
+          username: result.username
+        }
+      });
     }
     catch(error)
     {
@@ -69,6 +73,7 @@ export class RegisterComponent {
       } else {
         this.serverError = true;
       }
+      throw error;
     }
   }
 }

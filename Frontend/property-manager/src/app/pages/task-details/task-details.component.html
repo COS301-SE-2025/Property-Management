@@ -1,5 +1,3 @@
-<!-- <app-header/> -->
-
 <div class="mt-10 px-10">
     <p-card>
         <div class="rounded-lg flex p-4">
@@ -48,7 +46,7 @@
         [ngClass]="{
             'grid-cols-1 md:grid-cols-3': inventoryUsage?.length && contractor,
             'grid-cols-1 md:grid-cols-2': inventoryUsage?.length && !contractor,
-            'grid-cols-1 place-items-start': !inventoryUsage?.length
+            'grid-cols-1 place-items-centet': (!inventoryUsage && contractor)
         }">
         <app-inventory-usage *ngIf="inventoryUsage?.length" 
                             [taskId]="this.taskId!"
@@ -57,7 +55,11 @@
         {
             <app-contractor-timeline [inventoryUsage]="inventoryUsage!"
                                     [task]="task!"
-                                    [class.md:col-span-2]="contractor"/>
+                                    [ngClass]="{
+                                        'md:col-span-2': inventoryUsage?.length,
+                                        'md:col-span-2 lg:col-span-3': !inventoryUsage
+                                    }">
+            </app-contractor-timeline>
         }
     </div>
 </div>

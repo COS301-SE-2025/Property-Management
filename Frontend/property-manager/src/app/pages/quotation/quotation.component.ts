@@ -98,13 +98,13 @@ export class QuotationComponent implements OnInit{
   this.apiService.getMaintenanceTasks().subscribe({
     next: (tasks) => {
       const task = tasks.find(t => t.uuid === this.taskId && t['c_uuid'] === this.contractorId);
-      if (!task) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Invalid Task',
-          detail: 'Task not assigned to this contractor.'
-        });
-      }
+      // if (!task) {
+      //   this.messageService.add({
+      //     severity: 'warn',
+      //     summary: 'Invalid Task',
+      //     detail: 'Task not assigned to this contractor.'
+      //   });
+      // }
     },
     error: (err) => {
       console.error('Error loading tasks:', err);
@@ -147,12 +147,25 @@ export class QuotationComponent implements OnInit{
       }
     });
   }
-  onUpload(event: FileUploadEvent) {
-    console.log('Uploaded files:', event.files);
+async onUpload(event: FileUploadEvent) {
+  const file = event.files[0]; // Assuming single file upload
+  if (!file) return;
+  try {
+    await this.apiService.uploadPDF(file, this.contractorId, "Quote");
     this.messageService.add({
-      severity: 'info',
-      summary: 'Success',
-      detail: 'File Uploaded with Basic Mode'
+      severity: 'success',
+      summary: 'Upload Complete',
+      detail: `${file.name} uploaded successfully`
     });
+  } catch (err) {
+    console.error('PDF upload failed:', err);
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Upload Failed',
+      detail: `Failed to upload ${file.name}`
+     
+    });
+    
   }
+}
 }
