@@ -99,7 +99,7 @@ jobs:
               run: npm run build property-manager
               working-directory: Frontend
       
-    Unit-Tests:
+    test:
       runs-on: ubuntu-22.04
       needs: build
       steps:
@@ -117,56 +117,6 @@ jobs:
             run: npm ci
             working-directory: Frontend
 
-          - name: Run unit tests
-            run: npm run test property-manager -- --include='**/*.spec.ts' --watch=false --browsers=ChromeHeadlessCI
+          - name: Run unit and integration tests
+            run: npm run test property-manager -- --watch=false --browsers=ChromeHeadlessCI
             working-directory: Frontend
-    
-    Integration-Tests:
-      runs-on: ubuntu-22.04
-      needs: build
-      steps:
-        - uses: actions/checkout@v3
-
-        - name: Start DB
-          run: docker compose -f docker-compose.yml up -d postgres flyway
-
-        - name: Build backend
-          run: docker build -t backend-test -f Backend/property-management/Dockerfile Backend/property-management
-
-        - name: Start backend
-          run: docker run -d --name backend -p 8080:8080 backend-test
-
-        - name: Check backend logs
-          run: docker logs backend --tail=100
-
-        - name: Wait for backend
-          run: |
-            for i in {1..20}; do
-              if curl -s http://localhost:8080/actuator/health | grep '"status":"UP"' > /dev/null; then
-                echo "Backend is ready"
-                exit 0
-              fi
-              echo "Waiting for backend..."
-              sleep 5
-            done
-            exit 1
-
-        - name: Cache node_modules
-          uses: actions/cache@v3
-          with:
-              path: Frontend/node_modules
-              key: npm-${{ hashFiles('Frontend/package-lock.json') }}
-              restore-keys: |
-                npm-
-
-        - name: Install dependencies
-          run: npm ci
-          working-directory: Frontend
-
-        - name: Run integration tests
-          run: npm run test property-manager -- --include='**/*.integration.spec.ts' --watch=false --browsers=ChromeHeadlessCI
-          working-directory: Frontend
-
-        - name: Shutdown
-          if: always()
-          run: docker compose -f docker-compose.yml down -v && docker rm -f backend || true
