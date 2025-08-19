@@ -57,7 +57,7 @@ jobs:
           working-directory: Frontend
 
         - name: Use CI environment
-          run: cp Frontend/src/environments/environment.ci.ts Frontend/src/environments/environment.ts
+          run: cp Frontend/library/projects/shared/src/environment.ci.ts Frontend/library/projects/shared/src/environment.ts
 
         - name: Run integration tests
           run: npm run test -- --include='**/*.integration.spec.ts' --watch=false --browsers=ChromeHeadlessCI
