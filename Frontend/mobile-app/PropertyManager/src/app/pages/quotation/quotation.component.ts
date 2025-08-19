@@ -73,8 +73,6 @@ export class QuotationComponent implements OnInit {
     });
     this.contractorId =  await this.storageService.get('contractorId');
     this.t_uuid = this.route.snapshot.paramMap.get('t_uuid') ?? '';
-    console.log('Contractor ID:', this.contractorId);
-    console.log('Task UUID:', this.t_uuid);
   }
 
   onFileSelected(event: any) {

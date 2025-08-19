@@ -330,7 +330,7 @@ describe('InventoryItemApiService', () => {
 
       httpClientSpy.delete.and.returnValue(of(deletedItem));
 
-      service.deleteInventoryItem(deletedItem).subscribe({
+      service.deleteInventoryItem(deletedItem.itemUuid).subscribe({
         next: (item) => {
           expect(item).toEqual(deletedItem);
           expect(httpClientSpy.delete).toHaveBeenCalledWith(
@@ -345,9 +345,7 @@ describe('InventoryItemApiService', () => {
       const errorResponse = { status: 404, message: 'Not Found' };
       httpClientSpy.delete.and.returnValue(throwError(() => errorResponse));
 
-      service.deleteInventoryItem(
-        { itemUuid: 'unknown', name: 'Chair', unit: 'pcs', quantityInStock: 10, price: 50, buildingUuid: 'bldg1' }
-      ).subscribe({
+      service.deleteInventoryItem('unknown').subscribe({
         next: () => fail('expected error but got item'),
         error: (error) => {
           expect(error.status).toBe(404);
