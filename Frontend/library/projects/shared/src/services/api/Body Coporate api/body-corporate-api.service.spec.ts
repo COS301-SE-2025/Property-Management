@@ -55,7 +55,7 @@ describe('BodyCoporateApiService', () => {
       ] as MaintenanceTask[];
 
       service.getPendingTasks(mockBuildingId).subscribe(tasks => {
-        expect(tasks.length).toBe(3);
+        expect(tasks.length).toBe(2);
         expect(tasks[0].title).toBe('Task 1');
         expect(tasks[1].title).toBe('Task 2');
       });

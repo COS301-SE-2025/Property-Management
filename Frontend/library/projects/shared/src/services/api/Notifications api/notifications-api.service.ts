@@ -25,23 +25,20 @@ export class NotificationsApiService{
 
     createNotifications(Notifications: Notification)
     {
-        return this.http.post<Notification>(`${this.url}/notifications`, Notifications,
-    { withCredentials: true });
+        return this.http.post<Notification>(`${this.url}/notifications`, Notifications);
     }
     getNotifications(recipientType: string, recipientId: string)
     {
         const cacheBuster = Date.now();
-        return this.http.get<Notification[]>(`${this.url}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}&_=${cacheBuster}`,
-    { withCredentials: true }).pipe(map(res => res || []));
+        return this.http.get<Notification[]>(`${this.url}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}&_=${cacheBuster}`).pipe(map(res => res || []));
     }
     markNotificationsAsRead(NotificationsId: string)
     {
-        return this.http.put<Notification>(`${this.url}/notifications/${NotificationsId}/read`, {withCredentials: true });
+        return this.http.put<Notification>(`${this.url}/notifications/${NotificationsId}/read`, {});
     }
 
     getInviteById(inviteUuid: string): Observable<InviteWithTrustee2> 
     {
-        return this.http.get<InviteWithTrustee2>(`/api/invites/${inviteUuid}`,
-    { withCredentials: true });
+        return this.http.get<InviteWithTrustee2>(`/api/invites/${inviteUuid}`);
     } 
 }

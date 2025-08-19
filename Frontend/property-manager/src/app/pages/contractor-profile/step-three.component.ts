@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ApiService } from 'shared'; // Adjust import path as needed
@@ -152,7 +152,7 @@ import { ImageApiService } from 'shared'; // Adjust import path as needed
 }
   `]
 })
-export class StepThreeComponent implements OnDestroy {
+export class StepThreeComponent {
   @Output() back = new EventEmitter<void>();
   @Output() done = new EventEmitter<{ description: string }>();
 

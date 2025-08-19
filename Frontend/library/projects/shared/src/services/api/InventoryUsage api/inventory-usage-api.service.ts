@@ -21,25 +21,21 @@ export class InventoryUsageApiService {
       quantityUsed: quantityUsed
     };
 
-    return this.http.post<InventoryUsage>(`${this.url}/inventory-usage`, newInventoryUsage,
-    { withCredentials: true });
+    return this.http.post<InventoryUsage>(`${this.url}/inventory-usage`, newInventoryUsage);
   }
 
   getAllInventoryUsage(page: number, size: number): Observable<InventoryUsage[]>
   {
-    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage?page=${page}&size=${size}`,
-    { withCredentials: true });
+    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage?page=${page}&size=${size}`);
   }
 
   getInventoryUsageById(usageId: string): Observable<InventoryUsage>
   {
-    return this.http.get<InventoryUsage>(`${this.url}/inventory-usage/${usageId}`,
-    { withCredentials: true });
+    return this.http.get<InventoryUsage>(`${this.url}/inventory-usage/${usageId}`);
   }
   getInventoryUsageByTaskId(taskId: string): Observable<InventoryUsage[]>
   {
-    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-task/${taskId}`,
-    { withCredentials: true });
+    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-task/${taskId}`);
   }
 
   updateInventoryUsageById(usageId: string, inventoryUsage: InventoryUsage)
@@ -49,14 +45,12 @@ export class InventoryUsageApiService {
       trusteeApproved: inventoryUsage.trusteeApproval,
       approvalDate: inventoryUsage.approvedDate
     };
-    return this.http.put<InventoryUsage>(`${this.url}/inventory-usage/${usageId}`, updatedInventory,
-    { withCredentials: true });
+    return this.http.put<InventoryUsage>(`${this.url}/inventory-usage/${usageId}`, updatedInventory);
   }
 
   deleteInventoryUsageById(usageId: string): Observable<InventoryUsage>
   {
-    return this.http.delete<InventoryUsage>(`${this.url}/inventory-usage/${usageId}`,
-    { withCredentials: true });
+    return this.http.delete<InventoryUsage>(`${this.url}/inventory-usage/${usageId}`);
   }
 
   ApproveOrRejectInventoryUsage(usageId: string, inventoryUsage: InventoryUsage): Observable<InventoryUsage>
@@ -66,48 +60,40 @@ export class InventoryUsageApiService {
       approvalDate: inventoryUsage.approvedDate
     }
 
-    return this.http.patch<InventoryUsage>(`${this.url}/inventory-usage/${usageId}/approval`, updateStatus,
-    { withCredentials: true });
+    return this.http.patch<InventoryUsage>(`${this.url}/inventory-usage/${usageId}/approval`, updateStatus);
   }
   getUsageRecordsByItemId(itemId: string): Observable<InventoryUsage[]>
   {
-    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-item/${itemId}`,
-    { withCredentials: true });
+    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-item/${itemId}`);
   }
 
   getUsageRecordsByTaskId(taskId: string): Observable<InventoryUsage[]>
   {
-    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-task/${taskId}`,
-    { withCredentials: true })
+    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-task/${taskId}`)
   }
 
   getUsageRecordsByContractorId(contractorId: string): Observable<InventoryUsage[]>
   {
-    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-contractor/${contractorId}`,
-    { withCredentials: true });
+    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/by-contractor/${contractorId}`);
   }
 
   getApprovedUsageRecords(): Observable<InventoryUsage[]>
   {
-    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/approved`,
-    { withCredentials: true });
+    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/approved`);
   }
 
   getPendingUsageRecords(): Observable<InventoryUsage[]>
   {
-    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/pending-approval`,
-    { withCredentials: true });
+    return this.http.get<InventoryUsage[]>(`${this.url}/inventory-usage/pending-approval`);
   }
 
   getTotalQuantityUsedByItemId(itemId: string): Observable<number>
   {
-    return this.http.get<number>(`${this.url}/inventory-usage/total-quantity/item/${itemId}`,
-    { withCredentials: true });
+    return this.http.get<number>(`${this.url}/inventory-usage/total-quantity/item/${itemId}`);
   }
 
   getTotalQuantityUsedByContractorId(contractorId: string): Observable<number>
   {
-    return this.http.get<number>(`${this.url}/inventory-usage/total-quantity/contractor/${contractorId}`,
-    { withCredentials: true });
+    return this.http.get<number>(`${this.url}/inventory-usage/total-quantity/contractor/${contractorId}`);
   }
 }

@@ -2,7 +2,7 @@
     <p-toast></p-toast>
     <p-card class="text-center bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md">
         <ng-template #title>Inventory</ng-template>
-        <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '25rem', 'max-width':'25rem' }">
+        <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '25rem' }">
             <ng-template #header>
                 <tr>
                     <th pSortableColumn="name">Description <p-sortIcon field="name"/></th>

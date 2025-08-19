@@ -33,7 +33,7 @@ export class PhotoService {
          const photo = await this.cameraWrapper.getPhoto({
           resultType: CameraResultType.Base64,
           source,
-          quality: 50,
+          quality: 100,
         });
   
         return {
@@ -59,26 +59,11 @@ export class PhotoService {
 
             const reader = new FileReader();
             reader.onload = () => {
-              const img = new Image();
-              img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d')!;
-  
-                const maxWidth = 1024;
-                const scale = Math.min(1, maxWidth / img.width);
-                canvas.width = img.width * scale;
-                canvas.height = img.height * scale;
-
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                const base64String = canvas.toDataURL('image/jpeg', 0.5).split(',')[1];
-
-                resolve({
-                  base64String,
-                  format: 'jpeg'
-                });
-              };
-              img.src = reader.result as string;
+              const base64String = (reader.result as string).split(',')[1];
+              resolve({
+                base64String,
+                format: file.type.split('/')[1] || 'jpeg'
+              });
             };
             reader.readAsDataURL(file);
           };

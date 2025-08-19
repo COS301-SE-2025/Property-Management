@@ -15,8 +15,7 @@ export class VotingApiService{
 
     getSessionDetails(sessionId: string)
     {
-        return this.http.get<Voting>(`${this.url}/session/${sessionId}/results`,
-    { withCredentials: true });
+        return this.http.get<Voting>(`${this.url}/session/${sessionId}/results`);
     }
     createSession(taskId: string, corporateId: string, votingEnds: Date)
     {
@@ -31,23 +30,19 @@ export class VotingApiService{
             votingEndsAt: localISO(votingEnds)
         };
 
-        return this.http.post<Voting>(`${this.url}/session`, req,
-    { withCredentials: true });
+        return this.http.post<Voting>(`${this.url}/session`, req);
     }
     getSessions()
     {
-        return this.http.get<Voting[]>(`${this.url}/sessions`,
-    { withCredentials: true });
+        return this.http.get<Voting[]>(`${this.url}/sessions`);
     }
     getSessionFromTaskId(taskId: string)
     {
-        return this.http.get<Voting>(`${this.url}/task/${taskId}/session`,
-    { withCredentials: true });
+        return this.http.get<Voting>(`${this.url}/task/${taskId}/session`);
     }
     getTaskFromSessionId(sessionId: string)
     {
-        return this.http.get<Voting>(`${this.url}/session/${sessionId}/task`,
-    { withCredentials: true });
+        return this.http.get<Voting>(`${this.url}/session/${sessionId}/task`);
     }
     castVote(sessionId: string, quoteId: string, voterId: string, isTrustee: boolean)
     {
@@ -59,24 +54,21 @@ export class VotingApiService{
          voteFor: true   
         };
 
-        return this.http.post(`${this.url}`, req, { responseType: 'text' , withCredentials: true });
+        return this.http.post(`${this.url}`, req, { responseType: 'text' });
     }
     getVoteResults(sessionId: string)
     {
-        return this.http.get<VotingResults>(`${this.url}/session/${sessionId}/results`,
-    { withCredentials: true });
+        return this.http.get<VotingResults>(`${this.url}/session/${sessionId}/results`);
     }
     getQuote(quoteId: string)
     {
-        return this.http.get<Quote>(`${this.url}/vote/${quoteId}`,
-    { withCredentials: true });
+        return this.http.get<Quote>(`${this.url}/vote/${quoteId}`);
     }
     updateQuoteStatus(quoteId: string, status: string)
     {
         const req = {
             status: status
         }
-        return this.http.patch<Quote>(`${this.quoteUrl}/quote/${quoteId}`, req,
-    { withCredentials: true });
+        return this.http.patch<Quote>(`${this.quoteUrl}/quote/${quoteId}`, req);
     }
 }

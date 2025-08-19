@@ -6,6 +6,7 @@ import { CommonModule } from "@angular/common";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import {  MultiSelectModule } from "primeng/multiselect";
 import { getCookieValue, ImageApiService, Inventory, InventoryItemApiService, InventoryUsageApiService, Notification, NotificationsApiService, TaskApiService, TaskProgresApiService } from "shared";
+import { InventoryCardComponent } from "../../view-house/inventory-card/inventory-card.component";
 import { FileSelectEvent, FileUploadModule } from "primeng/fileupload";
 import { MessageService } from "primeng/api";
 
@@ -13,7 +14,7 @@ import { MessageService } from "primeng/api";
   selector: 'app-add-progress-dialog',
   templateUrl: './add-progress-dialog.component.html',
   styles: ``,
-  imports: [Toast, DialogModule, ReactiveFormsModule, MultiSelectModule, CommonModule, FileUploadModule],
+  imports: [Toast, DialogModule, ReactiveFormsModule, MultiSelectModule, InventoryCardComponent, CommonModule, FileUploadModule],
   providers: [MessageService, NotificationsApiService]
 })
 export class AddProgressDialogComponent extends DialogComponent implements DoCheck{

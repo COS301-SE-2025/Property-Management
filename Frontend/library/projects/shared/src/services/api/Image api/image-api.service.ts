@@ -23,8 +23,7 @@ export class ImageApiService{
     }
     
     return this.http.get(`${this.url}/images/presigned/${imageId}`, {
-      responseType: 'text',
-    withCredentials: true 
+      responseType: 'text'
     }).pipe(
       map(url => {
         this.imageCache.set(imageId, url);
@@ -37,8 +36,7 @@ export class ImageApiService{
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post<{ imageKey: string}>(`${this.url}/images/upload`, formData, {
+    return this.http.post<{ imageKey: string}>('/api/images/upload', formData, {
     }).pipe(map(response => ({ imageId:  response.imageKey })));
-
   }
 }

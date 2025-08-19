@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, resetPasswordResponse, trusteeRegisterResponse } from '../models/Auth.model';
 import { TokenUtilService } from '../services/token-util.service';
-import { environmentMobile } from '../environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private url = environmentMobile.apiUrl;
+  private url = '/api';
 
   constructor(private http: HttpClient, private tokenUtil: TokenUtilService){}
 
@@ -43,8 +43,7 @@ export class AuthService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/body-corporates/login`, req,
-    { withCredentials: true });
+    return this.http.post<AuthTokens>(`${this.url}/body-corporates/login`, req);
   }
 
   bodyCoporateRegister(
@@ -88,8 +87,7 @@ export class AuthService {
       contactNumber
     };
 
-    return this.http.post<BodyCoporateRegisterResponse>(`${this.url}/body-corporates/register`, req,
-    { withCredentials: true });
+    return this.http.post<BodyCoporateRegisterResponse>(`${this.url}/body-corporates/register`, req);
   }
 
   confirmBodyCoporateRegistration(username: string, code: string): Promise<{ message: string }> {
@@ -134,8 +132,7 @@ export class AuthService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req,
-    { withCredentials: true });
+    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req);
   }
 
   trusteeRegister(
@@ -167,8 +164,7 @@ export class AuthService {
       contactNumber
     };
 
-    return this.http.post<trusteeRegisterResponse>(`${this.url}/trustee/auth/register`, req,
-    { withCredentials: true });
+    return this.http.post<trusteeRegisterResponse>(`${this.url}/trustee/auth/register`, req);
   }
 
   confirmTrusteeRegistration(username: string, code: string): Promise<{ message: string }> {
@@ -212,8 +208,7 @@ export class AuthService {
       email,
       password
     };
-    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req,
-    { withCredentials: true });
+    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req);
   }
 
   contractorRegister(
@@ -245,8 +240,7 @@ export class AuthService {
       contactNumber
     };
 
-    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req,
-    { withCredentials: true });
+    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req);
   }
 
   confirmContractorRegistration(username: string, code: string): Promise<{ message: string }> {
@@ -304,8 +298,7 @@ getUserType(): string | null {
     const req = {
       email
     };
-    return this.http.post<resetPasswordResponse>(`${this.url}/contractor/auth/password-reset-request`, req,
-    { withCredentials: true });
+    return this.http.post<resetPasswordResponse>(`${this.url}/contractor/auth/password-reset-request`, req);
   }
 
   confirmContractorResetPasswordRequest(
@@ -318,7 +311,6 @@ getUserType(): string | null {
       confirmationCode,
       newPassword
     };
-    return this.http.post<resetPasswordResponse>(`${this.url}/contractor/auth/password-reset-confirm`, req,
-    { withCredentials: true });
+    return this.http.post<resetPasswordResponse>(`${this.url}/contractor/auth/password-reset-confirm`, req);
   }
 }

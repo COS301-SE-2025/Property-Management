@@ -37,18 +37,15 @@ export class BuildingApiService {
       area: area
     };
 
-    return this.http.post<Property>(`${this.url}/buildings`, house,
-    { withCredentials: true });
+    return this.http.post<Property>(`${this.url}/buildings`, house);
   }
 
   getAllBuildings(): Observable<Property[]> {
-    return this.http.get<Property[]>(`${this.url}/buildings`,
-    { withCredentials: true });
+    return this.http.get<Property[]>(`${this.url}/buildings`);
   }
 
   getBuildingById(propertyId: string): Observable<Property> {
-    return this.http.get<Property>(`${this.url}/buildings/${propertyId}`,
-    { withCredentials: true });
+    return this.http.get<Property>(`${this.url}/buildings/${propertyId}`);
   }
 
   updateBuilding(propertyId: string, name: string, image: string, bcId: string): Observable<Property> {
@@ -58,28 +55,23 @@ export class BuildingApiService {
       coporateUuid: bcId
     };
 
-    return this.http.put<Property>(`${this.url}/buildings/${propertyId}`, updatedProperty,
-    { withCredentials: true });
+    return this.http.put<Property>(`${this.url}/buildings/${propertyId}`, updatedProperty);
   }
 
   deleteBuilding(propertyId: string): Observable<Property> {
-    return this.http.delete<Property>(`${this.url}/buildings/${propertyId}`,
-    { withCredentials: true });
+    return this.http.delete<Property>(`${this.url}/buildings/${propertyId}`);
   }
 
   getBuildingsByTrustee(trusteeId: string): Observable<{ trusteeUuid: string; buildings: Property[] }> {
-    return this.http.get<{ trusteeUuid: string; buildings: Property[] }>(`${this.url}/buildings/trustee/${trusteeId}`,
-    { withCredentials: true });
+    return this.http.get<{ trusteeUuid: string; buildings: Property[] }>(`${this.url}/buildings/trustee/${trusteeId}`);
   }
 
   searchBuildingsByName(buildingName: string): Observable<Property[]> {
     const encodedName = encodeURIComponent(buildingName);
-    return this.http.get<Property[]>(`${this.url}/buildings/search?name=${encodedName}`,
-    { withCredentials: true });
+    return this.http.get<Property[]>(`${this.url}/buildings/search?name=${encodedName}`);
   }
 
   getBuildingsByType(buildingType: string): Observable<Property[]> {
-    return this.http.get<Property[]>(`${this.url}/buildings/type/${buildingType}`,
-    { withCredentials: true });
+    return this.http.get<Property[]>(`${this.url}/buildings/type/${buildingType}`);
   }
 }
