@@ -12,6 +12,7 @@ export interface CreateBuildingPayload {
   trusteeUuid?: string;
   propertyImageId?: string | null;
   coporateUuid?: string | null; 
+  bodyCorporate?: string | null; 
   area: number;
 }
 
@@ -53,9 +54,8 @@ export class PropertyService {
   constructor(private http: HttpClient) {}
 
   createProperty(data: CreateBuildingPayload): Observable<Building> {
-    console.log('POST', this.apiUrl, 'Payload:', data);
     return this.http.post<Building>(`${this.apiUrl}`, data,
-    { withCredentials: true });
+    { withCredentials: true }); 
   }
 
   uploadImage(file: File): Observable<ImageUploadResponse> {

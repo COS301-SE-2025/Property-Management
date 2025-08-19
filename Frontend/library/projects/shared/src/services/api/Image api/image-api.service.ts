@@ -37,7 +37,8 @@ export class ImageApiService{
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post<{ imageKey: string}>('/api/images/upload', formData, {
-    withCredentials: true}).pipe(map(response => ({ imageId:  response.imageKey })));
+    return this.http.post<{ imageKey: string}>(`${this.url}/images/upload`, formData, {
+    }).pipe(map(response => ({ imageId:  response.imageKey })));
+
   }
 }

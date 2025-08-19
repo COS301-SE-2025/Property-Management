@@ -72,8 +72,6 @@ export class QuoteDetailsComponent extends DialogComponent implements OnInit {
   viewQuotePDF() {
     const quote = this.quote();
     if (!quote) return;
-    const quoteId = quote.uuid; 
-    const type = 'quote';
 
     this.apiService.getQuote(this.contractorId(), "Quote").subscribe({
       next: (presignedUrl: string) => {

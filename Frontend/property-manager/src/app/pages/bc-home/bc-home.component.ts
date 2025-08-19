@@ -67,7 +67,6 @@ export class BcHomeComponent implements OnInit {
         this.bodyCoporateService.loadGraph(bcId)
       ]);
     } catch (error) {
-      console.log("Error loading data:", error);
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -109,7 +108,6 @@ export class BcHomeComponent implements OnInit {
           email: trustee.email || null,
           role: 'Trustee' // Match backend expectation
         };
-        console.log('Sending invite with payload:', payload);
 
         this.propertyService.sendInvite(payload).subscribe({
           next: () => {
