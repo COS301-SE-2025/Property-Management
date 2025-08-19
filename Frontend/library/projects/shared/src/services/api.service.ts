@@ -33,7 +33,8 @@ export class ApiService {
 
   getInventory(): Observable<Inventory[]> 
   {
-    return this.http.get<Inventory[]>(`${this.url}/inventory`);
+    return this.http.get<Inventory[]>(`${this.url}/inventory`,
+    { withCredentials: true });
   }
 
   addInventoryItem(name: string, buildingId: number, quantity: number, price: number): Observable<Inventory>
@@ -44,7 +45,8 @@ export class ApiService {
       quantity: quantity,
       price: price
     }
-    return this.http.post<Inventory>(`${this.url}/inventory`, item);
+    return this.http.post<Inventory>(`${this.url}/inventory`, item,
+    { withCredentials: true });
   }
 
   // getBuildings(): Observable<Building[]>
@@ -54,12 +56,14 @@ export class ApiService {
 
   getBudgets(id: number): Observable<Budget[]>
   {
-    return this.http.get<Budget[]>(`${this.url}/budgets/${id}`);
+    return this.http.get<Budget[]>(`${this.url}/budgets/${id}`,
+    { withCredentials: true });
   }
 
   getBuildingDetails(id: number): Observable<BuildingDetails>
   {
-    return this.http.get<BuildingDetails>(`${this.url}/building/${id}/details`);
+    return this.http.get<BuildingDetails>(`${this.url}/building/${id}/details`,
+    { withCredentials: true });
   }
 
   addTrustees(name: string, email: string, phone: string, apikey: string): Observable<Trustee>
@@ -70,17 +74,20 @@ export class ApiService {
       phone: phone,
       apikey: apikey
     }
-    return this.http.post<Trustee>(`${this.url}/trustee`, item);
+    return this.http.post<Trustee>(`${this.url}/trustee`, item,
+    { withCredentials: true });
   }
 
   getAllTrustees(): Observable<Trustee[]>
   {
-    return this.http.get<Trustee[]>(`${this.url}/trustee`);
+    return this.http.get<Trustee[]>(`${this.url}/trustee`,
+    { withCredentials: true });
   }
 
   getTrusteesById(id: number): Observable<Trustee>
   {
-    return this.http.get<Trustee>(`${this.url}/trustee/${id}`);
+    return this.http.get<Trustee>(`${this.url}/trustee/${id}`,
+    { withCredentials: true });
   }
 
   updateTrustee(trusteeId: string, name: string, email: string, phone: string, apikey: string): Observable<Trustee>
@@ -91,7 +98,8 @@ export class ApiService {
       phone: phone,
       apikey: apikey
     }
-    return this.http.put<Trustee>(`${this.url}/trustee/${trusteeId}`, item);
+    return this.http.put<Trustee>(`${this.url}/trustee/${trusteeId}`, item,
+    { withCredentials: true });
   }
 
   // deleteTrustee(trusteeId: string): Observable<any>
@@ -101,7 +109,8 @@ export class ApiService {
 
   registerTrustee(name: string, email: string, phone: string, apikey: string, trusteeUuid: string): Observable<Trustee> {
     const item: Trustee = { trusteeUuid, name, email, phone, apikey };
-    return this.http.post<Trustee>(`${this.url}/trustee`, item);
+    return this.http.post<Trustee>(`${this.url}/trustee`, item,
+    { withCredentials: true });
   }
 
   addContractor(name: string, email: string, phone: string, apikey: string, banned: boolean): Observable<Contractor>
@@ -113,21 +122,25 @@ export class ApiService {
       apikey: apikey,
       banned: banned
     }
-    return this.http.post<Contractor>(`${this.url}/contractor`, item);
+    return this.http.post<Contractor>(`${this.url}/contractor`, item,
+    { withCredentials: true });
   }
 
   getAllContractors(): Observable<Contractor[]>
   {
-    return this.http.get<Contractor[]>(`${this.url}/contractor`);
+    return this.http.get<Contractor[]>(`${this.url}/contractor`,
+    { withCredentials: true });
   }
   getContractorById(id: number): Observable<Contractor>
   {
-    return this.http.get<Contractor>(`${this.url}/contractor/${id}`);
+    return this.http.get<Contractor>(`${this.url}/contractor/${id}`,
+    { withCredentials: true });
   }
 
   getQuotes(): Observable<Quote[]>
   {
-    return this.http.get<Quote[]>(`${this.url}/quote`);
+    return this.http.get<Quote[]>(`${this.url}/quote`,
+    { withCredentials: true });
   }
 
 
@@ -147,22 +160,26 @@ export class ApiService {
     amount: amount,
     documentUrl: documentUrl
   };
-  return this.http.post<Quote>(`${this.url}/maintenance/quotes`, quote);
+  return this.http.post<Quote>(`${this.url}/maintenance/quotes`, quote,
+    { withCredentials: true });
 }
 
 
   getQuoteById(id: number): Observable<Quote>
   {
-    return this.http.get<Quote>(`${this.url}/quote/${id}`);
+    return this.http.get<Quote>(`${this.url}/quote/${id}`,
+    { withCredentials: true });
   }  
 
   getMaintenanceTasks(): Observable<MaintenanceTask[]> {
-    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`);
+    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`,
+    { withCredentials: true });
   }
 
   getPresignedImageUrl(uuid: string): Observable<string> {
     return this.http.get(`${this.url}/images/presigned/${uuid}`, {
-      responseType: 'text'
+      responseType: 'text',
+      withCredentials: true
     });
   }
 
@@ -191,14 +208,17 @@ getContractorMaintenanceTasks(contractorUuid: string, isBodyCorporate: boolean =
 
   return this.http.get<MaintenanceTask[]>(
     `${this.url}/maintenance/contractor/${contractorUuid}`,
-    { headers: headers }
+    { headers: headers,
+      withCredentials: true
+     }
   );
 }
 
 async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
     try {
       const presignResponse: any = await firstValueFrom(
-        this.http.get(`${this.url}/upload/presigned-upload/${file.name}`)
+        this.http.get(`${this.url}/upload/presigned-upload/${file.name}`,
+      { withCredentials: true })
       );
 
       const uploadUrl = presignResponse.uploadUrl; // S3 URL
@@ -222,7 +242,9 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
         this.http.post(
           `${this.url}/upload/notify-upload/${id}/${file.name}/${key}/${uuid}/${type}`,
           {},
-          { responseType: 'text' } // <- this is the key
+          { responseType: 'text',
+            withCredentials: true
+           }
         )
       );
 
@@ -236,9 +258,9 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
   }
 
   getQuote(contractorUuid: string, type: string): Observable<string>{
-    alert("We are in the getQuote Function");
     return this.http.get(`${this.url}/upload/presigned/${contractorUuid}/${type}`, {
-      responseType: 'text'
+      responseType: 'text',
+      withCredentials: true
     });
   }
 

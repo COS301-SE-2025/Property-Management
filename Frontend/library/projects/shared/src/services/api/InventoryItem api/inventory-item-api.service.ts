@@ -16,17 +16,20 @@ export class InventoryItemApiService {
 
   getAllInventoryItems() : Observable<Inventory[]>
   {
-    return this.http.get<Inventory[]>(`${this.url}/inventory`);
+    return this.http.get<Inventory[]>(`${this.url}/inventory`,
+    { withCredentials: true });
   }
 
   getInventoryItemsByBuilding(buildingId: string) : Observable<Inventory[]>
   {
-    return this.http.get<Inventory[]>(`${this.url}/inventory/building/${buildingId}`);
+    return this.http.get<Inventory[]>(`${this.url}/inventory/building/${buildingId}`,
+    { withCredentials: true });
   }
 
   getInventoryItemsById(inventoryId: string): Observable<Inventory>
   {
-    return this.http.get<Inventory>(`${this.url}/inventory/${inventoryId}`);
+    return this.http.get<Inventory>(`${this.url}/inventory/${inventoryId}`,
+    { withCredentials: true });
   }
 
   addInventoryItem(name: string, unit: string, price: number, quantity:number, buildingId: string) : Observable<Inventory>
@@ -39,7 +42,8 @@ export class InventoryItemApiService {
       buildingUuid: buildingId
     }
 
-    return this.http.post<Inventory>(`${this.url}/inventory`, item);
+    return this.http.post<Inventory>(`${this.url}/inventory`, item,
+    { withCredentials: true });
   }
 
   updateInventoryItem(inventoryItem: Inventory) : Observable<Inventory>
@@ -51,7 +55,8 @@ export class InventoryItemApiService {
       price: inventoryItem.price
     }
 
-    return this.http.put<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`, item);
+    return this.http.put<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`, item,
+    { withCredentials: true });
   }
 
   updateInventoryItemQuantity(itemId: string, differenceQuantity: number, operation: string): Observable<Inventory>
@@ -61,11 +66,13 @@ export class InventoryItemApiService {
       operation: operation
     }
 
-    return this.http.patch<Inventory>(`${this.url}/inventory/${itemId}/quantity`, quantityUpdate);
+    return this.http.patch<Inventory>(`${this.url}/inventory/${itemId}/quantity`, quantityUpdate,
+    { withCredentials: true });
   }
   
   deleteInventoryItem(inventoryItem: Inventory): Observable<Inventory>
   {
-    return this.http.delete<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`);
+    return this.http.delete<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`,
+    { withCredentials: true });
   }
 }
