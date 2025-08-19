@@ -130,23 +130,15 @@ jobs:
         - name: Start DB
           run: docker compose -f docker-compose.yml up -d postgres flyway
 
-        - name: Set up JDK
-          uses: actions/setup-java@v3
-          with:
-            java-version: '21'
-            distribution: 'temurin' 
-
         - name: Build backend
-          run: ./gradlew bootJar
-          working-directory: Backend/property-management
+          run: docker build -t backend-test -f Backend/property-management/Dockerfile Backend/property-management
 
         - name: Start backend
-          run: java -jar build/libs/property-management-*.jar &
-          working-directory: Backend/property-management
+          run: docker run -d --name backend -p 8080:8080 backend-test
 
         - name: Wait for backend
           run: |
-            for i in {1..30}; do
+            for i in {1..20}; do
               if curl -s http://localhost:8080/actuator/health | grep '"status":"UP"' > /dev/null; then
                 echo "Backend is ready!"
                 exit 0
@@ -174,4 +166,4 @@ jobs:
 
         - name: Shutdown
           if: always()
-          run: docker compose -f docker-compose.yml down -v
+          run: docker compose -f docker-compose.yml down -v && docker rm -f backend || true
