@@ -14,24 +14,39 @@ jobs:
       steps:
         - uses: actions/checkout@v3
 
-        - name: Start DB
-          run: docker compose -f docker-compose.yml up -d postgres flyway
-
         - name: Build backend
           run: docker build -t backend-test -f Backend/property-management/Dockerfile Backend/property-management
 
-        - name: Start backend
+        - name: Start DB and backend
           run: |
-            docker run -d \
-              --name backend \
-              -p 8080:8080 \
-              -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/property_management \
-              -e SPRING_DATASOURCE_USERNAME=postgres \
-              -e SPRING_DATASOURCE_PASSWORD=pg123 \
-              backend-test
+            # create a temporary docker-compose file
+            cat > docker-compose.ci.yml <<EOF
+            version: '3.9'
+            services:
+              postgres:
+                image: postgres:15
+                environment:
+                  POSTGRES_DB: property_management
+                  POSTGRES_USER: postgres
+                  POSTGRES_PASSWORD: pg123
+                ports:
+                  - "5432:5432"
+              backend:
+                image: backend-test
+                depends_on:
+                  - postgres
+                environment:
+                  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/property_management
+                  SPRING_DATASOURCE_USERNAME: postgres
+                  SPRING_DATASOURCE_PASSWORD: pg123
+                ports:
+                  - "8080:8080"
+            EOF
+
+            docker compose -f docker-compose.ci.yml up -d
 
         - name: Wait a few seconds for backend logs
-          run: sleep 20
+          run: sleep 10
 
         - name: Check backend logs
           run: docker logs backend --tail=100
