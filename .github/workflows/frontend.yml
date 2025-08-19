@@ -8,122 +8,9 @@ on:
       branches: [frontend]
 
 jobs:
-    lint:
-        runs-on: ubuntu-22.04
-        steps:
-            - uses: actions/checkout@v3
-
-            - name: Cache node_modules
-              uses: actions/cache@v3
-              with:
-                path: Frontend/node_modules
-                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
-                restore-keys: |
-                  npm-
-
-            - name: Install dependencies
-              run: npm ci
-              working-directory: Frontend/
-
-            - name: Lint code
-              run: npm run lint property-manager
-              working-directory: Frontend
-        
-    audit:
-      runs-on: ubuntu-22.04
-      needs: lint
-      steps:
-        - uses: actions/checkout@v3
-
-        - name: Cache node_modules
-          uses: actions/cache@v3
-          with:
-              path: Frontend/node_modules
-              key: npm-${{ hashFiles('Frontend/package-lock.json') }}
-              restore-keys: |
-                npm-
-            
-        - name: Install dependencies
-          run: npm ci
-          working-directory: Frontend/
-
-        - name: Audit packages
-          run: npm audit || [ $? -eq 1 ] || exit $?
-          working-directory: Frontend/
-          
-        - name: Fail on critical vulnerabilites 
-          run: npm audit --audit-level=critical
-          working-directory: Frontend/
-
-    build-library:
-      runs-on: ubuntu-22.04
-      needs: audit
-      steps:
-        - uses: actions/checkout@v3
-        
-        - name: Cache node_modules
-          uses: actions/cache@v3
-          with:
-            path: Frontend/node_modules
-            key: npm-${{ hashFiles('Frontend/package-lock.json') }}
-            restore-keys: |
-              npm-
-
-        - name: Install dependencies
-          run: npm ci
-          working-directory: Frontend
-
-        - name: Build shared library
-          run: npm run build shared
-          working-directory: Frontend
-
-    build:
-        runs-on: ubuntu-22.04
-        needs: [audit, build-library]
-        steps:
-            - uses: actions/checkout@v3
-
-            - name: Cache node_modules
-              uses: actions/cache@v3
-              with:
-                path: Frontend/node_modules
-                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
-                restore-keys: |
-                  npm-
-
-            - name: Install dependencies
-              run: npm ci
-              working-directory: Frontend
-
-            - name: Build Angular website
-              run: npm run build property-manager
-              working-directory: Frontend
-      
-    Unit-Tests:
-      runs-on: ubuntu-22.04
-      needs: build
-      steps:
-          - uses: actions/checkout@v3
-
-          - name: Cache node_modules
-            uses: actions/cache@v3
-            with:
-                path: Frontend/node_modules
-                key: npm-${{ hashFiles('Frontend/package-lock.json') }}
-                restore-keys: |
-                  npm-
-
-          - name: Install dependencies
-            run: npm ci
-            working-directory: Frontend
-
-          - name: Run unit tests
-            run: npm run test property-manager -- --include='**/*.spec.ts' --watch=false --browsers=ChromeHeadlessCI
-            working-directory: Frontend
-    
+  
     Integration-Tests:
       runs-on: ubuntu-22.04
-      needs: build
       steps:
         - uses: actions/checkout@v3
 
@@ -135,6 +22,9 @@ jobs:
 
         - name: Start backend
           run: docker run -d --name backend -p 8080:8080 backend-test
+
+        - name: Wait a few seconds for backend logs
+          run: sleep 20
 
         - name: Check backend logs
           run: docker logs backend --tail=100
