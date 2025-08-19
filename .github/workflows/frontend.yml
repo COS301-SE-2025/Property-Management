@@ -118,5 +118,5 @@ jobs:
             working-directory: Frontend
 
           - name: Run tests
-            run: ng test property-manager --include='**/*.spec.ts' --exclude='**/*.integration.spec.ts' --watch=false && ng test shared --include='**/*.spec.ts' --exclude='**/*.integration.spec.ts' --watch=false
+            run: npm run test:frontend
             working-directory: Frontend
