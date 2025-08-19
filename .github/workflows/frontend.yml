@@ -117,6 +117,6 @@ jobs:
             run: npm ci
             working-directory: Frontend
 
-          - name: Run unit and integration tests
-            run: npm run test property-manager -- --watch=false --browsers=ChromeHeadlessCI
+          - name: Run tests
+            run: npm run test -- --include='**/*.spec.ts' --exclude='**/*.integration.spec.ts' --watch=false --browsers=ChromeHeadlessCI
             working-directory: Frontend
