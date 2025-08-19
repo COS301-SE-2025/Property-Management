@@ -29,7 +29,7 @@ import { VotingResultsComponent } from './voting-results/voting-results.componen
       color:inherit;
     }
     .due-date-urgent{
-      color: #f01111;
+      color: #dbdbdb;
     }
     .due-date-past{
       color: #858585;

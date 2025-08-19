@@ -128,7 +128,7 @@ jobs:
         - uses: actions/checkout@v3
 
         - name: Start DB
-          run: docker-compose -f docker-compose.yml up -d postgres flyway
+          run: docker compose -f docker-compose.yml up -d postgres flyway
 
         - name: Set up JDK
           uses: actions/setup-java@v3
