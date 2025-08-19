@@ -44,6 +44,18 @@ jobs:
 
             docker compose -f docker-compose.ci.yml up -d
 
+        - name: Wait for backend
+          run: |
+            for i in {1..30}; do
+              if curl -s http://localhost:8080/actuator/health | grep '"status":"UP"' > /dev/null; then
+                echo "Backend is ready"
+                exit 0
+              fi
+              echo "Waiting for backend..."
+              sleep 5
+            done
+            exit 1
+
         - name: Cache node_modules
           uses: actions/cache@v3
           with:
