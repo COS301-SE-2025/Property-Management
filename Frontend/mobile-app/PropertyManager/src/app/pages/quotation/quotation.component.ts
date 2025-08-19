@@ -99,41 +99,59 @@ export class QuotationComponent implements OnInit {
 
   async submitQuote() {
     if (!this.IssueDate || !this.expirationDate || !this.quoteNo || !this.totalAmount) {
-      this.showToast('Please fill in all fields and upload a file.', 'danger');
+      this.showToast('Please fill in all fields.', 'danger');
       return;
     }
 
     try {
       this.loading = true;
-
-       
-      await this.api.addQuote(
-        this.t_uuid,
-        this.contractorId,
-        this.IssueDate,
-        this.expirationDate,
-        this.totalAmount,
-        this.quoteNo
-      ).subscribe({
-        next: () => {
-          this.showToast('Quotation submitted successfully!', 'success');
-
-          setTimeout(() => {
-            this.router.navigate(['/contractor-home'])
-          }, 1500);
-        },
-        error: (err) => {
-          console.error(err);
-          this.showToast('Error submitting quotation.', 'danger');
-        }
-      });
-       
+        await this.api.addQuote(
+          this.t_uuid,
+          this.contractorId,
+          this.IssueDate,
+          this.expirationDate,
+          this.totalAmount,
+          this.quoteNo
+        ).subscribe({
+          next: () => {
+            this.showToast('Quotation submitted successfully!', 'success');
+            
+            // Handle file upload if a file was selected
+            if (this.file) {
+              this.uploadFile();
+            } else {
+              setTimeout(() => {
+                this.router.navigate(['/contractor-home']);
+              }, 1500);
+            }
+          },
+          error: (err) => {
+            console.error(err);
+            this.showToast('Error submitting quotation.', 'danger');
+          }
+        });
       
     } catch (err) {
-      this.showToast('Error submitting quotation.', 'danger');
+      this.showToast(`Error submitting} quotation.`, 'danger');
     } finally {
       this.loading = false;
     }
+  }
+
+  async uploadFile() {
+    if (this.file) {
+      try {
+        await this.api.uploadPDF(this.file, this.contractorId, "Quote");
+        this.showToast('File uploaded successfully!', 'success');
+      } catch (err) {
+        console.error('File upload failed:', err);
+        this.showToast('File upload failed.', 'danger');
+      }
+    }
+    
+    setTimeout(() => {
+      this.router.navigate(['/contractor-home']);
+    }, 1500);
   }
 
   showToast(message: string, color: 'success' | 'danger') {
