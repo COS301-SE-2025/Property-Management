@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { IonContent, IonImg } from '@ionic/angular/standalone';
-import { ApiService, ImageApiService } from 'shared';
+import { ApiService } from 'shared';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from 'src/app/components/tab/tab.component';
 import {
@@ -14,7 +14,7 @@ import {
   stagger
 } from '@angular/animations';
 import { MaintenanceTask } from 'shared';
-import { catchError, firstValueFrom, forkJoin, map, of } from 'rxjs';
+import { catchError, forkJoin, map, of } from 'rxjs';
 import { StorageService } from 'shared';
 
 @Component({
@@ -45,7 +45,6 @@ import { StorageService } from 'shared';
 })
 export class ContractorHomeComponent implements OnInit {
   private api = inject(ApiService);
-  private imageService = inject(ImageApiService);
   private storage = inject(StorageService);
   tasks: MaintenanceTask[] = [];
   contractorId: string | null = null;
@@ -67,19 +66,18 @@ export class ContractorHomeComponent implements OnInit {
             img: 'assets/images/no_image.png'
           };
 
-          console.log(task.imageUuid);
-          if(task.imageUuid)
-          {
-            return this.imageService.getImage(task.imageUuid).pipe(
+          if (task.imageUuid) {
+            return this.api.getPresignedImageUrl(task.imageUuid ?? '').pipe(
               map(imageUrl => ({
                 ...task,
-                img: imageUrl
+                img: imageUrl || 'assets/images/no_image.png'
               })),
               catchError(() => of(taskWithDefault))
             );
           }
-          return of(taskWithDefault)
+          return of(taskWithDefault);
         });
+
         forkJoin(taskRequests).subscribe(taskList => {
           this.tasks = taskList;
         });

@@ -1,7 +1,7 @@
-<ion-modal [isOpen]="displayModal" class="dark:bg-gray-700">
+<ion-modal [isOpen]="displayModal">
   <ng-template>
     <ion-header>
-      <ion-toolbar class="dark:bg-gray-800">
+      <ion-toolbar>
         <ion-buttons slot="start">
           <ion-button (click)="closeModal()">Cancel</ion-button>
         </ion-buttons>
@@ -13,7 +13,7 @@
     <ion-content>
       <div class="flex flex-col justify-center items-center gap-2 mt-4">
         <form [formGroup]="form" (ngSubmit)="confirm()">
-          <p class="text-gray-700 dark:text-gray-200 pl-2 pb-2">Add Remaining budget?</p>
+          <p class="text-gray-700 pl-2 pb-2">Add Remaining budget?</p>
           <ion-item>
             <ion-input
               [label]="'Update ' +  budgetType() + ' amount'"

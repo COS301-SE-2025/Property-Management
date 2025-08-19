@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { IonInput, IonItem, IonInputPasswordToggle} from '@ionic/angular/standalone';
+import { IonInput, IonItem} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from 'shared';
@@ -8,7 +8,7 @@ import { StorageService } from 'shared';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, FormsModule, IonInput, IonItem, IonInputPasswordToggle],
+  imports: [CommonModule, FormsModule, IonInput, IonItem],
   templateUrl: './register-contractor.component.html',
   styles: ``
 })
@@ -49,7 +49,6 @@ export class RegisterContractorComponent {
       const result = await this.authService.contractorRegister(this.email, this.password, this.contactNumber); 
 
       this.storage.set('pendingUsername', result.username);
-      this.storage.set('userType', 'contractor');
 
       this.router.navigate(['/verifyEmail'], {
         state: {

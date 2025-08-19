@@ -251,15 +251,15 @@ describe('AuthMobileService', () => {
     describe('logout', () => {
         it('should clear auth storage', async () => {
             await storageService.set('userType', 'trustee');
-            await storageService.set('trusteeId', 'trustee-123');  
-            await storageService.set('contractorId', 'contractor-123');
+            await storageService.set('trusteeID', 'trustee-123');  
+            await storageService.set('contractorID', 'contractor-123');
             await storageService.set('theme', 'dark');
 
             await service.logout();
 
             expect(await storageService.get('userType')).toBeNull();
-            expect(await storageService.get('trusteeId')).toBeNull();
-            expect(await storageService.get('contractorId')).toBeNull();
+            expect(await storageService.get('trusteeID')).toBeNull();
+            expect(await storageService.get('contractorID')).toBeNull();
             expect(await storageService.get('theme')).toBeNull();
         });
     });
