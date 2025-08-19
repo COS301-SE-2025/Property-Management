@@ -54,49 +54,40 @@ export class PropertyService {
   constructor(private http: HttpClient) {}
 
   createProperty(data: CreateBuildingPayload): Observable<Building> {
-    return this.http.post<Building>(`${this.apiUrl}`, data,
-    { withCredentials: true }); 
+    return this.http.post<Building>(`${this.apiUrl}`, data); 
   }
 
   uploadImage(file: File): Observable<ImageUploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<ImageUploadResponse>(this.imageUploadUrl, formData,
-    { withCredentials: true });
+    return this.http.post<ImageUploadResponse>(this.imageUploadUrl, formData);
   }
 
   getInvitations(): Observable<InviteWithTrustee[]> {
-    return this.http.get<InviteWithTrustee[]>(`${this.inviteApiUrl}/invites`,
-    { withCredentials: true });
+    return this.http.get<InviteWithTrustee[]>(`${this.inviteApiUrl}/invites`);
   }
 
   cancelInvite(inviteUuid: string): Observable<any> {
-    return this.http.delete(`${this.inviteApiUrl}/invites/${inviteUuid}`,
-    { withCredentials: true });
+    return this.http.delete(`${this.inviteApiUrl}/invites/${inviteUuid}`);
   }
 
   revokeInvite(inviteUuid: string): Observable<any> {
-    return this.http.put(`${this.inviteApiUrl}/invites/${inviteUuid}/status?status=Revoked`, {},
-    { withCredentials: true });
+    return this.http.put(`${this.inviteApiUrl}/invites/${inviteUuid}/status?status=Revoked`, {});
   }
 
   updateInviteStatus(inviteUuid: string, status: string): Observable<any> {
-    return this.http.put(`${this.inviteApiUrl}/invites/${inviteUuid}/status?status=${status}`, {},
-    { withCredentials: true });
+    return this.http.put(`${this.inviteApiUrl}/invites/${inviteUuid}/status?status=${status}`, {});
   }
 
   getBodyCorporatesForTrustee(trusteeUuid: string) {
-    return this.http.get<any[]>(`${this.inviteApiUrl}/invites/trustee/${trusteeUuid}`,
-    { withCredentials: true });
+    return this.http.get<any[]>(`${this.inviteApiUrl}/invites/trustee/${trusteeUuid}`);
   }
 
   getBodyCorporateByUuid(coporateUuid: string) {
-    return this.http.get<any>(`${this.inviteApiUrl}/body-corporates/${coporateUuid}`,
-    { withCredentials: true });
+    return this.http.get<any>(`${this.inviteApiUrl}/body-corporates/${coporateUuid}`);
   }
 
   sendInvite(payload: { trusteeUuid: string; coporateUuid: string }) {
-    return this.http.post(`${this.inviteApiUrl}/invites`, payload,
-    { withCredentials: true });
+    return this.http.post(`${this.inviteApiUrl}/invites`, payload);
   }
 }

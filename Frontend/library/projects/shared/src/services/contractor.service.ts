@@ -14,28 +14,23 @@ export class ContractorService {
   constructor(private http: HttpClient) {}
 
   addContractor(contractor: Omit<Contractor, 'contractorId'>): Observable<Contractor> {
-    return this.http.post<Contractor>(this.apiUrl, contractor,
-    { withCredentials: true });
+    return this.http.post<Contractor>(this.apiUrl, contractor);
   }
 
   getAllContractors(): Observable<Contractor[]> {
     console.log('GET', this.apiUrl);
-    return this.http.get<Contractor[]>(this.apiUrl,
-    { withCredentials: true });
+    return this.http.get<Contractor[]>(this.apiUrl);
   }
 
   getContractorById(id: number | string): Observable<Contractor> {
-    return this.http.get<Contractor>(`${this.apiUrl}/${id}`,
-    { withCredentials: true });;
+    return this.http.get<Contractor>(`${this.apiUrl}/${id}`);
   }
 
   updateContractor(uuid: string, contractor: Partial<Contractor>): Observable<Contractor> {
-    return this.http.put<Contractor>(`${this.apiUrl}/${uuid}`, contractor,
-    { withCredentials: true });
+    return this.http.put<Contractor>(`${this.apiUrl}/${uuid}`, contractor);
   }
 
   deleteContractor(uuid: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${uuid}`,
-    { withCredentials: true });
+    return this.http.delete<void>(`${this.apiUrl}/${uuid}`);
   }
 }

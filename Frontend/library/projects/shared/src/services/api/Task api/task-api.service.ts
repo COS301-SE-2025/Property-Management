@@ -35,7 +35,7 @@ export class TaskApiService {
     };
     console.log(req);
 
-    return this.http.post<MaintenanceTask>(`${this.url}/maintenance/create`, req, { headers , withCredentials: true }).pipe(map( res => ({
+    return this.http.post<MaintenanceTask>(`${this.url}/maintenance/create`, req, { headers }).pipe(map( res => ({
       ...res,
       uuid: res['taskUuid'] as string
     })
@@ -44,14 +44,12 @@ export class TaskApiService {
 
   getAllTasks(): Observable<MaintenanceTask[]>
   {
-    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`,
-    { withCredentials: true });
+    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`);
   }
 
   getTaskById(taskId: string): Observable<MaintenanceTask>
   {
-    return this.http.get<MaintenanceTask>(`${this.url}/maintenance/${taskId}`,
-    { withCredentials: true });
+    return this.http.get<MaintenanceTask>(`${this.url}/maintenance/${taskId}`);
   }
 
   updateTaskStatus(status: 'pending' | 'done', taskId: string)
@@ -60,8 +58,7 @@ export class TaskApiService {
       status: status
     }
 
-    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/${taskId}`, req,
-    { withCredentials: true });
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/${taskId}`, req, );
   }
   updateTaskAssignedContractor(contractorId: string, taskId: string)
   {
@@ -80,7 +77,7 @@ export class TaskApiService {
       scheduled_date: localISO(pastDate)
     };
 
-    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, req, { headers, withCredentials: true  });
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, req, { headers });
   }
   updateTaskApproval(status: string, taskId: string, isBodyCorporate: boolean)
   {
@@ -89,7 +86,7 @@ export class TaskApiService {
       approvalStatus: status
     }
 
-    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, req, { headers , withCredentials: true });
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, req, { headers });
   }
   updateTaskScheduledDate(taskId: string, date: Date)
   {
@@ -103,7 +100,7 @@ export class TaskApiService {
       scheduledDate: localISO(date)
     }
 
-    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, req, { headers , withCredentials: true });
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, req, { headers });
   }
   assignContractorsToTask(contractorIds: string[], taskId: string)
   {
@@ -113,21 +110,18 @@ export class TaskApiService {
       contractorUuids: contractorIds
     };
 
-    return this.http.post<MaintenanceTask>(`${this.url}/maintenance/assign-contractors`, req,{ headers , withCredentials: true });
+    return this.http.post<MaintenanceTask>(`${this.url}/maintenance/assign-contractors`, req, { headers });
   }
   deleteTask(taskId: string)
   {
-    return this.http.delete<MaintenanceTask>(`${this.url}/maintenance/${taskId}`,
-    { withCredentials: true });
+    return this.http.delete<MaintenanceTask>(`${this.url}/maintenance/${taskId}`);
   }
   getQuoteFromTaskId(taskId: string)
   {
-    return this.http.get<Quote[]>(`${this.url}/quote/task/${taskId}`,
-    { withCredentials: true });
+    return this.http.get<Quote[]>(`${this.url}/quote/task/${taskId}`);
   }
 
   getTasksForTrustee(trusteeUuid: string): Observable<MaintenanceTask[]> {
-    return this.http.get<MaintenanceTask[]>(`/api/maintenance/trustee/${trusteeUuid}`,
-    { withCredentials: true });
+    return this.http.get<MaintenanceTask[]>(`/api/maintenance/trustee/${trusteeUuid}`);
   }
 }
