@@ -21,7 +21,11 @@ jobs:
           run: docker build -t backend-test -f Backend/property-management/Dockerfile Backend/property-management
 
         - name: Start backend
-          run: docker run -d --name backend -p 8080:8080 backend-test
+          run: docker run -d --name backend -p 8080:8080 --network host \
+            -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/property_management \
+            -e SPRING_DATASOURCE_USERNAME=postgres \
+            -e SPRING_DATASOURCE_PASSWORD=pg123 \
+            backend-test
 
         - name: Wait a few seconds for backend logs
           run: sleep 20
