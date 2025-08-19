@@ -136,11 +136,14 @@ jobs:
         - name: Start backend
           run: docker run -d --name backend -p 8080:8080 backend-test
 
+        - name: Check backend logs
+          run: docker logs backend --tail=100
+
         - name: Wait for backend
           run: |
             for i in {1..20}; do
               if curl -s http://localhost:8080/actuator/health | grep '"status":"UP"' > /dev/null; then
-                echo "Backend is ready!"
+                echo "Backend is ready"
                 exit 0
               fi
               echo "Waiting for backend..."
