@@ -68,6 +68,9 @@ jobs:
           run: npm ci
           working-directory: Frontend
 
+        - name: Debug backend logs
+          run: docker compose -f docker-compose.ci.yml logs backend
+
         - name: Run integration tests
           run: npm run test -- --include='**/*.integration.spec.ts' --watch=false --browsers=ChromeHeadlessCI
           working-directory: Frontend
