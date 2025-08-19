@@ -3,12 +3,12 @@ import { BudgetApiService } from './budget-api.service';
 import { HttpClient } from '@angular/common/http';
 import { BuildingDetails } from '../../../models/buildingDetails.model';
 import { of, throwError } from 'rxjs';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 describe('BudgetApiService', () => {
   let service: BudgetApiService;
   let httpClientSpy: jasmine.SpyObj<HttpClient>;
-  const url = environmentMobile.apiUrl;
+  const url = environment.apiUrl;
 
   beforeEach(() => {
 

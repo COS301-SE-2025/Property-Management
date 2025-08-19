@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Inventory } from '../../../models/inventory.model';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import { environmentMobile } from '../../../environment';
 export class InventoryItemApiService {
 
   // private url = '/api';
-  private url = environmentMobile.apiUrl;
+  private url = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 

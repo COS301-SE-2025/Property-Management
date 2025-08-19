@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable, scheduled } from 'rxjs';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { Quote } from '../../../public-api';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ import { environmentMobile } from '../../../environment';
 export class TaskApiService {
 
   // private url = '/api';
-  private url = environmentMobile.apiUrl;
+  private url = environment.apiUrl;
   constructor(private http: HttpClient) { }
 
   createTask(title: string, des: string, scheduledDate: Date, buildingId: string, trusteeId: string, imgId: string, createdId: string, isOwner: boolean, isBodyCorporate: boolean, proirity: string): Observable<MaintenanceTask>

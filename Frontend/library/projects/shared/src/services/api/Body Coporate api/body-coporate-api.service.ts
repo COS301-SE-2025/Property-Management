@@ -6,7 +6,7 @@ import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { ReserveFund } from '../../../models/reserveFund.model';
 import { BodyCoporate } from '../../../models/bodyCoporate.model';
 import { ContractorDetails } from '../../../models/contractorDetails.model';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ import { environmentMobile } from '../../../environment';
 export class BodyCoporateApiService {
 
   // private url = '/api';
-  private url = environmentMobile.apiUrl;
+  private url = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 

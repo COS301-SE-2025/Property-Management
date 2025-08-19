@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { map, Observable } from "rxjs";
+import { environment } from '../../../environment';
 
 export interface CreateLifecycleCostRequest {
     coporateUuid: string;
@@ -33,7 +34,7 @@ export interface LifecycleCostResponse {
     providedIn: 'root'
 })
 export class LifecycleCostService {
-    private url = '/api';
+    private url = environment.apiUrl;
 
     constructor(private http: HttpClient) {}
 

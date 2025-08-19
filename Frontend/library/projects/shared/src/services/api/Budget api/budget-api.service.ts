@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BuildingDetails } from '../../../models/buildingDetails.model';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import { environmentMobile } from '../../../environment';
 export class BudgetApiService {
 
   // private url = '/api';
-  private url = environmentMobile.apiUrl;
+  private url = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 

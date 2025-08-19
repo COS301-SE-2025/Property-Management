@@ -2,16 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, resetPasswordResponse, trusteeRegisterResponse } from '../models/Auth.model';
-import { TokenUtilService } from '../services/token-util.service';
+import { environment } from '../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private url = '/api';
+  private url = environment.apiUrl;
 
-  constructor(private http: HttpClient, private tokenUtil: TokenUtilService){}
+  constructor(private http: HttpClient){}
 
   bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
   {

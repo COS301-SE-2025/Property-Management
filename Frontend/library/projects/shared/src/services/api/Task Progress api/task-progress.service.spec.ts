@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TaskProgresApiService } from './task-progress.service';
 import { TaskProgress } from '../../../public-api';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 describe('TaskProgresApiService', () => {
   let service: TaskProgresApiService;
@@ -14,7 +14,7 @@ describe('TaskProgresApiService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         TaskProgresApiService,
-        { provide: environmentMobile, useValue: { apiUrl: 'http://localhost:4200/api' } }
+        { provide: environment, useValue: { apiUrl: 'http://localhost:4200/api' } }
       ]
     });
     service = TestBed.inject(TaskProgresApiService);

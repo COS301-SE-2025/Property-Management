@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TaskApiService } from './task-api.service';
 import { MaintenanceTask } from '../../../public-api';
 import { Quote } from '../../../public-api';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 describe('TaskApiService', () => {
   let service: TaskApiService;
@@ -15,7 +15,7 @@ describe('TaskApiService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         TaskApiService,
-        { provide: environmentMobile, useValue: { apiUrl: mockApiUrl } }
+        { provide: environment, useValue: { apiUrl: mockApiUrl } }
       ]
     });
     service = TestBed.inject(TaskApiService);

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 import { TaskProgress } from '../../../public-api';
 
 interface CreateProgressRequest {
@@ -17,7 +17,7 @@ interface CreateProgressRequest {
     providedIn: 'root'
 })
 export class TaskProgresApiService{
-    private url = `${environmentMobile.apiUrl}/task-progress`;
+    private url = `${environment.apiUrl}/task-progress`;
 
     constructor(private http: HttpClient){}
 

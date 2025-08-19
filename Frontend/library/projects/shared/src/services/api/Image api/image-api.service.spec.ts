@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ImageApiService } from './image-api.service';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 describe('ImageApiService', () => {
   let service: ImageApiService;
@@ -13,7 +13,7 @@ describe('ImageApiService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         ImageApiService,
-        { provide: environmentMobile, useValue: { apiUrl: mockApiUrl } }
+        { provide: environment, useValue: { apiUrl: mockApiUrl } }
       ]
     });
     service = TestBed.inject(ImageApiService);

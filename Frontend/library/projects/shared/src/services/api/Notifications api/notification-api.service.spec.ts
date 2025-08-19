@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NotificationsApiService, InviteWithTrustee2 } from './notifications-api.service';
 import { Notification } from '../../../public-api';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 describe('NotificationsApiService', () => {
   let service: NotificationsApiService;
@@ -14,7 +14,7 @@ describe('NotificationsApiService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         NotificationsApiService,
-        { provide: environmentMobile, useValue: { apiUrl: mockApiUrl } }
+        { provide: environment, useValue: { apiUrl: mockApiUrl } }
       ]
     });
     service = TestBed.inject(NotificationsApiService);

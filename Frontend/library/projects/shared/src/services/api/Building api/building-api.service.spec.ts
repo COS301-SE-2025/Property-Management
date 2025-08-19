@@ -3,12 +3,12 @@ import { BuildingApiService } from './building-api.service';
 import { HttpClient } from '@angular/common/http';
 import { Property } from '../../../models/property.model';
 import { of, throwError } from 'rxjs';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 describe('BuildingApiService', () => {
   let service: BuildingApiService;
   let httpClientSpy: jasmine.SpyObj<HttpClient>
-  const url = environmentMobile.apiUrl;
+  const url = environment.apiUrl;
 
   beforeEach(() => {
 

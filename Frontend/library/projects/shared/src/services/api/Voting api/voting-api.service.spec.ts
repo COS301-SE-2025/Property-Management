@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { VotingApiService} from './voting-api.service';
 import { Voting, VotingResults } from '../../../public-api';
 import { Quote } from '../../../public-api';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 describe('VotingApiService', () => {
   let service: VotingApiService;
@@ -16,7 +16,7 @@ describe('VotingApiService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         VotingApiService,
-        { provide: environmentMobile, useValue: { apiUrl: 'http://localhost:4200/api' } }
+        { provide: environment, useValue: { apiUrl: 'http://localhost:4200/api' } }
       ]
     });
     service = TestBed.inject(VotingApiService);

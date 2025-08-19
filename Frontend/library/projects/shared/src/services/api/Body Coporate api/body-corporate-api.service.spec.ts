@@ -2,12 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { BodyCoporateApiService } from './body-coporate-api.service';
 import { Property, MaintenanceTask, BodyCoporate, ContractorDetails } from '../../../public-api';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 describe('BodyCoporateApiService', () => {
   let service: BodyCoporateApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = environmentMobile.apiUrl;
+  const mockApiUrl = environment.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

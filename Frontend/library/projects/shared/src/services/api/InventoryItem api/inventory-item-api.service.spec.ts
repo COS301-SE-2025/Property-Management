@@ -3,12 +3,12 @@ import { InventoryItemApiService } from './inventory-item-api.service';
 import { HttpClient } from '@angular/common/http';
 import { Inventory } from '../../../models/inventory.model';
 import { of, throwError } from 'rxjs';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 describe('InventoryItemApiService', () => {
   let service: InventoryItemApiService;
   let httpClientSpy: jasmine.SpyObj<HttpClient>;
-  const url = environmentMobile.apiUrl;
+  const url = environment.apiUrl;
 
   beforeEach(() => {
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put', 'patch', 'delete']);

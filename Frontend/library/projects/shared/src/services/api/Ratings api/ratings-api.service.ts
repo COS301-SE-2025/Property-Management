@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Rating } from '../../../models/rating.model';
+import { environment } from '../../../environment';
 
 
 export interface RatingPayload {
@@ -14,7 +15,7 @@ export interface RatingPayload {
 
 @Injectable({ providedIn: 'root' })
 export class RatingService {
-  private apiUrl = 'http://localhost:8080/api/rating';
+  private apiUrl = `${environment.apiUrl}/rating`;
 
   constructor(private http: HttpClient) {}
 

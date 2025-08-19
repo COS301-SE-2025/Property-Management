@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AuthMobileService } from './authMobile.service';
 import { AuthTokens, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
-import { environmentMobile } from '../environment';
+import { environment } from '../environment';
 import { Storage } from '@ionic/storage-angular';
 
 
@@ -45,7 +45,7 @@ describe('AuthMobileService', () => {
       providers: [
         AuthMobileService,
         { provide:  Storage, useClass: MockStorageService},
-        { provide: environmentMobile, useValue: { apiUrl: mockApiUrl } }
+        { provide: environment, useValue: { apiUrl: mockApiUrl } }
       ]
     });
     service = TestBed.inject(AuthMobileService);

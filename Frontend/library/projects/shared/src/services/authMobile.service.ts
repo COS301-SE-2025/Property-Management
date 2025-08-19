@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StorageService } from './storage.service';
 import { AuthTokens, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
-import { environmentMobile } from '../environment';
+import { environment } from '../environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ import { environmentMobile } from '../environment';
 export class AuthMobileService {
 
   // private url = '/api';
-  private url = environmentMobile.apiUrl;
+  private url = environment.apiUrl;
 
   private http = inject(HttpClient);
   private storage = inject(StorageService);

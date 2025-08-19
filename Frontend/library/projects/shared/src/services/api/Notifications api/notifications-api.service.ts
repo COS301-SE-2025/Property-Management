@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Notification } from "../../../public-api";
 import { map, Observable } from 'rxjs';
-import { environmentMobile } from '../../../environment';
+import { environment } from '../../../environment';
 
 export interface InviteWithTrustee2 {
   inviteUuid: string;
@@ -20,7 +20,7 @@ export interface InviteWithTrustee2 {
 
 export class NotificationsApiService{
     // private url = '/api';
-    private url = environmentMobile.apiUrl;
+    private url = environment.apiUrl;
     constructor(private http: HttpClient) {}
 
     createNotifications(Notifications: Notification)
