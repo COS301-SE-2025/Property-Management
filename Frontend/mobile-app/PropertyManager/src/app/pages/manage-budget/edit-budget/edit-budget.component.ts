@@ -93,7 +93,7 @@ export class EditBudgetComponent extends ModalComponent implements OnInit {
             this.router.navigate(['manage-budget', this.houseId]).then(() => {
               window.location.reload();
             });
-          }, 2500);
+          }, 1600);
         },
         error: async(err) => {
           console.error("Failed to update budget", err);

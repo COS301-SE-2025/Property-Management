@@ -23,9 +23,6 @@ import { TabComponent } from 'src/app/components/tab/tab.component';
   standalone: true,
   imports: [
     FormsModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonCard,
     IonCardHeader,
