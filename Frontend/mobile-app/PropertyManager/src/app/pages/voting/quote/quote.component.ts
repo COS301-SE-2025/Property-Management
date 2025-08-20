@@ -1,6 +1,6 @@
 import { Component, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
 import { IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent } from '@ionic/angular/standalone';
-import { Contractor, Quote, FormatDatePipe, TaskApiService, ContractorApiService, ApiService } from 'shared';
+import { Contractor, Quote, FormatDatePipe, TaskApiService, ContractorApiService } from 'shared';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 
@@ -21,13 +21,11 @@ export class QuoteComponent extends ModalComponent implements OnInit {
   public quote = signal<Quote | undefined>(undefined);
 
   @Output() quoteSelected = new EventEmitter<string>();
-  constructor(private taskService: TaskApiService, private contractorService: ContractorApiService, private apiService: ApiService) {
+  constructor(private taskService: TaskApiService, private contractorService: ContractorApiService) {
     super();
    }
 
   ngOnInit() {
-    console.log(this.taskId());
-    console.log(this.contractorId());
     if(this.taskId())
     {
       this.quoteError = false;
@@ -70,17 +68,5 @@ export class QuoteComponent extends ModalComponent implements OnInit {
         this.quoteSelected.emit(this.quote()!.uuid)
       }
   }
-  viewQuotePDF() {
-    const quote = this.quote();
-    if (!quote) return;
 
-    this.apiService.getQuote(this.contractorId(), "Quote").subscribe({
-      next: (presignedUrl: string) => {
-        window.open(presignedUrl, '_blank');
-      },
-      error: (err) => {
-        console.error('Error getting presigned URL:', err);
-      }
-    });
-  }
 }

@@ -17,7 +17,7 @@ import {
   query,
   stagger
 } from '@angular/animations';
-import { ApiService, StorageService } from 'shared';
+import { ApiService, getCookieValue, StorageService } from 'shared';
 import { catchError, map } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { MaintenanceTask } from 'shared';
@@ -81,7 +81,7 @@ export class AssignedComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.contractorId = await this.storage.get('contractorId');
+    this.contractorId = await this.storage.get('contractorID');
     if (!this.contractorId) {
       console.warn('Contractor ID not found in storage.');
       return;

@@ -11,7 +11,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { PhotoService } from 'src/app/services/photo.service';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
-import { firstValueFrom } from 'rxjs';
 
 
 @Component({
@@ -60,13 +59,23 @@ export class CreatePropertyComponent implements OnInit {
     addIcons({ cameraOutline, trashOutline });
   }
 
-  async ngOnInit() {
-    this.trusteeUuid = await this.storage.get('trusteeId');
+  ngOnInit(): void {
+    this.trusteeUuid = getCookieValue(document.cookie, 'trusteeId');
     if (!this.trusteeUuid) {
-        this.submissionError = 'Authentication error: Please log in again.';
+      this.coporateUuid = getCookieValue(document.cookie, 'bodyCoporateID');
+      if(!this.coporateUuid) {
+        // this.submissionError = 'Authentication error: Please log in again.';
+      }
     }
     // this.loadContractors();
     this.loadBodyCorporates();
+  }
+
+  loadContractors(): void {
+    this.contractorService.getAllContractors().subscribe({
+      next: (data: Contractor[]) => this.contractors = data,
+      error: () => this.contractors = []
+    });
   }
 
     loadBodyCorporates(): void {
@@ -87,17 +96,6 @@ export class CreatePropertyComponent implements OnInit {
       });
     }
   }
-
-  loadContractors(): void {
-  this.contractorService.getAllContractors().subscribe({
-    next: (contractors: Contractor[]) => {
-      this.contractors = contractors;
-    },
-    error: () => {
-      this.contractors = [];
-    }
-  });
-}
 
   async capturePhoto(): Promise<void>
   {
@@ -122,6 +120,18 @@ export class CreatePropertyComponent implements OnInit {
     this.form.patchValue({ image: null });
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    if (file) {
+      this.selectedImageFile = file;
+      this.form.patchValue({ image: file });
+      const reader = new FileReader();
+      reader.onload = () => this.capturedPhoto = reader.result as string;
+      reader.readAsDataURL(file);
+    }
+  }
+
   async onSubmit(): Promise<void> {
     if (this.form.invalid) {
       this.submissionError = 'Please fill all required fields.';
@@ -139,39 +149,43 @@ export class CreatePropertyComponent implements OnInit {
       formValue.province
     ].filter(part => part && part.trim()).join(', ');
 
-    const id = this.trusteeUuid;
+    const id = await this.storage.get('trusteeId');
     let imageId = '00000000-0000-0000-0000-000000000000';
 
-    try{
-      //Upload file
-      if(this.selectedImageFile)
-      {
-        const upload = await firstValueFrom(this.imageService.uploadImage(this.selectedImageFile));
-        imageId = upload?.imageId ?? imageId;
-      }
-  
-      const payload = {
-        name: formValue.name,
-        address: fullAddress,
-        type: formValue.type,
-        propertyValue: Number(formValue.propertyValue),
-        // primaryContractor: formValue.primaryContractor,
-        bodyCorporate: formValue.bodyCorporate,
-        area: Number(formValue.area),
-        propertyImageId: imageId,
-        trusteeUuid: id!
-      };
-    
-      await firstValueFrom(this.propertyService.createProperty(payload));
-
-      this.isSubmitting = false;
-      await this.presentToast('Successfully created property', 'success');
-      this.router.navigate(['/home']).then(() => window.location.reload());
-    }
-    catch(err)
+    //Upload file
+    if(this.selectedImageFile)
     {
+      const upload = await this.imageService.uploadImage(this.selectedImageFile).toPromise();
+
+      if(upload)
+      {
+        imageId = upload?.imageId;
+      }
+    }
+
+    const payload = {
+      name: formValue.name,
+      address: fullAddress,
+      type: formValue.type,
+      propertyValue: Number(formValue.propertyValue),
+      // primaryContractor: formValue.primaryContractor,
+      bodyCorporate: formValue.bodyCorporate,
+      area: Number(formValue.area),
+      propertyImageId: imageId,
+      trusteeUuid: id
+    };
+
+    try {
+      await this.propertyService.createProperty(payload).toPromise();
       this.isSubmitting = false;
+
+      await this.presentToast('Successfully created property', "success");
+      this.router.navigate(['/home']).then(() => {
+        window.location.reload();
+      });
+    } catch (err) {
       this.submissionError = 'Failed to create property.';
+      this.isSubmitting = false;
     }
   }
   private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
@@ -183,20 +197,4 @@ export class CreatePropertyComponent implements OnInit {
     });
     await toast.present();
   }
-
-  onFileSelected(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    const file = input.files[0];
-    this.selectedImageFile = file;
-    this.form.patchValue({ image: file });
-
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.capturedPhoto = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
 }
-}
-
