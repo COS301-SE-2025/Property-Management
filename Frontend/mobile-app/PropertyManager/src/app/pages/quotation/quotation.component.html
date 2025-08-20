@@ -1,0 +1,128 @@
+
+<ion-content class="ion-padding font-lato dark:bg-gray-800">
+     <app-header/>
+  <!-- Title -->
+  <div class="mb-6 mt-7">
+    <h2 class="text-2xl font-lato dark:text-gray-300">Create Quotation</h2>
+    <div class="w-24 h-1 propertyYellow-bg mt-2"></div>
+  </div>
+
+  <!-- Quotation Form -->
+  <form #quoteForm="ngForm" (ngSubmit)="submitQuote()"  novalidate>
+
+    
+
+    <!-- Expiration Date (popup) -->
+    <ion-item fill="outline" lines="none" button detail="false" (click)="showExpirationDate = true">
+       <ion-icon name="calendar-outline" slot="start"></ion-icon>
+      <ion-label class="dark:text-gray-300">Expiration Date</ion-label>
+      <ion-note slot="end" class="dark:text-gray-300">{{ expirationDate || 'Select date' }}</ion-note>
+    </ion-item>
+    <ion-modal [isOpen]="showExpirationDate" (didDismiss)="showExpirationDate = false">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Select Expiration Date</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="showExpirationDate = false">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-datetime
+            presentation="date"
+            [(ngModel)]="expirationDate"
+            name="expirationDate"
+            (ionChange)="showExpirationDate = false"
+          ></ion-datetime>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+
+    <!-- Quote Number -->
+    <ion-item fill="outline" lines="inset" class=" bg-grey-100"> 
+      <ion-icon name="newspaper-outline" slot="start"></ion-icon>
+      <ion-label position="stacked" class="dark:text-gray-300">Quote Number</ion-label>
+      <ion-input [(ngModel)]="quoteNo" name="quoteNo"  required></ion-input>
+    </ion-item>
+
+    <!-- Total Amount -->
+    <ion-item fill="outline" lines="inset">
+      <ion-icon name="wallet-outline" slot="start"></ion-icon>
+      <ion-label position="stacked" class="dark:text-gray-300">Total Amount</ion-label>
+      <ion-input type="number" class="dark:text-gray-300" [(ngModel)]="totalAmount" name="totalAmount" required></ion-input>
+    </ion-item>
+
+   <div class="mt-4 flex flex-col items-center space-y-2">
+  <label class="block text-sm text-gray-600 mb-2">Upload File (PDF/Image)</label>
+
+  <!-- Styled Upload Button -->
+  <label class="inline-flex items-center px-4 py-2 bg-black text-white rounded-lg cursor-pointer hover:bg-blue-600 transition">
+    <ion-icon name="cloud-upload-outline" class="mr-2 text-xl"></ion-icon>
+    Choose File
+    <input
+      type="file"
+      accept=".pdf,image/*"
+      (change)="onFileSelected($event)"
+      class="hidden"
+      required
+    />
+  </label>
+
+  <!-- File name display -->
+  <p *ngIf="file" class="text-sm text-gray-700">{{ file.name }}</p>
+
+  <!-- Preview button -->
+  <ion-button fill="clear" size="small" *ngIf="filePreviewUrl" (click)="openPreviewModal()">
+    Preview Upload
+  </ion-button>
+</div>
+
+    <!-- Submit Button -->
+    <div class="mt-6 text-center">
+      <ion-button
+        expand="block"
+        color="warning"
+        shape="round"
+        size="medium"
+        [disabled]="quoteForm.invalid"
+        type="submit"
+      >
+        Submit Quote
+      </ion-button>
+    </div>
+
+  </form>
+
+  <!-- Toast -->
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMsg"
+    [color]="toastColor"
+    duration="2000"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+  
+
+  <!-- Loading Spinner -->
+  <ion-loading [isOpen]="loading" message="Submitting..." spinner="crescent"></ion-loading>
+
+  <!-- File Preview Modal -->
+  <ion-modal [isOpen]="previewOpen" (didDismiss)="closePreviewModal()">
+    <ng-template>
+      <ion-header class="bg-white dark:bg-gray-700">
+        <ion-toolbar>
+          <ion-title>File Preview</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closePreviewModal()" class="dark:text-gray-200">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding bg-white dark:bg-gray-700">
+        <img *ngIf="isImage" [src]="filePreviewUrl" class="w-full rounded" />
+        <iframe *ngIf="!isImage" [src]="filePreviewUrl" class="w-full h-96"></iframe>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+   <app-tab/>
+</ion-content>

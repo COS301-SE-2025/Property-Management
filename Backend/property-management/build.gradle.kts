@@ -46,6 +46,8 @@ dependencies {
 	implementation("io.micrometer:micrometer-registry-prometheus")
 	testImplementation("org.mockito:mockito-core:4.+")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:4.+")
+	implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 
 }
 

@@ -43,3 +43,25 @@ out/
 **/application.yml
 **/application.yaml
 **/application.properties
+
+# --- Python Forecast Module ---
+python-forecast/venv/
+python-forecast/__pycache__/
+python-forecast/*.pyc
+python-forecast/*.pyo
+python-forecast/*.pyd
+python-forecast/*.pkl
+
+# Python cache & build files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Jupyter notebooks & checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db

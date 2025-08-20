@@ -1,0 +1,37 @@
+<p-toast/>
+<p-dialog header="Update task progression?" [style]="{ width: '40rem'}" [(visible)]="displayDialog" [modal]="true">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mx-auto max-w-lg">
+        <div class="flex flex-col justify-center items-center">
+            <div class="flex flex-col mx-5 gap-2 mt-5 pb-5">
+                <label for="progress-description" class="font-bold">Task progression update</label>
+                <textarea id="progress-description" class = "border rounded w-60 mx-auto h-10 px-2" formControlName = "description" required></textarea>
+            </div>
+            <div class = "mb-4 mt-2">
+                <p class="font-bold pb-4">Upload picture of task for the contractors</p>
+                <p-fileupload 
+                    #fileUpload name="file" 
+                    mode="basic" 
+                    chooseLabel="Choose" 
+                    chooseIcon="pi pi-upload" 
+                    accept="image/*" 
+                    maxFileSize="1000000" 
+                    (onSelect)="onFileSelect($event)" 
+                />
+            </div>
+             <div class="flex flex-col mx-5 gap-2 mt-5 pb-5">
+                <label for="progress-number" class="font-bold">Estimate how far you are (0-100%)</label>
+                <input id="progress-number" type="number" class = "border rounded px-2" formControlName = "progress" required>
+            </div>
+            <div class="mb-6 text-center">
+                <p class = "font-semibold text-red-500" *ngIf="addError">Error updating task progress</p>
+            </div>
+            <div class = "flex justify-end mt-3">
+                <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer  hover:translate-y-1 transition-transform duration-200" (click)="closeDialog()">Cancel</button>
+                <button type="submit" 
+                    class = "px-3 py-2 rounded cursor-pointer  hover:translate-y-1 transition-transform duration-200">
+                    Add progress
+                </button>
+            </div>
+        </div>
+    </form>
+</p-dialog>

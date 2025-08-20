@@ -53,9 +53,14 @@ class ContractorController(
         val reg_number: String,
         val description: String,
         val services: String,
-        val corporate_uuid: UUID? = null,
+        val corporateUuid: UUID? = null,
         val img: UUID,
     )
+
+    @GetMapping("/corporate/{uuid}")
+    fun getTaskByTrustee(
+        @PathVariable Uuid: UUID,
+    ): ResponseEntity<List<Contractor>> = ResponseEntity.ok(service.getContractorsByCorporateUuid(Uuid))
 
     @PostMapping
     fun createUser(
@@ -74,7 +79,7 @@ class ContractorController(
             contractor.reg_number,
             contractor.description,
             contractor.services,
-            contractor.corporate_uuid ?: UUID.randomUUID(),
+            contractor.corporateUuid ?: UUID.randomUUID(),
             contractor.img,
         )
 
@@ -121,7 +126,7 @@ class ContractorController(
             reg_number = "N/A",
             description = "N/A",
             services = "N/A",
-            corporate_uuid = UUID.randomUUID(),
+            corporateUuid = UUID.randomUUID(),
             img = UUID.randomUUID(),
         )
         return ResponseEntity.ok(
@@ -160,4 +165,30 @@ class ContractorController(
 
     // Optional: API key generator utility
     private fun generateApiKey(): String = UUID.randomUUID().toString().replace("-", "")
+
+    data class PasswordResetRequest(
+        val email: String,
+    )
+
+    data class PasswordResetConfirmRequest(
+        val email: String,
+        val confirmationCode: String,
+        val newPassword: String,
+    )
+
+    @PostMapping("/auth/password-reset-request")
+    fun passwordResetRequest(
+        @RequestBody request: PasswordResetRequest,
+    ): ResponseEntity<Map<String, String>> {
+        cognitoService.initiatePasswordReset(request.email)
+        return ResponseEntity.ok(mapOf("message" to "Password reset code sent to your email."))
+    }
+
+    @PostMapping("/auth/password-reset-confirm")
+    fun passwordResetConfirm(
+        @RequestBody request: PasswordResetConfirmRequest,
+    ): ResponseEntity<Map<String, String>> {
+        cognitoService.confirmPasswordReset(request.email, request.confirmationCode, request.newPassword)
+        return ResponseEntity.ok(mapOf("message" to "Password has been reset successfully."))
+    }
 }

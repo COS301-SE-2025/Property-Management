@@ -1,6 +1,7 @@
 package com.example.propertymanagement.controller
 
 import com.example.propertymanagement.dto.ApprovalRequest
+import com.example.propertymanagement.dto.AssignContractorRequest
 import com.example.propertymanagement.dto.CreateInventoryUsageRequest
 import com.example.propertymanagement.dto.InventoryUsageResponse
 import com.example.propertymanagement.dto.UpdateInventoryUsageRequest
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -26,7 +26,6 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/inventory-usage")
-@CrossOrigin(origins = ["*"])
 class InventoryUsageController(
     private val inventoryUsageService: InventoryUsageService,
 ) {
@@ -197,5 +196,19 @@ class InventoryUsageController(
             ResponseEntity.ok(mapOf("totalQuantityUsed" to totalQuantity))
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
+
+    @PatchMapping("/{usageUuid}/assign-contractor")
+    fun assignContractorToUsage(
+        @PathVariable usageUuid: UUID,
+        @RequestBody request: AssignContractorRequest,
+    ): ResponseEntity<InventoryUsageResponse> =
+        try {
+            val response = inventoryUsageService.assignContractor(usageUuid, request.contractorUuid)
+            ResponseEntity.ok(response)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
 }

@@ -1,0 +1,16 @@
+<p-dialog header="Quotation details" [style]="{width: '30rem'}" [(visible)]="displayDialog" [modal]="true">
+  <div *ngIf="quoteError" class="flex flex-col justify-center items-center">
+    <p class="font-semibold text-red-500">Couldnt find quote, please try again</p>
+  </div>
+
+  <div *ngIf="!quoteError" class="flex flex-col justify-center items-center space-x-2 space-y-4">
+    <p class="text-lg">Contractor Name: {{ contractorDetails()?.name }}</p>
+    <p>Submited quote on: {{ (quote()?.submitted_on ?? '') | formatDate}}</p>
+    <p class="font-semibold">Total amount: R{{ quote()?.amount}}</p>
+    <div class="flex flex-col justify-center items-center">
+      <p>Quote:</p>
+      <a [href]="quote()?.doc">View Quote Document</a>
+    </div>
+  </div>
+  
+</p-dialog>

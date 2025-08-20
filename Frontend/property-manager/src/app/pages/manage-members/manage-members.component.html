@@ -1,0 +1,71 @@
+<!-- <app-header /> -->
+<div class="min-h-screen" [ngStyle]="{ 'background-color': 'var(--bg-color)' }">
+  <div class="pt-6 px-4">
+    <h2 class="text-2xl font-bold mb-2" [ngStyle]="{ 'color': 'var(--text-color)' }">Manage Members</h2>
+    <div class="h-1 w-40 mb-4" [ngStyle]="{ 'background-color': 'var(--accent-color)' }"></div>
+
+    <div class="flex gap-4 justify-center flex-wrap">
+
+      <div class="rounded-lg shadow border p-3 min-w-[350px] flex-1 bg-gray-50 dark:bg-gray-700">
+        <h3 class="text-lg font-semibold mb-2 text-center">Invitation Status</h3>
+        <table class="w-full text-left table-auto rounded-lg overflow-hidden shadow-sm text-sm">
+          <thead>
+            <tr class="border-b bg-gray-100 dark:bg-gray-800">
+              <th class="py-1.5 px-2 font-semibold text-gray-700 dark:text-gray-200">Name</th>
+              <th class="py-1.5 px-2 font-semibold text-gray-700 dark:text-gray-200">Email</th>
+              <th class="py-1.5 px-2 font-semibold text-gray-700 dark:text-gray-200">Date Sent</th>
+              <th class="py-1.5 px-2 font-semibold text-gray-700 dark:text-gray-200">Status</th>
+              <th class="py-1.5 px-2 font-semibold text-gray-700 dark:text-gray-200">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let invite of invitations" class="border-b hover:bg-yellow-50 dark:hover:bg-gray-800 transition">
+              <td class="py-1 px-2">{{ invite.name }}</td>
+              <td class="py-1 px-2">{{ invite.email }}</td>
+              <td class="py-1 px-2">{{ invite.invitedOn | date:'dd MMM yyyy' }}</td>
+              <td class="py-1 px-2">{{ invite.status }}</td>
+              <td class="py-1 px-2">
+                <button
+                  *ngIf="invite.status?.toUpperCase() === 'PENDING'"
+                  type="button"
+                  class="text-xs px-2 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow transition"
+                  (click)="cancelInvite(invite)">
+                  Cancel
+                </button>
+                <button
+                  *ngIf="invite.status?.toUpperCase() === 'ACCEPTED'"
+                  type="button"
+                  class="text-xs px-2 py-1 rounded bg-red-500 hover:bg-red-600 text-white font-semibold shadow transition"
+                  (click)="revokeInvite(invite)">
+                  Revoke
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="rounded-lg shadow border p-3 min-w-[300px] flex-1 bg-gray-50 dark:bg-gray-700">
+        <h3 class="text-lg font-semibold mb-2 text-center">Active Members</h3>
+        <table class="w-full text-left table-auto rounded-lg overflow-hidden shadow-sm text-sm">
+          <thead>
+            <tr class="border-b bg-gray-100 dark:bg-gray-800">
+              <th class="py-1.5 px-2 font-semibold text-gray-700 dark:text-gray-200">Name</th>
+              <th class="py-1.5 px-2 font-semibold text-gray-700 dark:text-gray-200">Email</th>
+              <th class="py-1.5 px-2 font-semibold text-gray-700 dark:text-gray-200">Role</th>
+              <th class="py-1.5 px-2 font-semibold text-gray-700 dark:text-gray-200">Since</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of activeMembers" class="border-b hover:bg-yellow-50 dark:hover:bg-gray-800 transition">
+              <td class="py-1 px-2">{{ member.name }}</td>
+              <td class="py-1 px-2">{{ member.email }}</td>
+              <td class="py-1 px-2">{{ member.role }}</td>
+              <td class="py-1 px-2">{{ member.invitedOn | date:'dd MMM yyyy' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

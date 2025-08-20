@@ -158,6 +158,33 @@
 
 ---
 
+## Get Buildings by Corporate
+**GET** `/api/buildings/corporate/{corporateUuid}`
+
+**Response Example:**
+```json
+{
+  "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+  "buildings": [
+    {
+      "name": "Block A",
+      "address": "123 Main St",
+      "type": "Apartment",
+      "propertyValue": 1000000.0,
+      "primaryContractors": [1, 2],
+      "latestInspectionDate": "2025-06-26",
+      "propertyImage": "img_123",
+      "area": 1200.0,
+      "buildingUuid": "b1c2d3e4-f5a6-7890-bcde-123456789abc",
+      "trusteeUuid": "e7b8c3a2-9b2e-4d8a-8f6b-123456789abc",
+      "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2"
+    }
+  ]
+}
+```
+
+---
+
 ## Search Buildings by Name
 **GET** `/api/buildings/search?name={name}`
 
@@ -498,7 +525,7 @@ _All fields are optional; only include the ones you want to update._
   "usageUuid": "e4f5a6b7-c8d9-0123-ef45-456789abcdef",
   "itemUuid": "b1c2d3e4-f5a6-7890-bcde-123456789abc",
   "taskUuid": "c2d3e4f5-a6b7-8901-cdef-23456789abcd",
-  "usedByContractorUuid": "d3e4f5a6-b7c8-9012-def3-3456789abcde",
+  "usedByContractorUuid": "d3e4f5a6-b7c8-9012-def3-3456789abcde", // can be null 
   "quantityUsed": 10,
   "trusteeApproved": true,
   "approvalDate": "2025-06-26"
@@ -512,6 +539,23 @@ _All fields are optional; only include the ones you want to update._
 
 - **Path Variable:**  
   - `usageUuid` (**required**): UUID of the usage record
+
+**Response Example (200 OK):**
+```json
+{ "message": "Inventory usage deleted successfully" }
+```
+- `404 Not Found` if not found
+
+---
+
+## Assign contractor 
+**PATCH** `/api/inventory-usage/{usageUuid}/assign-contractor`
+
+- **Path Variable:**  
+  - `usageUuid` (**required**): UUID of the usage record
+
+**Request Body Fields:**
+- `contractorUuid` (**required**): UUID of contractor you want to assign to
 
 **Response Example (200 OK):**
 ```json
@@ -1408,6 +1452,7 @@ Content-Type: multipart/form-data
 | amount        | req    | opt    | Decimal   | Quote amount                   |
 | submitted_on  | req    | opt    | Timestamp | ISO 8601 format               |
 | type          | req    | opt    | String    | "Maintenance" or "Inventory"   |
+| expiry_date   | req    | opt    | Timestamp | ISO 8601 format               |
 
 - **req** = required, **opt** = optional, **req*** = required for Maintenance quotes only
 
@@ -1433,49 +1478,33 @@ Content-Type: multipart/form-data
 # Maintenance Task Endpoints
 
 ## Create Maintenance Task
-**POST** `/api/maintenance`
+**POST** `/api/maintenance/create`
+
+**Headers:**
+- **Key**`isOWner`: **value** boolean (true/false)
+- **Key**`isBodyCorporate`: **value** boolean (true/false)
 
 **Request Body Fields:**
 - `title` (**required**): Title of the maintenance task (string)
-- `des` (**required**): Description of the maintenance task (string)
-- `status` (**required**): Current status of the task (string)
+- `description` (**required**): Description of the maintenance task (string)
 - `scheduled_date` (**required**): Scheduled date for the task (string, format: "YYYY-MM-DD")
-- `approved` (**required**): Approval status (boolean)
-- `b_uuid` (**required**): UUID of the building (string/UUID)
-- `img` (**required**): UUID of the image from images table (string/UUID)
-- `t_uuid` (**required**): UUID of the trustee who created the task (string/UUID)
+- `buildingUuid` (**required**): UUID of the building (string/UUID)
+- `imageUuid` (**required**): UUID of the image from images table (string/UUID)
+- `trusteeUuid` (**required**): UUID of the trustee who created the task (string/UUID)
 
 **Request Body Example:**
 ```json
 {
-  "title": "Yes b yes",
-  "des": "djewoijdwoei",
-  "status": "cascsac",
-  "scheduled_date": "2025-06-18",
-  "approved": false,
-  "b_uuid": "67b2a69a-7823-474f-ad68-64aee3c94cc4",
-  "img": "80666f00-37a0-4749-9631-dc6befda031c",
-  "t_uuid": "c375bc26-d60f-403a-a62c-7c888296da6d"
+    "title": "Repair Elevator",
+    "description": "Fix elevator stuck on 3rd floor",
+    "scheduledDate": "2025-08-10",
+    "buildingUuid": "09a1909e-ff8b-4361-a737-c54141b141cf",
+    "createdByUuid": "4d33a2ce-110d-403a-9172-73baca2e5664",
+    "imageUuid": "bdab0887-4d84-4799-b862-fcb6a1a927cc",
+    "trusteeUuid": "4d33a2ce-110d-403a-9172-73baca2e5664"
 }
+
 ```
-
-**Response Example (201 Created):**
-```json
-{
-  "uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
-  "title": "Yes b yes",
-  "des": "djewoijdwoei",
-  "status": "cascsac",
-  "scheduled_date": "2025-06-18",
-  "approved": false,
-  "b_uuid": "67b2a69a-7823-474f-ad68-64aee3c94cc4",
-  "img": "80666f00-37a0-4749-9631-dc6befda031c",
-  "t_uuid": "c375bc26-d60f-403a-a62c-7c888296da6d"
-}
-```
-
----
-
 ## Get All Maintenance Tasks
 **GET** `/api/maintenance`
 
@@ -1526,7 +1555,7 @@ Content-Type: multipart/form-data
 ---
 
 ## Update Maintenance Task
-**PUT** `/api/maintenance/{uuid}`
+**PUT** `/api/maintenance/update/{uuid}`
 
 - **Path Variable:**  
   - `uuid` (**required**): UUID of the maintenance task
@@ -1568,6 +1597,67 @@ _All fields are optional; only include the ones you want to update._
 
 ---
 
+## update task(approve)
+**PUT** `/api/maintenance/update/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the maintenance task
+
+**Request Body Fields:**  
+- `approvalStatus`: (String)
+
+**Request Example:**
+```json
+{
+  "approvalStatus": "APPROVED"
+}
+```
+
+---
+
+## Assign Contractors
+**POST** `/api/maintenance/assign-contractors`
+
+**Description** Assign contractors to task.
+
+**Request Body Fields:**  
+- `taskUuid` (**required**) : UUID of the maintenance task
+- `contractorUuids` (**required**) : comma separated array of contractor uuids
+
+**Response Example:**
+```json
+{
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "contractorUuids": [
+    "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "098f75f5-0f57-4a5d-82d1-d5e881e15fa7"
+  ]
+}
+```
+---
+
+## submit quote
+**POST** `/api/maintenance/quotes`
+
+**Description** submit a qoute.
+
+**Request Header:**
+- **key** `isBodyCorporate`, **value** `true` ,**type** `text`
+
+**Response Example:**
+```json
+{
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "contractorUuid":"288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "amount" : 5000.00,
+    "submittedOn": "2025-07-25T15:24:00.000Z",
+    "status": "SUBMITTED",
+    "documentUrl": "http://example.com/quote1.pdf",
+    "expiryDate": "2025-08-25T15:24:00.000Z",
+}
+```
+---
+
 ## Delete Maintenance Task
 **DELETE** `/api/maintenance/{uuid}`
 
@@ -1580,6 +1670,83 @@ _All fields are optional; only include the ones you want to update._
 - `204 No Content` if deleted  
 - `404 Not Found` if not found
 
+---
+
+## Get Assigned Contractors
+
+**Method:** `GET`  
+**URL:** `/api/maintenance/task/{taskUuid}/contractors`
+
+**Description:**  
+Returns the list of contractors assigned to a specific maintenance task.
+
+**Request Parameters:**  
+- `taskUuid` – UUID of the maintenance task (in URL path)
+
+**Example Request:**  
+```http
+GET /api/maintenance/5c3588ce-20df-4cfe-baa3-39355e398f56/contractors 
+```
+
+**Response:**  
+```json
+[
+  {
+    "contractorUuid": "abc123...",
+    "name": "FixIt Contractors",
+    "quoteSubmitted": true
+  },
+  ...
+]
+```
+
+---
+
+## Get Contractor Maintenance Tasks
+
+**Method:** `GET`  
+**URL:** `/api/maintenance/contractor/{contractorUuid}`
+
+**Headers:**  
+- `isBodyCorporate: true`
+
+**Request Body:**  
+```json
+{
+  "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56"
+}
+```
+
+**Description:**  
+Fetches all maintenance tasks assigned to a specific contractor. Intended for verifying which tasks a contractor can view and access.
+
+**Example Request:**  
+```http
+GET /api/maintenance/contractor/288b32c8-6123-497c-bf7e-e8fa99a075a8
+Host: localhost:8080
+Content-Type: application/json
+isBodyCorporate: true
+
+{
+  "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56"
+}
+```
+
+**Response:**  
+```json
+[
+  {
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "title": "Fix Broken Fence",
+    "status": "PENDING",
+    "quote": {
+      "amount": 5000.00,
+      "description": "Includes materials and labor"
+    }
+  },
+  ...
+]
+```
 ---
 
 ### Maintenance Task Field Requirements Summary
@@ -1623,7 +1790,8 @@ _All fields are optional; only include the ones you want to update._
   "submitted_on": "2025-06-26T10:00:00.000+02:00",
   "status": "Started",
   "amount": 1000,
-  "doc": "jhihiduhidhwqidhqwudh"
+  "doc": "jhihiduhidhwqidhqwudh",
+  "expiry_date" : "2025-07-26T10:00:00.000+02:00", 
 }
 ```
 
@@ -1636,7 +1804,8 @@ _All fields are optional; only include the ones you want to update._
   "submitted_on": "2025-06-26T08:00:00.000+00:00",
   "status": "Started",
   "amount": 1000.00,
-  "doc": "jhihiduhidhwqidhqwudh"
+  "doc": "jhihiduhidhwqidhqwudh",
+  "expiry_date" : "2025-07-26T10:00:00.000+02:00", 
 }
 ```
 
@@ -1657,7 +1826,8 @@ _All fields are optional; only include the ones you want to update._
     "submitted_on": "2025-06-26T08:00:00.000+00:00",
     "status": "Started",
     "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
-    "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28"
+    "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "expiry_date" : "2025-07-26T10:00:00.000+02:00", 
   }
 ]
 ```
@@ -1681,7 +1851,8 @@ _All fields are optional; only include the ones you want to update._
   "submitted_on": "2025-06-26T08:00:00.000+00:00",
   "status": "Started",
   "t_uuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
-  "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28"
+  "c_uuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "expiry_date" : "2025-07-26T10:00:00.000+02:00", 
 }
 ```
 
@@ -1711,6 +1882,7 @@ _All fields are optional; only include the ones you want to update._
 | status       | req    | String         | Current status of the quote              |
 | amount       | req    | Decimal        | Quote amount                             |
 | doc          | req    | String         | Document/notes related to the quote      |
+| expiry_date  | req    | String         | ISO 8601 timestamp format               |
 
 - **req** = required
 
@@ -1718,6 +1890,7 @@ _All fields are optional; only include the ones you want to update._
 - `t_uuid`: Must reference an existing maintenance task UUID
 - `c_uuid`: Must reference an existing contractor UUID
 - `submitted_on`: Must be in ISO 8601 format (e.g., "2025-06-26T10:00:00.000+02:00")
+- `expiry_date`: Must be in ISO 8601 format (e.g., "2025-06-26T10:00:00.000+02:00")
 
 # Trustee Endpoints
 
@@ -1851,3 +2024,847 @@ _All fields are optional; only include the ones you want to update._
   "userId": "5b029df7-1e95-439e-89d9-bb2bdc4a3766"
 }
 ```
+
+# Invites endpoints 
+
+## create invite 
+**POST** `/api/invites`
+
+**Request Body Example:**
+```json
+{
+  "trusteeUuid": "5f67ec9a-84f2-4d72-a6a3-48393f8a0456",
+  "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2"
+}
+```
+---
+
+## Get by invite Uuid
+**GET** `/api/invites/{uuid}`
+
+---
+
+## Get all invites for trustee
+**GET** `/api/invites/trustee/{uuid}`
+
+---
+
+## Accept invite
+**PUT** `/api/invites/{uuid}/status?status=ACCEPTED`
+
+---
+
+## Get all trustees in body corporate 
+**GET** /api/invites/body-corporate/{corp-uuid}/accepted-trustees
+
+---
+
+## Get all 
+**GET** `/api/invites`
+
+**RESPONSE**
+```json
+[
+    {
+        "inviteUuid": "36f15795-5e65-46b4-b569-aa630ed7e702",
+        "trusteeUuid": "4d33a2ce-110d-403a-9172-73baca2e5664",
+        "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+        "status": "ACCEPTED",
+        "invitedOn": 1752581150612
+    },
+    {
+        "inviteUuid": "23f5545b-dba8-4619-9ddc-a8426e8d5bb2",
+        "trusteeUuid": "5f67ec9a-84f2-4d72-a6a3-48393f8a0456",
+        "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+        "status": "PENDING",
+        "invitedOn": 1753629358177
+    }
+]
+```
+
+---
+
+# Life cycle cost
+
+## Create Life cycle cost
+**POST** `/api/lifecycle-cost`
+
+**Request Body Example:**
+```json
+{
+  "coporateUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+  "type": "Roof",
+  "description": "Needs repainting",
+  "condition": "Worn",
+  "timeframe": "6 months",
+  "estimatedCost": 15000.00
+}
+
+```
+---
+
+## GET BY ID 
+**GET** `/api/lifecycle-cost/{uuid}`
+
+---
+
+## GET By Coporate UUID
+**GET** `/api/lifecycle-cost/coporate/{uuid}`
+
+---
+
+## Update
+**PUT** `/api/lifecycle-cost/{uuid}`
+
+**Request Body Example:**
+```json
+{
+  "type": "Roof",
+  "description": "Urgent repair needed",
+  "condition": "Critical",
+  "timeframe": "1 month",
+  "estimatedCost": 25000.00
+}
+
+```
+---
+
+# Voting system 
+
+## create voting session 
+**POST** `/api/vote/session`
+
+**Request Body Example:**
+```json
+{
+    "coporateUuid" : "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+    "taskUuid": "d05fed07-3568-4b69-8bad-6b9dedf8515b",
+    "votingEndsAt": "2025-07-21T18:40:00"   
+}
+```
+---
+
+## Submit Vote 
+**POST** `/api/vote`
+
+**Request Body Example:**
+```json
+{
+    "sessionUuid": "166fb380-ac2e-4466-951a-f7f47516be48",
+    "quoteUuid": "2bb7bd53-53a3-427e-95cd-eb9bcd3addb6",
+    "voterUuid": "5ad98526-6f94-4ce0-acf9-31e99590f8e2",
+    "isTrustee": false,
+    "voteFor": true
+}
+```
+---
+
+## Results 
+**GET** `/api/vote/session/{session uuid}/results`
+
+---
+
+## Get all sessions
+**GET** `/api/vote/sessions`
+
+---
+
+## get by task uuid by session uuid 
+**GET** `/api/vote/session/{session uuid}/task`
+
+---
+
+## get session uuid by task uuid 
+**GET** `/api/vote/task/{task uuid}/session`
+
+---
+
+# task progress
+
+## add task work 
+**POST** `/api/task-progress`
+
+**Request Body Example:**
+```json
+{
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId" : "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "workDescription" : "painted undercoat",
+    "inventoryUsageUuid" : "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed" : "5"
+}
+```
+
+**Response:200**
+```json
+{
+    "progressUuid": "93ae932e-7eb2-4f7b-aa3a-197f9714e039",
+    "submissionDate": 1754737940.029881833,
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId": "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "progressPercentage": 0,
+    "workDescription": "painted undercoat",
+    "inventoryUsageUuid": "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed": 5,
+    "remarks": null,
+    "lastUpdated": 1754737940.029940224
+}
+```
+---
+
+## Get by task id :
+**Get** `api/task-progress/{progressUuid}`
+
+**Response:200**
+```json
+{
+    "progressUuid": "93ae932e-7eb2-4f7b-aa3a-197f9714e039",
+    "submissionDate": 1754737940.029881833,
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId": "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "progressPercentage": 0,
+    "workDescription": "painted undercoat",
+    "inventoryUsageUuid": "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed": 5,
+    "remarks": null,
+    "lastUpdated": 1754737940.029940224
+}
+```
+---
+
+## Get by task uuid:
+**Get** `api/task-progress/task/{taskUuid}`
+
+**Response:200**
+```json
+{
+    "progressUuid": "93ae932e-7eb2-4f7b-aa3a-197f9714e039",
+    "submissionDate": 1754737940.029881833,
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId": "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "progressPercentage": 0,
+    "workDescription": "painted undercoat",
+    "inventoryUsageUuid": "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed": 5,
+    "remarks": null,
+    "lastUpdated": 1754737940.029940224
+}
+```
+---
+
+## Update 
+**PUT** `api/task-progress/task/{taskUuid}`
+
+**Request body example:**
+```json
+{
+    "progressPercentage" : 60,
+    "imageId" : "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "workDescription" : "finished painting 3 out of the 5 walls "
+}
+```
+
+**Response:200**
+```json
+{
+    "progressUuid": "93ae932e-7eb2-4f7b-aa3a-197f9714e039",
+    "submissionDate": 1754737940.029882000,
+    "contractorUuid": "288b32c8-6123-497c-bf7e-e8fa99a075a8",
+    "taskUuid": "5c3588ce-20df-4cfe-baa3-39355e398f56",
+    "imageId": "f88aad9c-93e9-4459-a9d6-38af1c7e6b9a",
+    "progressPercentage": 60,
+    "workDescription": "finished painting 3 out of the 5 walls ",
+    "inventoryUsageUuid": "d246040f-ac07-491f-bf54-b7e77bbe6d8b",
+    "quantityUsed": 5,
+    "remarks": null,
+    "lastUpdated": 1754739343.323560387
+}
+```
+### updatable fileds :
+```
+    val progressPercentage: BigDecimal,
+    val workDescription: String,
+    val imageId: String,
+    val quantityUsed: Int,
+    val remarks: String
+```
+
+## Delete task progress :
+**DELETE** `/api/task-progress/{progressUuid}`
+**Response:204** 
+
+
+# PDF Upload Endpoints
+
+## Generate Presigned Upload URL
+**GET** `/api/upload/presigned-upload/{filename}`
+
+- **Path Variable:**  
+  - `filename` (**required**): Name of the PDF file to be uploaded (string)
+
+**Description:** Generates a presigned URL for uploading a PDF file directly to S3. The URL is valid for 15 minutes.
+
+**Response Example (200 OK):**
+```json
+{
+  "uploadUrl": "https://your-bucket.s3.amazonaws.com/uploads-123e4567-e89b-12d3-a456-426614174000-document.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=...",
+  "fileKey": "uploads-123e4567-e89b-12d3-a456-426614174000-document.pdf",
+  "id": "123e4567-e89b-12d3-a456-426614174000"
+}
+```
+
+**Frontend Usage Steps:**
+1. Call this endpoint with the filename
+2. Use the returned `uploadUrl` to upload the file directly to S3 via PUT request
+3. After successful upload, call the notify endpoint with the returned `id`, `filename`, and `fileKey`
+
+---
+
+## Notify Upload Complete
+**POST** `/api/upload/notify-upload/{id}/{filename}/{key}`
+
+- **Path Variables:**  
+  - `id` (**required**): UUID returned from the presigned upload URL generation (string/UUID)
+  - `filename` (**required**): Original filename of the uploaded PDF (string)
+  - `key` (**required**): S3 object key returned from presigned upload URL generation (string)
+
+**Description:** Notifies the system that a file upload has been completed and saves the metadata to the database.
+
+**Response Example (200 OK):**
+```json
+"Upload metadata saved."
+```
+
+**Frontend Usage Steps:**
+1. After successfully uploading to S3 using the presigned URL
+2. Call this endpoint with the `id`, `filename`, and `fileKey` from the initial presigned URL response
+3. The system will save the PDF metadata for future retrieval
+
+---
+
+## Get Presigned Download URL
+**GET** `/api/upload/presigned/{id}`
+
+- **Path Variable:**  
+  - `id` (**required**): UUID of the uploaded PDF (string/UUID)
+
+**Description:** Generates a presigned URL for downloading a previously uploaded PDF file. The URL is valid for 10 minutes.
+
+**Response Example (200 OK):**
+```
+https://your-bucket.s3.amazonaws.com/uploads-123e4567-e89b-12d3-a456-426614174000-document.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=...
+```
+
+**Response:**  
+- `200 OK` with presigned URL as plain text
+- `404 Not Found` if PDF with given ID doesn't exist
+
+**Frontend Usage Steps:**
+1. Call this endpoint with the PDF's ID
+2. Use the returned presigned URL to download/display the PDF
+3. The URL expires after 10 minutes, so generate a new one if needed
+
+---
+
+### PDF Upload Flow Summary
+
+| Step | Method | Endpoint | Purpose |
+|------|--------|----------|---------|
+| 1 | GET | `/api/upload/presigned-upload/{filename}` | Get upload URL and metadata |
+| 2 | PUT | `{uploadUrl from step 1}` | Upload file directly to S3 |
+| 3 | POST | `/api/upload/notify-upload/{id}/{filename}/{key}` | Save metadata to database |
+| 4 | GET | `/api/upload/presigned/{id}` | Get download URL when needed |
+
+**Complete Frontend Implementation Example:**
+
+```javascript
+// Step 1: Get presigned upload URL
+async function uploadPDF(file) {
+  // Get presigned URL
+  const presignedResponse = await fetch(`/api/upload/presigned-upload/${file.name}`);
+  const { uploadUrl, fileKey, id } = await presignedResponse.json();
+  
+  // Step 2: Upload file to S3
+  const uploadResponse = await fetch(uploadUrl, {
+    method: 'PUT',
+    body: file,
+    headers: {
+      'Content-Type': 'application/pdf'
+    }
+  });
+  
+  if (uploadResponse.ok) {
+    // Step 3: Notify backend
+    await fetch(`/api/upload/notify-upload/${id}/${file.name}/${fileKey}`, {
+      method: 'POST'
+    });
+    
+    return id; // Save this ID for later retrieval
+  }
+}
+
+// Step 4: Get download URL when needed
+async function getPDFUrl(pdfId) {
+  const response = await fetch(`/api/upload/presigned/${pdfId}`);
+  return await response.text(); // Returns the presigned URL
+}
+```
+
+**Important Notes:**
+- All presigned URLs have expiration times (15 minutes for upload, 10 minutes for download)
+- Files are automatically prefixed with "uploads-{uuid}-" in S3
+- Only PDF files are supported (Content-Type: application/pdf)
+- The system expects the exact filename, ID, and key values returned from the initial presigned URL generation
+
+
+# Rating Endpoints
+
+## Create a Rating
+**POST** `/api/rating`
+
+**Request Body Fields:**
+- `contractorUuid` (**required**): UUID of the contractor being rated (string/UUID)
+- `comment` (**required**): Rating comment/feedback (string)
+- `rating` (**required**): Rating value (number)
+- `taskUuid` (**required**): UUID of the related task (string/UUID)
+- `trusteeUuid` (**required**): UUID of the trustee giving the rating (string/UUID)
+
+**Request Body Example:**
+```json
+{
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "comment": "Excellent work, completed on time and very professional",
+  "rating": 5.0,
+  "taskUuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "trusteeUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "comment": "Excellent work, completed on time and very professional",
+  "rating": 5.0,
+  "taskUuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "trusteeUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+---
+
+## Get All Ratings
+**GET** `/api/rating`
+
+**Description:** Returns all ratings in the system.
+
+**Response Example:**
+```json
+[
+  {
+    "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+    "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "comment": "Excellent work, completed on time and very professional",
+    "rating": 5.0,
+    "taskUuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+    "trusteeUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+  },
+  {
+    "uuid": "c8d9e0f1-2a3b-4c5d-6e7f-8g9h0i1j2k3l",
+    "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "comment": "Good work but could improve communication",
+    "rating": 4.0,
+    "taskUuid": "e2f3g4h5-6i7j-8k9l-0m1n-2o3p4q5r6s7t",
+    "trusteeUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+  }
+]
+```
+
+---
+
+## Get Rating by Contractor UUID
+**GET** `/api/rating/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the contractor to get ratings for
+
+**Description:** Returns ratings for a specific contractor by their UUID.
+
+**Response Example (200 OK):**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "comment": "Excellent work, completed on time and very professional",
+  "rating": 5.0,
+  "taskUuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "trusteeUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+**Response:**  
+- `200 OK` with rating data
+- `404 Not Found` if no rating found for the contractor
+
+---
+
+## Get Average Rating for Contractor
+**GET** `/api/rating/avg/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the contractor to get average rating for
+
+**Description:** Returns the average rating for a specific contractor.
+
+**Response Example (200 OK):**
+```json
+4.2
+```
+
+**Response:**  
+- `200 OK` with average rating as a number
+- `404 Not Found` if no ratings found for the contractor
+
+---
+
+## Update Rating
+**PUT** `/api/rating/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the rating to update
+
+**Request Body Example:**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "comment": "Updated: Excellent work, completed on time and very professional",
+  "rating": 4.5,
+  "taskUuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "trusteeUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+**Description:** Updates an existing rating with new data.
+
+**Response Example (200 OK):**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "comment": "Updated: Excellent work, completed on time and very professional",
+  "rating": 4.5,
+  "taskUuid": "d91657fd-98e6-41d1-8afa-7773a53ed915",
+  "trusteeUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+---
+
+## Delete Rating
+**DELETE** `/api/rating/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the rating to delete
+
+**Description:** Deletes a specific rating.
+
+**Response:**  
+- `204 No Content` if deleted successfully
+- `404 Not Found` if rating not found
+
+---
+
+### Rating Field Requirements Summary
+
+| Field          | Create | Update | Type           | Notes                                    |
+|----------------|--------|--------|----------------|------------------------------------------|
+| contractorUuid | req    | opt    | String/UUID    | UUID of contractor being rated           |
+| comment        | req    | opt    | String         | Rating comment/feedback                  |
+| rating         | req    | opt    | Number         | Rating value (typically 1-5 scale)      |
+| taskUuid       | req    | opt    | String/UUID    | UUID of related maintenance task         |
+| trusteeUuid    | req    | opt    | String/UUID    | UUID of trustee giving the rating        |
+
+- **req** = required
+- **opt** = optional
+
+**Required Field Notes:**
+- `contractorUuid`: Must reference an existing contractor UUID
+- `taskUuid`: Must reference an existing maintenance task UUID  
+- `trusteeUuid`: Must reference an existing trustee UUID
+- `rating`: Should typically be within a defined range (e.g., 1-5)
+- `comment`: Provides context and feedback for the rating
+
+**Frontend Usage Examples:**
+
+```javascript
+// Create a new rating
+async function createRating(ratingData) {
+  const response = await fetch('/api/rating', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(ratingData)
+  });
+  return await response.json();
+}
+
+// Get contractor's average rating
+async function getContractorAverageRating(contractorUuid) {
+  const response = await fetch(`/api/rating/avg/${contractorUuid}`);
+  if (response.ok) {
+    return await response.json(); // Returns number
+  }
+  return null; // No ratings found
+}
+
+// Get all ratings for a contractor
+async function getContractorRatings(contractorUuid) {
+  const response = await fetch(`/api/rating/${contractorUuid}`);
+  if (response.ok) {
+    return await response.json();
+  }
+  return null; // No ratings found
+}
+```
+
+# Contractor Corporate Endpoints
+
+## Create a Contractor Corporate Association
+**POST** `/api/contractorCorporate`
+
+**Request Body Fields:**
+- `contractorUuid` (**required**): UUID of the contractor (string/UUID)
+- `bodyCorporateUuid` (**required**): UUID of the body corporate (string/UUID)
+
+**Request Body Example:**
+```json
+{
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "bodyCorporateUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+**Response Example (200 OK):**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "bodyCorporateUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+---
+
+## Get All Contractor Corporate Associations
+**GET** `/api/contractorCorporate`
+
+**Description:** Returns all contractor-corporate associations in the system.
+
+**Response Example:**
+```json
+[
+  {
+    "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+    "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "bodyCorporateUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+  },
+  {
+    "uuid": "c8d9e0f1-2a3b-4c5d-6e7f-8g9h0i1j2k3l",
+    "contractorUuid": "e479bgh6-1g3h-47b5-c43f-9h0i1j2k3l4m",
+    "bodyCorporateUuid": "f5g6h7i8-9j0k-1l2m-3n4o-5p6q7r8s9t0u"
+  }
+]
+```
+
+---
+
+## Get Contractor Corporate Association by UUID
+**GET** `/api/contractorCorporate/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the contractor corporate association
+
+**Description:** Returns a specific contractor-corporate association by its UUID.
+
+**Response Example (200 OK):**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "bodyCorporateUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+**Response:**  
+- `200 OK` with association data
+- `404 Not Found` if association not found
+
+---
+
+## Get Contractor Corporate Associations by Contractor UUID
+**GET** `/api/contractorCorporate/list/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the contractor to get corporate associations for
+
+**Description:** Returns all corporate associations for a specific contractor.
+
+**Response Example (200 OK):**
+```json
+[
+  {
+    "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+    "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "bodyCorporateUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+  },
+  {
+    "uuid": "c8d9e0f1-2a3b-4c5d-6e7f-8g9h0i1j2k3l",
+    "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+    "bodyCorporateUuid": "f5g6h7i8-9j0k-1l2m-3n4o-5p6q7r8s9t0u"
+  }
+]
+```
+
+**Response:**  
+- `200 OK` with list of associations
+- `404 Not Found` if no associations found for the contractor
+
+---
+
+## Get Contractor UUIDs by Body Corporate
+**GET** `/api/contractorCorporate/contractors/{bodyCorporateUuid}`
+
+- **Path Variable:**  
+  - `bodyCorporateUuid` (**required**): UUID of the body corporate to get contractors for
+
+**Description:** Returns a list of contractor UUIDs associated with a specific body corporate.
+
+**Response Example (200 OK):**
+```json
+[
+  "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "e479bgh6-1g3h-47b5-c43f-9h0i1j2k3l4m",
+  "f5a7c9e1-3f5h-59c7-e51j-1l3n5p7r9t1v"
+]
+```
+
+**Response:**  
+- `200 OK` with array of contractor UUIDs
+- `404 Not Found` if no contractors found for the body corporate
+
+---
+
+## Update Contractor Corporate Association
+**PUT** `/api/contractorCorporate/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the association to update
+
+**Request Body Example:**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "bodyCorporateUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+**Description:** Updates an existing contractor-corporate association.
+
+**Response Example (200 OK):**
+```json
+{
+  "uuid": "b9c9cead-4f9e-4f57-99ad-8374e444c4a9",
+  "contractorUuid": "d368aef5-0f2d-46a4-b32e-1e2b79cc7e28",
+  "bodyCorporateUuid": "a1b2c3d4-5e6f-7g8h-9i0j-k1l2m3n4o5p6"
+}
+```
+
+---
+
+## Delete Contractor Corporate Association
+**DELETE** `/api/contractorCorporate/{uuid}`
+
+- **Path Variable:**  
+  - `uuid` (**required**): UUID of the association to delete
+
+**Description:** Deletes a specific contractor-corporate association.
+
+**Response:**  
+- `204 No Content` if deleted successfully
+- `404 Not Found` if association not found
+
+---
+
+### Contractor Corporate Field Requirements Summary
+
+| Field              | Create | Update | Type           | Notes                                    |
+|--------------------|--------|--------|----------------|------------------------------------------|
+| contractorUuid     | req    | opt    | String/UUID    | UUID of the contractor                   |
+| bodyCorporateUuid  | req    | opt    | String/UUID    | UUID of the body corporate               |
+
+- **req** = required
+- **opt** = optional
+
+**Required Field Notes:**
+- `contractorUuid`: Must reference an existing contractor UUID
+- `bodyCorporateUuid`: Must reference an existing body corporate UUID
+- This entity manages many-to-many relationships between contractors and body corporates
+
+**Frontend Usage Examples:**
+
+```javascript
+// Create contractor-corporate association
+async function createContractorCorporateAssociation(contractorUuid, bodyCorporateUuid) {
+  const response = await fetch('/api/contractorCorporate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      contractorUuid: contractorUuid,
+      bodyCorporateUuid: bodyCorporateUuid
+    })
+  });
+  return await response.json();
+}
+
+// Get all contractors for a body corporate
+async function getContractorsForBodyCorporate(bodyCorporateUuid) {
+  const response = await fetch(`/api/contractorCorporate/contractors/${bodyCorporateUuid}`);
+  if (response.ok) {
+    return await response.json(); // Returns array of contractor UUIDs
+  }
+  return []; // No contractors found
+}
+
+// Get all body corporates for a contractor
+async function getBodyCorporatesForContractor(contractorUuid) {
+  const response = await fetch(`/api/contractorCorporate/list/${contractorUuid}`);
+  if (response.ok) {
+    return await response.json(); // Returns array of associations
+  }
+  return []; // No associations found
+}
+
+// Delete contractor-corporate association
+async function removeContractorFromBodyCorporate(associationUuid) {
+  const response = await fetch(`/api/contractorCorporate/${associationUuid}`, {
+    method: 'DELETE'
+  });
+  return response.status === 204; // Returns true if successful
+}
+```
+
+**Common Use Cases:**
+- **Assign contractors to body corporates**: Create associations to define which contractors can work for which body corporates
+- **Get available contractors**: Use the `/contractors/{bodyCorporateUuid}` endpoint to find all contractors available for a specific body corporate
+- **Contractor portfolio**: Use the `/list/{uuid}` endpoint to see all body corporates a contractor is associated with
+- **Manage permissions**: Create/delete associations to control contractor access to different body corporates
