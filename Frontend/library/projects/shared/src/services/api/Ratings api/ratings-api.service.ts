@@ -20,12 +20,10 @@ private apiUrl = environmentMobile.apiUrl;
   constructor(private http: HttpClient) {}
 
     getAllRatings(): Observable<Rating[]> {
-    return this.http.get<Rating[]>(this.apiUrl,
-    { withCredentials: true });
+    return this.http.get<Rating[]>(this.apiUrl);
     }
 
     createRating(payload: RatingPayload): Observable<Rating> {
-    return this.http.post<Rating>(this.apiUrl, payload,
-    { withCredentials: true });
+    return this.http.post<Rating>(this.apiUrl, payload);
     }
 }

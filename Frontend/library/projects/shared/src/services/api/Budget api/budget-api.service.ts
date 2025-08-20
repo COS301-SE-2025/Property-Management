@@ -30,32 +30,27 @@ export class BudgetApiService {
 
   getBudgetById(budgetId: string) : Observable<BuildingDetails>
   {
-    return this.http.get<BuildingDetails>(`${this.url}/budgets/${budgetId}`,
-    { withCredentials: true });
+    return this.http.get<BuildingDetails>(`${this.url}/budgets/${budgetId}`);
   }
 
   getAllBudgets(): Observable<BuildingDetails[]>
   {
-    return this.http.get<BuildingDetails[]>(`${this.url}/budgets`,
-    { withCredentials: true });
+    return this.http.get<BuildingDetails[]>(`${this.url}/budgets`);
   }
 
   getBudgetsByBuildingId(buildingId: string): Observable<BuildingDetails[]>
   {
-    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/building/${buildingId}`,
-    { withCredentials: true });
+    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/building/${buildingId}`);
   }
 
   getBudgetsByYear(year: string): Observable<BuildingDetails[]>
   {
-    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/year/${year}`,
-    { withCredentials: true });
+    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/year/${year}`);
   }
 
   getBudgetsByBuildingIdAndYear(buidlingId: string, year: string): Observable<BuildingDetails[]>
   {
-    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/building/${buidlingId}/year/${year}`,
-    { withCredentials: true });
+    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/building/${buidlingId}/year/${year}`);
   }
 
   updateBudget(budgetId: string, budget: BuildingDetails)
@@ -73,13 +68,11 @@ export class BudgetApiService {
       buildingUuid: budget.buildingUuid
     };
 
-    return this.http.put<BuildingDetails>(`${this.url}/budgets/${budgetId}`, updatedBudget,
-    { withCredentials: true });
+    return this.http.put<BuildingDetails>(`${this.url}/budgets/${budgetId}`, updatedBudget);
   }
 
   deleteBudget(budgetId: string): Observable<BuildingDetails>
   {
-    return this.http.delete<BuildingDetails>(`${this.url}/budgets/${budgetId}`,
-    { withCredentials: true });
+    return this.http.delete<BuildingDetails>(`${this.url}/budgets/${budgetId}`);
   }
 }

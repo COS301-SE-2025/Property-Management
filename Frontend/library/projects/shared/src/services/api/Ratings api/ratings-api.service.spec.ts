@@ -2,11 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { RatingService, RatingPayload } from './ratings-api.service';
 import { Rating } from '../../../models/rating.model';
+import { environmentMobile } from '../../../environment';
 
 describe('RatingService', () => {
   let service: RatingService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'http://localhost:8080/api/rating';
+  const apiUrl = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
