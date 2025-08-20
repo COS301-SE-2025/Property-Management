@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from 'shared';
+import { ApiService, getCookieValue } from 'shared';
 import { Quote } from 'shared';
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
 import {
@@ -43,7 +43,7 @@ export class SubmittedQuotationsComponent implements OnInit {
   }
 
   getContractorIdFromLocalStorage(): string | null {
-    return localStorage.getItem('contractorID');
+    return getCookieValue(document.cookie, 'contractorId');
   }
 
   loadQuotes(contractorId: string) {
