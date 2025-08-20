@@ -24,32 +24,38 @@ export class BudgetApiService {
       approvalDate: updatedOn,
       buildingUuid: buildingId
     };
-    return this.http.post<BuildingDetails>(`${this.url}/budgets`, newBudget);
+    return this.http.post<BuildingDetails>(`${this.url}/budgets`, newBudget,
+    { withCredentials: true });
   }
 
   getBudgetById(budgetId: string) : Observable<BuildingDetails>
   {
-    return this.http.get<BuildingDetails>(`${this.url}/budgets/${budgetId}`);
+    return this.http.get<BuildingDetails>(`${this.url}/budgets/${budgetId}`,
+    { withCredentials: true });
   }
 
   getAllBudgets(): Observable<BuildingDetails[]>
   {
-    return this.http.get<BuildingDetails[]>(`${this.url}/budgets`);
+    return this.http.get<BuildingDetails[]>(`${this.url}/budgets`,
+    { withCredentials: true });
   }
 
   getBudgetsByBuildingId(buildingId: string): Observable<BuildingDetails[]>
   {
-    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/building/${buildingId}`);
+    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/building/${buildingId}`,
+    { withCredentials: true });
   }
 
   getBudgetsByYear(year: string): Observable<BuildingDetails[]>
   {
-    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/year/${year}`);
+    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/year/${year}`,
+    { withCredentials: true });
   }
 
   getBudgetsByBuildingIdAndYear(buidlingId: string, year: string): Observable<BuildingDetails[]>
   {
-    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/building/${buidlingId}/year/${year}`);
+    return this.http.get<BuildingDetails[]>(`${this.url}/budgets/building/${buidlingId}/year/${year}`,
+    { withCredentials: true });
   }
 
   updateBudget(budgetId: string, budget: BuildingDetails)
@@ -67,11 +73,13 @@ export class BudgetApiService {
       buildingUuid: budget.buildingUuid
     };
 
-    return this.http.put<BuildingDetails>(`${this.url}/budgets/${budgetId}`, updatedBudget);
+    return this.http.put<BuildingDetails>(`${this.url}/budgets/${budgetId}`, updatedBudget,
+    { withCredentials: true });
   }
 
   deleteBudget(budgetId: string): Observable<BuildingDetails>
   {
-    return this.http.delete<BuildingDetails>(`${this.url}/budgets/${budgetId}`);
+    return this.http.delete<BuildingDetails>(`${this.url}/budgets/${budgetId}`,
+    { withCredentials: true });
   }
 }
