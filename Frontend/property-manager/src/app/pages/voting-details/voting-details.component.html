@@ -21,7 +21,10 @@
               <p class="text-sm">Description: {{ task()?.des }}</p>
             </div>
             <div>
-              <p [class]="changeDueDate()" class="font-medium">Due Date: {{ (task()?.scheduled_date ?? '') | formatDate }}</p>
+              <span>
+                Due Date:
+                <span [class]="changeDueDate()" class="font-medium">{{ (task()?.scheduled_date ?? '') | formatDate }}</span>
+              </span>
             </div>
             @if(this.taskType === 'voting')
             {

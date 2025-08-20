@@ -300,6 +300,10 @@ export class HeaderComponent {
         return;
       }
     }
+    else
+    {
+      this.items = [];
+    }
   }
 
   setNavLinks() {

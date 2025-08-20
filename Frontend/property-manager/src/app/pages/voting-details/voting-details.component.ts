@@ -28,8 +28,12 @@ import { VotingResultsComponent } from './voting-results/voting-results.componen
     .due-date-normal{
       color:inherit;
     }
-    .due-date-urgent{
-      color: #f01111;
+    .due-date-urgent {
+      color: #fff;
+      background-color: #dc2626;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-weight: bold;
     }
     .due-date-past{
       color: #858585;
