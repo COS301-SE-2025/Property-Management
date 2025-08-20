@@ -42,22 +42,17 @@
         </div>
     </p-card>
 
-    <div class="grid gap-4 mt-4 pb-3" 
-        [ngClass]="{
-            'grid-cols-1 md:grid-cols-3': inventoryUsage?.length && contractor,
-            'grid-cols-1 md:grid-cols-2': inventoryUsage?.length && !contractor,
-            'grid-cols-1 place-items-centet': (!inventoryUsage && contractor)
-        }">
+    <div class="grid gap-4 mt-4 pb-3 md:grid-cols-3"> 
         <app-inventory-usage *ngIf="inventoryUsage?.length" 
                             [taskId]="this.taskId!"
-                            [class.md:col-span-1]="contractor"/>
+                            class="md:col-span-1"/>
         @if(this.contractor) 
         {
             <app-contractor-timeline [inventoryUsage]="inventoryUsage!"
                                     [task]="task!"
                                     [ngClass]="{
-                                        'md:col-span-2': inventoryUsage?.length,
-                                        'md:col-span-2 lg:col-span-3': !inventoryUsage
+                                        'md:col-span-3': !inventoryUsage?.length,
+                                        'md:col-span-2': inventoryUsage?.length
                                     }">
             </app-contractor-timeline>
         }

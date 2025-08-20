@@ -65,6 +65,7 @@ export class LoginComponent {
       if(error instanceof HttpErrorResponse && !error.error)
       {
         this.serverError = true;
+        this.loading = false;
         return;
       }
     }
@@ -79,6 +80,7 @@ export class LoginComponent {
       if(error instanceof HttpErrorResponse && !error.error)
       {
         this.serverError = true;
+        this.loading = false;
         return;
       }
     }
