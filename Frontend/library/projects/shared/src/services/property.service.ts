@@ -12,6 +12,7 @@ export interface CreateBuildingPayload {
   trusteeUuid?: string;
   propertyImageId?: string | null;
   coporateUuid?: string | null; 
+  bodyCorporate?: string | null; 
   area: number;
 }
 

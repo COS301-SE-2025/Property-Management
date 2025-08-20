@@ -24,7 +24,8 @@ export class BudgetApiService {
       approvalDate: updatedOn,
       buildingUuid: buildingId
     };
-    return this.http.post<BuildingDetails>(`${this.url}/budgets`, newBudget);
+    return this.http.post<BuildingDetails>(`${this.url}/budgets`, newBudget,
+    { withCredentials: true });
   }
 
   getBudgetById(budgetId: string) : Observable<BuildingDetails>
