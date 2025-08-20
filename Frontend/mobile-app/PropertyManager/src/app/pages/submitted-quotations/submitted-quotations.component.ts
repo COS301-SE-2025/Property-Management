@@ -13,7 +13,7 @@ import {
 } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
 import { CommonModule } from '@angular/common';
-import { ApiService } from 'shared';
+import { ApiService, StorageService } from 'shared';
 import { Quote } from 'shared';
 import { addIcons } from 'ionicons';
 import { folderOpenOutline } from 'ionicons/icons';
@@ -62,19 +62,20 @@ import {
 export class SubmittedQuotationsComponent implements OnInit {
   quotes: Quote[] = [];
  
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService, private storageService: StorageService) {
     addIcons({ folderOpenOutline });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     const contractorId = this.getContractorIdFromLocalStorage();
     if (contractorId) {
-      this.loadQuotes(contractorId);
+      this.loadQuotes(await contractorId);
     }
   }
 
-  getContractorIdFromLocalStorage(): string | null {
-    return "5c56261a-351d-4b37-9920-bf0c50da07ef"//localStorage.getItem('contractorID');
+  async getContractorIdFromLocalStorage() {
+    const id = await this.storageService.get('contractorId');
+    return id;
   }
   expiryDate(quote: Quote): string {
     return quote.expiry_date ? new Date(quote.expiry_date).toLocaleString() : 'No expiry';

@@ -31,21 +31,25 @@ export class ContractorApiService {
       services: service
     };
 
-    return this.http.post<ContractorDetails>(`${this.url}/contractor`, req);
+    return this.http.post<ContractorDetails>(`${this.url}/contractor`, req,
+    { withCredentials: true });
   }
 
   getAllContractors(): Observable<ContractorDetails[]>
   {
-    return this.http.get<ContractorDetails[]>(`${this.url}/contractor`);
+    return this.http.get<ContractorDetails[]>(`${this.url}/contractor`,
+    { withCredentials: true });
   }
 
   getContractorById(contractorId: string): Observable<ContractorDetails>
   {
-    return this.http.get<ContractorDetails>(`${this.url}/contractor/${contractorId}`);
+    return this.http.get<ContractorDetails>(`${this.url}/contractor/${contractorId}`,
+    { withCredentials: true });
   }
 
   getAssignedContractor(taskId: string)
   {
-    return this.http.get<AssignedContractor[]>(`${this.url}/maintenance/task/${taskId}/contractors`);
+    return this.http.get<AssignedContractor[]>(`${this.url}/maintenance/task/${taskId}/contractors`,
+    { withCredentials: true });
   }
 }

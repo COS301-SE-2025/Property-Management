@@ -32,15 +32,18 @@ export class TaskProgresApiService{
             ...(inventoryUsageId && { inventoryUsageUuid: inventoryUsageId }),
             ...(quantityUsed !== undefined && { quantityUsed })
         };
-        return this.http.post<TaskProgress>(`${this.url}`, req);
+        return this.http.post<TaskProgress>(`${this.url}`, req,
+    { withCredentials: true });
     }
     getTaskProgressById(progressId: string)
     {
-        return this.http.get<TaskProgress[]>(`${this.url}/${progressId}`);
+        return this.http.get<TaskProgress[]>(`${this.url}/${progressId}`,
+    { withCredentials: true });
     }
     getTaskProgressByTaskId(taskId: string)
     {
-        return this.http.get<TaskProgress[]>(`${this.url}/task/${taskId}`);
+        return this.http.get<TaskProgress[]>(`${this.url}/task/${taskId}`,
+    { withCredentials: true });
     }
     updateProgressPercentage(taskId: string, progress: number)
     {
@@ -48,10 +51,12 @@ export class TaskProgresApiService{
             progressPercentage: progress
         };
 
-        return this.http.post<TaskProgress>(`${this.url}/task/${taskId}`, req);
+        return this.http.post<TaskProgress>(`${this.url}/task/${taskId}`, req,
+    { withCredentials: true });
     }
     deleteTaskProgress(progressId: string)
     {
-        return this.http.delete<TaskProgress>(`${this.url}/${progressId}`);
+        return this.http.delete<TaskProgress>(`${this.url}/${progressId}`,
+    { withCredentials: true });
     }
 }
