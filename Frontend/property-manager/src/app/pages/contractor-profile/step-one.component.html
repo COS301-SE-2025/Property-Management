@@ -5,7 +5,7 @@
         <!-- <input type="text" formControlName="contact_info" placeholder="Contact Info" /> -->
         <input type="email" formControlName="email" placeholder="Email Address" />
         <input type="text" formControlName="phone" placeholder="Phone Number" />
-        <input type="text" formControlName="address" placeholder="Address" />
+        <app-address-map [control]="form.controls.address"></app-address-map>
         <div class="row">
             <input type="text" formControlName="city" placeholder="City" />
             <input type="text" formControlName="suburb" placeholder="Suburb" />
