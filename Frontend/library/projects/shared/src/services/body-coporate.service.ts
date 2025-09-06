@@ -79,7 +79,6 @@ export class BodyCoporateService {
           const tasks = await firstValueFrom(
             this.bodyCoporateApiService.getPendingTasks(uuid)
           );
-
           tasks.forEach(task => this.addToTask(task));
         } catch (error) {
           console.error(`Failed to load tasks for building ${uuid}`, error);

@@ -14,6 +14,7 @@ Backend/ktlint
 klint
 
 # === Frontend (Angular/Node) ===
+Frontend/.angular 
 Frontend/Property-Manager/node_modules
 Frontend/mobile-app/PropertyManager/node_modules
 Frontend/mobile-app/PropertyManager/dist
