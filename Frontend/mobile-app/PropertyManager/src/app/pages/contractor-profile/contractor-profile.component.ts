@@ -5,7 +5,7 @@ import { IonContent, IonItem, IonInput, IonText, IonSpinner } from '@ionic/angul
 import { ContractorService, ContractorDetails, getCookieValue, ImageApiService } from 'shared';
 import { TabComponent } from 'src/app/components/tab/tab.component';
 import { Router } from '@angular/router';
-
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-contractor-profile',
@@ -25,6 +25,12 @@ export class ContractorProfileComponent implements OnInit {
   imageError = false;
   isSubmitting = false;
   submissionError: string | null = null;
+
+  certFiles: File[] = [];
+  licenseFiles: File[] = [];
+  idFiles: File[] = [];
+  projectRecordFiles: File[] = [];
+  projectImageFiles: File[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -126,26 +132,77 @@ export class ContractorProfileComponent implements OnInit {
     this.imageError = false;
   }
 
-  async onSubmit() {
-    if (this.form.invalid) {
-      this.submissionError = 'Please fill all required fields.';
-      return;
-    }
-    this.isSubmitting = true;
-    this.submissionError = null;
-
-    const contractorId = getCookieValue(document.cookie, 'contractorId');
-    const payload = { ...this.form.value };
-
-    try {
-      await this.contractorService.updateContractor(contractorId, payload).toPromise();
-      localStorage.setItem('contractorProfileComplete', 'true');
-      this.router.navigate(['/contractor-dashboard']);
-    } catch (err: any) {
-      this.submissionError = 'Failed to update contractor profile.';
-      console.error(err);
-    } finally {
-      this.isSubmitting = false;
-    }
+  onCertUpload(event: Event) {
+    this.certFiles = Array.from((event.target as HTMLInputElement).files ?? []);
   }
+  onLicenseUpload(event: Event) {
+    this.licenseFiles = Array.from((event.target as HTMLInputElement).files ?? []);
+  }
+  onIdUpload(event: Event) {
+    this.idFiles = Array.from((event.target as HTMLInputElement).files ?? []);
+  }
+  onProjectRecordsUpload(event: Event) {
+    this.projectRecordFiles = Array.from((event.target as HTMLInputElement).files ?? []);
+  }
+  onProjectImagesUpload(event: Event) {
+    this.projectImageFiles = Array.from((event.target as HTMLInputElement).files ?? []);
+  }
+
+async onSubmit() {
+  if (this.form.invalid) {
+    this.submissionError = 'Please fill all required fields.';
+    return;
+  }
+  this.isSubmitting = true;
+  this.submissionError = null;
+
+  const contractorId = getCookieValue(document.cookie, 'contractorId');
+  const payload = { ...this.form.value };
+
+  try {
+    const certIds: string[] = [];
+    for (const file of this.certFiles) {
+      const res = await firstValueFrom(this.imageService.uploadImage(file));
+      certIds.push(res.imageId);
+    }
+    payload.certifications = certIds;
+
+    const licenseIds: string[] = [];
+    for (const file of this.licenseFiles) {
+      const res = await firstValueFrom(this.imageService.uploadImage(file));
+      licenseIds.push(res.imageId);
+    }
+    payload.licenses = licenseIds;
+
+    const idIds: string[] = [];
+    for (const file of this.idFiles) {
+      const res = await firstValueFrom(this.imageService.uploadImage(file));
+      idIds.push(res.imageId);
+    }
+    payload.ids = idIds;
+
+    const recordIds: string[] = [];
+    for (const file of this.projectRecordFiles) {
+      const res = await firstValueFrom(this.imageService.uploadImage(file));
+      recordIds.push(res.imageId);
+    }
+    payload.projectRecords = recordIds;
+
+    const projectImageIds: string[] = [];
+    for (const file of this.projectImageFiles) {
+      const res = await firstValueFrom(this.imageService.uploadImage(file));
+      projectImageIds.push(res.imageId);
+    }
+    payload.projectImages = projectImageIds;
+
+    await this.contractorService.updateContractor(contractorId, payload).toPromise();
+    localStorage.setItem('contractorProfileComplete', 'true');
+    this.router.navigate(['/contractor-home']);
+  } catch (err: any) {
+    this.submissionError = 'Failed to update contractor profile.';
+    console.error(err);
+  } finally {
+    this.isSubmitting = false;
+  }
+}
 }

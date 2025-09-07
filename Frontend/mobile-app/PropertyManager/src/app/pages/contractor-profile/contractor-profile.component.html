@@ -14,6 +14,7 @@
       <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" />
     </div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
         <ion-input formControlName="name" placeholder="Name *"></ion-input>
       </ion-item>
@@ -40,14 +41,37 @@
           <ion-input formControlName="reg_number" placeholder="Reg No. *"></ion-input>
         </ion-item>
       </div>
+
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
         <ion-input formControlName="description" placeholder="Description *"></ion-input>
       </ion-item>
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
         <ion-input formControlName="services" placeholder="Services *"></ion-input>
       </ion-item>
+
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
         <ion-input formControlName="project_history" placeholder="Project History"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <label>Attach Certifications</label>
+        <input type="file" (change)="onCertUpload($event)" multiple />
+      </ion-item>
+      <ion-item>
+        <label>Attach Licenses</label>
+        <input type="file" (change)="onLicenseUpload($event)" multiple />
+      </ion-item>
+      <ion-item>
+        <label>Attach ID</label>
+        <input type="file" (change)="onIdUpload($event)" />
+      </ion-item>
+      <ion-item>
+        <label>Attach Project Records</label>
+        <input type="file" (change)="onProjectRecordsUpload($event)" multiple />
+      </ion-item>
+      <ion-item>
+        <label>Attach Project Images</label>
+        <input type="file" (change)="onProjectImagesUpload($event)" multiple />
       </ion-item>
       <ion-item *ngIf="submissionError">
         <ion-text color="danger">{{ submissionError }}</ion-text>
