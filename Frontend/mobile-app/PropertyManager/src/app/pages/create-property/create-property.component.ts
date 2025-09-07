@@ -3,18 +3,21 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TabComponent } from 'src/app/components/tab/tab.component';
-import { IonicModule } from '@ionic/angular';
-import { ImageApiService, PropertyService, StorageService } from 'shared';
+import { IonicModule, ToastController } from '@ionic/angular';
+import { ImageApiService, PropertyService, StorageService, getCookieValue } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
+import { HttpErrorResponse } from '@angular/common/http';
 import { PhotoService } from 'src/app/services/photo.service';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
+import { firstValueFrom } from 'rxjs';
+
 
 @Component({
   selector: 'app-create-property',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent ],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent],
   templateUrl: './create-property.component.html',
   styleUrls: ['./create-property.component.scss']
 })
@@ -25,6 +28,10 @@ export class CreatePropertyComponent implements OnInit {
   selectedImageFile: File | null = null;
   isSubmitting = false;
   submissionError: string | null = null;
+  bodyCorporates: any[] = [];
+
+  trusteeUuid: string | null = null;
+  coporateUuid: string | null = null;
 
   private fb = inject(FormBuilder);
   private propertyService = inject(PropertyService);
@@ -34,7 +41,7 @@ export class CreatePropertyComponent implements OnInit {
   private storage = inject(StorageService);
   private imageService = inject(ImageApiService);
 
-  constructor() {
+  constructor(private toastController: ToastController) {
     this.form = this.fb.group({
       name: ['', Validators.required],
       area: ['', [Validators.required, Validators.min(0)]],
@@ -44,7 +51,8 @@ export class CreatePropertyComponent implements OnInit {
       city: [''],
       province: [''],
       type: ['', Validators.required],
-      primaryContractor: [''],
+      // primaryContractor: [''],
+      coporateUuid: [''],
       bodyCorporate: [''],
       image: [null],
     });
@@ -53,15 +61,44 @@ export class CreatePropertyComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.loadContractors();
+    this.trusteeUuid = await this.storage.get('trusteeId');
+    if (!this.trusteeUuid) {
+        this.submissionError = 'Authentication error: Please log in again.';
+    }
+    // this.loadContractors();
+    this.loadBodyCorporates();
+  }
+
+    loadBodyCorporates(): void {
+    if (this.trusteeUuid) {
+      this.propertyService.getBodyCorporatesForTrustee(this.trusteeUuid).subscribe({
+        next: async (invites: any[]) => {
+          const acceptedInvites = invites.filter(invite => invite.status === 'ACCEPTED');
+          const bodyCorporatePromises = acceptedInvites.map(invite =>
+            this.propertyService.getBodyCorporateByUuid(invite.coporateUuid).toPromise()
+          );
+          const bodyCorporateDetails = await Promise.all(bodyCorporatePromises);
+          this.bodyCorporates = bodyCorporateDetails.map(bc => ({
+            coporateName: bc.corporateName,
+            coporateUuid: bc.corporateUuid
+          }));
+        },
+        error: (err: HttpErrorResponse) => console.error('Failed to load body corporates:', err)
+      });
+    }
   }
 
   loadContractors(): void {
-    this.contractorService.getAllContractors().subscribe({
-      next: (data: Contractor[]) => this.contractors = data,
-      error: () => this.contractors = []
-    });
-  }
+  this.contractorService.getAllContractors().subscribe({
+    next: (contractors: Contractor[]) => {
+      this.contractors = contractors;
+    },
+    error: () => {
+      this.contractors = [];
+    }
+  });
+}
+
   async capturePhoto(): Promise<void>
   {
     try {
@@ -85,18 +122,6 @@ export class CreatePropertyComponent implements OnInit {
     this.form.patchValue({ image: null });
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] ?? null;
-    if (file) {
-      this.selectedImageFile = file;
-      this.form.patchValue({ image: file });
-      const reader = new FileReader();
-      reader.onload = () => this.capturedPhoto = reader.result as string;
-      reader.readAsDataURL(file);
-    }
-  }
-
   async onSubmit(): Promise<void> {
     if (this.form.invalid) {
       this.submissionError = 'Please fill all required fields.';
@@ -114,42 +139,64 @@ export class CreatePropertyComponent implements OnInit {
       formValue.province
     ].filter(part => part && part.trim()).join(', ');
 
-    const id = await this.storage.get('trusteeId');
+    const id = this.trusteeUuid;
     let imageId = '00000000-0000-0000-0000-000000000000';
 
-    //Upload file
-    if(this.selectedImageFile)
-    {
-      console.log('uploading image');
-      const upload = await this.imageService.uploadImage(this.selectedImageFile).toPromise();
-
-      if(upload)
+    try{
+      //Upload file
+      if(this.selectedImageFile)
       {
-        imageId = upload?.imageId;
+        const upload = await firstValueFrom(this.imageService.uploadImage(this.selectedImageFile));
+        imageId = upload?.imageId ?? imageId;
       }
+  
+      const payload = {
+        name: formValue.name,
+        address: fullAddress,
+        type: formValue.type,
+        propertyValue: Number(formValue.propertyValue),
+        // primaryContractor: formValue.primaryContractor,
+        bodyCorporate: formValue.bodyCorporate,
+        area: Number(formValue.area),
+        propertyImageId: imageId,
+        trusteeUuid: id!
+      };
+    
+      await firstValueFrom(this.propertyService.createProperty(payload));
+
+      this.isSubmitting = false;
+      await this.presentToast('Successfully created property', 'success');
+      this.router.navigate(['/home']).then(() => window.location.reload());
     }
-
-    const payload = {
-      name: formValue.name,
-      address: fullAddress,
-      type: formValue.type,
-      propertyValue: Number(formValue.propertyValue),
-      primaryContractor: formValue.primaryContractor,
-      bodyCorporate: formValue.bodyCorporate,
-      area: Number(formValue.area),
-      propertyImageId: imageId,
-      trusteeUuid: id
-    };
-
-    try {
-      await this.propertyService.createProperty(payload).toPromise();
+    catch(err)
+    {
       this.isSubmitting = false;
-      this.router.navigate(['/home']).then(() => {
-        window.location.reload();
-      });
-    } catch (err) {
       this.submissionError = 'Failed to create property.';
-      this.isSubmitting = false;
     }
   }
+  private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,      
+      position: 'top'
+    });
+    await toast.present();
+  }
+
+  onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+    this.selectedImageFile = file;
+    this.form.patchValue({ image: file });
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.capturedPhoto = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
 }
+}
+

@@ -137,7 +137,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     const name = this.form.value.name;
     const des = this.form.value.description;
     const date = this.form.value.date;
-    const proirity = this.form.value.priority;
+    const proirity = this.form.value.priority.value;
 
     this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate, proirity).subscribe({
       next: (task) => {
@@ -152,30 +152,46 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
 
         const house = this.housesService.getHouseById(this.houseId);
 
-
-        const noti: Notification = {
-          notificationType: 'Task Creation',
-          message: `New task: ${name} has been added to ${house?.name}`,
-          recipientUuid: house?.coporateUuid!,
-          recipientType: 'body corporate',
-          isRead: false,
-          relatedTaskUuid: task.uuid
-        }
-        this.notificationService.createNotifications(noti).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Task added successfully'
-            });
-    
-            setTimeout(() => {
-              this.router.navigate(['viewHouse', this.houseId]).then(() => {
-                window.location.reload();
-              });
-            }, 3000);
+        if(house?.coporateUuid)
+        {
+          const noti: Notification = {
+            notificationType: 'Task Creation',
+            message: `New task: ${name} has been added to ${house?.name}`,
+            recipientUuid: house?.coporateUuid!,
+            recipientType: 'bodycoporate',
+            isRead: false,
+            relatedTaskUuid: task.uuid
           }
-        });
+          this.notificationService.createNotifications(noti).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Task added successfully'
+              });
+      
+              setTimeout(() => {
+                this.router.navigate(['viewHouse', this.houseId]).then(() => {
+                  window.location.reload();
+                });
+              }, 2000);
+            }
+          });
+        }
+        else
+        {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Task added successfully'
+          });
+  
+          setTimeout(() => {
+            this.router.navigate(['viewHouse', this.houseId]).then(() => {
+              window.location.reload();
+            });
+          }, 2000);
+        }
 
       },
       error: (err) => {

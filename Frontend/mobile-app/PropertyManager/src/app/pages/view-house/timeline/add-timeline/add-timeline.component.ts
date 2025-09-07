@@ -5,12 +5,14 @@ import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePickerModule } from 'primeng/datepicker';
-import { TaskApiService, ImageApiService, ContractorApiService, ContractorDetails, StorageService, Inventory, InventoryItemApiService, HousesService } from 'shared';
+import { TaskApiService, Notification, NotificationsApiService, ImageApiService, ContractorApiService, ContractorDetails, StorageService, Inventory, InventoryItemApiService, HousesService } from 'shared';
 import { addIcons } from 'ionicons';
 import { cameraOutline, trashOutline } from 'ionicons/icons';
 import { PhotoService } from 'src/app/services/photo.service';
 import { SelectModule } from 'primeng/select';
+import { ToastController } from '@ionic/angular/standalone';
 import { InventoryComponent } from '../../inventory/inventory.component';
+import { firstValueFrom, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-add-timeline',
@@ -26,9 +28,6 @@ import { InventoryComponent } from '../../inventory/inventory.component';
     :host ::ng-deep .high-priority {
       color: #F44336;
     }
-    .dark .p-datepicker-panel{
-      background-color: #444;
-    }
   `,
 })
 export class AddTimelineComponent extends ModalComponent implements OnInit {
@@ -36,6 +35,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   form!: FormGroup;
   houseId = '';
   selectedFile: File | null = null;
+  loading = false;
   
   public capturedPhoto: string | null = null;
   public contractors: ContractorDetails[] | undefined = undefined;
@@ -61,7 +61,9 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
     private storage: StorageService,
     private photoService: PhotoService,
     private inventoryService: InventoryItemApiService,
-    private housesService: HousesService
+    private housesService: HousesService,
+    private notificationService: NotificationsApiService,
+    private toastController: ToastController
   ) {
     super();
 
@@ -69,6 +71,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.loading = false;
     this.route.params.subscribe(params => {
       this.houseId = params['houseId'] || null;
     });
@@ -117,52 +120,88 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
   override async confirm() {
     if(this.form.valid)
     {
+      this.loading = true;
       this.addError = false;
       let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
 
-      if(this.selectedFile)
-      {
-        try{
-          const upload = await this.imageService.uploadImage(this.selectedFile).toPromise();
-          if(upload?.imageId){
-            imageId = upload?.imageId;
-          }
-        }
-        catch(err)
+      try{
+        if(this.selectedFile)
         {
-          console.error("Image upload failed", err);
+          const upload = await firstValueFrom(this.imageService.uploadImage(this.selectedFile))
+          imageId = upload?.imageId ?? imageId;
         }
-      }
+        const userId = await this.storage.get('trusteeId');
+  
+        const name = this.form.value.name;
+        const des = this.form.value.description;
+        const date = new Date(this.form.value.date);
+        const proirity = this.form.value.priority.value;
 
-      const userId = await this.storage.get('trusteeId');
-
-      const name = this.form.value.name;
-      const des = this.form.value.description;
-      const date = new Date(this.form.value.date);
-      const proirity = this.form.value.priority;
-
-      this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, true, false, proirity).subscribe({
-        next: (task) => {
-
-          if(this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0)
-          {
-            this.handleInventory(task.uuid);
+        this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, true, false, proirity).subscribe({
+          next: async(task) => {
+  
+            if(this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0)
+            {
+              this.handleInventory(task.uuid);
+            }
+            this.loading = false;
+            this.form.reset();
+            this.closeModal();
+  
+            const house = this.housesService.getHouseById(this.houseId);
+  
+            if(house?.coporateUuid)
+            {
+              const noti: Notification = {
+                notificationType: 'Task Creation',
+                message: `New task: ${name} has been added to ${house?.name}`,
+                recipientUuid: house?.coporateUuid!,
+                recipientType: 'body corporate',
+                isRead: false,
+                relatedTaskUuid: task.uuid
+              }
+    
+              this.notificationService.createNotifications(noti).subscribe({
+                next: async() => {
+    
+                  await this.presentToast('Task successfully added', "success");
+    
+                  setTimeout(() => {
+                    this.router.navigate(['view-house', this.houseId]).then(() => {
+                      window.location.reload();
+                    });
+                  }, 1500);
+                },
+                error: (err) => {
+                  console.error("Failed to create task", err);
+                  this.loading = false;
+                  this.addError = true;
+                }
+              })
+            }
+            else
+            {
+              await this.presentToast('Task successfully added', "success");
+    
+              setTimeout(() => {
+                this.router.navigate(['view-house', this.houseId]).then(() => {
+                  window.location.reload();
+                });
+              }, 1500);
+            }
+          },
+          error: (err) => {
+            console.error("Failed to create task", err);
+            this.loading = false;
+            this.addError = true;
           }
-
-          this.form.reset();
-          this.closeModal();
-
-          setTimeout(() => {
-            this.router.navigate(['view-house', this.houseId]).then(() => {
-              window.location.reload();
-            });
-          }, 3000);
-        },
-        error: (err) => {
-          console.error("Failed to create task", err);
-          this.addError = true;
-        }
-      });
+        });
+      }
+      catch
+      {
+        this.loading = false;
+        this.addError = true;
+      }
     }
   }
   deletePhoto()
@@ -178,37 +217,46 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
     this.inventoryItemsUsed = this.inventoryItemsAvailable.filter(item =>
       selectedIds.includes(item.itemUuid)
     );
- }
- private handleInventory(taskId: string)
- {
-  if(!this.inventoryItemsUsed) return;
+  }
+  private handleInventory(taskId: string)
+  {
+    if(!this.inventoryItemsUsed) return;
 
-  this.inventoryItemsUsed.forEach(item => {
-    this.inventoryCard.addItemToUsage(
-      taskId,
-      item.itemUuid,
-      item.quantityInStock
-    );
+    this.inventoryItemsUsed.forEach(item => {
+      this.inventoryCard.addItemToUsage(
+        taskId,
+        item.itemUuid,
+        item.quantityInStock
+      );
 
-    const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
-    if(org)
-    {
-      org.quantityInStock -= item.quantityInStock;
-      if(org.quantityInStock <= 0)
+      const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
+      if(org)
       {
-        this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
+        org.quantityInStock -= item.quantityInStock;
+        if(org.quantityInStock <= 0)
+        {
+          this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
 
-        this.housesService.deleteInvetoryItem(item);
+          this.housesService.deleteInvetoryItem(item);
+        }
+        else
+        {
+          this.housesService.updateInventory([org]);
+        }
       }
-      else
-      {
-        this.housesService.updateInventory([org]);
-      }
-    }
-  });
- }
- onQuantitiesChanged(updated: Inventory[])
- {
-  this.inventoryItemsUsed = updated;
- }
+    });
+  }
+  onQuantitiesChanged(updated: Inventory[])
+  {
+    this.inventoryItemsUsed = updated;
+  }
+  private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,      
+      position: 'top'
+    });
+    await toast.present();
+  }
 }

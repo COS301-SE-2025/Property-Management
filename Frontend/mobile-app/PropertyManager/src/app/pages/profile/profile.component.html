@@ -1,9 +1,8 @@
-<app-header/>
-<ion-content class="dark:bg-gray-800">
-  <h3 class="text-lg mt-4 ml-4 dark:text-white">My Account</h3>
-  <div class="flex flex-col justify-start items-start pt-4">
-    <ion-list class="dark:bg-gray-800">
-      <ion-item class=" dark:bg-gray-800">
+<ion-content class="dark:bg-gray-700 ">
+  <h3 class="text-lg mt-4 ml-4 text-center dark:text-white ">My Account</h3>
+  <div class="flex flex-col justify-start items-start pt-4 justify-center items-center">
+    <ion-list class="dark:bg-gray-700">
+      <ion-item class=" dark:bg-gray-700">
         @if(darkMode)
         {
           <ion-button color="light" fill="clear" (click)="changeTheme()">
@@ -18,14 +17,26 @@
           </ion-button>
         }
       </ion-item>
+         @if (userType === 'contractor') {
+        <ion-item>
+          <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/submitted-quotations">
+            <ion-icon slot="start" name="document-text-outline"></ion-icon>
+            Submitted Quotations
+          </ion-button>
+        </ion-item>
+      }
       <ion-item>
         <ion-button [color]="darkMode? 'light': 'dark'" fill="clear">
             <ion-icon slot="start" name="text-outline"></ion-icon>
-            Change font size
-          </ion-button>
+            <ion-select [value]="fontSize" (ionChange)="changeFontSize($event.detail.value)">
+            <ion-select-option value="small">Small</ion-select-option>
+            <ion-select-option value="normal">Normal</ion-select-option>
+            <ion-select-option value="large">Large</ion-select-option>
+    </ion-select>
+        </ion-button>
       </ion-item>
       <ion-item>
-        <ion-button [color]="darkMode? 'light': 'dark'" fill="clear">
+        <ion-button [color]="darkMode? 'light': 'dark'" fill="clear" routerLink="/help">
             <ion-icon slot="start" name="help-outline"></ion-icon>
             Help
           </ion-button>
@@ -38,5 +49,5 @@
       </ion-item>
     </ion-list>
   </div>
+  <app-tab/>
 </ion-content>
-<app-tab/>

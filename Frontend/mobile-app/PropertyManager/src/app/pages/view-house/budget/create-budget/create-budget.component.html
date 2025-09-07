@@ -1,7 +1,7 @@
-<ion-modal [isOpen]="displayModal">
+<ion-modal [isOpen]="displayModal" class="dark:bg-gray-700">
   <ng-template>
     <ion-header>
-      <ion-toolbar>
+      <ion-toolbar class="dark:bg-gray-800">
         <ion-buttons slot="start">
           <ion-button (click)="closeModal()">Cancel</ion-button>
         </ion-buttons>
@@ -13,8 +13,8 @@
     <ion-content>
       <form [formGroup]="form" (ngSubmit)="confirm()">
         <div class="flex flex-col justify-center items-center mt-4 space-y-2">
-          <p class="text-gray-700 pl-2 pb-2">Allocate budgets for inventory and maintenance tasks</p>
-          <ion-item>
+          <p class="text-gray-700 pl-2 pb-2 dark:text-gray-200">Allocate budgets for inventory and maintenance tasks</p>
+          <ion-item class="dark:text-gray-200">
             <ion-input
               label="Inventory budget allocation"
               labelPlacement="stacked"
@@ -23,7 +23,7 @@
             <p class="text-red-500" *ngIf="form.get('inventory')?.hasError('required') && form.get('inventory')?.touched">Field is required</p>
             <p class="text-red-500" *ngIf="form.get('inventory')?.hasError('min') && form.get('inventory')?.touched">Value must be positive</p>
           </ion-item>
-          <ion-item>
+          <ion-item class="dark:text-gray-200">
             <ion-input
               label="Maintenance budget allocation"
               labelPlacement="stacked"
@@ -31,6 +31,23 @@
             ></ion-input>
             <p class="text-red-500" *ngIf="form.get('maintenance')?.hasError('required') && form.get('maintenance')?.touched">Field is required</p>
             <p class="text-red-500" *ngIf="form.get('maintenance')?.hasError('min') && form.get('maintenance')?.touched">Value must be positive</p>
+          </ion-item>
+          <ion-item>
+            <div class="pt-5">
+              <button type="submit" [disabled]="loading" class="bg-yellow-400 text-black px-3 py-1.5 rounded">
+                <ng-container *ngIf="!loading; else loadingTemplate">
+                  Create budget
+                </ng-container>
+                <ng-template #loadingTemplate>
+                   <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" 
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+                      </path>
+                  </svg>
+                </ng-template>
+              </button>
+            </div>
           </ion-item>
         </div>
       </form>

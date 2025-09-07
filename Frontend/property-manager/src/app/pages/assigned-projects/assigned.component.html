@@ -9,33 +9,41 @@
             </h2>
             <div class="w-60 h-1 bg-yellow-300 mt-2"></div>
         </div>
-        <div class="flex flex-wrap gap-8 justify-center w-full">
-            <div class="block animate-item">
+        
+        <!--  assigneed tasks -->
+        <div *ngIf="tasks.length > 0" class="flex flex-wrap gap-8 justify-center w-full">
+            <div *ngFor="let task of tasks" class="block animate-item">
                 <p-card [style]="{ height: '20rem', width: '15rem', overflow: 'hidden', backgroundColor: 'white' }">
                     <ng-template #header>
-                        <img src="/assets/images/house1.jpg" alt="Project Image" class="w-full h-40 object-cover" />
+                        <img [src]="task.img" alt="Project Image" class="w-full h-40 object-cover" />
                     </ng-template>
                     <ng-template #title>
-                        <span class="text-black"> Property X</span>
+                        <span class="text-black">{{ task.title || 'Property' }}</span>
                     </ng-template>
                     <ng-template #subtitle>
-                        <span class="text-black">Fix the toilet</span>
+                        <span class="text-black truncate block w-full">{{ task.des || 'No description' }}</span>
                     </ng-template>
                     <ng-template #footer>
                         <div class="flex gap-4 mt-1">
-                            <p-button label=" Edit timeline" icon="pi pi-pencil" iconPos="left" severity="secondary"
-                                [outlined]="true" styleClass="w-full"></p-button>
+                            <p-button label="Edit timeline" 
+                                [routerLink]="['/taskDetails', task['uuid']]" 
+                                icon="pi pi-pencil" 
+                                iconPos="left" 
+                                severity="secondary"
+                                [outlined]="true" 
+                                styleClass="w-full">
+                            </p-button>
                         </div>
                     </ng-template>
                 </p-card>
             </div>
         </div>
-        <!-- <ng-template #noTasks>
-      <div class="flex flex-col items-center justify-center w-full mt-20 text-center text-gray-400 animate-item">
-        <img src="/assets/icons/empty-folder.svg" alt="No tasks" class="w-24 h-24 mb-4 opacity-60" />
-        <p class="text-xl font-semibold mb-2">No projects available</p>
-        <p class="text-sm">A project has not been made available to you yet, please check again later.</p>
-      </div>
-    </ng-template> -->
+
+        <!--  no tasks -->
+        <div *ngIf="tasks.length === 0" class="flex flex-col items-center justify-center w-full mt-20 text-center text-gray-400 animate-item">
+            <img src="/assets/icons/empty-folder.svg" alt="No tasks" class="w-24 h-24 mb-4 opacity-60" />
+            <p class="text-xl font-semibold mb-2">No projects available</p>
+            <p class="text-sm">A project has not been made available to you yet, please check again later.</p>
+        </div>
     </div>
 </div>

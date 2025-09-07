@@ -3,6 +3,16 @@ import { Injectable } from '@angular/core';
 import { environmentMobile } from '../../../environment';
 import { TaskProgress } from '../../../public-api';
 
+interface CreateProgressRequest {
+  contractorUuid: string;
+  taskUuid: string;
+  imageId: string;
+  workDescription: string;
+  progressPercentage: number;
+  inventoryUsageUuid?: string; 
+  quantityUsed?: number; 
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -11,27 +21,29 @@ export class TaskProgresApiService{
 
     constructor(private http: HttpClient){}
 
-    createProgress(contractorId: string, taskId: string, imageId: string, workDescription: string, inventoryUsageId: string, quantityUsed: number, progress: number)
+    createProgress(contractorId: string, taskId: string, imageId: string, workDescription: string, progress: number, inventoryUsageId?: string, quantityUsed?: number)
     {
-        const req = {
+        const req: CreateProgressRequest = {
             contractorUuid: contractorId,
             taskUuid: taskId,
             imageId: imageId,
             workDescription: workDescription,
-            inventoryUsageUuid: inventoryUsageId,
-            quantityUsed: quantityUsed,
-            progressPercentage: progress
-        }
-        console.log(req);
-        return this.http.post<TaskProgress>(`${this.url}`, req);
+            progressPercentage: progress,
+            ...(inventoryUsageId && { inventoryUsageUuid: inventoryUsageId }),
+            ...(quantityUsed !== undefined && { quantityUsed })
+        };
+        return this.http.post<TaskProgress>(`${this.url}`, req,
+    { withCredentials: true });
     }
     getTaskProgressById(progressId: string)
     {
-        return this.http.get<TaskProgress[]>(`${this.url}/${progressId}`);
+        return this.http.get<TaskProgress[]>(`${this.url}/${progressId}`,
+    { withCredentials: true });
     }
     getTaskProgressByTaskId(taskId: string)
     {
-        return this.http.get<TaskProgress[]>(`${this.url}/task/${taskId}`);
+        return this.http.get<TaskProgress[]>(`${this.url}/task/${taskId}`,
+    { withCredentials: true });
     }
     updateProgressPercentage(taskId: string, progress: number)
     {
@@ -39,10 +51,12 @@ export class TaskProgresApiService{
             progressPercentage: progress
         };
 
-        return this.http.post<TaskProgress>(`${this.url}/task/${taskId}`, req);
+        return this.http.post<TaskProgress>(`${this.url}/task/${taskId}`, req,
+    { withCredentials: true });
     }
     deleteTaskProgress(progressId: string)
     {
-        return this.http.delete<TaskProgress>(`${this.url}/${progressId}`);
+        return this.http.delete<TaskProgress>(`${this.url}/${progressId}`,
+    { withCredentials: true });
     }
 }

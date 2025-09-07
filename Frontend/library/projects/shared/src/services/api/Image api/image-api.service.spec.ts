@@ -6,7 +6,7 @@ import { environmentMobile } from '../../../environment';
 describe('ImageApiService', () => {
   let service: ImageApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:4200/api';
+  const mockApiUrl = 'http://localhost:8080/api';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -84,7 +84,7 @@ describe('ImageApiService', () => {
         expect(response).toEqual({ imageId: mockResponse.imageKey });
       });
 
-      const req = httpMock.expectOne('/api/images/upload');
+      const req = httpMock.expectOne(`${mockApiUrl}/images/upload`);
       expect(req.request.method).toBe('POST');
       
       const formData = req.request.body as FormData;
@@ -103,7 +103,7 @@ describe('ImageApiService', () => {
         }
       });
 
-      const req = httpMock.expectOne('/api/images/upload');
+      const req = httpMock.expectOne(`${mockApiUrl}/images/upload`);
       req.error(errorResponse);
     });
   });

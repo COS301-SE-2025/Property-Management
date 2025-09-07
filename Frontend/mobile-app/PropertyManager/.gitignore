@@ -70,4 +70,4 @@ testem.log
 Thumbs.db
 
 # Android build
-android
+/android

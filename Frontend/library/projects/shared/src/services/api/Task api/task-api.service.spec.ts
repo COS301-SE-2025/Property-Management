@@ -8,7 +8,7 @@ import { environmentMobile } from '../../../environment';
 describe('TaskApiService', () => {
   let service: TaskApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:4200/api';
+  const mockApiUrl = 'http://localhost:8080/api';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -263,8 +263,14 @@ describe('TaskApiService', () => {
   describe('getQuoteFromTaskId', () => {
     it('should get quotes for a task', () => {
       const mockQuotes: Quote[] = [
-        { uuid: 'quote-1', t_uuid: 'task-123', amount: 100, status: 'PENDING', c_uuid: '1', submitted_on: 1, doc: '' },
-        { uuid: 'quote-2', t_uuid: 'task-123', amount: 150, status: 'APPROVED', c_uuid: '2', submitted_on: 1, doc: '' }
+        {
+          uuid: 'quote-1', t_uuid: 'task-123', amount: 100, status: 'PENDING', c_uuid: '1', submitted_on: 1, doc: '',
+          expiry_date: ''
+        },
+        {
+          uuid: 'quote-2', t_uuid: 'task-123', amount: 150, status: 'APPROVED', c_uuid: '2', submitted_on: 1, doc: '',
+          expiry_date: ''
+        }
       ];
 
       service.getQuoteFromTaskId('task-123').subscribe(quotes => {

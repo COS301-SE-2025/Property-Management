@@ -84,8 +84,13 @@ export class NotificationsComponent implements OnInit {
   }
 
   loadTimeline() {
-    const type = this.getUserType();
+    let type = this.getUserType();
     if (this.userId && type) {
+      
+      if(type === 'bodyCorporate')
+      {
+        type = 'bodycoporate';
+      }
       this.notificationService.getNotifications(type, this.userId).subscribe({
         next: (noti) => {
           const unread: Notification[] = [];

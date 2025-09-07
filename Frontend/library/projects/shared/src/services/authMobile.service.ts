@@ -46,7 +46,8 @@ export class AuthMobileService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req);
+    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req,
+    { withCredentials: true });
   }
 
   trusteeRegister(
@@ -78,7 +79,8 @@ export class AuthMobileService {
       contactNumber
     };
 
-    return this.http.post<trusteeRegisterResponse>(`${this.url}/trustee/auth/register`, req);
+    return this.http.post<trusteeRegisterResponse>(`${this.url}/trustee/auth/register`, req,
+    { withCredentials: true });
   }
 
   confirmTrusteeRegistration(username: string, code: string): Promise<{ message: string }> {
@@ -99,15 +101,10 @@ export class AuthMobileService {
       this.contractorLoginRequest(email, password).subscribe({
         next: (result) => {
          const contractorId = result.userId;
-          const idToken = result.idToken;
-          const expireDate = new Date();
-          expireDate.setDate(expireDate.getDate() + 1);
-
-          document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
-          document.cookie = `contractorId=${contractorId}; expires=${expireDate.toUTCString()}; path=/`;
-          document.cookie = `userType=contractor; expires=${expireDate.toUTCString()}; path=/`;
-      
-
+          
+         this.storage.set('contractorId', contractorId);
+         this.storage.set('idToken', result.idToken);
+         this.storage.set('userType', 'contractor');
           resolve(result);
         },
         error: (error) => {
@@ -124,7 +121,8 @@ export class AuthMobileService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req);
+    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req,
+    { withCredentials: true });
   }
 
   contractorRegister(
@@ -156,7 +154,8 @@ export class AuthMobileService {
       contactNumber
     };
 
-    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req);
+    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req,
+    { withCredentials: true });
   }
 
   confirmContractorRegistration(username: string, code: string): Promise<{ message: string }> {
@@ -170,12 +169,24 @@ export class AuthMobileService {
         });
     });
   }
+  async getUserType(): Promise<string | null> {
+    if(await this.storage.get('trusteeId'))
+    {
+      return 'trustee';
+    }
+    else if(await this.storage.get('contractorId'))
+    {
+      return 'contractor';
+    }
+    return null;
+  }
 
   async logout()
   {
     await this.storage.remove("userType");
-    await this.storage.remove("trusteeID");
-    await this.storage.remove("contractorID");
+    await this.storage.remove("trusteeId");
+    await this.storage.remove("contractorId");
     await this.storage.remove("theme");
+    await this.storage.remove("fontSize");
   }
 }

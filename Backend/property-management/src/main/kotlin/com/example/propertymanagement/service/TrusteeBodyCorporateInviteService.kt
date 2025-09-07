@@ -29,7 +29,6 @@ class TrusteeBodyCorporateInviteService(
             message = "You have been invited to join a body corporate.",
             relatedInviteUuid = savedInvite.inviteUuid,
         )
-
         return savedInvite.toDTO()
     }
 

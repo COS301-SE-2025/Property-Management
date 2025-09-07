@@ -61,7 +61,7 @@ export class CreatePropertyComponent implements OnInit {
       province: [''],
       type: ['', Validators.required],
       // primaryContractor: ['', Validators.required],
-      coporateUuid: ['', Validators.required],
+      coporateUuid: [''],
       bodyCorporate: [''],
       image: [null],
     });
@@ -199,6 +199,12 @@ export class CreatePropertyComponent implements OnInit {
           err.status === 500 ? 'Server error.' :
           'Failed to create property.';
         this.isSubmitting = false;
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Errpr',
+          detail: 'The property was unsuccessfully created.'
+        });
       }
     });
 

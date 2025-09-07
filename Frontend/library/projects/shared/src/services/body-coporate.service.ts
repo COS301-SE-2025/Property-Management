@@ -79,7 +79,6 @@ export class BodyCoporateService {
           const tasks = await firstValueFrom(
             this.bodyCoporateApiService.getPendingTasks(uuid)
           );
-
           tasks.forEach(task => this.addToTask(task));
         } catch (error) {
           console.error(`Failed to load tasks for building ${uuid}`, error);
@@ -219,7 +218,8 @@ export class BodyCoporateService {
         this.bodyCoporateApiService.getAllPublicContractors(bcId)
       );
       const contractorsWithImages = await Promise.all(
-        contractors.map(async (c) => {
+        contractors.filter(c => c.status).map(async (c) => {
+
           if(c.img) 
           {
             try{

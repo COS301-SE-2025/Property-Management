@@ -65,7 +65,8 @@ export class ContractorProfileComponent implements OnInit {
                 this.imagePreviewUrl = imageUrl;
               },
               error: (err) => {
-                if (localStorage.getItem('contractorProfileComplete') === 'false' || !localStorage.getItem('contractorProfileComplete')) {
+                if(contractor.status === false)
+                {
                   this.resetImage();
                 } else {
                   console.error('Error loading image:', err);
@@ -84,12 +85,10 @@ export class ContractorProfileComponent implements OnInit {
 
   submitProfile() {
     const contractorId = getCookieValue(document.cookie, 'contractorId');
-    console.log(this.contractor);
-    console.log(contractorId);
 
     this.contractorService.updateContractor(contractorId, this.contractor).subscribe({
       next: () => {
-        localStorage.setItem('contractorProfileComplete', 'true');
+        // localStorage.setItem('contractorProfileComplete', 'true'); 
         this.messageService.add({
           severity: 'success',
           summary: 'Profile Complete',
@@ -97,7 +96,7 @@ export class ContractorProfileComponent implements OnInit {
           life: 3000
         });
         setTimeout(() => {
-          this.router.navigate(['/contractor']);
+          this.router.navigate(['/contractorHome']);
         }, 1500);
       },
       error: (err) => {
@@ -260,8 +259,11 @@ export class ContractorProfileComponent implements OnInit {
     this.submitProfile();
   }
 
-  onStepThreeImagesSelected(files: FileList) {
-    const event = { target: { files } } as unknown as Event;
-    this.onFileSelected(event, true);
+  
+  onStepThreeImagesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input?.files) {
+      const files: FileList = input.files;
+    }
   }
 }

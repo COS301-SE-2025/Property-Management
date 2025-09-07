@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from 'shared';
+import { AuthService, ContractorApiService, getCookieValue } from 'shared';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -27,7 +27,7 @@ export class LoginComponent {
 
   public selectedUserType = 'bodyCorporate';
 
-  constructor(private authService: AuthService, private router: Router){}
+  constructor(private authService: AuthService, private router: Router, private contractorService: ContractorApiService){}
 
   togglePassword()
   {
@@ -45,6 +45,15 @@ export class LoginComponent {
     this.userError = false;
     this.serverError = false;
     this.passwordLimit = false;
+    
+    const deleteCookie = (name: string) => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    };
+
+    deleteCookie("idToken");
+    deleteCookie("bodyCoporateId");
+    deleteCookie("trusteeId");
+    deleteCookie("contractorId");
 
     try {
       await this.authService.bodyCoporateLogin(this.email, this.password);
@@ -56,6 +65,7 @@ export class LoginComponent {
       if(error instanceof HttpErrorResponse && !error.error)
       {
         this.serverError = true;
+        this.loading = false;
         return;
       }
     }
@@ -70,6 +80,7 @@ export class LoginComponent {
       if(error instanceof HttpErrorResponse && !error.error)
       {
         this.serverError = true;
+        this.loading = false;
         return;
       }
     }
@@ -79,13 +90,23 @@ export class LoginComponent {
 
       // contractorProfileComplete is still checked in localStorage, 
       // but userType is now determined from the Cognito token
-      const profileComplete = localStorage.getItem('contractorProfileComplete');
-      if (profileComplete === 'true') {
-        this.router.navigate(['/contractorHome']);
-      } else {
-        this.router.navigate(['/contractor-prof']);
-      }
-      return;
+      const contractorId = getCookieValue(document.cookie, 'contractorId');
+
+      this.contractorService.getContractorById(contractorId!).subscribe({
+        next: (res) => {
+          if(res.status)
+          {
+            this.router.navigate(['/contractorHome']);
+            return;
+          }
+          else
+          {
+            this.router.navigate(['/contractor-prof']);
+            return;
+          }
+        }
+      });
+      this.router.navigate(['/contractor-prof']);
     } catch (error) {
       console.warn('Contractor login failed:', error);
 
@@ -106,4 +127,6 @@ export class LoginComponent {
       this.loading = false;
     }
   }
+
+  
 }

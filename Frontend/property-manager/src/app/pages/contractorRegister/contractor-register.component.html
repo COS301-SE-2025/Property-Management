@@ -1,6 +1,5 @@
-
-<div class="flex w-full justify-center items-center h-screen">
-  <div class="flex w-[700px] h-[400px] shadow-lg rounded-none overflow-hidden border">
+<div class="flex w-full justify-center items-center h-screen dark:bg-gray-100 bg-gray-100">
+  <div class="flex h-[400px] shadow-lg rounded-none overflow-hidden border">
     <div class="w-2/6 bg-white flex flex-col items-center justify-center p-6">
       <img class="h-40 mb-4" src="assets/images/logo.png" alt="App logo">
       <p class="font-bold text-2xl text-center text-gray-800">Property Manager</p>
@@ -10,22 +9,22 @@
 
       <p-floatlabel variant="on">
         <img *ngIf="!email" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/mail.svg" alt="">
-        <input class="w-full border rounded ml-2 !bg-white" pInputText type="email" id="email" [(ngModel)]="email" autocomplete="off">
+        <input class="w-[34rem] border rounded ml-2 !bg-white" pInputText type="email" id="email" [(ngModel)]="email" autocomplete="off">
         <label class="pl-6" for="email">Enter email address</label>
         <p *ngIf="errors.email" role="alert" class="text-red-500 text-sm pl-2">{{ errors.email }}</p>
       </p-floatlabel>
 
       <p-floatlabel variant="on">
         <img *ngIf="!contactNumber" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/telephone.svg" alt="">
-        <input class="w-full border rounded ml-2 !bg-white" pInputText type="tel" id="number" [(ngModel)]="contactNumber" autocomplete="off">
+        <input class="w-[34rem] border rounded ml-2 !bg-white" pInputText type="tel" id="number" [(ngModel)]="contactNumber" autocomplete="off">
         <label class="pl-6" for="number">Enter Contact number</label>
         <p *ngIf="errors.contactNumber" role="alert" class="text-red-500 text-sm pl-2">{{ errors.contactNumber }}</p>
       </p-floatlabel>
 
-      <p-floatlabel variant="on" class="relative">
+      <p-floatlabel variant="on">
         <img *ngIf="!password" class="absolute top-3 left-2 h-5 w-5 pointer-events-none" src="assets/icons/key_vertical.svg" alt="">
         <input
-          class="w-full border rounded py-2 ml-2 !bg-white"
+          class="w-[36.2rem] border rounded py-2 ml-2 !bg-white"
           [type]="passwordVisible ? 'text' : 'password'"
           pInputText
           id="over_label"
@@ -60,4 +59,3 @@
     </div>
   </div>
 </div>
-```

@@ -16,4 +16,5 @@ data class PDFMeta(
     val url: String,
     @Column(name = "contractor_uuid")
     val cUuid: UUID,
+    val type: String,
 )

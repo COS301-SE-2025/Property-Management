@@ -6,7 +6,6 @@ import { CommonModule } from "@angular/common";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import {  MultiSelectModule } from "primeng/multiselect";
 import { getCookieValue, ImageApiService, Inventory, InventoryItemApiService, InventoryUsageApiService, Notification, NotificationsApiService, TaskApiService, TaskProgresApiService } from "shared";
-import { InventoryCardComponent } from "../../view-house/inventory-card/inventory-card.component";
 import { FileSelectEvent, FileUploadModule } from "primeng/fileupload";
 import { MessageService } from "primeng/api";
 
@@ -14,7 +13,7 @@ import { MessageService } from "primeng/api";
   selector: 'app-add-progress-dialog',
   templateUrl: './add-progress-dialog.component.html',
   styles: ``,
-  imports: [Toast, DialogModule, ReactiveFormsModule, MultiSelectModule, InventoryCardComponent, CommonModule, FileUploadModule],
+  imports: [Toast, DialogModule, ReactiveFormsModule, MultiSelectModule, CommonModule, FileUploadModule],
   providers: [MessageService, NotificationsApiService]
 })
 export class AddProgressDialogComponent extends DialogComponent implements DoCheck{
@@ -39,8 +38,6 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
       super();
       this.form = this.fb.group({
         description: ['', Validators.required],
-        inventoryItemsUsed: [[]],
-        inventoryQuantities: this.fb.group({}),
         progress: ['', [Validators.required, Validators.min(0), Validators.max(100)]]
       });
     }
@@ -80,6 +77,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
 
     async onSubmit()
     {
+      this.form.markAllAsTouched();
       if(this.form.valid)
       {
         this.addError = false;
@@ -112,9 +110,9 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
         const id = getCookieValue(document.cookie, 'contractorId');
 
         // TODO change so that contractor can select multiple items in usage
-        this.taskProgressService.createProgress(id, this.taskId(), imageId, des, itemsUsed.itemUuid, itemsUsed.quantity, progress).subscribe({
+        this.taskProgressService.createProgress(id, this.taskId(), imageId, des, progress).subscribe({
           next: () => {
-
+  
             this.taskService.getTaskById(this.taskId()).subscribe({
               next: (res) => {
                 
@@ -133,7 +131,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
                       summary: 'Success',
                       detail: 'Task progress successfully added'
                     });
-
+  
                     this.closeDialog();
                     setTimeout(() => {
                       window.location.reload();
@@ -158,6 +156,10 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
             })
           }
         });
+      }
+      else
+      {
+        this.addError = true;
       }
     }
     onFileSelect(event: FileSelectEvent)

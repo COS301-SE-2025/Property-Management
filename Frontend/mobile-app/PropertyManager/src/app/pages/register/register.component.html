@@ -4,27 +4,32 @@
   </div>
 
   <div class="text-center space-y-4 propertyYellow-bg px-5 py-3">
-    <p class="text-md font-bold">Create an account as a trustee</p>
+    <p class="text-md font-bold">Create an account as a Trustee</p>
 
-    <ion-item>
+    <ion-item class="dark:text-gray-100">
       <img class = "relative right-0.5 mr-2 h-5 w-5 pointer-events-none" src="assets/icons/mail.svg" alt="">
-      <ion-input 
+      <ion-input
         placeholder="Enter email address"
         [(ngModel)]="email"
       ></ion-input>
     </ion-item>
-    <ion-item>
+    <ion-item class="dark:text-gray-100">
       <img class = "relative right-1 mr-2 h-5 w-5 pointer-events-none" src="assets/icons/key_vertical.svg" alt="">
       <ion-input
        placeholder="Enter password"
        [(ngModel)]="password"
-       [type]="passwordVisible ? 'text' : 'password'"
-      ></ion-input>
-      <button type = "button" (click)="togglePassword()">
-          <img class = "absolute top-3.5 right-2 h-5 w-5" [src]= "passwordVisible ? 'assets/icons/visibility.svg' :'assets/icons/visibility_off.svg'" alt="">
-      </button>
+      >
+    <ion-input-password-toggle slot="end" color="dark"></ion-input-password-toggle>
+    </ion-input>
     </ion-item>
-
+    <ion-item class="dark:text-gray-100">
+      <img class="relative right-0.5 mr-2 h-5 w-5 pointer-events-none" src="assets/icons/telephone.svg" alt="">
+      <ion-input
+        placeholder="Enter contact number"
+        [(ngModel)]="contactNumber"
+        type="tel"
+      ></ion-input>
+    </ion-item>
     <div class = "pl-25 hover:translate-y-2 transition-transform duration-200">
         <button (click)="register()" class = "bg-black text-white px-14 py-2 rounded font-semibold hover:bg-gray-800">Create account</button>
     </div>

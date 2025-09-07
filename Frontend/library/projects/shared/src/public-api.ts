@@ -47,6 +47,7 @@ export * from './models/quote.model';
 export * from './models/Notifications.model';
 export * from './models/Progress.model';
 export * from './models/TrustedContractor.model';
+export * from './models/PDF.model'
 
 //Utils
 export * from './utils/cookie-utils';
