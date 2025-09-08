@@ -8,7 +8,6 @@ import { environmentMobile } from '../environment';
   providedIn: 'root'
 })
 export class ContractorService {
-  // private apiUrl = 'http://localhost:8080/api/contractor';
   private apiUrl = `${environmentMobile.apiUrl}/contractor`;
 
   constructor(private http: HttpClient) {}

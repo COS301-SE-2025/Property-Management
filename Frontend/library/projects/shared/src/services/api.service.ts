@@ -235,7 +235,7 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
     }
   }
 
-  getQuote(contractorUuid: string, type: string): Observable<string>{
+  getContractorPDF(contractorUuid: string, type: string): Observable<string>{
     return this.http.get(`${this.url}/upload/presigned/${contractorUuid}/${type}`, {
       responseType: 'text'
     });
