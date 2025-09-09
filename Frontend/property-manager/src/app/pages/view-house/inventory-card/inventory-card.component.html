@@ -2,7 +2,7 @@
     <p-toast></p-toast>
     <p-card class="text-center bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md">
         <ng-template #title>Inventory</ng-template>
-        <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '25rem', 'max-width':'25rem' }">
+        <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '25rem', 'max-width':'25rem' }" [paginator]="true" [rows]="rows" [responsiveLayout]="'scroll'">
             <ng-template #header>
                 <tr>
                     <th pSortableColumn="name">Description <p-sortIcon field="name"/></th>
@@ -41,6 +41,13 @@
                         }
                     </td>
                 </tr>
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+                <p-dropdown 
+                [options]="[5,10,20]" 
+                [(ngModel)]="rows" 
+                [appendTo]="'body'">
+                </p-dropdown>
             </ng-template>
         </p-table>
         @if(isEditing && !readOnly)

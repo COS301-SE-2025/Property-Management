@@ -131,14 +131,16 @@ export class HeaderComponent {
     this.applyDarkMode();
 
     this.breadCrumbService.breadCrumbs.subscribe(bread => {
-      if(bread)
-      {
-        this.items = bread;
-      }
-      else
-      {
-        this.updateBreadcrumbs(this.router.url);
-      }
+      setTimeout(() => {
+        if(bread)
+        {
+          this.items = bread;
+        }
+        else
+        {
+          this.updateBreadcrumbs(this.router.url);
+        }
+      })
     })
 
 

@@ -2,7 +2,7 @@
     <div class="flex flex-col items-center justify-center h-full">
         <div class="h-full w-full overflow-auto">
             <p class="text-2xl font-semibold ml-45 pb-2">Reserve fund Contribution Schedule</p>
-            <p-table [value]="schedule()" [tableStyle]="{ 'min-width' : '40rem'}">
+            <p-table [value]="schedule()" [tableStyle]="{ 'min-width' : '40rem'}" [paginator]="true" [rows]="rows" [responsiveLayout]="'scroll'">
                 <ng-template #header>
                     <tr>
                         <th pSortableColumn="UnitNo">
@@ -26,6 +26,13 @@
                         <td>{{ schedule.partipationQuota }}%</td>
                         <td>R {{ schedule.annualContribution | formatAmount }}</td>
                     </tr>
+                </ng-template>
+                <ng-template pTemplate="paginatorright">
+                    <p-dropdown 
+                    [options]="[5,10,20]" 
+                    [(ngModel)]="rows" 
+                    [appendTo]="'body'">
+                    </p-dropdown>
                 </ng-template>
             </p-table>
             <div class="flex flex-col justify-center items-center">

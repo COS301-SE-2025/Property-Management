@@ -1,36 +1,65 @@
 @if(!contractorHasBeenAssigned && results().length > 0)
 {
-  <p-card>
-    <ng-template #title class="text-lg font-semibold">Voting results</ng-template>
-  
-    @if(error())
-    {
-      <p class="text-red-500">Error loading results</p>
-    }
-    @else {
-      <p-table [value]="results()">
-        <ng-template #header>
-          <tr>
-            <th>Contractor name</th>
-            <th>Number of votes</th>
-          </tr>
-        </ng-template>    
-        <ng-template #body let-vote>
-          <tr>
-            <td>{{ vote.contractorName }}</td>
-            <td>{{ vote.votesFor }}</td>
-          </tr>
-        </ng-template>
-      </p-table>
-  
-      @if(votingEnded && !contractorHasBeenAssigned)
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="p-6">
+      <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        Voting Results
+      </h2>
+    
+      @if(error())
       {
-        <div class="text-md flex flex-col justify-center items-center pt-8">
-          <p class="pb-2">Voting has ended, Finalize the task assignment</p>
-          <button class="bg-yellow-400 px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200 hover:bg-yellow-500 disabled:opacity-50" (click)="endVoting()">Assign winning contractor</button>
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <p class="text-red-600 dark:text-red-400">Error loading results</p>
+          </div>
         </div>
       }
-    }
-  </p-card>
+      @else {
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-gray-200 dark:border-gray-700">
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Contractor Name</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Number of Votes</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+              @for(vote of results(); track vote.contractorName) {
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
+                  <td class="px-4 py-4 text-sm font-medium text-gray-800 dark:text-white">{{ vote.contractorName }}</td>
+                  <td class="px-4 py-4">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 dark:bg-yellow-900 dark:text-yellow-200">
+                      {{ vote.votesFor }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+    
+        @if(votingEnded && !contractorHasBeenAssigned)
+        {
+          <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-gray-600 dark:text-gray-400 mb-4">Voting has ended. Finalize the task assignment.</p>
+            <button 
+              class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors duration-200 font-medium inline-flex items-center"
+              (click)="endVoting()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              Assign Winning Contractor
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </div>
   <p-toast/>
 }

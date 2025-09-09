@@ -58,7 +58,7 @@ export class VotingService{
                 }
                 this.addToPending(task);
             }
-            else if(task.scheduled_date > date)
+            else if(task.scheduled_date > date && task.approvalStatus !=='COMPLETED')
             {
                 //Get session data based on if the task has been approved and add to voting tasks
                 this.votingApiService.getSessionFromTaskId(task.uuid).subscribe({
