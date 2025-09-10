@@ -76,12 +76,6 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
             summary: 'Success',
             detail: 'Inventory item added successfully'
           });
-          
-          setTimeout(() => {
-            this.router.navigate(['viewHouse', this.houseId]).then(() => {
-              window.location.reload();
-            });
-          }, 3000);
         },
         error: (err) => {
           console.error("Failed to create inventory item", err);

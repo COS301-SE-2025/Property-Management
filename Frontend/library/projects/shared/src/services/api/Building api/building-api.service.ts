@@ -52,11 +52,42 @@ export class BuildingApiService {
   }
 
   updateBuilding(propertyId: string, name: string, image: string, bcId: string): Observable<Property> {
-    const updatedProperty = {
-      name: name,
-      propertyImage: image,
-      coporateUuid: bcId
-    };
+
+    let updatedProperty = {};
+    if(image === '00000000-0000-0000-0000-000000000000')
+    {
+      if(bcId === '' || bcId === null)
+      {
+        updatedProperty = {
+          name: name
+        }
+      }
+      else
+      {
+        updatedProperty = { 
+          name: name,
+          coporateUuid: bcId
+        };
+      }
+    }
+    else
+    {
+      if(bcId === null || bcId === '')
+      {
+        updatedProperty = {
+          name: name,
+          propertyImage: image
+        }
+      }
+      else
+      {
+        updatedProperty = {
+          name: name,
+          propertyImage: image,
+          coporateUuid: bcId
+        };
+      }
+    }
 
     return this.http.put<Property>(`${this.url}/buildings/${propertyId}`, updatedProperty,
     { withCredentials: true });

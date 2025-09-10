@@ -6,8 +6,8 @@
       <span class="font-bold text-xl text-black dark:text-white tracking-tight">Property Manager</span>
     </div>
     <ion-breadcrumbs class="ml-4">
-      <ion-breadcrumb *ngIf="houseId && (isManageBudget() || isViewHouse())" href="/view-house/{{ houseId }}">View</ion-breadcrumb>
-      <ion-breadcrumb *ngIf="houseId && isManageBudget()" href="/manage-budget/{{ houseId }}">Budget</ion-breadcrumb>
+      <ion-breadcrumb *ngIf="houseId && (isManageBudget() || isViewHouse())" href="/view-house/{{ houseId }}" class="dark:text-gray-200">View</ion-breadcrumb>
+      <ion-breadcrumb *ngIf="houseId && isManageBudget()" href="/manage-budget/{{ houseId }}" class="dark:text-gray-200">Budget</ion-breadcrumb>
     </ion-breadcrumbs>
   </div>
   <div class="propertyYellow-bg h-1 w-full rounded-b-xl"></div>
