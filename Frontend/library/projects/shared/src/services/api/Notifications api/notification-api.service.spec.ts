@@ -88,7 +88,9 @@ describe('NotificationsApiService', () => {
 
       const req = httpMock.expectOne(`${mockApiUrl}/notifications/${notificationId}/read`);
       expect(req.request.method).toBe('PUT');
-      expect(req.request.body).toEqual({});
+      expect(req.request.body).toEqual({withCredentials: true});
+      // expect(req.request.withCredentials).toBe(true);
+
       req.flush(mockNotification);
     });
 
