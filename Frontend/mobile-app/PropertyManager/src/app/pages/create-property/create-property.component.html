@@ -1,23 +1,44 @@
 <ion-content id="main-content" class="ion-padding dark:bg-gray-700">
     <p class="text-l font-bold mb-2 dark:text-white">Create New Property</p>
     <hr class="yellow-line mb-4;" />
-    <div 
-      class="border border-gray-300 dark:border-gray-700 dark:bg-gray-300 rounded-lg flex items-center justify-center mb-6 cursor-pointer image-upload-box"
-      style="height: 180px;"
-    >
-      <ion-button (click)="capturePhoto()" fill="clear">
-        <ion-icon name="camera-outline"></ion-icon>
-      </ion-button>
-      <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
-        <p class="mb-2 dark:text-white">Preview</p>
-        <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
-        <ion-button (click)="deletePhoto()" fill="clear" color="dark">
-          <ion-icon name="trash-outline"></ion-icon>
+    @if(!capturedPhoto)
+    {
+      <div 
+        class="border border-gray-300 dark:border-gray-700 dark:bg-gray-300 rounded-lg flex items-center justify-center mb-6 cursor-pointer image-upload-box"
+        style="height: 180px;"
+      >
+        <ion-button (click)="capturePhoto()" fill="clear">
+          <ion-icon name="camera-outline"></ion-icon>
         </ion-button>
+        <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
+          <p class="mb-2 dark:text-white mt-2">Preview</p>
+          <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
+          <ion-button (click)="deletePhoto()" fill="clear" color="dark">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
       </div>
-    </div>
+    }
+    @else
+    {
+      <div 
+        class="flex items-center justify-center mb-6image-upload-box pt-4"
+        style="height: 180px;"
+      >
+        <ion-button (click)="capturePhoto()" fill="clear">
+          <ion-icon name="camera-outline"></ion-icon>
+        </ion-button>
+        <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
+          <p class="mb-2 dark:text-white mt-2">Preview</p>
+          <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
+          <ion-button (click)="deletePhoto()" fill="clear" color="dark">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    }
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
-      <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
+      <ion-item class="rounded-lg border mt-12 border-gray-300 dark:border-gray-700 dark:bg-gray-300">
         <ion-input formControlName="name" placeholder="Property Name *"></ion-input>
       </ion-item>
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
@@ -28,6 +49,16 @@
       </ion-item>
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
         <ion-input formControlName="address" placeholder="Street Address *"></ion-input>
+      </ion-item>
+      <ion-label class="font-semibold" style="display: block; padding-top: 5px; padding-left: 5px;">
+        Assign to Body Corporate
+      </ion-label>
+      <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
+        <ion-select formControlName="coporateUuid" placeholder="Select a body corporate" interface="action-sheet">
+          <ion-select-option *ngFor="let corp of bodyCorporates" [value]="corp.coporateUuid">
+            {{ corp.coporateName }}
+          </ion-select-option>
+        </ion-select>
       </ion-item>
       <div class="grid grid-cols-2 gap-4">
         <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
@@ -53,9 +84,9 @@
           </ion-select-option>
         </ion-select>
       </ion-item> -->
-      <ion-item class="rounded-lg border border-gray-300">
+      <!-- <ion-item class="rounded-lg border border-gray-300">
         <ion-input formControlName="bodyCorporate" placeholder="Invite members"></ion-input>
-      </ion-item>
+      </ion-item> -->
       <ion-item *ngIf="submissionError">
         <ion-text color="danger">{{ submissionError }}</ion-text>
       </ion-item>

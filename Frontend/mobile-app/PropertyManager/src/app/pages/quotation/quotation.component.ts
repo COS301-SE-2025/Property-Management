@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { ApiService } from 'shared';
+import { ApiService, StorageService } from 'shared';
 import { MessageService } from 'primeng/api';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from "src/app/components/tab/tab.component";
@@ -14,10 +14,9 @@ import {
   query,
   stagger
 } from '@angular/animations';
-import { h } from 'ionicons/dist/types/stencil-public-runtime';
 import { addIcons } from 'ionicons';
 import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline } from 'ionicons/icons';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 
@@ -52,43 +51,41 @@ export class QuotationComponent implements OnInit {
   file: File | null = null;
   filePreviewUrl: string | null = null;
   isImage: boolean = false;
-showIssueDate = false;
-showExpirationDate = false;
+  showIssueDate = false;
+  showExpirationDate = false;
   // UI states
   toastOpen = false;
   toastMsg = '';
   toastColor: 'success' | 'danger' = 'success';
   loading = false;
   previewOpen = false;
-   contractorId: string = "";
-  
+  contractorId: string = "";
 
-  ngOnInit() {
-  addIcons({
-    'calendar-outline': calendarOutline,
-    'newspaper-outline': newspaperOutline,
-    'wallet-outline': walletOutline,
-    'cloud-upload-outline': cloudUploadOutline
-   
-  });
-   this.contractorId = this.api.getCookieValue('contractorId');
-   this.t_uuid = this.route.snapshot.paramMap.get('t_uuid') ?? '';
-  console.log('Contractor ID:', this.contractorId);
-  console.log('Task UUID:', this.t_uuid);
-}
-  onFileSelected(event: any) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.filePreviewUrl = reader.result as string;
-      this.isImage = file.type.startsWith('image');
-    };
-    reader.readAsDataURL(file);
+  constructor(private storageService: StorageService, private router: Router){}
+
+  async ngOnInit() {
+    addIcons({
+      'calendar-outline': calendarOutline,
+      'newspaper-outline': newspaperOutline,
+      'wallet-outline': walletOutline,
+      'cloud-upload-outline': cloudUploadOutline
+    
+    });
+    this.contractorId =  await this.storageService.get('contractorId');
+    this.t_uuid = this.route.snapshot.paramMap.get('t_uuid') ?? '';
   }
-}
 
-
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.filePreviewUrl = reader.result as string;
+        this.isImage = file.type.startsWith('image');
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
   openPreviewModal() {
     this.previewOpen = true;
@@ -100,30 +97,59 @@ showExpirationDate = false;
 
   async submitQuote() {
     if (!this.IssueDate || !this.expirationDate || !this.quoteNo || !this.totalAmount) {
-      this.showToast('Please fill in all fields and upload a file.', 'danger');
+      this.showToast('Please fill in all fields.', 'danger');
       return;
     }
 
     try {
       this.loading = true;
-
-       
-      await this.api.addQuote(
-  this.t_uuid,
-  this.contractorId,
-  this.IssueDate,
-  this.expirationDate,
-  this.totalAmount,
-  this.quoteNo
-);
-       
+        await this.api.addQuote(
+          this.t_uuid,
+          this.contractorId,
+          this.IssueDate,
+          this.expirationDate,
+          this.totalAmount,
+          this.quoteNo
+        ).subscribe({
+          next: () => {
+            this.showToast('Quotation submitted successfully!', 'success');
+            
+            // Handle file upload if a file was selected
+            if (this.file) {
+              this.uploadFile();
+            } else {
+              setTimeout(() => {
+                this.router.navigate(['/contractor-home']);
+              }, 1500);
+            }
+          },
+          error: (err) => {
+            console.error(err);
+            this.showToast('Error submitting quotation.', 'danger');
+          }
+        });
       
-      this.showToast('Quotation submitted successfully!', 'success');
     } catch (err) {
-      this.showToast('Error submitting quotation.', 'danger');
+      this.showToast(`Error submitting} quotation.`, 'danger');
     } finally {
       this.loading = false;
     }
+  }
+
+  async uploadFile() {
+    if (this.file) {
+      try {
+        await this.api.uploadPDF(this.file, this.contractorId, "Quote");
+        this.showToast('File uploaded successfully!', 'success');
+      } catch (err) {
+        console.error('File upload failed:', err);
+        this.showToast('File upload failed.', 'danger');
+      }
+    }
+    
+    setTimeout(() => {
+      this.router.navigate(['/contractor-home']);
+    }, 1500);
   }
 
   showToast(message: string, color: 'success' | 'danger') {

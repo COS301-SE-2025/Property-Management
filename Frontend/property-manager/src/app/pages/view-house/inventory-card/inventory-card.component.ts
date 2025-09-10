@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from 'primeng/inputnumber';
 import { getCookieValue, Inventory, InventoryUsageApiService } from 'shared';
 import { CommonModule } from '@angular/common';
@@ -16,7 +17,7 @@ import { InventoryAddDialogComponent } from "./inventory-add-dialog/inventory-ad
 
 @Component({
   selector: 'app-inventory-card',
-  imports: [CardModule, TableModule, CommonModule, ButtonModule, FormsModule, InputNumberModule, ToastModule, InventoryAddDialogComponent],
+  imports: [CardModule, TableModule, CommonModule, ButtonModule, FormsModule, InputNumberModule, ToastModule, InventoryAddDialogComponent, DropdownModule],
   templateUrl: './inventory-card.component.html',
   styles: ``,
   providers: [MessageService]
@@ -33,6 +34,8 @@ export class InventoryCardComponent implements OnInit{
   editingItems = new Map<string, boolean>();
   draftQuantities = new Map<string, number>();
   originalQuantities = new Map<string, number>();
+
+  rows = 5;
 
   //Used inside dialogs that call the table
   @Output() itemUsage = new EventEmitter<{taskId: string, itemId: string, quantity: number}>();

@@ -7,8 +7,8 @@
       <div class="w-24 h-1 bg-yellow-300 mt-2"></div>
     </div>
 
-    <ion-list *ngIf="quotes.length > 0; else noQuotes" class="mt-6 dark:bg-gray-700">
-      <ion-card *ngFor="let quote of quotes; let i = index" class="animate-item rounded-xl w-[18rem] h-[18rem] bg-white shadow-md">
+    <ion-list *ngIf="quotes.length > 0; else noQuotes" class="mt-6 bg-gray-100 dark:bg-gray-700">
+      <ion-card *ngFor="let quote of quotes; let i = index" class="animate-item rounded-xl w-[18rem] h-[18rem] bg-gray-100 shadow-md dark:bg-gray-800">
         <ion-card-header class="rounded-t-xl">
           <ion-card-title class="text-center">
             Quote #{{ i + 1 }}

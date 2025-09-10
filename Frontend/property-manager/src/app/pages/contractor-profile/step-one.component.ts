@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { AddressMapComponent } from "../../components/address-map/address-map.component";
 
 @Component({
   selector: 'app-step-one',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AddressMapComponent],
   templateUrl: './step-one.component.html',
   styleUrls: ['./step-one.component.scss']
 })
@@ -21,18 +22,27 @@ export class StepOneComponent {
     status: boolean;
   }>();
 
-  form: FormGroup;
+  form: FormGroup<{
+    name: FormControl<string | null>;
+    email: FormControl<string | null>;
+    phone: FormControl<string | null>;
+    address: FormControl<string | null>;
+    city: FormControl<string | null>;
+    suburb: FormControl<string | null>;
+    postalCode: FormControl<string | null>;
+    status: FormControl<boolean | null>;
+  }>;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['',[Validators.required, Validators.email]],
-      phone: ['', [Validators.pattern('^[0-9]{4,10}$')]],
-      address: [''],
-      city: [''],
-      suburb: [''],
-      postalCode: [''],
-      status: ['']
+      name: this.fb.control('', { validators: [Validators.required, Validators.minLength(2)] }),
+      email: this.fb.control('', { validators: [Validators.required, Validators.email] }),
+      phone: this.fb.control('', { validators: [Validators.pattern('^[0-9]{4,10}$')] }),
+      address: this.fb.control(''),
+      city: this.fb.control(''),
+      suburb: this.fb.control(''),
+      postalCode: this.fb.control(''),
+      status: this.fb.control(false)
     });
   }
 
@@ -44,13 +54,13 @@ export class StepOneComponent {
     }
 
     this.next.emit({
-      name: this.form.value.name,
-      email: this.form.value.email,
-      phone: this.form.value.phone,
-      address: this.form.value.address,
-      city: this.form.value.city,
-      suburb: this.form.value.suburb,
-      postalCode: this.form.value.postalCode,
+      name: this.form.value.name ?? '',
+      email: this.form.value.email ?? '',
+      phone: this.form.value.phone ?? '',
+      address: this.form.value.address ?? '',
+      city: this.form.value.city ?? '',
+      suburb: this.form.value.suburb ?? '',
+      postalCode: this.form.value.postalCode ?? '',
       status: true
     });
   }

@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle } from "@ionic/angular/standalone";
+import { IonCard } from "@ionic/angular/standalone";
 import { TimelineModule } from "primeng/timeline";
 import { FormatTimePipe } from "../../../../../../../library/projects/shared/src/pipes/format-date-time.pipe";
 import { TableModule } from "primeng/table";
@@ -15,7 +15,7 @@ import { ProgressDialogComponent } from "../progress-dialog/progress-dialog.comp
   selector: 'app-contractor-timeline',
   templateUrl: './contractor-timeline.component.html',
   styles: ``,
-  imports: [ IonCard, CardModule, TimelineModule, FormatTimePipe, TableModule, CommonModule, ProgressDialogComponent, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle],
+  imports: [ IonCard, CardModule, TimelineModule, FormatTimePipe, TableModule, CommonModule, ProgressDialogComponent],
 })
 export class ContractorTimelineComponent implements OnInit, OnChanges {
 

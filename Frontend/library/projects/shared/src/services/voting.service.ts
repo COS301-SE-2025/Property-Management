@@ -39,7 +39,6 @@ export class VotingService{
 
         await this.bodyCorporateService.loadPendingTasks(bcId);
         const tasks = this.bodyCorporateService.pendingTasks();
-
         
         tasks.forEach(task => {
             if(task.approvalStatus === 'PENDING' && task.scheduled_date >= date)
@@ -59,7 +58,7 @@ export class VotingService{
                 }
                 this.addToPending(task);
             }
-            else if(task.scheduled_date > date)
+            else if(task.scheduled_date > date && task.approvalStatus !=='COMPLETED')
             {
                 //Get session data based on if the task has been approved and add to voting tasks
                 this.votingApiService.getSessionFromTaskId(task.uuid).subscribe({
@@ -176,20 +175,31 @@ export class VotingService{
         const date = new Date();
         this.votingTasks.set([]);
 
-        //Get buildings and tasks for each building
+        //Get buildings and body corp IDs for each house
         await this.housesService.loadHouses(trusteeId);
         const houses = this.housesService.houses();
 
-       const tasksPromises = houses.map(async house => {
-            const tasks = await firstValueFrom(this.taskApiService.getAllTasks());
-            const filteredTasks = tasks.filter(t => t.buuid === house.buildingUuid);
-            this.housesService.timeline.set(filteredTasks);
-            return filteredTasks;
+        const bodyCorpIds = Array.from( 
+            new Set(houses.map(h => h.coporateUuid).filter(h => h !== null))
+        );
+
+        let tasks: MaintenanceTask[] = [];
+        const taskPromises = bodyCorpIds.map(async id => {
+            if(id)
+            {
+                await this.bodyCorporateService.loadPendingTasks(id);
+                return this.bodyCorporateService.pendingTasks();
+            }
+            return Promise.resolve([]);
         });
 
-        const allTimelines = await Promise.all(tasksPromises);
-        const tasks = allTimelines.flat();
-
+        Promise.all(taskPromises).then(task => {
+            tasks = task.flat();
+            this.processTasks(tasks, date);
+        });
+    }
+    private processTasks(tasks: MaintenanceTask[], date: Date)
+    {
         tasks.forEach(t => {
             if(t.approvalStatus === 'APPROVED' && t.scheduled_date > date)
             {

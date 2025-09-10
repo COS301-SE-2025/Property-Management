@@ -1,12 +1,13 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CardModule } from 'primeng/card';
+import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { lastValueFrom, forkJoin } from 'rxjs';
 import { Inventory, InventoryItemApiService, InventoryUsage, InventoryUsageApiService } from 'shared';
 
 @Component({
   selector: 'app-inventory-usage',
-  imports: [ TableModule, CardModule],
+  imports: [ TableModule, CardModule, CommonModule],
   templateUrl: './inventory-usage.component.html',
   styles: ``,
 })

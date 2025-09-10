@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RatingService, RatingPayload } from 'shared';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { HeaderComponent } from '../../components/header/header.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast';
@@ -32,7 +31,7 @@ interface Task {
     InputTextModule, 
     FloatLabelModule,
     DropdownModule,
-    ToastModule, HeaderComponent],
+    ToastModule],
   templateUrl: './ratings.component.html',
   providers: [MessageService]
 })

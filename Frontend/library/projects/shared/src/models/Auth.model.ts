@@ -25,3 +25,7 @@ export interface contractorRegisterResponse {
   email: string;
   username: string;
 }
+
+export interface resetPasswordResponse {
+  message: string;
+}

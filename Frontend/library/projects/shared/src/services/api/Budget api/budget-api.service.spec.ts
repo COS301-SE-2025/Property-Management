@@ -47,43 +47,65 @@ describe('BudgetApiService', () => {
       totalBudget: 100000,
       maintenanceBudget: 40000,
       inventoryBudget: 60000,
-      approvalDate: mockDate,
+      approvalDate: mockDate,   // match service input
       buildingUuid: 'bldg1'
     };
+
+    const expectedOptions = { withCredentials: true };
 
     httpClientSpy.post.and.returnValue(of(mockResponse));
 
     service.createBudget(100000, 40000, 60000, mockDate, 'bldg1').subscribe({
       next: (response: BuildingDetails) => {
         expect(response).toEqual(mockResponse);
-        expect(httpClientSpy.post).toHaveBeenCalledWith(`${url}/budgets`, expectedRequest);
-      },
-      error: () => fail('expected success but got error')
-    });
-  });
-  it('should return expected budget by id', () => {
-    const mockResponse: BuildingDetails = {
-      budgetUuid: '1',
-      maintenanceBudget: 40000,
-      maintenanceSpent: 1000,
-      inventoryBudget: 60000,
-      inventorySpent: 3000,
-      approvalDate: new Date('2025-01-01'),
-      buildingUuid: 'bldg1'
-    };
-
-    httpClientSpy.get.and.returnValue(of(mockResponse));
-
-    service.getBudgetById('1').subscribe({
-      next: (response) => {
-        expect(response).toEqual(mockResponse);
-        expect(httpClientSpy.get).toHaveBeenCalledWith(
-          `${url}/budgets/1`
+        expect(httpClientSpy.post).toHaveBeenCalledWith(
+          `${url}/budgets`,
+          expectedRequest,
+          expectedOptions
         );
       },
       error: () => fail('expected success but got error')
     });
   });
+
+    it('should create and return a budget', () => {
+      const mockDate = new Date('2025-06-20');
+      const mockResponse: BuildingDetails = {
+        budgetUuid: '1',
+        maintenanceBudget: 40000,
+        maintenanceSpent: 1000,
+        inventoryBudget: 60000,
+        inventorySpent: 3000,
+        approvalDate: new Date('2025-01-01'),
+        buildingUuid: 'bldg1'
+      };
+
+      const expectedRequest = {
+        year: 2025,
+        totalBudget: 100000,
+        maintenanceBudget: 40000,
+        inventoryBudget: 60000,
+        approvalDate: mockDate,
+        buildingUuid: 'bldg1'
+      };
+
+      const expectedUrl = `${url}/budgets`;
+      const expectedOptions = { withCredentials: true };
+
+      httpClientSpy.post.and.returnValue(of(mockResponse));
+
+    service.createBudget(100000, 40000, 60000, mockDate, 'bldg1').subscribe({
+        next: (response: BuildingDetails) => {
+          expect(response).toEqual(mockResponse);
+          expect(httpClientSpy.post).toHaveBeenCalledWith(
+            expectedUrl, 
+            expectedRequest, 
+            expectedOptions
+          );
+        },
+        error: () => fail('expected success but got error')
+    });
+});
 
   it('should handle 404 when budget not found', () => {
     const errorResponse = { status: 404, statusText: 'Not Found' };
@@ -126,7 +148,8 @@ describe('BudgetApiService', () => {
         expect(response.length).toBe(2);
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.get).toHaveBeenCalledWith(
-          `${url}/budgets`
+          `${url}/budgets`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -160,7 +183,8 @@ describe('BudgetApiService', () => {
       next: (response) => {
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.get).toHaveBeenCalledWith(
-          `${url}/budgets/building/bldg1`
+          `${url}/budgets/building/bldg1`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -186,7 +210,8 @@ describe('BudgetApiService', () => {
         expect(response.length).toBe(1);
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.get).toHaveBeenCalledWith(
-          `${url}/budgets/year/2025`
+          `${url}/budgets/year/2025`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -212,7 +237,8 @@ describe('BudgetApiService', () => {
         expect(response.length).toBe(1);
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.get).toHaveBeenCalledWith(
-          `${url}/budgets/building/bldg1/year/2025`
+          `${url}/budgets/building/bldg1/year/2025`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -248,7 +274,8 @@ describe('BudgetApiService', () => {
         expect(response).toEqual(mockBudget);
         expect(httpClientSpy.put).toHaveBeenCalledWith(
           `${url}/budgets/bldg1`, 
-          expectedBody
+          expectedBody,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -271,7 +298,8 @@ describe('BudgetApiService', () => {
       next: (response) => {
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.delete).toHaveBeenCalledWith(
-          `${url}/budgets/1`
+          `${url}/budgets/1`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')

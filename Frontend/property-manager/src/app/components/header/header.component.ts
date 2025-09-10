@@ -1,4 +1,4 @@
-import { afterNextRender, Component, effect, ElementRef, HostListener, ViewChild } from '@angular/core';
+import {  Component,  ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService, NotificationsApiService, Notification, getCookieValue } from 'shared';
@@ -9,7 +9,6 @@ import { filter } from 'rxjs';
 import { BreadCrumbService } from '../breadcrumb/breadcrumb.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { NotificationDrawerService } from '../../../../../library/projects/shared/src/services/notification-drawer.service';
-
 
 type UserType = 'contractor' | 'bodyCorporate' | 'trustee' | null;
 
@@ -59,26 +58,20 @@ export class HeaderComponent {
 
   private routeMap: Record<string, Record<string, MenuItem[]>> = {
   'bodyCorporate': {
-    '/bodyCoporate/contractors': [
-      { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' }
-    ],
-    '/bodyCoporate/publicContractors': [
-      { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' }
-    ],
     '/contractorDetails': [
       { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' },
       { label: 'Contractor Details', route: '/contractorDetails' }
     ],
-    '/viewHouse:/houseId': [
-      { label: 'View House', route: null}
-    ],
-    '/manageBudget': [
-      { label: 'View House', route: '/viewHouse' },
-      { label: 'Manage Budget', route: '/manageBudget' }
-    ],
-    '/create-property': [
-      { label: 'Create Property', route: '/create-property' }
-    ]
+    // '/viewHouse:/houseId': [
+    //   { label: 'View House', route: null}
+    // ],
+    // '/manageBudget': [
+    //   { label: 'View House', route: '/viewHouse' },
+    //   { label: 'Manage Budget', route: '/manageBudget' }
+    // ],
+    // '/create-property': [
+    //   { label: 'Create Property', route: '/create-property' }
+    // ]
   },
   'trustee': {
     '/viewHouse': [
@@ -131,14 +124,16 @@ export class HeaderComponent {
     this.applyDarkMode();
 
     this.breadCrumbService.breadCrumbs.subscribe(bread => {
-      if(bread)
-      {
-        this.items = bread;
-      }
-      else
-      {
-        this.updateBreadcrumbs(this.router.url);
-      }
+      setTimeout(() => {
+        if(bread)
+        {
+          this.items = bread;
+        }
+        else
+        {
+          this.updateBreadcrumbs(this.router.url);
+        }
+      })
     })
 
 
@@ -247,6 +242,11 @@ export class HeaderComponent {
     const baseUrl = url.split('?')[0].split('#')[0];
     const pathParts = baseUrl.split('/').filter(part => part);
 
+    if (baseUrl === '/home' || baseUrl === '/contractorHome' || baseUrl === '/bodyCoporate') {
+      this.items = [];
+      return;
+    }
+
     const houseId = pathParts[0] === 'viewHouse' || pathParts[0] === 'manageBudget' ? pathParts[1] : null;
 
     const userRoutes = this.routeMap[this.userType];
@@ -257,7 +257,7 @@ export class HeaderComponent {
       return;
     }
 
-    if(pathParts[0] === 'viewHouse' && houseId)
+    if(pathParts[0] === 'viewHouse' && houseId && this.userType !== 'bodyCorporate')
     {
       this.items = [
         { label: 'View House', route: `/viewHouse/${houseId}` }
@@ -294,6 +294,10 @@ export class HeaderComponent {
         }
         return;
       }
+    }
+    else
+    {
+      this.items = [];
     }
   }
 

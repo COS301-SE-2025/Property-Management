@@ -47,6 +47,7 @@ export * from './models/quote.model';
 export * from './models/Notifications.model';
 export * from './models/Progress.model';
 export * from './models/TrustedContractor.model';
+export * from './models/PDF.model'
 
 //Utils
 export * from './utils/cookie-utils';
@@ -56,3 +57,4 @@ export * from './pipes/format-amount.pipe';
 export * from './pipes/format-date.pipe';
 export * from './pipes/format-phone-number.pipe';
 export * from './pipes/format-date-time.pipe';
+export * from './pipes/format-fileName';

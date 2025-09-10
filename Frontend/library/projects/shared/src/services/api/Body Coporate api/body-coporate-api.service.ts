@@ -20,23 +20,26 @@ export class BodyCoporateApiService {
 
   getBuildingsLinkedtoBC(bcId: string): Observable<Property[]>
   {
-    return this.http.get<{ buildings: Property[] }>(`${this.url}/buildings/corporate/${bcId}`).pipe(
-      map(response => response.buildings)
+    return this.http.get<{ buildings: Property[] }>(`${this.url}/buildings/corporate/${bcId}`,
+    { withCredentials: true }).pipe(
+      map(response => response.buildings),
     );
   }
   getPendingTasks(buildingId: string): Observable<MaintenanceTask[]>
   {
-    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`).pipe(
+    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance`,
+    { withCredentials: true }).pipe(
       map(tasks => {
         return tasks.filter(task => {
-          return task.buuid === buildingId && (task.status.includes('pending') || task.status.includes('OPEN'))
+          return (task.buuid === buildingId)
         });
       })
     );
   }
   getBodyCoporate(bcId: string): Observable<BodyCoporate>
   {
-    return this.http.get<BodyCoporate>(`${this.url}/body-corporates/${bcId}`);
+    return this.http.get<BodyCoporate>(`${this.url}/body-corporates/${bcId}`,
+    { withCredentials: true });
   }
   getAndCalculateReserveFund(bc: BodyCoporate, floorArea: number, unitName: string): ReserveFund
   {
@@ -55,7 +58,8 @@ export class BodyCoporateApiService {
   }
   private getAllContractors(): Observable<ContractorDetails[]>
   {
-    return this.http.get<ContractorDetails[]>(`${this.url}/contractor`);
+    return this.http.get<ContractorDetails[]>(`${this.url}/contractor`,
+    { withCredentials: true });
   }
   getTrustedContractors(coporateId: string): Observable<string[]>
   {
@@ -85,11 +89,13 @@ export class BodyCoporateApiService {
     }
     contractor.img = imageId;
 
-    return this.http.put<ContractorDetails>(`${this.url}/contractor/${contractor.uuid}`, contractor);
+    return this.http.put<ContractorDetails>(`${this.url}/contractor/${contractor.uuid}`, contractor,
+    { withCredentials: true });
   }
   updateContribution(bcId: string, contribution: number)
   {
-    return this.http.put(`${this.url}/body-corporates/${bcId}`, { contributionPerSqm: contribution });
+    return this.http.put(`${this.url}/body-corporates/${bcId}`, { contributionPerSqm: contribution },
+    { withCredentials: true });
   }
   makeContractorTrusted(contractorId: string, bcId: string)
   {
@@ -98,6 +104,7 @@ export class BodyCoporateApiService {
       bodyCorporateUuid: bcId
     };
 
-    return this.http.post(`${this.url}/contractorCorporate`, req);
+    return this.http.post(`${this.url}/contractorCorporate`, req,
+    { withCredentials: true });
   }
 }

@@ -234,7 +234,7 @@ export class HousesService {
   deleteInvetoryItem(item: Inventory): Promise<void>
   {
     return new Promise((resolve, reject) => {
-      this.inventoryItemApiService.deleteInventoryItem(item).subscribe({
+      this.inventoryItemApiService.deleteInventoryItem(item.itemUuid).subscribe({
         next: () => {
           this.inventory.update(current => 
             current.filter(i => i.itemUuid !== item.itemUuid)

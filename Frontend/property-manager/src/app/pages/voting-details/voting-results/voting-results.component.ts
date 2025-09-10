@@ -161,11 +161,11 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
                   }
                   this.notificationService.createNotifications(notiTrustee);
                   this.notificationService.createNotifications(notiContractor);
-    
-                  this.messageService.add({
+
+                   this.messageService.add({
                     severity: 'success',
-                    summary: 'Success',
-                    detail: 'Contractor successfully assigned task'
+                    summary: 'success',
+                    detail: 'Task has successfully been assigned'
                   });
     
                   setTimeout(() => {

@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 interface TaskAndQuote extends MaintenanceTask{
   amount?: number;
   doneBy?: string;
-  submitted_on?: number;
+  submitted_on?: Date;
 } 
 @Component({
   selector: 'app-maintenance',

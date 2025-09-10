@@ -79,8 +79,12 @@ export class BodyCoporateService {
           const tasks = await firstValueFrom(
             this.bodyCoporateApiService.getPendingTasks(uuid)
           );
-
-          tasks.forEach(task => this.addToTask(task));
+          tasks.forEach(task => {
+            if(task.approvalStatus !== 'COMPLETED')
+            {
+              this.addToTask(task)
+            }
+          });
         } catch (error) {
           console.error(`Failed to load tasks for building ${uuid}`, error);
         }
@@ -128,16 +132,23 @@ export class BodyCoporateService {
       .map(building => firstValueFrom(this.budgetApiService.getBudgetsByBuildingId(building.buildingUuid)));
 
     const allBudgets = await Promise.all(budgetPromise);
-    const budgets = allBudgets.map(bud => {
-      if(!bud || bud.length === 0) return null;
+    console.log(allBudgets);
+    const budgets = allBudgets.flatMap(bud => {
+      if(!bud) return [];
 
-      //Get newest budget
-      const sorted = [...bud].sort((a, b) => 
-        new Date(b.approvalDate).getTime() - new Date(a.approvalDate).getTime()
-      );
+      const group: Record<number, typeof bud[0]> = {};
+      bud.forEach(b => {
+        const existing = group[b.year!];
+        if(!existing || new Date(b.approvalDate).getTime() > new Date(existing.approvalDate).getTime())
+        {
+          group[b.year!] = b;
+        }
+      });
 
-      return sorted[0];
-    }).filter(Boolean);
+      return Object.values(group);
+    });
+
+    console.log(budgets);
 
     if(budgets.length > 0)
     {

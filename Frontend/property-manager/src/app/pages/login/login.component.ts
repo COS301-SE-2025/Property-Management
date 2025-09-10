@@ -45,6 +45,15 @@ export class LoginComponent {
     this.userError = false;
     this.serverError = false;
     this.passwordLimit = false;
+    
+    const deleteCookie = (name: string) => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    };
+
+    deleteCookie("idToken");
+    deleteCookie("bodyCoporateId");
+    deleteCookie("trusteeId");
+    deleteCookie("contractorId");
 
     try {
       await this.authService.bodyCoporateLogin(this.email, this.password);
@@ -56,6 +65,7 @@ export class LoginComponent {
       if(error instanceof HttpErrorResponse && !error.error)
       {
         this.serverError = true;
+        this.loading = false;
         return;
       }
     }
@@ -70,6 +80,7 @@ export class LoginComponent {
       if(error instanceof HttpErrorResponse && !error.error)
       {
         this.serverError = true;
+        this.loading = false;
         return;
       }
     }
@@ -116,4 +127,6 @@ export class LoginComponent {
       this.loading = false;
     }
   }
+
+  
 }
