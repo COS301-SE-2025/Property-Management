@@ -36,8 +36,7 @@ jobs:
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY}}
                 script: | 
-                    cd /home/${{ secrets.EC2_USER }}/flyway
-                    ./flyway \
+                    flyway \
                     -url=${{ secrets.DB_URL }} \
                     -user=${{ secrets.DB_USER }} \
                     -password=${{ secrets.DB_PASSWORD }} \
@@ -76,4 +75,3 @@ jobs:
 
             - name: Deploy to S3
               run: aws s3 sync Frontend/dist/property-manager s3://${{ secrets.AWS_S3_BUCKET_NAME }} --delete
-
