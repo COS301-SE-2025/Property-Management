@@ -2,7 +2,7 @@ name: Deploy Backend and Frontend
 
 on:
     push:
-        branches: [Workflow/deployment]
+        branches: [main]
 
 jobs:
     backend:
