@@ -1,4 +1,4 @@
-import {  Component,  ElementRef, HostListener, ViewChild } from '@angular/core';
+import {  Component,  ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService, NotificationsApiService, Notification, getCookieValue } from 'shared';
@@ -43,7 +43,15 @@ interface NavLink {
     ])
   ]
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+
+  ngOnInit() {
+  const savedFontSize = localStorage.getItem('fontSize');
+  if (savedFontSize) {
+    document.documentElement.style.setProperty('--base-font-size', savedFontSize);
+    this.currentFontSizeIndex = this.fontSizes.indexOf(savedFontSize);
+  }
+}
 
   public dropDownProfileOpen = false;
   public dropDownSettingsOpen = false;
@@ -52,6 +60,8 @@ export class HeaderComponent {
   public isContractor = false; 
   public isBodyCorporate = false; 
   public unreadCount = 0;
+  fontSizes = ['16px', '18px', '20px'];
+  currentFontSizeIndex = 0;
 
   @ViewChild('profileDropDown') profileDropDown!: ElementRef;
   @ViewChild('settingsDropDown') settingsDropDown!: ElementRef;
@@ -145,6 +155,13 @@ export class HeaderComponent {
     });
 
     this.notificationDrawerService.notificationRead.subscribe(() => this.loadUnreadCount());
+  }
+
+  changeFontSize() {
+    this.currentFontSizeIndex = (this.currentFontSizeIndex + 1) % this.fontSizes.length;
+    const newSize = this.fontSizes[this.currentFontSizeIndex];
+    document.documentElement.style.setProperty('--base-font-size', newSize);
+    localStorage.setItem('fontSize', newSize);
   }
 
   openNotifications() {

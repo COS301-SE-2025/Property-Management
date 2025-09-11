@@ -4,6 +4,7 @@
 @import "primeicons/primeicons.css";
 
 :root {
+  --base-font-size: 16px;
   --property-yellow: #FFE372;
   --bg-color: #fcfcfc;
   --text-color: #111111;
@@ -101,6 +102,7 @@
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
+  font-size: var(--base-font-size);
 }
 
 .dark-theme input, textarea{
