@@ -57,3 +57,4 @@ export * from './pipes/format-amount.pipe';
 export * from './pipes/format-date.pipe';
 export * from './pipes/format-phone-number.pipe';
 export * from './pipes/format-date-time.pipe';
+export * from './pipes/format-fileName';

@@ -1,12 +1,14 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ApiService } from 'shared'; // Adjust import path as needed
+import { ApiService } from 'shared'; 
 import { CommonModule } from '@angular/common';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from "primeng/toast";
 
 @Component({
   selector: 'app-step-two',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, ToastModule],
   templateUrl: 'step-two.component.html',
   styles: [`
 .form-container {
@@ -101,7 +103,7 @@ export class StepTwoComponent {
     ids: { uploading: false, uploaded: false, error: false, fileName: '' }
   };
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private messageService: MessageService) {
     this.form = this.fb.group({
       reg_number: ['', Validators.required],
       descriptionSkills: ['', Validators.required],
@@ -117,7 +119,11 @@ export class StepTwoComponent {
 
     // Validate file type
     if (file.type !== 'application/pdf') {
-      alert('Please select a PDF file only');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please select a PDF file only'
+      })
       input.value = '';
       return;
     }
@@ -125,7 +131,11 @@ export class StepTwoComponent {
     // Validate file size (e.g., max 10MB)
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      alert('File size must be less than 10MB');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'File size must be less than 10MB'
+      })
       input.value = '';
       return;
     }
@@ -209,7 +219,11 @@ export class StepTwoComponent {
 
     // Check if any uploads are still in progress
     if (this.isUploading()) {
-      alert('Please wait for file uploads to complete');
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'Please wait for file uploads to complete'
+      })
       return;
     }
 

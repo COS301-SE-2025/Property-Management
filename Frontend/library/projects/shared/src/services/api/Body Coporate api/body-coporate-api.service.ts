@@ -31,7 +31,7 @@ export class BodyCoporateApiService {
     { withCredentials: true }).pipe(
       map(tasks => {
         return tasks.filter(task => {
-          return (task.buuid === buildingId && !task.cuuid)
+          return (task.buuid === buildingId)
         });
       })
     );
