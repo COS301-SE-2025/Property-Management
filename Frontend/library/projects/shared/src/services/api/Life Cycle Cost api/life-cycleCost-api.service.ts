@@ -39,22 +39,27 @@ export class LifecycleCostService {
     constructor(private http: HttpClient) {}
 
     create(request: CreateLifecycleCostRequest): Observable<LifecycleCostResponse> {
-        return this.http.post<LifecycleCostResponse>(`${this.url}/lifecycle-cost`, request);
+        return this.http.post<LifecycleCostResponse>(`${this.url}/lifecycle-cost`, request,
+      { withCredentials: true });
     }
 
     getById(uuid: string): Observable<LifecycleCostResponse> {
-        return this.http.get<LifecycleCostResponse>(`${this.url}/lifecycle-cost/${uuid}`);
+        return this.http.get<LifecycleCostResponse>(`${this.url}/lifecycle-cost/${uuid}`,
+      { withCredentials: true });
     }
 
    getByCorporate(corporateUuid: string): Observable<LifecycleCostResponse[]> {
-        return this.http.get<LifecycleCostResponse[]>(`${this.url}/lifecycle-cost/coporate/${corporateUuid}`).pipe(map(res => res || []));
+        return this.http.get<LifecycleCostResponse[]>(`${this.url}/lifecycle-cost/coporate/${corporateUuid}`,
+      { withCredentials: true }).pipe(map(res => res || []));
     }
 
     update(uuid: string, request: UpdateLifecycleCostRequest): Observable<LifecycleCostResponse> {
-        return this.http.put<LifecycleCostResponse>(`${this.url}/lifecycle-cost/${uuid}`, request);
+        return this.http.put<LifecycleCostResponse>(`${this.url}/lifecycle-cost/${uuid}`, request,
+      { withCredentials: true });
     }
 
     delete(uuid: string): Observable<void> {
-        return this.http.delete<void>(`${this.url}/lifecycle-cost/${uuid}`);
+        return this.http.delete<void>(`${this.url}/lifecycle-cost/${uuid}`,
+      { withCredentials: true });
     }
 }

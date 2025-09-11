@@ -72,6 +72,7 @@ export class InventoryItemApiService {
   
   deleteInventoryItem(itemId: string): Observable<Inventory>
   {
-    return this.http.delete<Inventory>(`${this.url}/inventory/${itemId}`);
+    return this.http.delete<Inventory>(`${this.url}/inventory/${itemId}`,
+      { withCredentials: true });
   }
 }
