@@ -1,5 +1,5 @@
-<div class="flex flex-col items-center justify-center pt-5 p-4 bg-gray-300 dark:bg-gray-500 rounded-xl">
-    <p-toast></p-toast>
+<div [ngClass]="showAddButton ? 'flex flex-col items-center justify-center pt-5 bg-gray-300 dark:bg-gray-500 rounded-xl' : 'flex flex-col items-center justify-center pt-5'">
+    <p-toast/>
     <p-card class="text-center bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md">
         <ng-template #title>Inventory</ng-template>
         <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '25rem', 'max-width':'25rem' }" [paginator]="true" [rows]="rows" [responsiveLayout]="'scroll'">
@@ -61,8 +61,12 @@
     @if(!bcUser)
     {
         <div class="mt-4" *ngIf="showAddButton">
-            <button class="cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="inventoryAddDialog.openDialog()">
-                <img class="h-8 w-8" src="assets/icons/add_circle_gray.svg" alt="add inventory">
+             <button class="flex items-center gap-2 px-4 py-2 mb-3 bg-yellow-400 hover:bg-yellow-600 text-white rounded-lg shadow-md hover:translate-y-1 transition-transform duration-200"
+                (click)="inventoryAddDialog.openDialog()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add New Inventory Item
             </button>
             <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog>
         </div>
