@@ -1,35 +1,210 @@
 #!/usr/bin/env python3
 import os
 import joblib
-from flask import Flask, request, jsonify
-from datetime import datetime
 import pandas as pd
+import psycopg2
+from prophet import Prophet
+from datetime import datetime
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import Optional, List, Dict
+import yaml
+import re
 
-app = Flask(__name__)
 BASE_DIR = os.path.dirname(__file__)
 MODELS_DIR = os.path.join(BASE_DIR, "models")
+CONFIG_PATH = "../src/main/resources/application.yml"
 
+app = FastAPI(title="Forecast API", version="1.2.0")
 
-def find_model_path(item_uuid):
+class ForecastRequest(BaseModel):
+    item_uuid: str
+    months: Optional[int] = 3
+    freq: Optional[str] = "D"  # D = daily, W = weekly, M = monthly
+
+class TrainRequest(BaseModel):
+    item_uuid: str
+
+def resolve_placeholder(value):
+    if isinstance(value, str):
+        match = re.match(r"\$\{(.+?):(.+?)\}", value)
+        if match:
+            env_var, default = match.groups()
+            return os.getenv(env_var, default)
+    return value
+
+with open(CONFIG_PATH, "r") as f:
+    spring_config = yaml.safe_load(f)
+
+db_config = spring_config["spring"]["datasource"]
+raw_url = resolve_placeholder(db_config["url"])
+DB_USER = resolve_placeholder(db_config["username"])
+DB_PASS = resolve_placeholder(db_config["password"])
+DB_NAME = raw_url.split("/")[-1]
+DB_HOST = raw_url.split("//")[-1].split(":")[0]
+DB_PORT = raw_url.split(":")[-1].split("/")[0]
+
+os.makedirs(MODELS_DIR, exist_ok=True)
+
+def get_connection():
+    return psycopg2.connect(
+        dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST, port=DB_PORT
+    )
+
+def train_item(item_uuid: str) -> str:
+    conn = get_connection()
+    query = """
+    SELECT
+        ii.item_uuid,
+        ii.name AS item_name,
+        ii.unit,
+        iu.approval_date,
+        SUM(iu.quantity_used) AS total_used
+    FROM inventoryusage iu
+    JOIN inventoryitem ii ON iu.item_uuid = ii.item_uuid
+    WHERE iu.approval_date IS NOT NULL
+      AND ii.item_uuid = %s
+    GROUP BY ii.item_uuid, ii.name, ii.unit, iu.approval_date
+    ORDER BY ii.item_uuid, iu.approval_date;
+    """
+    df = pd.read_sql(query, conn, params=(item_uuid,))
+    conn.close()
+
+    if df.empty:
+        raise HTTPException(status_code=400, detail=f"No approved data found for item {item_uuid}")
+
+    item_name = df["item_name"].iloc[0]
+    unit = df["unit"].iloc[0]
+
+    ts_data = df.rename(columns={"approval_date": "ds", "total_used": "y"})
+    ts_data = ts_data[["ds", "y"]]
+
+    if len(ts_data) < 2:
+        print(f"⚠️ Insufficient data for training item {item_uuid}: only {len(ts_data)} row(s). Skipping fit.")
+        return f"skipped_{item_uuid}"
+
+    model = Prophet()
+    model.fit(ts_data)
+
+    safe_name = item_name.replace(" ", "_").replace("/", "_")
+    model_path = os.path.join(MODELS_DIR, f"{item_uuid}__{safe_name}.pkl")
+    joblib.dump({
+        "model": model,
+        "item_name": item_name,
+        "unit": unit,
+        "trained_at": datetime.utcnow().isoformat() + "Z"
+    }, model_path)
+
+    return model_path
+
+def train_all() -> int:
+    conn = get_connection()
+    query = """
+    SELECT
+        ii.item_uuid,
+        ii.name AS item_name,
+        ii.unit,
+        iu.approval_date,
+        SUM(iu.quantity_used) AS total_used
+    FROM inventoryusage iu
+    JOIN inventoryitem ii ON iu.item_uuid = ii.item_uuid
+    WHERE iu.approval_date IS NOT NULL
+    GROUP BY ii.item_uuid, ii.name, ii.unit, iu.approval_date
+    ORDER BY ii.item_uuid, iu.approval_date;
+    """
+    df = pd.read_sql(query, conn)
+    conn.close()
+
+    if df.empty:
+        return 0
+
+    trained_count = 0
+    for item_uuid, group in df.groupby("item_uuid"):
+        item_name = group["item_name"].iloc[0]
+        unit = group["unit"].iloc[0]
+
+        ts_data = group.rename(columns={"approval_date": "ds", "total_used": "y"})
+        ts_data = ts_data[["ds", "y"]]
+
+        model = Prophet()
+        model.fit(ts_data)
+
+        safe_name = item_name.replace(" ", "_").replace("/", "_")
+        model_path = os.path.join(MODELS_DIR, f"{item_uuid}__{safe_name}.pkl")
+        joblib.dump({
+            "model": model,
+            "item_name": item_name,
+            "unit": unit,
+            "trained_at": datetime.utcnow().isoformat() + "Z"
+        }, model_path)
+
+        trained_count += 1
+
+    return trained_count
+
+def find_model_path(item_uuid: str) -> Optional[str]:
     for filename in os.listdir(MODELS_DIR):
         if filename.startswith(item_uuid + "__") and filename.endswith(".pkl"):
             return os.path.join(MODELS_DIR, filename)
     return None
 
+@app.get("/debug-data/{item_uuid}")
+def debug_data(item_uuid: str):
+    conn = get_connection()
+    query = """
+    SELECT
+        ii.item_uuid,
+        ii.name AS item_name,
+        ii.unit,
+        iu.approval_date,
+        SUM(iu.quantity_used) AS total_used
+    FROM inventoryusage iu
+    JOIN inventoryitem ii ON iu.item_uuid = ii.item_uuid
+    WHERE iu.approval_date IS NOT NULL
+      AND ii.item_uuid = %s
+    GROUP BY ii.item_uuid, ii.name, ii.unit, iu.approval_date
+    ORDER BY ii.item_uuid, iu.approval_date;
+    """
+    df = pd.read_sql(query, conn, params=(item_uuid,))
+    conn.close()
+    return {"data": df.to_dict(orient="records"), "empty": df.empty}
 
-@app.route("/forecast", methods=["POST"])
-def forecast():
-    data = request.get_json(force=True)
-    item_uuid = data.get("item_uuid")
-    months = int(data.get("months", 3))
-    freq = data.get("freq", "D").upper()
+def list_models() -> List[Dict]:
+    models = []
+    for filename in os.listdir(MODELS_DIR):
+        if filename.endswith(".pkl"):
+            try:
+                payload = joblib.load(os.path.join(MODELS_DIR, filename))
+                models.append({
+                    "item_uuid": filename.split("__")[0],
+                    "item_name": payload.get("item_name"),
+                    "unit": payload.get("unit"),
+                    "trained_at": payload.get("trained_at", "unknown"),
+                    "file": filename
+                })
+            except Exception:
+                continue
+    return models
 
-    if not item_uuid:
-        return jsonify({"error": "Missing item_uuid"}), 400
+@app.post("/train-item")
+def train_item_route(request: TrainRequest):
+    path = train_item(request.item_uuid)
+    return {"status": "success", "model_path": path}
+
+@app.post("/train")
+def train_all_route():
+    count = train_all()
+    return {"status": "success", "trained_models": count}
+
+@app.post("/forecast")
+def forecast(request: ForecastRequest):
+    item_uuid = request.item_uuid
+    months = request.months
+    freq = request.freq.upper()
 
     model_path = find_model_path(item_uuid)
     if not model_path:
-        return jsonify({"error": f"No model found for item_uuid {item_uuid}"}), 404
+        raise HTTPException(status_code=404, detail=f"No model found for item_uuid {item_uuid}")
 
     payload = joblib.load(model_path)
     model = payload.get("model")
@@ -55,7 +230,7 @@ def forecast():
     result = forecast_df[["ds", "yhat"]].tail(periods).copy()
     result["ds"] = result["ds"].dt.strftime("%Y-%m-%d")
 
-    response = {
+    return {
         "item_uuid": item_uuid,
         "item_name": item_name,
         "unit": unit,
@@ -63,8 +238,14 @@ def forecast():
         "periods": periods,
         "forecast": result.to_dict(orient="records")
     }
-    return jsonify(response), 200
 
+@app.get("/models")
+def get_models():
+    models = list_models()
+    if not models:
+        raise HTTPException(status_code=404, detail="No trained models found")
+    return {"models": models}
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)), debug=True)
+@app.get("/")
+def root():
+    return {"message": "Forecast API is running 🚀"}
