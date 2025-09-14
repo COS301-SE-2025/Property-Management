@@ -5,6 +5,9 @@
 
 :root {
   --base-font-size: 16px;
+  --heading-font-size: 2rem;
+  --subheading-font-size: 1.25rem;
+  --text-font-size: 1rem;
   --property-yellow: #FFE372;
   --bg-color: #fcfcfc;
   --text-color: #111111;
@@ -103,6 +106,18 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-size: var(--base-font-size);
+}
+
+h1, .text-2xl, .heading {
+  font-size: var(--heading-font-size);
+}
+
+h2, .text-xl, .subheading {
+  font-size: var(--subheading-font-size);
+}
+
+p, .text, .font-normal {
+  font-size: var(--text-font-size);
 }
 
 .dark-theme input, textarea{

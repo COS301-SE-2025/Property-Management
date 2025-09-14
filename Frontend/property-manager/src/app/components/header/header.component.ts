@@ -45,11 +45,17 @@ interface NavLink {
 })
 export class HeaderComponent implements OnInit {
 
-  ngOnInit() {
+ngOnInit() {
   const savedFontSize = localStorage.getItem('fontSize');
   if (savedFontSize) {
-    document.documentElement.style.setProperty('--base-font-size', savedFontSize);
-    this.currentFontSizeIndex = this.fontSizes.indexOf(savedFontSize);
+    const size = JSON.parse(savedFontSize);
+    document.documentElement.style.setProperty('--base-font-size', size.base);
+    document.documentElement.style.setProperty('--heading-font-size', size.heading);
+    document.documentElement.style.setProperty('--subheading-font-size', size.subheading);
+    document.documentElement.style.setProperty('--text-font-size', size.text);
+    this.currentFontSizeIndex = this.fontSizes.findIndex(
+      s => s.base === size.base
+    );
   }
 }
 
@@ -60,7 +66,11 @@ export class HeaderComponent implements OnInit {
   public isContractor = false; 
   public isBodyCorporate = false; 
   public unreadCount = 0;
-  fontSizes = ['16px', '18px', '20px'];
+  fontSizes = [
+  { base: '16px', heading: '2rem', subheading: '1.25rem', text: '1rem' },
+  { base: '18px', heading: '2.25rem', subheading: '1.5rem', text: '1.125rem' },
+  { base: '20px', heading: '2.5rem', subheading: '1.75rem', text: '1.25rem' }
+  ];
   currentFontSizeIndex = 0;
 
   @ViewChild('profileDropDown') profileDropDown!: ElementRef;
@@ -159,9 +169,12 @@ export class HeaderComponent implements OnInit {
 
   changeFontSize() {
     this.currentFontSizeIndex = (this.currentFontSizeIndex + 1) % this.fontSizes.length;
-    const newSize = this.fontSizes[this.currentFontSizeIndex];
-    document.documentElement.style.setProperty('--base-font-size', newSize);
-    localStorage.setItem('fontSize', newSize);
+    const size = this.fontSizes[this.currentFontSizeIndex];
+    document.documentElement.style.setProperty('--base-font-size', size.base);
+    document.documentElement.style.setProperty('--heading-font-size', size.heading);
+    document.documentElement.style.setProperty('--subheading-font-size', size.subheading);
+    document.documentElement.style.setProperty('--text-font-size', size.text);
+    localStorage.setItem('fontSize', JSON.stringify(size));
   }
 
   openNotifications() {
