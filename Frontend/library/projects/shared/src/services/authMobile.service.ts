@@ -22,13 +22,13 @@ export class AuthMobileService {
   {
     return new Promise((resolve, reject) => {
       this.trusteeLoginRequest(email, password).subscribe({
-        next: (result) => {
+        next: async(result) => {
           const idToken = result.idToken;
           const trusteeId = result.userId;
 
-          this.storage.set('idToken', idToken);
-          this.storage.set('trusteeId', trusteeId);
-          this.storage.set('userType', 'trustee');
+          await this.storage.set('idToken', idToken);
+          await this.storage.set('trusteeId', trusteeId);
+          await this.storage.set('userType', 'trustee');
 
           resolve(result);
         },
@@ -99,12 +99,13 @@ export class AuthMobileService {
   {
     return new Promise((resolve, reject) => {
       this.contractorLoginRequest(email, password).subscribe({
-        next: (result) => {
+        next: async(result) => {
          const contractorId = result.userId;
           
-         this.storage.set('contractorId', contractorId);
-         this.storage.set('idToken', result.idToken);
-         this.storage.set('userType', 'contractor');
+         await this.storage.set('contractorId', contractorId);
+         await this.storage.set('idToken', result.idToken);
+         console.log("Setting usertype to contractor");
+         await this.storage.set('userType', 'contractor');
           resolve(result);
         },
         error: (error) => {

@@ -89,10 +89,33 @@ app-tab {
   --background: var(--bg-color);
 }
 .dark {
-  --p-datatable-row-background: #212121 !important; /* dark row background */
+  --p-datatable-row-background: #212121 !important;
   --p-datatable-header-background: #333333;
   --p-datatable-header-cell-background: #000000 !important;
-  --p-datatable-row-color: #333333; /* text color */
+  --p-datatable-row-color: #333333;
+}
+
+.dark .p-paginator{
+  background: var(--datatable-body-bg);
+}
+.dark .p-paginator-page.p-paginator-page-selected {
+  background: var(--card-border);
+  color: #fff;
+}
+.dark .p-select-option{
+  color: #fff;
+  background: #3B3B3B;
+}
+.dark .p-select-list-container{
+  background: #3B3B3B;
+}
+.dark .p-select-option.p-select-option-selected{
+  background: var(--card-hover);
+  color: #fff;
+}
+.dark .p-select{
+  color: #ffffff;
+  background: #3B3B3B;
 }
 
 .font-normal {

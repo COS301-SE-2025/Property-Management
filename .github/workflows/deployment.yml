@@ -2,7 +2,7 @@ name: Deploy Backend and Frontend
 
 on:
     push:
-        branches: [main]
+        branches: [main, Mobile/integration]
 
 jobs:
     backend:
