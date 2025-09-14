@@ -132,7 +132,6 @@ export class BodyCoporateService {
       .map(building => firstValueFrom(this.budgetApiService.getBudgetsByBuildingId(building.buildingUuid)));
 
     const allBudgets = await Promise.all(budgetPromise);
-    console.log(allBudgets);
     const budgets = allBudgets.flatMap(bud => {
       if(!bud) return [];
 
@@ -147,8 +146,6 @@ export class BodyCoporateService {
 
       return Object.values(group);
     });
-
-    console.log(budgets);
 
     if(budgets.length > 0)
     {
