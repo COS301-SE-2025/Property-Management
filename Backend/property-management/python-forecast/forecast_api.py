@@ -13,7 +13,12 @@ import re
 
 BASE_DIR = os.path.dirname(__file__)
 MODELS_DIR = os.path.join(BASE_DIR, "models")
-CONFIG_PATH = "../src/main/resources/application.yml"
+
+CONFIG_PATHS = [
+    "/app/application.yml",  
+    "../src/main/resources/application.yml",  
+    "application.yml" 
+]
 
 app = FastAPI(title="Forecast API", version="1.2.0")
 
@@ -33,17 +38,39 @@ def resolve_placeholder(value):
             return os.getenv(env_var, default)
     return value
 
-with open(CONFIG_PATH, "r") as f:
-    spring_config = yaml.safe_load(f)
+def load_config():
+    for config_path in CONFIG_PATHS:
+        if os.path.exists(config_path):
+            with open(config_path, "r") as f:
+                return yaml.safe_load(f)
+            
+    print("⚠️ Warning: No configuration file found. Please ensure environment variables are set.")
+    return None
 
-db_config = spring_config["spring"]["datasource"]
-raw_url = resolve_placeholder(db_config["url"])
-DB_USER = resolve_placeholder(db_config["username"])
-DB_PASS = resolve_placeholder(db_config["password"])
-DB_NAME = raw_url.split("/")[-1]
-DB_HOST = raw_url.split("//")[-1].split(":")[0]
-DB_PORT = raw_url.split(":")[-1].split("/")[0]
+spring_config = load_config()
 
+if spring_config and "spring" in spring_config:
+    db_config = spring_config["spring"]["datasource"]
+    raw_url = resolve_placeholder(db_config["url"])
+    DB_USER = resolve_placeholder(db_config["username"])
+    DB_PASS = resolve_placeholder(db_config["password"])
+    DB_NAME = raw_url.split("/")[-1]
+    DB_HOST = raw_url.split("//")[-1].split(":")[0]
+    DB_PORT = raw_url.split(":")[-1].split("/")[0]
+else:
+    spring_url = os.getenv("SPRING_DATASOURCE_URL")
+    DB_USER = os.getenv("SPRING_DATASOURCE_USERNAME")
+    DB_PASS = os.getenv("SPRING_DATASOURCE_PASSWORD")
+    
+    if spring_url:
+        clean_url = spring_url.replace("jdbc:postgresql://", "")
+        DB_HOST = clean_url.split(":")[0]
+        port_and_db = clean_url.split(":")[1]
+        DB_PORT = port_and_db.split("/")[0]
+        DB_NAME = port_and_db.split("/")[1]
+    else:
+        raise EnvironmentError("Database configuration not found in environment variables.")
+        
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 def get_connection():
@@ -125,6 +152,10 @@ def train_all() -> int:
 
         ts_data = group.rename(columns={"approval_date": "ds", "total_used": "y"})
         ts_data = ts_data[["ds", "y"]]
+
+        if len(ts_data) < 2:
+            print(f"⚠️ Insufficient data for training item {item_uuid}: only {len(ts_data)} row(s). Skipping fit.")
+            continue
 
         model = Prophet()
         model.fit(ts_data)
@@ -220,6 +251,9 @@ def forecast(request: ForecastRequest):
     elif freq == "M":
         periods = months
         freq_pd = "M"
+    elif freq == "Y":
+        periods = months
+        freq_pd = "Y"
     else:
         periods = months * 30
         freq_pd = "D"
@@ -228,15 +262,34 @@ def forecast(request: ForecastRequest):
     forecast_df = model.predict(future)
 
     result = forecast_df[["ds", "yhat"]].tail(periods).copy()
+    result["yhat"] = result["yhat"].round().clip(lower=0).astype(int)  
     result["ds"] = result["ds"].dt.strftime("%Y-%m-%d")
+    
+    total_forecasted = int(result["yhat"].sum())
+    
+    conn = get_connection()
+    stock_query = """
+    SELECT quantity_in_stock FROM inventoryitem WHERE item_uuid = %s;
+    """
+    stock_df = pd.read_sql(stock_query, conn, params=(item_uuid,))
+    conn.close()
+    current_stock = int(stock_df["quantity_in_stock"].iloc[0]) if not stock_df.empty else 0
 
+    shortage = max(0, total_forecasted - current_stock)
+    alert_message = f"Forecasted usage: {total_forecasted} units. Current stock: {current_stock}. " \
+                    f"{'Order at least ' + str(shortage) + ' more.' if shortage > 0 else 'Sufficient stock.'}"
+                    
     return {
         "item_uuid": item_uuid,
         "item_name": item_name,
         "unit": unit,
         "generated_at": datetime.utcnow().isoformat() + "Z",
         "periods": periods,
-        "forecast": result.to_dict(orient="records")
+        "forecast": result.to_dict(orient="records"),
+        "total_forecasted": total_forecasted,  
+        "current_stock": current_stock,        
+        "shortage": shortage,                  
+        "alert": alert_message                 
     }
 
 @app.get("/models")
@@ -246,6 +299,19 @@ def get_models():
         raise HTTPException(status_code=404, detail="No trained models found")
     return {"models": models}
 
+@app.get("/health")
+def health_check():
+    try:
+        conn = get_connection()
+        conn.close()
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
+
 @app.get("/")
 def root():
     return {"message": "Forecast API is running 🚀"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5000)
