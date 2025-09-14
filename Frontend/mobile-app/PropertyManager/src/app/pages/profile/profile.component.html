@@ -17,6 +17,20 @@
           </ion-button>
         }
       </ion-item>
+      @if (userType === 'contractor') {
+      <ion-item>
+        <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/contractor-profile">
+          <ion-icon slot="start" src="assets/icons/settings_gray.svg"></ion-icon>
+          Edit Contractor Profile
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/submitted-quotations">
+          <ion-icon slot="start" name="document-text-outline"></ion-icon>
+          Submitted Quotations
+        </ion-button>
+      </ion-item>
+    }
          @if (userType === 'contractor') {
         <ion-item>
           <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/submitted-quotations">
