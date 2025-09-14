@@ -42,7 +42,21 @@
 @import '@ionic/angular/css/palettes/dark.system.css';
 
 :root {
+  --base-font-size: 1rem;
+  --heading-font-size: 2rem;
+  --subheading-font-size: 1.25rem;
+  --text-font-size: 1rem;
   --property-yellow: #FFE372;
+}
+
+body, ion-content, ion-list, ion-item, p, .font-normal {
+  font-size: var(--base-font-size);
+}
+h1, .text-2xl, .heading {
+  font-size: var(--heading-font-size);
+}
+h2, .text-xl, .subheading {
+  font-size: var(--subheading-font-size);
 }
 
 .propertyYellow-bg {
@@ -94,12 +108,3 @@ app-tab {
   --p-datatable-row-color: #333333; /* text color */
 }
 
-.font-normal {
-  font-size: 1rem;
-}
-.font-large {
-  font-size: 1.25rem;
-}
-.font-small {
-  font-size: 0.85rem;
-}
