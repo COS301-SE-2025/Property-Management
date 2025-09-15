@@ -339,7 +339,8 @@ describe('InventoryItemApiService', () => {
         next: (item) => {
           expect(item).toEqual(deletedItem);
           expect(httpClientSpy.delete).toHaveBeenCalledWith(
-            `${url}/inventory/1`
+            `${url}/inventory/1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected item but got error')

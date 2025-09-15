@@ -53,6 +53,7 @@ export class ContractorApiService {
     { withCredentials: true });
   }
   getAverageRating(contractorId: string): Observable<number>{
-    return this.http.get<number>(`${this.url}/rating/avg/${contractorId}`);
+    return this.http.get<number>(`${this.url}/rating/avg/${contractorId}`,
+      { withCredentials: true });
   }
 }

@@ -65,3 +65,13 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+python-forecast/models/
+python-forecast/models/*.pkl
+
+python-forecast/venv/
+python-forecast/env/
+
+python-forecast/build/
+python-forecast/dist/
+python-forecast/*.egg-info/

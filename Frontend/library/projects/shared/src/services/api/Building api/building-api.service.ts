@@ -113,4 +113,9 @@ export class BuildingApiService {
     return this.http.get<Property[]>(`${this.url}/buildings/type/${buildingType}`,
     { withCredentials: true });
   }
+
+  removeBuildingFromBc(buildingId: string)
+  {
+    return this.http.put(`${this.url}/buildings/${buildingId}/revoke-corporate`, {});
+  }
 }
