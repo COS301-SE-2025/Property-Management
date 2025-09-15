@@ -8,8 +8,6 @@ import com.example.propertymanagement.dto.BuildingUpdateDto
 import com.example.propertymanagement.model.Building
 import com.example.propertymanagement.repository.BuildingRepository
 import com.example.propertymanagement.repository.ImageRepository
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -79,7 +77,6 @@ class BuildingService(
         val savedBuilding = buildingRepository.save(updatedBuilding)
         return mapToResponseDto(savedBuilding)
     }
-
 
     fun deleteBuilding(uuid: UUID): Boolean =
         if (buildingRepository.existsById(uuid)) {
