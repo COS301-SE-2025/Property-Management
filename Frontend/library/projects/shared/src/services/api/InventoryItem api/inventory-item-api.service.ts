@@ -4,6 +4,21 @@ import { Observable } from 'rxjs';
 import { Inventory } from '../../../models/inventory.model';
 import { environmentMobile } from '../../../environment';
 
+export interface Anomaly{
+  message: string;
+  timestamp: Date;
+  data: {
+    title: string;
+    price: number;
+  },
+  stats: {
+    mean_price: number;
+    std_price: number;
+    min_threshold: number;
+    max_threshold: number;
+    sample_count: number;
+  }
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +26,7 @@ export class InventoryItemApiService {
 
   // private url = '/api';
   private url = environmentMobile.apiUrl;
+  private wowFactorUrl = environmentMobile.wowFactorUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -74,5 +90,13 @@ export class InventoryItemApiService {
   {
     return this.http.delete<Inventory>(`${this.url}/inventory/${itemId}`,
       { withCredentials: true });
+  }
+  detectAnomaly(title: string, price: number)
+  {
+      const req = {
+          title: title,
+          price: price
+      }
+      return this.http.post<Anomaly>(`${this.wowFactorUrl}/anomaly`, req);
   }
 }

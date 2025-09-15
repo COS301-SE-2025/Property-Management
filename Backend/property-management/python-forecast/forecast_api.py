@@ -7,6 +7,7 @@ import psycopg2
 from prophet import Prophet
 from datetime import datetime
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 import yaml
@@ -25,6 +26,21 @@ CONFIG_PATHS = [
 ]
 
 app = FastAPI(title="Forecast API", version="1.2.0")
+
+origins = [
+    "http://localhost:8080",
+    "http://localhost:4200",
+    "http://localhost:8100",
+    "https://localhost"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"],
+)
 
 class ForecastRequest(BaseModel):
     item_uuid: str
@@ -321,9 +337,8 @@ async def anomaly_dectition(request: Request):
     data = await request.json()
     product_title = data.get("title")
     product_price = data.get("price")
-    product_email = data.get("email")
 
-    if not all([product_title, product_price, product_email]):
+    if not all([product_title, product_price]):
         raise HTTPException(status_code=400, detail="Missing required fields")
     
     try:
@@ -332,7 +347,7 @@ async def anomaly_dectition(request: Request):
         raise HTTPException(status_code=400, detail="Price must be a valid number")
 
     scraper = cloudscraper.create_scraper()
-    url = "https://www.pricecheck.co.za/search?search={product_title}"
+    url = f"https://www.pricecheck.co.za/search?search={product_title}"
 
     try:
         res = scraper.get(url)
@@ -362,22 +377,33 @@ async def anomaly_dectition(request: Request):
             "timestamp": datetime.now()
         }
     
-    mean_price = np.mean(prices);
-    std_price = np.std(prices)
+    mean_price = float(np.mean(prices));
+    std_price = float(np.std(prices));
 
     min_price = mean_price - (2 * std_price)
     max_price = mean_price + (2 * std_price)
 
-    is_anomaly = product_price < min_price or product_price > max_price
+    if min_price <= 0:
+        adjusted_min = 0.01
+        is_anomaly = bool(product_price < adjusted_min or product_price > max_price)
+        returned_min = adjusted_min
+    else:
+        is_anomaly = bool(product_price < min_price or product_price > max_price)
+        returned_min = min_price
 
     return {
-        "anomaly_detected": is_anomaly,
         "message": "Inventory anomaly detected" if is_anomaly else "Item normal",
-        "timestamp": datetime.now(),
+        "timestamp": datetime.now().isoformat(),
         "data": {
             "title": product_title,
             "price": product_price,
-            "email": product_email
+        },
+        "stats": {
+            "mean_price": mean_price,
+            "std_price": std_price,
+            "min_threshold": returned_min,
+            "max_threshold": max_price,
+            "samples_count": len(prices)
         }
     }
 
