@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Inventory } from '../../../models/inventory.model';
 import { environmentMobile } from '../../../environment';
 
-export interface Anomaly{
+interface Anomaly{
   message: string;
   timestamp: Date;
   data: {
@@ -72,6 +72,15 @@ export class InventoryItemApiService {
     }
 
     return this.http.put<Inventory>(`${this.url}/inventory/${inventoryItem.itemUuid}`, item,
+    { withCredentials: true });
+  }
+  updateInventoryItemUnit(itemId: string, unitName: string): Observable<Inventory>
+  { 
+    const item = {
+      unit: unitName
+    };
+
+    return this.http.put<Inventory>(`${this.url}/inventory/${itemId}`, item,
     { withCredentials: true });
   }
 

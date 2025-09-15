@@ -85,7 +85,7 @@ export class ApiService {
       { withCredentials: true });
   }
 
-  getTrusteesById(id: number): Observable<Trustee>
+  getTrusteesById(id: number | string): Observable<Trustee>
   {
     return this.http.get<Trustee>(`${this.url}/trustee/${id}` ,
       { withCredentials: true });

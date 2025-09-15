@@ -4,12 +4,11 @@ import { LifeCycleCost } from '../models/lifeCycleCost.model';
 import { ContractorDetails } from '../models/contractorDetails.model';
 import { ReserveFund } from '../models/reserveFund.model';
 import { BodyCoporateApiService } from './api/Body Coporate api/body-coporate-api.service';
-import { firstValueFrom, map, Observable } from 'rxjs';
-import { getCookieValue } from '../utils/cookie-utils';
+import { catchError, firstValueFrom, forkJoin, from, map, mergeMap, Observable, of, switchMap } from 'rxjs';
 import { Graph } from '../models/graph.model';
 import { BudgetApiService } from './api/Budget api/budget-api.service';
 import { ImageApiService } from './api/Image api/image-api.service';
-import { ContractorApiService, Property, TaskApiService } from '../public-api';
+import { Anomaly, ApiService, BuildingApiService, ContractorApiService, Inventory, InventoryItemApiService, Property } from '../public-api';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +25,16 @@ export class BodyCoporateService {
   buildings = signal<Property[]>([]);
   contribution = signal<number>(0);
 
-  constructor(private bodyCoporateApiService: BodyCoporateApiService, private budgetApiService: BudgetApiService, private imageApiService: ImageApiService, private contractorService: ContractorApiService){
+  anomalies = signal<Anomaly[]>([]);
+
+  constructor(
+    private bodyCoporateApiService: BodyCoporateApiService, 
+    private budgetApiService: BudgetApiService, 
+    private imageApiService: ImageApiService, 
+    private contractorService: ContractorApiService,
+    private inventoryService: InventoryItemApiService,
+    private buildingServie: BuildingApiService,
+    private inviteService: ApiService){
   }
 
   async loadHouses(bcId: string)
@@ -297,5 +305,62 @@ export class BodyCoporateService {
   makeContractorTrusted(bcId:string, contractorId: string)
   {
     return this.bodyCoporateApiService.makeContractorTrusted(contractorId, bcId);
+  }
+
+ async loadAnomalies(bcId: string) {
+  this.anomalies.set([]);
+  
+  try {
+    const buildings = await firstValueFrom(
+      this.bodyCoporateApiService.getBuildingsLinkedtoBC(bcId)
+    );
+
+    const buildingUuids: string[] = buildings
+      .map(b => b.buildingUuid)
+      .filter((uuid): uuid is string => typeof uuid === 'string');
+
+    await Promise.all(buildingUuids.map(async uuid => {
+        try {
+          this.inventoryService.getInventoryItemsByBuilding(uuid).subscribe({
+            next: (inventory) => {
+              const filtered = inventory.filter(i => i.unit === 'ANOMALY');
+
+              filtered.forEach((f) => {
+                this.buildingServie.getBuildingById(uuid).subscribe({
+                  next: (res) => {
+                    if(res.trusteeUuid)
+                    {
+                      this.inviteService.getTrusteesById(res.trusteeUuid).subscribe({
+                        next: (t) => {
+                          
+                          const anomly: Anomaly = {
+                            ...f,
+                            email: t.email,
+                            trusteeUuid: t.trusteeUuid,
+                            houseName: res.name
+                          }
+                          this.addToAnomalies(anomly) 
+                        }
+                      })
+                    }
+                  }
+                })
+              })
+            },
+            error: (err) => {
+              console.error("Error loading inventory:", err);
+            }
+          })
+        } catch (error) {
+          console.error(`Failed to load inventory anomalies for building ${uuid}`, error);
+        }
+      }));
+    
+  } catch (error) {
+    console.error('Failed to load buildings', error);
+  }
+}
+  private addToAnomalies(anomaly: Anomaly): void {
+    this.anomalies.update(items => [...items, anomaly]);
   }
 }

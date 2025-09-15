@@ -99,4 +99,9 @@ export class PropertyService {
     return this.http.post(`${this.inviteApiUrl}/invites`, payload,
       { withCredentials: true })
   }
+
+  getTrusteesInBodyCorporate(bcId: string)
+  {
+    return this.http.get<InviteWithTrustee[]>(`${this.apiUrl}/invites/${bcId}/status?status=ACCEPTED`, { withCredentials: true });
+  }
 }

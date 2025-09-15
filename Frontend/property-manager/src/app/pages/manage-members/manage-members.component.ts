@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PropertyService, InviteWithTrustee, ApiService, getCookieValue } from 'shared';
+import { PropertyService, InviteWithTrustee, ApiService, getCookieValue, BuildingApiService } from 'shared';
 import { NotificationsApiService, Notification } from 'shared';
 import { MessageService } from 'primeng/api';
 import { Toast } from "primeng/toast";
@@ -26,7 +26,8 @@ export class ManageMembersComponent implements OnInit {
     private propertyService: PropertyService,
     private notificationService: NotificationsApiService,
     private apiService: ApiService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private buildingService: BuildingApiService
   ) {}
 
   ngOnInit() {
@@ -54,6 +55,15 @@ export class ManageMembersComponent implements OnInit {
         i.inviteUuid === invite.inviteUuid ? { ...i, status: 'REJECTED' } : i
       );
       this.activeMembers = this.activeMembers.filter(i => i.inviteUuid !== invite.inviteUuid);
+
+      //remove bc id from trustees buildings
+      // this.buildingService.getBuildingsByTrustee(invite.trusteeUuid).subscribe({
+      //   next: (res) => {
+      //     res.buildings.forEach(b => {
+      //       this.buildingService.removeBuildingFromBc(b.buildingUuid!).subscribe();
+      //     })
+      //   }
+      // })
 
       const noti: Notification = {
         notificationType: 'INVITE REVOKED',
