@@ -1,4 +1,4 @@
-import { afterNextRender, Component, OnInit, effect, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService, NotificationsApiService, Notification, getCookieValue } from 'shared';
