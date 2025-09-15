@@ -1,4 +1,4 @@
-import {  Component,  ElementRef, HostListener, ViewChild } from '@angular/core';
+import { afterNextRender, Component, OnInit, effect, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService, NotificationsApiService, Notification, getCookieValue } from 'shared';
@@ -22,7 +22,17 @@ interface NavLink {
   selector: 'app-header',
   imports: [CommonModule, BreadcrumbModule, RouterModule],
   templateUrl: `./header.component.html`,
-  styles: ``,
+  styles: [`
+    /* Make all PrimeIcons bigger inside the header */
+    :host ::ng-deep i.pi {
+      font-size: 1.75rem; /* adjust to 2rem if you want them even bigger */
+    }
+
+    /* Optional: adjust spacing so icons align nicely */
+    :host ::ng-deep button i.pi {
+      vertical-align: middle;
+    }
+  `],
   animations: [
     trigger('slideToggle', [
       state('active', style({

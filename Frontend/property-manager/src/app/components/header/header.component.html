@@ -4,6 +4,7 @@
     <img src="assets/images/logo.png" class="w-16 h-12 ml-8" alt="logo">
     <p class="font-medium text-xl">Property Manager</p>
 
+    <!-- Navigation Links -->
     <div class="flex gap-8 ml-12">
       <ng-container *ngFor="let link of navLinks">
         <a
@@ -17,14 +18,15 @@
       </ng-container>
     </div>
 
-    <!-- Notifications Button -->
+    <!-- Notifications + Settings + Profile -->
     <div class="ml-auto flex items-center">
+      <!-- Notifications -->
       <button
         class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 relative mr-4"
         (click)="openNotifications()"
         aria-label="Open notifications"
       >
-        <i class="pi pi-bell" style="font-size: 1.5rem;"></i>
+        <i class="pi pi-bell text-2xl"></i>
         <span
           *ngIf="unreadCount > 0"
           class="absolute top-0 right-0 bg-red-500 text-white rounded-full px-1 text-xs"
@@ -33,21 +35,15 @@
         </span>
       </button>
 
-      <!-- Settings and Profile Buttons -->
+      <!-- Settings -->
       <div class="relative flex">
-        <button class="cursor-pointer pr-3" (click)="dropDownSettings()">
-          <img
-            [src]="isDarkMode ? 'assets/icons/settings_gray.svg' : 'assets/icons/settings.svg'"
-            class="w-9 h-9"
-            alt="Settings"
-          >
+        <button class="cursor-pointer pr-3" (click)="dropDownSettings()" aria-label="Settings">
+          <i class="pi pi-cog text-2xl"></i>
         </button>
-        <button class="cursor-pointer" (click)="dropDownProfile()">
-          <img
-            [src]="isDarkMode ? 'assets/icons/profile_gray.svg' : 'assets/icons/profile.svg'"
-            class="w-9 h-9"
-            alt="Profile"
-          >
+
+        <!-- Profile -->
+        <button class="cursor-pointer" (click)="dropDownProfile()" aria-label="Profile">
+          <i class="pi pi-user text-2xl"></i>
         </button>
 
         <!-- Profile Dropdown -->
@@ -89,24 +85,10 @@
               &times;
             </button>
           </div>
+
+          <!-- Dark Mode Toggle -->
           <div class="flex items-center justify-between px-6 py-2">
-            <!-- Moon Icon -->
-            <svg
-              [ngClass]="{'opacity-60': !isDarkMode, 'opacity-100': isDarkMode}"
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 mr-2 transition-opacity"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"
-              />
-            </svg>
-            <!-- Slider Switch -->
+            <i class="pi pi-moon text-lg mr-2" [ngClass]="{'opacity-60': !isDarkMode, 'opacity-100': isDarkMode}"></i>
             <label class="relative inline-flex items-center cursor-pointer mx-2">
               <input
                 type="checkbox"
@@ -121,23 +103,9 @@
                 class="absolute left-0.5 top-0.5 w-5 h-5 bg-white border border-gray-300 rounded-full shadow transform transition peer-checked:translate-x-6"
               ></div>
             </label>
-            <!-- Sun Icon -->
-            <svg
-              [ngClass]="{'opacity-100': !isDarkMode, 'opacity-60': isDarkMode}"
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 ml-2 transition-opacity"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M6.343 17.657l-1.414 1.414M17.657 17.657l-1.414-1.414M6.343 6.343L4.929 7.757"
-              />
-            </svg>
+            <i class="pi pi-sun text-lg ml-2" [ngClass]="{'opacity-100': !isDarkMode, 'opacity-60': isDarkMode}"></i>
           </div>
+
           <button
             class="block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer"
           >
