@@ -223,21 +223,21 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       true
     );
 
-    const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
-    if(org)
-    {
-      org.quantityInStock -= item.quantityInStock;
-      if(org.quantityInStock <= 0)
-      {
-        this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
+    // const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
+    // if(org)
+    // {
+    //   org.quantityInStock -= item.quantityInStock;
+    //   if(org.quantityInStock <= 0)
+    //   {
+    //     this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
 
-        this.housesService.deleteInvetoryItem(item);
-      }
-      else
-      {
-        this.housesService.updateInventory([org]);
-      }
-    }
+    //     this.housesService.deleteInvetoryItem(item);
+    //   }
+    //   else
+    //   {
+    //     this.housesService.updateInventory([org]);
+    //   }
+    // }
   });
  }
  onQuantitiesChanged(updated: Inventory[])
