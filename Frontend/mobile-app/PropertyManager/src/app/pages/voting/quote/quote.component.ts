@@ -1,12 +1,12 @@
 import { Component, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
-import { IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent } from '@ionic/angular/standalone';
+import { IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent, IonTitle } from '@ionic/angular/standalone';
 import { Contractor, Quote, FormatDatePipe, TaskApiService, ContractorApiService, ApiService } from 'shared';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 
 @Component({
   selector: 'app-quote',
-  imports: [IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent, CommonModule, FormatDatePipe],
+  imports: [IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent, CommonModule, FormatDatePipe, IonTitle],
   templateUrl: './quote.component.html',
   styles: ``,
 })
@@ -74,7 +74,7 @@ export class QuoteComponent extends ModalComponent implements OnInit {
     const quote = this.quote();
     if (!quote) return;
 
-    this.apiService.getQuote(this.contractorId(), "Quote").subscribe({
+    this.apiService.getContractorPDF(this.contractorId(), "Quote").subscribe({
       next: (presignedUrl: string) => {
         window.open(presignedUrl, '_blank');
       },

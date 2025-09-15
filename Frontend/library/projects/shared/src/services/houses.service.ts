@@ -134,8 +134,12 @@ export class HousesService {
         const firstElement = bulidingDetails[bulidingDetails.length-1];
         this.budgets.set(firstElement);
 
+        const sortedDetails = [...bulidingDetails].sort((a, b) => {
+          return new Date(a.approvalDate).getTime() - new Date(b.approvalDate).getTime();
+        });
+
         const graphData: Graph = {
-          labels: bulidingDetails.map(item => {
+          labels: sortedDetails.map(item => {
             const date = new Date(item.approvalDate);
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -175,7 +179,8 @@ export class HousesService {
 
     this.inventoryItemApiService.getInventoryItemsByBuilding(houseId).subscribe({
       next: (inventory) => {
-       this.inventory.set(inventory);
+        const filtered = inventory.filter(i => i.unit !== 'ANOMALY');
+        this.inventory.set(filtered);
       },
       error: (err) => {
         console.error("Error loading inventory:", err);

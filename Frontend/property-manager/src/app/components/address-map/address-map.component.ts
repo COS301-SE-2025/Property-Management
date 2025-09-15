@@ -13,7 +13,35 @@ interface result {
   selector: 'app-address-map',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './address-map.component.html',
-  styles: ``
+  styles: `
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      border-radius: 0.5rem;
+    }
+    
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #f59e0b;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `
 })
 export class AddressMapComponent  implements AfterViewInit, OnDestroy {
 
@@ -25,6 +53,7 @@ export class AddressMapComponent  implements AfterViewInit, OnDestroy {
   private watchId?: number;
 
   query = '';
+  isLoading = false;
 
   ngAfterViewInit()
   {
@@ -63,8 +92,9 @@ export class AddressMapComponent  implements AfterViewInit, OnDestroy {
   findAddress()
   {
     const search = this.control.value;
-    console.log(search);
     if (!search) return;
+
+    this.isLoading = true;
 
     fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(search)}`)
     .then(res => res.json())
@@ -90,7 +120,8 @@ export class AddressMapComponent  implements AfterViewInit, OnDestroy {
         this.control.setValue(first.properties.name || search);
       }
     })
-    .catch(err => console.error(err));
+    .catch(err => console.error(err))
+    .finally(() => this.isLoading = false);
   }
 
   enableLiveLocation()
@@ -100,6 +131,8 @@ export class AddressMapComponent  implements AfterViewInit, OnDestroy {
       console.error("Geolocation not supported")
       return;
     }
+
+    this.isLoading = true;
 
     this.watchId = navigator.geolocation.watchPosition((pos) => {
       const lat = pos.coords.latitude;
@@ -119,9 +152,12 @@ export class AddressMapComponent  implements AfterViewInit, OnDestroy {
           iconAnchor: [15, 30]
         })
       }).addTo(this.map).bindPopup('You are here').openPopup();
+
+      this.isLoading = false;
     },
     (err) => {
       console.error("Geolocation error:", err);
+      this.isLoading = false;
     },
     { enableHighAccuracy: true}
     );

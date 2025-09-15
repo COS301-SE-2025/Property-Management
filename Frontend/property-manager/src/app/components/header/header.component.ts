@@ -1,4 +1,4 @@
-import { afterNextRender, Component, OnInit, effect, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService, NotificationsApiService, Notification, getCookieValue } from 'shared';
@@ -9,7 +9,6 @@ import { filter } from 'rxjs';
 import { BreadCrumbService } from '../breadcrumb/breadcrumb.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { NotificationDrawerService } from '../../../../../library/projects/shared/src/services/notification-drawer.service';
-
 
 type UserType = 'contractor' | 'bodyCorporate' | 'trustee' | null;
 
@@ -54,7 +53,21 @@ interface NavLink {
     ])
   ]
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+
+ngOnInit() {
+  const savedFontSize = localStorage.getItem('fontSize');
+  if (savedFontSize) {
+    const size = JSON.parse(savedFontSize);
+    document.documentElement.style.setProperty('--base-font-size', size.base);
+    document.documentElement.style.setProperty('--heading-font-size', size.heading);
+    document.documentElement.style.setProperty('--subheading-font-size', size.subheading);
+    document.documentElement.style.setProperty('--text-font-size', size.text);
+    this.currentFontSizeIndex = this.fontSizes.findIndex(
+      s => s.base === size.base
+    );
+  }
+}
 
   public dropDownProfileOpen = false;
   public dropDownSettingsOpen = false;
@@ -63,32 +76,32 @@ export class HeaderComponent {
   public isContractor = false; 
   public isBodyCorporate = false; 
   public unreadCount = 0;
+  fontSizes = [
+  { base: '16px', heading: '2rem', subheading: '1.25rem', text: '1rem' },
+  { base: '18px', heading: '2.25rem', subheading: '1.5rem', text: '1.125rem' },
+  { base: '20px', heading: '2.5rem', subheading: '1.75rem', text: '1.25rem' }
+  ];
+  currentFontSizeIndex = 0;
 
   @ViewChild('profileDropDown') profileDropDown!: ElementRef;
   @ViewChild('settingsDropDown') settingsDropDown!: ElementRef;
 
   private routeMap: Record<string, Record<string, MenuItem[]>> = {
   'bodyCorporate': {
-    '/bodyCoporate/contractors': [
-      { label: 'Trusted Contractors', route: '/bodyCoporate/contractors' }
-    ],
-    '/bodyCoporate/publicContractors': [
-      { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' }
-    ],
     '/contractorDetails': [
       { label: 'Public Contractors', route: '/bodyCoporate/publicContractors' },
       { label: 'Contractor Details', route: '/contractorDetails' }
     ],
-    '/viewHouse:/houseId': [
-      { label: 'View House', route: null}
-    ],
-    '/manageBudget': [
-      { label: 'View House', route: '/viewHouse' },
-      { label: 'Manage Budget', route: '/manageBudget' }
-    ],
-    '/create-property': [
-      { label: 'Create Property', route: '/create-property' }
-    ]
+    // '/viewHouse:/houseId': [
+    //   { label: 'View House', route: null}
+    // ],
+    // '/manageBudget': [
+    //   { label: 'View House', route: '/viewHouse' },
+    //   { label: 'Manage Budget', route: '/manageBudget' }
+    // ],
+    // '/create-property': [
+    //   { label: 'Create Property', route: '/create-property' }
+    // ]
   },
   'trustee': {
     '/viewHouse': [
@@ -141,14 +154,16 @@ export class HeaderComponent {
     this.applyDarkMode();
 
     this.breadCrumbService.breadCrumbs.subscribe(bread => {
-      if(bread)
-      {
-        this.items = bread;
-      }
-      else
-      {
-        this.updateBreadcrumbs(this.router.url);
-      }
+      setTimeout(() => {
+        if(bread)
+        {
+          this.items = bread;
+        }
+        else
+        {
+          this.updateBreadcrumbs(this.router.url);
+        }
+      })
     })
 
 
@@ -160,6 +175,16 @@ export class HeaderComponent {
     });
 
     this.notificationDrawerService.notificationRead.subscribe(() => this.loadUnreadCount());
+  }
+
+  changeFontSize() {
+    this.currentFontSizeIndex = (this.currentFontSizeIndex + 1) % this.fontSizes.length;
+    const size = this.fontSizes[this.currentFontSizeIndex];
+    document.documentElement.style.setProperty('--base-font-size', size.base);
+    document.documentElement.style.setProperty('--heading-font-size', size.heading);
+    document.documentElement.style.setProperty('--subheading-font-size', size.subheading);
+    document.documentElement.style.setProperty('--text-font-size', size.text);
+    localStorage.setItem('fontSize', JSON.stringify(size));
   }
 
   openNotifications() {
@@ -272,7 +297,7 @@ export class HeaderComponent {
       return;
     }
 
-    if(pathParts[0] === 'viewHouse' && houseId)
+    if(pathParts[0] === 'viewHouse' && houseId && this.userType !== 'bodyCorporate')
     {
       this.items = [
         { label: 'View House', route: `/viewHouse/${houseId}` }

@@ -32,7 +32,6 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     private fb: FormBuilder,
     private inventoryItemApiService: InventoryItemApiService, 
     private route: ActivatedRoute, 
-    private router: Router, 
     private budgetApiService: BudgetApiService, 
     private housesService: HousesService,
     private messageService: MessageService
@@ -61,36 +60,66 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
       const price = this.form.value.price;
       const quantity = this.form.value.quantity;
 
-      this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, this.houseId).subscribe({
-        next: async () => {
-
-          await this.getAndUpdateBudget((price*quantity));
-          await this.housesService.loadInventory(this.houseId);
-          await this.housesService.loadBudget(this.houseId);
-          
-          this.form.reset();
-          this.closeDialog();
-
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Inventory item added successfully'
-          });
-          
-          setTimeout(() => {
-            this.router.navigate(['viewHouse', this.houseId]).then(() => {
-              window.location.reload();
+      this.inventoryItemApiService.detectAnomaly(name, price).subscribe({
+        next: (res) => {
+          console.log(res);
+          if(res.message === 'Item normal')
+          {
+            this.inventoryItemApiService.addInventoryItem(name, "normal", price, quantity, this.houseId).subscribe({
+              next: async () => {
+      
+                await this.getAndUpdateBudget((price*quantity));
+                await this.housesService.loadInventory(this.houseId);
+                await this.housesService.loadBudget(this.houseId);
+      
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Success',
+                  detail: 'Inventory item added succesfully',
+                })
+                
+                this.form.reset();
+                this.closeDialog();
+              },
+              error: async (err) => {
+                console.error("Failed to create inventory item", err);
+      
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Failed to add inventory item',
+                })
+              }
             });
-          }, 3000);
-        },
-        error: (err) => {
-          console.error("Failed to create inventory item", err);
-
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to add inventory item',
-          })
+          }
+          else
+          {
+            this.inventoryItemApiService.addInventoryItem(name, "ANOMALY", price, quantity, this.houseId).subscribe({
+              next: async () => {
+      
+                await this.housesService.loadInventory(this.houseId);
+                await this.housesService.loadBudget(this.houseId);
+      
+                this.messageService.add({
+                  severity: 'warn',
+                  summary: 'Warning',
+                  detail: 'Inventory anomaly detected, awaiting body corporate approval',
+                })
+                
+                this.form.reset();
+                this.closeDialog();
+              },
+              error: async (err) => {
+                console.error("Failed to create inventory item", err);
+      
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Failed to add inventory item',
+                })
+              }
+            });
+          }
         }
       });
     }

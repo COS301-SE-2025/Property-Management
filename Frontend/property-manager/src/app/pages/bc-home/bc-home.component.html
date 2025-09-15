@@ -6,6 +6,7 @@
         <app-life-cycle-card/>
         <app-reserve-fund-card [schedule]="bodyCoporateService.fundContribution()" [contri]="bodyCoporateService.contribution()"/>
         <app-maintenance-graph-card [bcData]="bodyCoporateService.maintenanceGraph()"/>
+        <app-inventory-anomaly-card [anomalies]="bodyCoporateService.anomalies()"/>
     </div>
 </div>
 

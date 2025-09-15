@@ -2,14 +2,19 @@
 import os
 import joblib
 import pandas as pd
+import numpy as np
 import psycopg2
 from prophet import Prophet
 from datetime import datetime
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 import yaml
 import re
+import cloudscraper
+from bs4 import BeautifulSoup
+import json
 
 BASE_DIR = os.path.dirname(__file__)
 MODELS_DIR = os.path.join(BASE_DIR, "models")
@@ -21,6 +26,21 @@ CONFIG_PATHS = [
 ]
 
 app = FastAPI(title="Forecast API", version="1.2.0")
+
+origins = [
+    "http://localhost:8080",
+    "http://localhost:4200",
+    "http://localhost:8100",
+    "https://localhost"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"],
+)
 
 class ForecastRequest(BaseModel):
     item_uuid: str
@@ -311,6 +331,81 @@ def health_check():
 @app.get("/")
 def root():
     return {"message": "Forecast API is running 🚀"}
+
+@app.post("/anomaly")
+async def anomaly_dectition(request: Request):
+    data = await request.json()
+    product_title = data.get("title")
+    product_price = data.get("price")
+
+    if not all([product_title, product_price]):
+        raise HTTPException(status_code=400, detail="Missing required fields")
+    
+    try:
+        product_price = float(product_price)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Price must be a valid number")
+
+    scraper = cloudscraper.create_scraper()
+    url = f"https://www.pricecheck.co.za/search?search={product_title}"
+
+    try:
+        res = scraper.get(url)
+        res.raise_for_status()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching data: {str(e)}")
+        
+    soup = BeautifulSoup(res.text, "html.parser")
+    scripts = soup.find_all("script", {"type": "application/ld+json"})
+    
+    prices = []
+    for s in scripts:
+        try:
+            data = json.loads(s.string)
+            if data.get("@type") == "CollectionPage":
+                products = data["mainEntity"]["itemListElement"]
+                for p in products:
+                    if "offers" in p and "price" in p["offers"]:
+                        price = float(p["offers"]["price"])
+                        prices.append(price)
+        except(json.JSONDecodeError, KeyError, ValueError):
+            continue
+
+    if len(prices) < 3:
+        return {
+            "message": "Insufficient data for anomaly detection",
+            "timestamp": datetime.now()
+        }
+    
+    mean_price = float(np.mean(prices));
+    std_price = float(np.std(prices));
+
+    min_price = mean_price - (2 * std_price)
+    max_price = mean_price + (2 * std_price)
+
+    if min_price <= 0:
+        adjusted_min = 0.01
+        is_anomaly = bool(product_price < adjusted_min or product_price > max_price)
+        returned_min = adjusted_min
+    else:
+        is_anomaly = bool(product_price < min_price or product_price > max_price)
+        returned_min = min_price
+
+    return {
+        "message": "Inventory anomaly detected" if is_anomaly else "Item normal",
+        "timestamp": datetime.now().isoformat(),
+        "data": {
+            "title": product_title,
+            "price": product_price,
+        },
+        "stats": {
+            "mean_price": mean_price,
+            "std_price": std_price,
+            "min_threshold": returned_min,
+            "max_threshold": max_price,
+            "samples_count": len(prices)
+        }
+    }
 
 if __name__ == "__main__":
     import uvicorn

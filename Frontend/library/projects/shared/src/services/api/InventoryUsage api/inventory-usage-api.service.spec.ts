@@ -47,7 +47,8 @@ describe('InventoryUsageApiService', () => {
           expect(usage).toEqual(mockUsage);
           expect(httpClientSpy.post).toHaveBeenCalledWith(
             `${baseUrl}/inventory-usage`,
-            expectedBody
+            expectedBody,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -87,7 +88,8 @@ describe('InventoryUsageApiService', () => {
         next: (usages) => {
           expect(usages).toEqual(mockUsages);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage?page=1&size=10`
+            `${baseUrl}/inventory-usage?page=1&size=10`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -124,7 +126,8 @@ describe('InventoryUsageApiService', () => {
         next: (usage) => {
           expect(usage).toEqual(mockUsage);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/1`
+            `${baseUrl}/inventory-usage/1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -159,7 +162,7 @@ describe('InventoryUsageApiService', () => {
       const expectedBody = {
         quantityUsed: 10,
         trusteeApproved: true,
-        approvalDate: new Date('2025-01-01')
+        approvalDate: new Date('2025-01-01'),
       };
 
       httpClientSpy.put.and.returnValue(of(mockUsage));
@@ -169,7 +172,8 @@ describe('InventoryUsageApiService', () => {
           expect(usage).toEqual(mockUsage);
           expect(httpClientSpy.put).toHaveBeenCalledWith(
             `${baseUrl}/inventory-usage/1`,
-            expectedBody
+            expectedBody,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -195,7 +199,8 @@ describe('InventoryUsageApiService', () => {
         next: (usage) => {
           expect(usage).toEqual(mockUsage);
           expect(httpClientSpy.delete).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/1`
+            `${baseUrl}/inventory-usage/1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -217,7 +222,7 @@ describe('InventoryUsageApiService', () => {
 
       const expectedBody = {
         trusteeApproved: true,
-        approvalDate: new Date('2025-01-01')
+        approvalDate: '2025-01-01'
       };
 
       httpClientSpy.patch.and.returnValue(of(mockUsage));
@@ -227,7 +232,8 @@ describe('InventoryUsageApiService', () => {
           expect(usage).toEqual(mockUsage);
           expect(httpClientSpy.patch).toHaveBeenCalledWith(
             `${baseUrl}/inventory-usage/1/approval`,
-            expectedBody
+            expectedBody,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -255,7 +261,8 @@ describe('InventoryUsageApiService', () => {
         next: (usages) => {
           expect(usages).toEqual(mockUsages);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/by-item/item1`
+            `${baseUrl}/inventory-usage/by-item/item1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -283,7 +290,8 @@ describe('InventoryUsageApiService', () => {
         next: (usages) => {
           expect(usages).toEqual(mockUsages);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/by-task/task1`
+            `${baseUrl}/inventory-usage/by-task/task1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -311,7 +319,8 @@ describe('InventoryUsageApiService', () => {
         next: (usages) => {
           expect(usages).toEqual(mockUsages);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/by-contractor/contractor1`
+            `${baseUrl}/inventory-usage/by-contractor/contractor1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -339,7 +348,8 @@ describe('InventoryUsageApiService', () => {
         next: (usages) => {
           expect(usages).toEqual(mockUsages);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/approved`
+            `${baseUrl}/inventory-usage/approved`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -367,7 +377,8 @@ describe('InventoryUsageApiService', () => {
         next: (usages) => {
           expect(usages).toEqual(mockUsages);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/pending-approval`
+            `${baseUrl}/inventory-usage/pending-approval`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -385,7 +396,8 @@ describe('InventoryUsageApiService', () => {
         next: (total) => {
           expect(total).toBe(15);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/total-quantity/item/item1`
+            `${baseUrl}/inventory-usage/total-quantity/item/item1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -403,7 +415,8 @@ describe('InventoryUsageApiService', () => {
         next: (total) => {
           expect(total).toBe(25);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${baseUrl}/inventory-usage/total-quantity/contractor/contractor1`
+            `${baseUrl}/inventory-usage/total-quantity/contractor/contractor1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
