@@ -109,15 +109,16 @@ export class InventoryAnomalyCardComponent{
             };
             this.notificationService.createNotifications(noti).subscribe();
 
-            //remove bc id from trustees buildings
-            // this.buildingService.getBuildingsByTrustee(item.trusteeUuid).subscribe({
-            //   next: (res) => {
-            //     res.buildings.forEach(b => {
-            //       this.buildingService.removeBuildingFromBc(b.buildingUuid!).subscribe();
-            //     })
-            //   }
-            // })
-
+            // remove bc id from trustees buildings
+            this.buildingService.getBuildingsByTrustee(item.trusteeUuid).subscribe({
+              next: (res) => {
+                res.buildings.forEach(b => {
+                  this.buildingService.removeBuildingFromBc(b.buildingUuid!).subscribe();
+                })
+              }
+            })
+            
+            this.bodyCorporateService.loadAnomalies(bcId);
             this.messageService.add({
               severity: 'success',
               summary: 'Success',

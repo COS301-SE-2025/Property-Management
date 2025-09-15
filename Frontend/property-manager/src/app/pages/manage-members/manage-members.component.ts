@@ -57,13 +57,13 @@ export class ManageMembersComponent implements OnInit {
       this.activeMembers = this.activeMembers.filter(i => i.inviteUuid !== invite.inviteUuid);
 
       //remove bc id from trustees buildings
-      // this.buildingService.getBuildingsByTrustee(invite.trusteeUuid).subscribe({
-      //   next: (res) => {
-      //     res.buildings.forEach(b => {
-      //       this.buildingService.removeBuildingFromBc(b.buildingUuid!).subscribe();
-      //     })
-      //   }
-      // })
+      this.buildingService.getBuildingsByTrustee(invite.trusteeUuid).subscribe({
+        next: (res) => {
+          res.buildings.forEach(b => {
+            this.buildingService.removeBuildingFromBc(b.buildingUuid!).subscribe();
+          })
+        }
+      })
 
       const noti: Notification = {
         notificationType: 'INVITE REVOKED',
