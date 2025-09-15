@@ -62,6 +62,14 @@ class BuildingController(
         return if (updatedBuilding != null) ResponseEntity.ok(updatedBuilding) else ResponseEntity.notFound().build()
     }
 
+    @PutMapping("/{uuid}/revoke-corporate")
+    fun revokeCorporateFromBuilding(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<BuildingResponseDto> {
+        val updated = buildingService.revokeCorporateFromBuilding(uuid)
+        return if (updated != null) ResponseEntity.ok(updated) else ResponseEntity.notFound().build()
+    }
+
     @DeleteMapping("/{uuid}")
     fun deleteBuilding(
         @PathVariable uuid: UUID,

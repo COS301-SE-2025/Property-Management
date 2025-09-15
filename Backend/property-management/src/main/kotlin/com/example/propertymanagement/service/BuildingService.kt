@@ -20,7 +20,6 @@ class BuildingService(
     private val buildingRepository: BuildingRepository,
     private val imageRepository: ImageRepository,
 ) {
-    @CacheEvict(value = ["apiCache"], allEntries = true)
     fun createBuilding(dto: BuildingCreateDto): BuildingResponseDto {
         val propertyImageUrl =
             dto.propertyImageId?.let {
@@ -48,10 +47,8 @@ class BuildingService(
     // // @Cacheable("apiCache")
     fun getAllBuildings(): List<BuildingResponseDto> = buildingRepository.findAll().map { mapToResponseDto(it) }.toList()
 
-    @Cacheable(value = ["apiCache"], key = "#uuid")
     fun getBuildingByUuid(uuid: UUID): BuildingResponseDto? = buildingRepository.findById(uuid).orElse(null)?.let { mapToResponseDto(it) }
 
-    @CacheEvict(value = ["apiCache"], key = "#uuid")
     fun updateBuilding(
         uuid: UUID,
         dto: BuildingUpdateDto,
@@ -76,7 +73,14 @@ class BuildingService(
         return mapToResponseDto(savedBuilding)
     }
 
-    @CacheEvict(value = ["apiCache"], key = "#uuid")
+    fun revokeCorporateFromBuilding(buildingUuid: UUID): BuildingResponseDto? {
+        val building = buildingRepository.findById(buildingUuid).orElse(null) ?: return null
+        val updatedBuilding = building.copy(coporateUuid = null)
+        val savedBuilding = buildingRepository.save(updatedBuilding)
+        return mapToResponseDto(savedBuilding)
+    }
+
+
     fun deleteBuilding(uuid: UUID): Boolean =
         if (buildingRepository.existsById(uuid)) {
             buildingRepository.deleteById(uuid)
@@ -85,7 +89,6 @@ class BuildingService(
             false
         }
 
-    @Cacheable(value = ["apiCache"], key = "'trustee_'+#trusteeUuid")
     fun getBuildingsByTrustee(trusteeUuid: UUID): BuildingByTrusteeDto {
         val buildings =
             buildingRepository
@@ -98,7 +101,6 @@ class BuildingService(
         )
     }
 
-    @Cacheable(value = ["apiCache"], key = "'corporate_'+#coporateUuid")
     fun getBuildingsByCorporateUuid(coporateUuid: UUID): BuildingByCorporateDto {
         val buildings =
             buildingRepository
@@ -111,13 +113,11 @@ class BuildingService(
         )
     }
 
-    @Cacheable(value = ["apiCache"], key = "'search_'+#name")
     fun searchBuildingsByName(name: String): List<BuildingResponseDto> =
         buildingRepository
             .findBuildingsByNameContaining(name)
             .map { mapToResponseDto(it) }
 
-    @Cacheable(value = ["apiCache"], key = "'type_'+#type")
     fun getBuildingsByType(type: String): List<BuildingResponseDto> =
         buildingRepository
             .findBuildingsByType(type)
