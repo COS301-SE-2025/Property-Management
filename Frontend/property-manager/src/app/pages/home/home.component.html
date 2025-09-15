@@ -10,7 +10,7 @@
 <div [@floatUp] class = "flex flex-wrap justify-center gap-8 p-8">
     @for (house of houses(); track  house.buildingUuid)
     {
-        <div class="hover:translate-y-1 transition-transform duration-200">
+        <div class="hover:translate-y-2 transition-transform duration-200">
             <app-house-card [house]="house"/>
         </div>
     }

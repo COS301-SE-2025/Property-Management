@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from 'shared';
+import { AuthService, ContractorApiService, getCookieValue } from 'shared';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -27,7 +27,7 @@ export class LoginComponent {
 
   public selectedUserType = 'bodyCorporate';
 
-  constructor(private authService: AuthService, private router: Router){}
+  constructor(private authService: AuthService, private router: Router, private contractorService: ContractorApiService){}
 
   togglePassword()
   {
@@ -45,65 +45,120 @@ export class LoginComponent {
     this.userError = false;
     this.serverError = false;
     this.passwordLimit = false;
+    
+    const deleteCookie = (name: string) => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    };
+
+    deleteCookie("idToken");
+    deleteCookie("bodyCoporateId");
+    deleteCookie("trusteeId");
+    deleteCookie("contractorId");
 
     try {
-      await this.authService.bodyCoporateLogin(this.email, this.password);
-      this.router.navigate(['/bodyCoporate']);
-      return;
-    } catch (error) {
-      console.warn('Body Corporate login failed, trying Trustee...', error);
+      const result = await this.authService.login(this.email, this.password);
 
-      if(error instanceof HttpErrorResponse && !error.error)
-      {
-        this.serverError = true;
-        return;
+      const expireDate = new Date();
+      expireDate.setDate(expireDate.getDate() + 1);
+      document.cookie = `idToken=${result.idToken}; expires=${expireDate.toUTCString()}; path=/`;
+
+      switch (result.userType) {
+        case 'bodyCorporate':
+          document.cookie = `bodyCorporateId=${result.userId}; expires=${expireDate.toUTCString()}; path=/`;
+          this.router.navigate(['/bodyCoporate']);
+          break;
+        case 'contractor':
+          document.cookie = `contractorId=${result.userId}; expires=${expireDate.toUTCString()}; path=/`;
+          this.router.navigate(['/contractorHome']);
+          break;
+        case 'trustee':
+          document.cookie = `trusteeId=${result.userId}; expires=${expireDate.toUTCString()}; path=/`;
+          this.router.navigate(['/home']);
+          break;
       }
-    }
 
-    try {
-      await this.authService.trusteeLogin(this.email, this.password);
-      this.router.navigate(['/home']);
-      return; 
-    } catch (error) {
-      console.warn('Trustee login failed, trying Contractor...', error);
-
-      if(error instanceof HttpErrorResponse && !error.error)
-      {
-        this.serverError = true;
-        return;
-      }
-    }
-
-    try {
-      await this.authService.contractorLogin(this.email, this.password);
-
-      // contractorProfileComplete is still checked in localStorage, 
-      // but userType is now determined from the Cognito token
-      const profileComplete = localStorage.getItem('contractorProfileComplete');
-      if (profileComplete === 'true') {
-        this.router.navigate(['/contractorHome']);
-      } else {
-        this.router.navigate(['/contractor-prof']);
-      }
-      return;
-    } catch (error) {
-      console.warn('Contractor login failed:', error);
-
-      if(error instanceof HttpErrorResponse && !error.error)
-      {
-        this.serverError = true;
-      }
-      else if(error instanceof HttpErrorResponse && error.error.error.includes('Password attempts exceeded'))
-      {
-        this.passwordLimit = true;
-      }
-      else
-      {
+    } catch (error: any) {
+      if (error.status === 401) {
         this.userError = true;
+      } else {
+        this.serverError = true;
       }
-    }
-    finally{
+    } finally {
       this.loading = false;
     }
+
+    // try {
+    //   await this.authService.bodyCoporateLogin(this.email, this.password);
+    //   this.router.navigate(['/bodyCoporate']);
+    //   return;
+    // } catch (error) {
+    //   console.warn('Body Corporate login failed, trying Trustee...', error);
+
+    //   if(error instanceof HttpErrorResponse && !error.error)
+    //   {
+    //     this.serverError = true;
+    //     this.loading = false;
+    //     return;
+    //   }
+    // }
+
+    // try {
+    //   await this.authService.trusteeLogin(this.email, this.password);
+    //   this.router.navigate(['/home']);
+    //   return; 
+    // } catch (error) {
+    //   console.warn('Trustee login failed, trying Contractor...', error);
+
+    //   if(error instanceof HttpErrorResponse && !error.error)
+    //   {
+    //     this.serverError = true;
+    //     this.loading = false;
+    //     return;
+    //   }
+    // }
+
+    // try {
+    //   await this.authService.contractorLogin(this.email, this.password);
+
+    //   // contractorProfileComplete is still checked in localStorage, 
+    //   // but userType is now determined from the Cognito token
+    //   const contractorId = getCookieValue(document.cookie, 'contractorId');
+
+    //   this.contractorService.getContractorById(contractorId!).subscribe({
+    //     next: (res) => {
+    //       if(res.status)
+    //       {
+    //         this.router.navigate(['/contractorHome']);
+    //         return;
+    //       }
+    //       else
+    //       {
+    //         this.router.navigate(['/contractor-prof']);
+    //         return;
+    //       }
+    //     }
+    //   });
+    //   this.router.navigate(['/contractor-prof']);
+    // } catch (error) {
+    //   console.warn('Contractor login failed:', error);
+
+    //   if(error instanceof HttpErrorResponse && !error.error)
+    //   {
+    //     this.serverError = true;
+    //   }
+    //   else if(error instanceof HttpErrorResponse && error.error.error.includes('Password attempts exceeded'))
+    //   {
+    //     this.passwordLimit = true;
+    //   }
+    //   else
+    //   {
+    //     this.userError = true;
+    //   }
+    // }
+    // finally{
+    //   this.loading = false;
+    // }
   }
+
+  
 }

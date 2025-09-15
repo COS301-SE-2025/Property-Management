@@ -31,9 +31,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
   private paramSub!: Subscription;
 
   isEditing = false;
-  editingRows: boolean[] = [];
-  draftQuantities: number[] = [];
-  originalQuantities: number[] = [];
+  editingItems = new Map<string, boolean>();
+  draftQuantities = new Map<string, number>();
+  originalQuantities = new Map<string, number>();
 
   @Output() itemUsage = new EventEmitter<{taskId: string, itemId: string, quantity: number}>();
   @Output() quantitiesChanged = new EventEmitter<Inventory[]>();
@@ -41,6 +41,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   @Input() capOriginal = false;
   @Input() showAddButton = true;
   @Input() readOnly = false;
+  @Input() showPrice = true;
   
   constructor(private route: ActivatedRoute, private toastController: ToastController, private inventoryUsage: InventoryUsageApiService) {
     this.paramSub = this.route.paramMap.subscribe(params => {
@@ -57,7 +58,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   {
     this.paramSub.unsubscribe();
   }
-  startAction(rowIndex: number, action: 'increase' | 'decrease' | 'edit')
+  startAction(inventory: Inventory, action: 'increase' | 'decrease' | 'edit')
   {
     if(!this.isEditing)
     {
@@ -65,27 +66,28 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.isEditing = true;
     }
 
-    this.editingRows[rowIndex] = true;
-    this.originalQuantities[rowIndex] = this.inventory()[rowIndex].quantityInStock;
-    this.draftQuantities[rowIndex] = this.originalQuantities[rowIndex];
+    this.editingItems.set(inventory.itemUuid, true);
+    this.originalQuantities.set(inventory.itemUuid, inventory.quantityInStock);
+    this.draftQuantities.set(inventory.itemUuid, inventory.quantityInStock);
 
     if(action === 'increase')
     {
-      this.changeQuantity(rowIndex, 1);
+      this.changeQuantity(inventory, 1);
     }
-    else if(action === 'decrease' && this.originalQuantities[rowIndex] >= 0)
+    else if(action === 'decrease' && inventory.quantityInStock >= 0)
     {
-      this.changeQuantity(rowIndex, -1);
+      this.changeQuantity(inventory, -1);
     }
   }
-  changeQuantity(rowIndex:number, change: number)
+  changeQuantity(inventory: Inventory, change: number)
   {
-    const val = this.draftQuantities[rowIndex] + change;
-    const max = this.originalQuantities[rowIndex];
+    const curr = this.draftQuantities.get(inventory.itemUuid) || 0;
+    const max = this.originalQuantities.get(inventory.itemUuid) || 0;
+    const val = curr + change;
 
     if(val >= 0 && (!this.capOriginal || val <= max))
     {
-      this.draftQuantities[rowIndex] = val;
+       this.draftQuantities.set(inventory.itemUuid, val)
       this.emitQuantities();
     }
   }
@@ -94,16 +96,20 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const updatedItems: Inventory[] = [];
     let overallPriceDiff = 0;
 
-    this.inventory().forEach((item, index) => {
-      if(this.editingRows[index] && this.draftQuantities[index] >= 0){
+    this.inventory().forEach(item => {
+      const isEditing = this.editingItems.get(item.itemUuid);
+      const draftQty = this.draftQuantities.get(item.itemUuid);
+      const originalQty = this.originalQuantities.get(item.itemUuid);
 
-        const quantityDiff = this.draftQuantities[index] - this.originalQuantities[index];
+      if(isEditing &&  draftQty !== undefined && originalQty !== undefined && draftQty >= 0){
+
+        const quantityDiff = draftQty - originalQty;
 
         if(quantityDiff > 0)
         {
           overallPriceDiff += quantityDiff * item.price;
         }
-        item.quantityInStock = this.draftQuantities[index];
+        item.quantityInStock = draftQty;
         updatedItems.push(item);
       }
     });
@@ -170,24 +176,29 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
   cancelAction()
   {
-    this.inventory().forEach((item, index) => {
-      if(this.editingRows[index]){
-        item.quantityInStock = this.originalQuantities[index];
+    this.inventory().forEach(item => {
+      if(this.editingItems.get(item.itemUuid)){
+        item.quantityInStock = this.originalQuantities.get(item.itemUuid) || 0;
       }
     })
     this.resetState();
   }
   hasChanges(): boolean{
-    return this.editingRows.some((edit, index) => {
-      return edit && this.draftQuantities[index] !== this.originalQuantities[index]
+    return Array.from(this.editingItems.keys()).some(id => {
+      return this.draftQuantities.get(id) && this.draftQuantities.get(id) !== this.originalQuantities.get(id);
     });
   }
   resetState()
   {
     this.isEditing = false;
-    this.editingRows = new Array(this.inventory().length).fill(false);
-    this.draftQuantities = [...this.inventory().map(item => item.quantityInStock)];
-    this.originalQuantities = [...this.inventory().map(item => item.quantityInStock)];
+    this.editingItems.clear();
+    this.draftQuantities.clear();
+    this.originalQuantities.clear();
+
+    this.inventory().forEach(item => {
+      this.draftQuantities.set(item.itemUuid, item.quantityInStock);
+      this.originalQuantities.set(item.itemUuid, item.quantityInStock);
+    })
   }
   preventNegative(event: KeyboardEvent)
   {
@@ -200,7 +211,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   {
     const updated = this.inventory().map((item, index) => ({
       ...item,
-      quantityInStock: this.draftQuantities[index]
+      quantityInStock: this.draftQuantities.get(item.itemUuid) ?? item.quantityInStock
     }));
     this.quantitiesChanged.emit(updated);
   }

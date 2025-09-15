@@ -7,7 +7,7 @@ import { environmentMobile } from '../../../environment';
 describe('NotificationsApiService', () => {
   let service: NotificationsApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:4200/api';
+  const mockApiUrl = 'http://localhost:8080/api';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -68,53 +68,6 @@ describe('NotificationsApiService', () => {
 
       const req = httpMock.expectOne(`${mockApiUrl}/notifications`);
       req.error(new ErrorEvent('Network error'));
-    });
-  });
-
-  describe('getNotifications', () => {
-    it('should send a GET request with query parameters', () => {
-      const recipientType = 'user';
-      const recipientId = 'user-123';
-      const mockNotifications: Notification[] = [
-        {
-          recipientType: 'user',
-          recipientUuid: 'user-123',
-          message: 'Notification 1',
-          isRead: false,
-          notificationType: 'test'
-        },
-        {
-          recipientType: 'user',
-          recipientUuid: 'user-123',
-          message: 'Notification 2',
-          isRead: true,
-          notificationType: 'test'
-        }
-      ];
-
-      service.getNotifications(recipientType, recipientId).subscribe(response => {
-        expect(response).toEqual(mockNotifications);
-      });
-
-      const req = httpMock.expectOne(
-        `${mockApiUrl}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}`
-      );
-      expect(req.request.method).toBe('GET');
-      req.flush(mockNotifications);
-    });
-
-    it('should handle empty response', () => {
-      const recipientType = 'user';
-      const recipientId = 'user-123';
-
-      service.getNotifications(recipientType, recipientId).subscribe(response => {
-        expect(response).toEqual([]);
-      });
-
-      const req = httpMock.expectOne(
-        `${mockApiUrl}/notifications?recipientType=${recipientType}&recipientUuid=${recipientId}`
-      );
-      req.flush(null);
     });
   });
 

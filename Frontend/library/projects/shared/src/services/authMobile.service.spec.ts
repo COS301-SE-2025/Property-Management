@@ -37,7 +37,7 @@ describe('AuthMobileService', () => {
   let service: AuthMobileService;
   let httpMock: HttpTestingController;
   let storageService: MockStorageService;
-  const mockApiUrl = 'http://localhost:4200/api';
+  const mockApiUrl = 'http://localhost:8080/api';
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
@@ -171,7 +171,7 @@ describe('AuthMobileService', () => {
   });
 
   describe('contractorLogin', () => {
-    it('should login and set cookies', async () => {
+    it('should login and set storage', async () => {
       const mockResponse: AuthTokens = {
         idToken: 'contractor-token',
         accessToken: 'contractor-access',
@@ -187,9 +187,7 @@ describe('AuthMobileService', () => {
 
       const result = await promise;
       expect(result).toEqual(mockResponse);
-      expect(document.cookie).toContain('idToken=contractor-token');
-      expect(document.cookie).toContain('contractorId=contractor-123');
-      expect(document.cookie).toContain('userType=contractor');
+      expect(await storageService.get('contractorId')).toBe('contractor-123');
     });
   });
 
@@ -251,18 +249,18 @@ describe('AuthMobileService', () => {
   });
 
     describe('logout', () => {
-        it('should clear auth storage', async () => {
-            await storageService.set('userType', 'trustee');
-            await storageService.set('trusteeID', 'trustee-123');  
-            await storageService.set('contractorID', 'contractor-123');
-            await storageService.set('theme', 'dark');
+       it('should clear auth storage', async () => {
+        await storageService.set('userType', 'trustee');
+        await storageService.set('trusteeId', 'trustee-123'); 
+        await storageService.set('contractorId', 'contractor-123');
+        await storageService.set('theme', 'dark');
 
-            await service.logout();
+        await service.logout();
 
-            expect(await storageService.get('userType')).toBeNull();
-            expect(await storageService.get('trusteeID')).toBeNull();
-            expect(await storageService.get('contractorID')).toBeNull();
-            expect(await storageService.get('theme')).toBeNull();
-        });
+        expect(await storageService.get('userType')).toBeNull();
+        expect(await storageService.get('trusteeId')).toBeNull();
+        expect(await storageService.get('contractorId')).toBeNull();
+        expect(await storageService.get('theme')).toBeNull();
+      });
     });
 });

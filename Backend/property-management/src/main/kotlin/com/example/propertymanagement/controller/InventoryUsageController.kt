@@ -111,6 +111,14 @@ class InventoryUsageController(
                 .body(mapOf<String, String>("error" to "Internal server error"))
         }
 
+    @PostMapping("/test-train/{itemUuid}")
+    fun testTrain(
+        @PathVariable itemUuid: UUID,
+    ): ResponseEntity<String> {
+        inventoryUsageService.triggerTrainingAsync(itemUuid)
+        return ResponseEntity.ok("Triggered")
+    }
+
     @PatchMapping("/{usageUuid}/approval")
     fun approveInventoryUsage(
         @PathVariable usageUuid: UUID,
@@ -135,6 +143,20 @@ class InventoryUsageController(
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
+
+    @GetMapping("/{itemUuid}/forecast")
+    fun getForecastForItem(
+        @PathVariable itemUuid: UUID,
+        @RequestParam(defaultValue = "3") months: Int,
+        @RequestParam(defaultValue = "D") freq: String,
+    ): ResponseEntity<String> {
+        val forecastJson = inventoryUsageService.getForecast(itemUuid, months, freq)
+        return if (forecastJson != null) {
+            ResponseEntity.ok(forecastJson)
+        } else {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Failed to get forecast\"}")
+        }
+    }
 
     @GetMapping("/by-task/{taskUuid}")
     fun getUsageByTaskUuid(

@@ -8,7 +8,8 @@ import { environmentMobile } from '../../../environment';
 describe('VotingApiService', () => {
   let service: VotingApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:4200/api/vote';
+  const mockApiUrl = 'http://localhost:8080/api/vote';
+  const mockQuoteUrl = 'http://localhost:8080/api'
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -248,7 +249,8 @@ describe('VotingApiService', () => {
         amount: 1000,
         submitted_on: 1,
         doc: 'quote.pdf',
-        status: 'PENDING'
+        status: 'PENDING',
+        expiry_date: ''
       };
 
       service.getQuote('quote-123').subscribe(quote => {
@@ -270,15 +272,16 @@ describe('VotingApiService', () => {
         amount: 1000,
         submitted_on: 1,
         doc: 'quote.pdf',
-        status: 'APPROVED'
+        status: 'APPROVED',
+        expiry_date: ''
       };
 
       service.updateQuoteStatus('quote-123', 'APPROVED').subscribe(quote => {
         expect(quote.status).toBe('APPROVED');
       });
 
-      const req = httpMock.expectOne(`${mockApiUrl}/quote/quote-123`);
-      expect(req.request.method).toBe('PUT');
+      const req = httpMock.expectOne(`${mockQuoteUrl}/quote/quote-123`);
+      expect(req.request.method).toBe('PATCH');
       expect(req.request.body.status).toBe('APPROVED');
       req.flush(mockQuote);
     });

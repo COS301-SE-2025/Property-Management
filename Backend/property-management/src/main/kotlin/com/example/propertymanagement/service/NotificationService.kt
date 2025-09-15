@@ -35,7 +35,7 @@ class NotificationService(
         relatedSessionUuid: UUID? = null,
         relatedInviteUuid: UUID? = null,
     ): NotificationDTO {
-        if (recipientType !in listOf("trustee", "contractor", "bodycorporate")) {
+        if (recipientType !in listOf("trustee", "contractor", "bodycoporate")) {
             throw RestException(HttpStatus.BAD_REQUEST, "Invalid recipient type")
         }
 

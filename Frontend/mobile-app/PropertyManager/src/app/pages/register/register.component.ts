@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { IonInput, IonItem} from '@ionic/angular/standalone';
+import { IonInput, IonItem, IonInputPasswordToggle} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from 'shared';
@@ -8,13 +8,14 @@ import { StorageService } from 'shared';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, FormsModule, IonInput, IonItem],
+  imports: [CommonModule, FormsModule, IonInput, IonItem, IonInputPasswordToggle],
   templateUrl: './register.component.html',
   styles: ``
 })
 export class RegisterComponent {
   public email = "";
   public password = "";
+  public contactNumber = ""; 
   public passwordVisible = false;
 
   public emptyField = false;
@@ -34,7 +35,7 @@ export class RegisterComponent {
 
   async register()
   {
-    if(!this.email || !this.password)
+    if(!this.email || !this.password || !this.contactNumber)
     {
       this.emptyField = true;
       return;
@@ -45,15 +46,12 @@ export class RegisterComponent {
     this.emptyField = false;
 
     try{
-      const result = await this.authService.trusteeRegister(this.email, this.password);
+      const result = await this.authService.trusteeRegister(this.email, this.password, this.contactNumber);
 
       this.storage.set('pendingUsername', result.username);
+      this.storage.set('userType', 'trustee');
 
-      this.router.navigate(['/verifyEmail'], {
-        state: {
-          username: result.username
-        }
-      });
+      this.router.navigate(['/verifyEmail']);
     }
     catch(error)
     {
@@ -71,7 +69,6 @@ export class RegisterComponent {
       } else {
         this.serverError = true;
       }
-      throw error;
     }
   }
 }

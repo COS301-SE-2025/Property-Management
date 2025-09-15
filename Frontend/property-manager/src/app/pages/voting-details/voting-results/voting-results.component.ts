@@ -68,7 +68,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
 
               this.taskService.getTaskById(task.taskUuid).subscribe({
                 next: (t) => {
-                  if(res.votingEnded && (t.cuuid === '' || !t.cuuid))
+                  if(t.scheduled_date < new Date() && (t.cuuid === '' || !t.cuuid))
                   {
                     this.votingEnded = true;
                   }
@@ -129,6 +129,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
       {
         max = r.votesFor;
         winningContractorId = r.contractorId ?? ''; 
+        this.quoteId = r.quoteUuid;
       }
     });
 
@@ -138,8 +139,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
         if(res.taskUuid)
         {
           this.taskService.updateTaskAssignedContractor(winningContractorId, res.taskUuid).subscribe({
-            next: () => {
-
+            next: (res) => {
               this.votingService.updateQuoteStatus(this.quoteId!, "APPROVED").subscribe({
                 next: () => {
 
@@ -147,7 +147,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
                     notificationType: 'Vote ended',
                     message: `Voting has ended for ${res.title}`,
                     recipientType: 'trustee',
-                    recipientUuid: `${res.tuuid}`,
+                    recipientUuid: `${res.trusteeUuid}`,
                     isRead: false,
                     relatedSessionUuid: this.sessionId()
                   }
@@ -161,12 +161,11 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
                   }
                   this.notificationService.createNotifications(notiTrustee);
                   this.notificationService.createNotifications(notiContractor);
-    
-    
-                  this.messageService.add({
+
+                   this.messageService.add({
                     severity: 'success',
-                    summary: 'Success',
-                    detail: 'Contractor successfully assigned task'
+                    summary: 'success',
+                    detail: 'Task has successfully been assigned'
                   });
     
                   setTimeout(() => {

@@ -2,6 +2,7 @@ import { Component, EventEmitter, input, OnInit, Output, signal } from '@angular
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import { DialogComponent } from '../../../components/dialog/dialog.component';
+import { ApiService, getCookieValue } from 'shared'; 
 import { Contractor, ContractorApiService, Quote, TaskApiService, FormatDatePipe } from 'shared';
 
 @Component({
@@ -22,7 +23,7 @@ export class QuoteDetailsComponent extends DialogComponent implements OnInit {
 
   @Output() quoteSelected = new EventEmitter<string>();
 
-  constructor(private taskService: TaskApiService, private contractorService: ContractorApiService) { 
+  constructor(private taskService: TaskApiService, private apiService: ApiService, private contractorService: ContractorApiService) { 
     super();
   }
 
@@ -37,8 +38,6 @@ export class QuoteDetailsComponent extends DialogComponent implements OnInit {
             if(q.c_uuid === this.contractorId())
             {
               this.quote.set(q);
-
-              //Get contractor details
               this.contractorService.getContractorById(this.contractorId()).subscribe({
                 next: (res) => {
                   this.contractorDetails.set(res);
@@ -69,5 +68,18 @@ export class QuoteDetailsComponent extends DialogComponent implements OnInit {
     {
       this.quoteSelected.emit(this.quote()!.uuid);
     }
+  }
+  viewQuotePDF() {
+    const quote = this.quote();
+    if (!quote) return;
+
+    this.apiService.getQuote(this.contractorId(), "Quote").subscribe({
+      next: (presignedUrl: string) => {
+        window.open(presignedUrl, '_blank');
+      },
+      error: (err) => {
+        console.error('Error getting presigned URL:', err);
+      }
+    });
   }
 }

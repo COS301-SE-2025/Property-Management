@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { ButtonModule } from 'primeng/button';
+import { Router } from '@angular/router';
+import { AuthService, ContractorApiService, getCookieValue } from 'shared';
 import {
   trigger,
   transition,
@@ -9,7 +11,7 @@ import {
   query,
   stagger
 } from '@angular/animations';
-
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { FormsModule } from '@angular/forms';
 @Component({
@@ -33,13 +35,42 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class ResetPasswordComponent  {
-     email = '';
+  email = '';
   oldPassword = '';
   newPassword = '';
+  message = '';
+  confirmationCode = '';
 
-  resetPassword() {
-    console.log(`Resetting password for ${this.email}`);
-    
+  constructor(
+      private authService: AuthService,
+      private router: Router
+    ) {}
+
+  async resetPassword() {
+    this.authService.resetContractorPasswordRequest(this.email).subscribe({
+      next: (res) => {
+        console.log("Success:", res);
+      },
+      error: (err) => {
+        console.error("Error:", err);
+      }
+    });
+
   }
-   
+
+   confirmResetPassword() {
+    this.authService.confirmContractorResetPasswordRequest(
+      this.email,
+      this.confirmationCode,
+      this.newPassword
+    ).subscribe({
+      next: res => {
+        this.message = res.message; // "Password has been reset successfully."
+      },
+      error: err => {
+        this.message = 'Error confirming reset.';
+        console.error(err);
+      }
+    });
+  }
 }

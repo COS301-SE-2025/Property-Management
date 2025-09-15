@@ -1,0 +1,89 @@
+<ion-modal [isOpen]="displayModal">
+  <ng-template>
+    <ion-header class="bg-white dark:bg-gray-700">
+       <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="closeModal()" class="dark:text-gray-200">Cancel</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button (click)="confirm()" [strong]="true" class="dark:text-gray-200">Confirm</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="bg-white dark:bg-gray-700">
+      <form [formGroup]="form" (ngSubmit)="confirm()" class="mx-auto max-w-lg">
+        <div class="flex flex-col justify-center items-center">
+            <div class="flex flex-col mx-5 gap-2 mt-5 pb-5">
+                <label for="progress-description" class="font-bold dark:text-gray-300">Task progression update</label>
+                <textarea id="progress-description" class = "border rounded w-60 mx-auto h-5 px-2" formControlName = "description" required></textarea>
+            </div>
+            <!-- <div class="mb-4">
+                <div class="flex flex-col justify-center items-center">
+                    <p class="font-bold pb-2 dark:text-gray-300">Declare inventory items used</p>
+                    <div class="flex justify-center">
+                        <p-multiselect 
+                            id="inventoryItems" 
+                            [options]="inventoryItems" 
+                            optionLabel="name" 
+                            optionValue="itemUuid" 
+                            [appendTo]="'body'"
+                            class="border rounded w-75 max-w-md" 
+                            placeholder="Available Inventory Items"
+                            formControlName="inventoryItemsUsed"
+                            placeholder="Available Inventory Items"
+                            (onChange)="onInventorySelectionChange($event)"
+                        >
+                            <ng-template let-item pTemplate="item">
+                                <div class="flex justify-between w-full">
+                                    <span>{{item.name}}</span>
+                                    <span class="ml-2 text-gray-500">(Qty: {{item.quantityInStock }})</span>
+                                </div>
+                            </ng-template>
+                        </p-multiselect>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <app-inventory
+                        *ngIf="inventoryItemsUsed.length !== 0" 
+                        [inventory]="inventoryItemsUsed" 
+                        [showAddButton]="false"
+                        [readOnly]="true"
+                        [capOriginal]="true"
+                        [showPrice]="false"
+                        (quantitiesChanged)="onQuantitiesChanged($event)"
+                    ></app-inventory>
+                </div>
+            </div> -->
+            <div class="pt-2 flex flex-col justify-center items-center">
+              <p class="dark:text-gray-300">Take image of the task</p>
+              <ion-button (click)="capturePhoto()" fill="clear">
+                <ion-icon name="camera-outline"></ion-icon>
+              </ion-button>
+
+            <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
+              <p class="mb-2 dark:text-gray-200">Preview</p>
+              <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
+              <ion-button (click)="deletePhoto()" fill="clear" color="dark">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+            <div class="flex flex-col mx-5 gap-2 mt-5 pb-5">
+                <label for="progress-number" class="font-bold dark:text-gray-300">Estimate how far you are (0-100%)</label>
+                <input id="progress-number" type="number" class = "border rounded px-2" formControlName = "progress" required>
+            </div>
+            <div class = "flex justify-end mt-3">
+                <button type="submit" 
+                    class = "px-3 py-2 rounded cursor-pointer"
+                    [class.bg-black]="form.valid"
+                    [class.bg-gray-200]="!form.valid"
+                    [class.text-white]="form.valid"
+                    [disabled]="!form.valid">
+                    Add progress
+                </button>
+            </div>
+        </div>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

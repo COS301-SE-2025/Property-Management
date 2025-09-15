@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { afterNextRender, Component, OnInit, effect, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AuthService, NotificationsApiService, Notification, getCookieValue } from 'shared';
@@ -23,7 +23,17 @@ interface NavLink {
   selector: 'app-header',
   imports: [CommonModule, BreadcrumbModule, RouterModule],
   templateUrl: `./header.component.html`,
-  styles: ``,
+  styles: [`
+    /* Make all PrimeIcons bigger inside the header */
+    :host ::ng-deep i.pi {
+      font-size: 1.75rem; /* adjust to 2rem if you want them even bigger */
+    }
+
+    /* Optional: adjust spacing so icons align nicely */
+    :host ::ng-deep button i.pi {
+      vertical-align: middle;
+    }
+  `],
   animations: [
     trigger('slideToggle', [
       state('active', style({
@@ -90,13 +100,6 @@ export class HeaderComponent {
     ]
   },
   'contractor': {
-    '/home': [
-      { label: 'Home', route: '/contractorHome' }
-    ],
-    '/contractorHome': [
-      { label: 'Home', route: '/contractorHome' },
-      { label: 'Contractor Dashboard', route: '/contractorHome' }
-    ],
     '/contractor-prof': [
       { label: 'Home', route: '/contractorHome' },
       { label: 'Profile', route: '/contractor-prof' }
@@ -254,6 +257,11 @@ export class HeaderComponent {
     const baseUrl = url.split('?')[0].split('#')[0];
     const pathParts = baseUrl.split('/').filter(part => part);
 
+    if (baseUrl === '/home' || baseUrl === '/contractorHome' || baseUrl === '/bodyCoporate') {
+      this.items = [];
+      return;
+    }
+
     const houseId = pathParts[0] === 'viewHouse' || pathParts[0] === 'manageBudget' ? pathParts[1] : null;
 
     const userRoutes = this.routeMap[this.userType];
@@ -302,6 +310,10 @@ export class HeaderComponent {
         return;
       }
     }
+    else
+    {
+      this.items = [];
+    }
   }
 
   setNavLinks() {
@@ -316,10 +328,9 @@ export class HeaderComponent {
       // { label: 'Notifications', route:'/notifications', show: this.userType === 'bodyCorporate' || this.userType === 'trustee' || this.userType === 'contractor'},
       { label: 'Contractors', route: '/bodyCoporate/contractors', show: this.userType === 'bodyCorporate' },
       { label: 'My Profile', route: '/contractor-prof', show: this.userType === 'contractor' },
-      // { label: 'Dashboard', route: this.userType === 'contractor' ? '/contractorHome' : (this.userType === 'bodyCorporate' ? '/bodyCoporate' : '/home'), show: true },
       { label: 'Assigned projects', route: '/assigned-projects', show: this.userType === 'contractor' },
       { label: 'Submitted quotations', route: '/submitted-quotations', show: this.userType === 'contractor' },
-      { label: 'Help', route: '/help', show: true }
+      { label: 'Members', route: '/members', show: this.userType === 'bodyCorporate' }
     ];
   }
 }

@@ -44,6 +44,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
    this.taskId = this.route.snapshot.paramMap.get('taskId');
+   this.contractorUser = false;
 
    if(this.taskId)
    {

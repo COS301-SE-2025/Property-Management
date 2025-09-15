@@ -1,8 +1,12 @@
-<ion-tabs class="dark:bg-gray-800">
-  <ion-tab-bar slot="bottom">
+<ion-tabs class="border border-black dark:bg-gray-800 shadow-lg rounded-lg bg-white">
+  <ion-tab-bar slot="bottom ">
     <ion-tab-button [attr.href]="type === 'contractor' ? '/contractor-home' : '/home'" class="dark:text-white">
       <ion-icon src="assets/icons/home-app.svg" class="dark:invert"></ion-icon>
       Home
+    </ion-tab-button>
+    <ion-tab-button href="/assigned-tasks" *ngIf="type === 'contractor'" class="dark:text-white">
+      <ion-icon src="assets/icons/screwdriver.svg" class="dark:invert"></ion-icon>
+      projects
     </ion-tab-button>
     <ion-tab-button href="/voting" *ngIf="type !== 'contractor'" class="dark:text-white">
       <ion-icon src="assets/icons/vote.svg" class="dark:invert"></ion-icon>

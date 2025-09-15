@@ -1,17 +1,49 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
+import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, resetPasswordResponse, trusteeRegisterResponse } from '../models/Auth.model';
 import { TokenUtilService } from '../services/token-util.service';
-
+import { environmentMobile } from '../environment';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private url = '/api';
+  private url = environmentMobile.apiUrl;
 
   constructor(private http: HttpClient, private tokenUtil: TokenUtilService){}
+
+  login(email: string, password: string): Promise<AuthTokens> {
+    return new Promise((resolve, reject) => {
+      const req = { email, password };
+
+      this.http.post<AuthTokens>(`${this.url}/auth/login`, req, { withCredentials: true })
+        .subscribe({
+          next: (result) => {
+            const idToken = result.idToken;
+            const expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + 1);
+
+            document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
+
+            switch(result.userType) {
+              case 'bodyCorporate':
+                document.cookie = `bodyCoporateId=${result.userId}; expires=${expireDate.toUTCString()}; path=/`;
+                break;
+              case 'contractor':
+                document.cookie = `contractorId=${result.userId}; expires=${expireDate.toUTCString()}; path=/`;
+                break;
+              case 'trustee':
+                document.cookie = `trusteeId=${result.userId}; expires=${expireDate.toUTCString()}; path=/`;
+                break;
+            }
+
+            resolve(result);
+          },
+          error: (error) => reject(error)
+        });
+    });
+  }
 
   bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
   {
@@ -43,7 +75,8 @@ export class AuthService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/body-corporates/login`, req);
+    return this.http.post<AuthTokens>(`${this.url}/body-corporates/login`, req,
+    { withCredentials: true });
   }
 
   bodyCoporateRegister(
@@ -87,7 +120,8 @@ export class AuthService {
       contactNumber
     };
 
-    return this.http.post<BodyCoporateRegisterResponse>(`${this.url}/body-corporates/register`, req);
+    return this.http.post<BodyCoporateRegisterResponse>(`${this.url}/body-corporates/register`, req,
+    { withCredentials: true });
   }
 
   confirmBodyCoporateRegistration(username: string, code: string): Promise<{ message: string }> {
@@ -132,7 +166,8 @@ export class AuthService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req);
+    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req,
+    { withCredentials: true });
   }
 
   trusteeRegister(
@@ -164,7 +199,8 @@ export class AuthService {
       contactNumber
     };
 
-    return this.http.post<trusteeRegisterResponse>(`${this.url}/trustee/auth/register`, req);
+    return this.http.post<trusteeRegisterResponse>(`${this.url}/trustee/auth/register`, req,
+    { withCredentials: true });
   }
 
   confirmTrusteeRegistration(username: string, code: string): Promise<{ message: string }> {
@@ -208,8 +244,8 @@ export class AuthService {
       email,
       password
     };
-   console.log("contractorLoginRequest", req);
-    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req);
+    return this.http.post<AuthTokens>(`${this.url}/contractor/auth/login`, req,
+    { withCredentials: true });
   }
 
   contractorRegister(
@@ -241,7 +277,8 @@ export class AuthService {
       contactNumber
     };
 
-    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req);
+    return this.http.post<contractorRegisterResponse>(`${this.url}/contractor/auth/register`, req,
+    { withCredentials: true });
   }
 
   confirmContractorRegistration(username: string, code: string): Promise<{ message: string }> {
@@ -291,5 +328,29 @@ getUserType(): string | null {
     deleteCookie("bodyCoporateId");
     deleteCookie("trusteeId");
     deleteCookie("contractorId");
+  }
+
+  resetContractorPasswordRequest(
+    email: string
+  ): Observable<resetPasswordResponse> {
+    const req = {
+      email
+    };
+    return this.http.post<resetPasswordResponse>(`${this.url}/contractor/auth/password-reset-request`, req,
+    { withCredentials: true });
+  }
+
+  confirmContractorResetPasswordRequest(
+    email: string,
+    confirmationCode: string,
+    newPassword: string
+  ): Observable<resetPasswordResponse> {
+    const req = {
+      email,
+      confirmationCode,
+      newPassword
+    };
+    return this.http.post<resetPasswordResponse>(`${this.url}/contractor/auth/password-reset-confirm`, req,
+    { withCredentials: true });
   }
 }

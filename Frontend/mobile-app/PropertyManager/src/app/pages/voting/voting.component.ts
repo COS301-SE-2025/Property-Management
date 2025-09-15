@@ -5,23 +5,27 @@ import { HeaderComponent } from "src/app/components/header/header.component";
 import { TabComponent } from 'src/app/components/tab/tab.component';
 import { VoteComponent } from "./vote/vote.component";
 import { CommonModule } from '@angular/common';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-voting',
   templateUrl: './voting.component.html',
   styles: ``,
-  imports: [HeaderComponent, IonContent, TabComponent, VoteComponent, CommonModule],
+  imports: [HeaderComponent, IonContent, TabComponent, VoteComponent, CommonModule, ProgressSpinnerModule],
 })
-export class VotingComponent  implements OnInit {
+export class VotingComponent implements OnInit {
 
   private votingService = inject(VotingService);
   votingTasks = this.votingService.votingTasks;
   pendingTasks = this.votingService.pendingTasks;
+  loading = true;
   
   constructor(private storage: StorageService) { }
 
   async ngOnInit() {
+    this.loading = true;
     const id = await this.storage.get('trusteeId');
     await this.votingService.getTrusteeVotingTasks(id);
+    this.loading = false;
   }
 }

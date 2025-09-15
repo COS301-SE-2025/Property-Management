@@ -49,7 +49,8 @@
   background-color: var(--property-yellow);
 }
 ion-content {
-  --padding-bottom: 80px; 
+  --background: #f5f5f5; 
+  --padding-bottom: 80px;
   height: 100%;
 }
 
@@ -92,4 +93,14 @@ app-tab {
   --p-datatable-header-background: #333333;
   --p-datatable-header-cell-background: #000000 !important;
   --p-datatable-row-color: #333333; /* text color */
+}
+
+.font-normal {
+  font-size: 1rem;
+}
+.font-large {
+  font-size: 1.25rem;
+}
+.font-small {
+  font-size: 0.85rem;
 }

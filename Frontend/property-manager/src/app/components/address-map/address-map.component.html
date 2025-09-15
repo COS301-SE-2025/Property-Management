@@ -1,0 +1,21 @@
+<div class="relative w-full max-w-lg mx-auto">
+  <input 
+    type="text" 
+    [formControl]="control"
+    placeholder="Enter address" 
+    class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring focus:ring-yellow-400"
+    autocomplete="off"
+    (keyup.enter)="findAddress()"
+  />
+</div>
+
+<div class="flex justify-center mt-4 space-x-4">
+  <button (click)="findAddress()" class="px-4 py-2 bg-yellow-500 text-white dark:text-gray-200 rounded-lg shadow hover:bg-yellow-600 transition">
+    Search
+  </button>
+  <button (click)="enableLiveLocation()" class="px-4 py-2 bg-yellow-500 text-white dark:text-gray-200 rounded-lg shadow hover:bg-yellow-600 transition">
+    Enable Live Location
+  </button>
+</div>
+
+<div id="map" class="w-full h-[20rem] mt-4 rounded-lg shadow-md"></div>

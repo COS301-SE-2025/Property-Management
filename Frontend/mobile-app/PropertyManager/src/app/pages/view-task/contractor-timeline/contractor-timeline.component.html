@@ -1,0 +1,49 @@
+  <ion-card class="p-4 dark:bg-gray-800 no-outline-card flex flex-col items-center">
+    <p class="text-lg flex flex-col justify-center items-center font-semibold pb-4">Contractor timeline</p>
+    <div>
+        <p class="flex flex-col justify-center items-center text-yellow-400 text-md p-3" *ngIf="timeline().length === 0 && !contractorUser">No updates from contractors yet, come back later</p>
+        <p-timeline [value]="timeline()" align="left">
+            <ng-template #marker let-time>
+               <ng-container *ngIf="time.progressPercentage < 50">
+                    <i class="pi pi-clock" [ngClass]="darkMode ? 'text-gray-400' : 'text-gray-800'"></i>
+                </ng-container>
+                <ng-container *ngIf="time.progressPercentage >= 50 && time.progressPercentage < 100">
+                    <i class="pi pi-hourglass mt-4 mb-4" [ngClass]="darkMode ? 'text-gray-400' : 'text-gray-800'"></i>
+                </ng-container>
+                <ng-container *ngIf="time.progressPercentage === 100">
+                   <i class="pi pi-check mt-6" [ngClass]="darkMode ? 'text-yellow-400' : 'text-yellow-500'"></i>
+                </ng-container>
+            </ng-template>
+            <ng-template #content let-time>
+                <ion-card class="dark:bg-gray-700">
+                    <ion-card-header>
+                        <ion-card-title *ngIf="time.progressPercentage === 100" class="dark:text-gray-200">
+                           Task Done
+                        </ion-card-title>
+                        <ion-card-title *ngIf="time.progressPercentage !== 100" class="dark:text-gray-200">
+                           Ongoing
+                        </ion-card-title>
+                        <ion-card-subtitle class="dark:text-gray-200">
+                            {{time.subDate | formatTime }}
+                        </ion-card-subtitle>
+                    </ion-card-header>
+                    <ion-card-content>
+
+                        <img [src]="time.imageId" alt="task image" width="300">
+                        <p class="mt-3 flex flex-col justify-center items-start dark:text-gray-300">{{ time.workDescription }}</p>
+                    </ion-card-content>
+                </ion-card>
+            </ng-template>
+        </p-timeline>
+    </div>
+    @if(contractorUser)
+    {
+        <div class = "mt-4 flex flex-col justify-center items-center">
+            <button (click)="inventoryAddDialog.openModal()">
+                <img class = "h-8 w-8" [src]="darkMode ? 'assets/icons/add_circle_gray.svg' : 'assets/icons/add_circle.svg'" alt="add inventory">
+            </button>
+            <app-progress-dialog #inventoryAddDialog [taskId]="this.task.uuid" [inventoryItemsAvailable]="usageUsedByContractor"/>
+        </div>
+    }
+</ion-card> 
+  

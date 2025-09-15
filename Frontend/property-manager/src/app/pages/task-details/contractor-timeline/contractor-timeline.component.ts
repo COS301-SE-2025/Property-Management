@@ -31,7 +31,7 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
     public inventoryUsageContractor = signal<Inventory[]>([]);
     public usageUsedByContractor = new Map<string, number>();
     public contractorUser = false;
-    public bcUser = false;
+    public trusteeUser = false;
     public darkMode = false;
 
     constructor(
@@ -48,8 +48,8 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         
         if (getCookieValue(document.cookie, 'contractorId')) {
             this.contractorUser = true;
-        } else if (getCookieValue(document.cookie, 'bodyCoporateId')) {
-            this.bcUser = true;
+        } else if (getCookieValue(document.cookie, 'trusteeId')) {
+            this.trusteeUser = true;
         }
         this.darkMode = localStorage.getItem('darkMode') === 'true';
     }
