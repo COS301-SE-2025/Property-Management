@@ -54,7 +54,6 @@ export class ReserveFundDialogComponent extends DialogComponent implements OnIni
     {
       this.form.get('contri')?.setValue(event.value);
     }
-    console.log(this.originalContribution());
   }
 
   onSubmit(): void {
@@ -67,7 +66,6 @@ export class ReserveFundDialogComponent extends DialogComponent implements OnIni
 
     const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
 
-    console.log(this.form.value.contri);
 
     this.bodyCorporateService.updateContribution(bcId, this.form.value.contri).subscribe({
         next: () => {

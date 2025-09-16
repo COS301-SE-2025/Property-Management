@@ -13,6 +13,38 @@ export class AuthService {
 
   constructor(private http: HttpClient, private tokenUtil: TokenUtilService){}
 
+  login(email: string, password: string): Promise<AuthTokens> {
+    return new Promise((resolve, reject) => {
+      const req = { email, password };
+
+      this.http.post<AuthTokens>(`${this.url}/auth/login`, req, { withCredentials: true })
+        .subscribe({
+          next: (result) => {
+            const idToken = result.idToken;
+            const expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + 1);
+
+            document.cookie = `idToken=${idToken}; expires=${expireDate.toUTCString()}; path=/`;
+
+            switch(result.userType) {
+              case 'bodyCorporate':
+                document.cookie = `bodyCoporateId=${result.userId}; expires=${expireDate.toUTCString()}; path=/`;
+                break;
+              case 'contractor':
+                document.cookie = `contractorId=${result.userId}; expires=${expireDate.toUTCString()}; path=/`;
+                break;
+              case 'trustee':
+                document.cookie = `trusteeId=${result.userId}; expires=${expireDate.toUTCString()}; path=/`;
+                break;
+            }
+
+            resolve(result);
+          },
+          error: (error) => reject(error)
+        });
+    });
+  }
+
   bodyCoporateLogin(email: string, password: string): Promise<AuthTokens>
   {
     return new Promise((resolve, reject) => {

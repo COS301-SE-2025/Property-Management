@@ -179,7 +179,8 @@ export class HousesService {
 
     this.inventoryItemApiService.getInventoryItemsByBuilding(houseId).subscribe({
       next: (inventory) => {
-       this.inventory.set(inventory);
+        const filtered = inventory.filter(i => i.unit !== 'ANOMALY');
+        this.inventory.set(filtered);
       },
       error: (err) => {
         console.error("Error loading inventory:", err);

@@ -3,8 +3,8 @@ services:
     image: postgres:15
     container_name: postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: pg123
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-pg123}
       POSTGRES_DB: property_management
     ports:
       - "5432:5432"
@@ -13,7 +13,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: ["CMD", "pg_isready", "-U", "${SPRING_DATASOURCE_USERNAME:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,11 +28,10 @@ services:
       - ./Backend/property-management/migrations:/flyway/sql
     environment:
       FLYWAY_URL: jdbc:postgresql://postgres:5432/property_management
-      FLYWAY_USER: postgres
-      FLYWAY_PASSWORD: pg123
+      FLYWAY_USER: ${SPRING_DATASOURCE_USERNAME:-postgres}
+      FLYWAY_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-pg123}
       FLYWAY_BASELINE_VERSION: "1"
       FLYWAY_BASELINE_DESCRIPTION: "Initial database import"
-      
     networks:
       - app-network
 
@@ -43,22 +42,42 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/property_management
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: pg123
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-pg123}
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      FORECAST_API_URL: http://forecast-api:5000
     depends_on:
       - postgres
       - flyway
+      - forecast-api
+    networks:
+      - app-network
+
+  forecast-api:
+    build: ./Backend/property-management/python-forecast
+    container_name: forecast-api
+    ports:
+      - "5000:5000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/property_management
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-pg123}
+    depends_on:
+      - postgres
+      - flyway
+    volumes:
+      - ./Backend/property-management/src/main/resources/application.yml:/app/application.yml:ro
     networks:
       - app-network
 
   frontend:
-    build: ./Frontend/Property-Manager
+    build: ./Frontend
     container_name: frontend
     ports:
       - "4200:4200"
     depends_on:
       - backend
+      - forecast-api
     networks:
       - app-network
 
@@ -70,6 +89,8 @@ services:
       - ./Backend/property-management/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - app-network
 
   grafana:
     image: grafana/grafana
@@ -77,6 +98,8 @@ services:
       - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
+    networks:
+      - app-network
 
 networks:
   app-network:

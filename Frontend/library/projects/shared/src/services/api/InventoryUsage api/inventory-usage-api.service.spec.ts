@@ -222,7 +222,7 @@ describe('InventoryUsageApiService', () => {
 
       const expectedBody = {
         trusteeApproved: true,
-        approvalDate: new Date('2025-01-01')
+        approvalDate: '2025-01-01'
       };
 
       httpClientSpy.patch.and.returnValue(of(mockUsage));
