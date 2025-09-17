@@ -416,14 +416,34 @@ class BudgetPredictionRequest(BaseModel):
     periods: Optional[int] = 12
     budget_type: Optional[str] = "totalBudget"
 
-@app.post("/budget-prediction/overall")
-def budget_prediction_overall(request: BudgetPredictionRequest):
+@app.post("/budget-prediction/body-corporate/{bodyCorporateId}")
+def budget_prediction_overall(bodyCorporateId: str, request: BudgetPredictionRequest):
     conn = get_connection()
-    budgets = pd.read_sql("SELECT * FROM budget;", conn)
+
+    # Get buildings in body corp
+    buildings_bc = """
+        SELECT building_uuid FROM building WHERE coporate_uuid = %s;
+    """
+    buildingIds = pd.read_sql(buildings_bc, conn, params=(bodyCorporateId,))["building_uuid"]
+
+    budgets = []
+    for i in buildingIds:
+        budget_query = """
+                    SELECT * FROM budget WHERE building_uuid_fk = %s;
+                """
+        budget = pd.read_sql(budget_query, conn, params=((i,)))
+        budgets.append(budget)
     conn.close()
 
+    if not budgets:
+        raise HTTPException(status_code=404, detail="No budgets found for this body corporate")
+
+    budgets_df = pd.concat(budgets, ignore_index=True)
+
+    print(budgets_df["total_budget"])
+
     b = BudgetPrediction()
-    return b.predict_budget(budgets, request.freq, request.periods, request.budget_type)
+    return b.predict_budget(budgets_df, request.freq, request.periods, request.budget_type)
 
 @app.post("/budget-prediction/building/{buildingUuid}")
 def budget_prediciton_building(buildingUuid: str, request: BudgetPredictionRequest):

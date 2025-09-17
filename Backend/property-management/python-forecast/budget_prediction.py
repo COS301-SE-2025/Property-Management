@@ -16,17 +16,27 @@ class BudgetPrediction:
         if df.empty or len(df) < 2:
             raise HTTPException(status_code=400, detail=f"Not enough data for {budget_type} forecasting")
         
-        if freq == "M":
-            df = df.resample("M", on='ds').sum().reset_index()
-        elif freq == "Y":
-            df = df.resample("Y", on="ds").sum().reset_index()
+        if freq in ["M", "MS"]:
+            df_resampled = df.resample("M", on='ds').sum().reset_index()
+        elif freq in ["Y", "YE", "YS"]:
+            df_resampled = df.resample("YE", on="ds").sum().reset_index()
         else:
             raise HTTPException(status_code=400, detail="Invalid frequency")
         
-        model = Prophet()
-        model.fit(df)
+        if len(df_resampled) < 2:
+            if freq in ["Y", "YE", "YS"]:
+                df_resampled = df.set_index("ds").resample("M").sum().reset_index()
+                df_resampled = df_resampled.set_index("ds").resample("YE").sum().reset_index()
 
-        future = model.make_future_dataframe(periods=periods, freq=freq)
+                if len(df_resampled) < 2:
+                    raise HTTPException(status_code=400, detail="Not enough data for yearly forecasting")
+                else:
+                    raise HTTPException(status_code=400, detail=f"Not enough data for yearly forecasting. {len(df_resampled)} period(s) avaialble")
+                
+        model = Prophet()
+        model.fit(df_resampled)
+
+        future = model.make_future_dataframe(periods=periods, freq=freq if freq != "Y" else "YE")
         forecast_df = model.predict(future)
 
         result = forecast_df[["ds", "yhat"]].tail(periods).copy()
