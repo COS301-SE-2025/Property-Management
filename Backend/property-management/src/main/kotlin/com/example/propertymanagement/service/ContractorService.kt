@@ -2,8 +2,6 @@ package com.example.propertymanagement.service
 
 import com.example.propertymanagement.model.Contractor
 import com.example.propertymanagement.repository.ContractorRepository
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.NoSuchElementException
@@ -47,8 +45,8 @@ class ContractorService(
         return repository.save(updated)
     }
 
-    @Transactional
     // @CacheEvict(value = ["apiCache"], key = "#uuid")
+    @Transactional
     fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
 
     // @CacheEvict(value = ["apiCache"], allEntries = true)
