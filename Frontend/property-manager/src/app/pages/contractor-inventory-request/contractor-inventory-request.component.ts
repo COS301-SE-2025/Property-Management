@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService, getCookieValue, MaintenanceTask } from 'shared';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contractor-inventory-request',
   templateUrl: './contractor-inventory-request.component.html',
-  styleUrls: ['./contractor-inventory-request.component.scss']
+  styleUrls: ['./contractor-inventory-request.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule],
+  standalone: true
 })
 export class ContractorInventoryRequestComponent implements OnInit {
   form: FormGroup;
