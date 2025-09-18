@@ -385,7 +385,7 @@ async def anomaly_dectition(request: Request):
     IQR = Q3 - Q1
 
     min_price = Q1 - (1.5 * IQR)
-    max_price = Q3 + (1.5 & IQR)
+    max_price = Q3 + (1.5 * IQR)
 
     if min_price <= 0:
         adjusted_min = 0.01
@@ -440,8 +440,6 @@ def budget_prediction_overall(bodyCorporateId: str, request: BudgetPredictionReq
 
     budgets_df = pd.concat(budgets, ignore_index=True)
 
-    print(budgets_df["total_budget"])
-
     b = BudgetPrediction()
     return b.predict_budget(budgets_df, request.freq, request.periods, request.budget_type)
 
@@ -452,7 +450,6 @@ def budget_prediciton_building(buildingUuid: str, request: BudgetPredictionReque
     SELECT * FROM budget WHERE building_uuid_fk = %s;
     """
     budget_df = pd.read_sql(budget_building, conn, params = (buildingUuid,))
-    print(budget_df)
     conn.close()
 
     b = BudgetPrediction()

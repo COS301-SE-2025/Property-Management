@@ -11,7 +11,7 @@
               <h4 class="font-medium text-gray-800 dark:text-white">{{ anomaly.name }}</h4>
               <div class="text-sm text-gray-600 dark:text-gray-300 mt-1">
                   <p>Proposed Stock: {{ anomaly.quantityInStock }}</p>
-                  <p>Price: R{{ anomaly.price }}</p>
+                  <p>Price: R{{ anomaly.price | formatAmount }}</p>
               </div>
               
               <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">
@@ -34,17 +34,17 @@
           
           <div class="flex flex-col space-y-1 ml-4 mt-7">
               <button 
-                  class="px-3 py-1 bg-green-500 hover:bg-green-600 text-black text-xs rounded transition hover:translate-y-1"
+                  class="px-3 py-1 bg-green-500 hover:bg-green-600 text-black text-sm rounded transition hover:translate-y-1"
                   (click)="approveAnomaly(anomaly)">
                   Approve
               </button>
               <button 
-                  class="px-3 py-1 bg-red-500 hover:bg-red-600 text-black text-xs rounded transition hover:translate-y-1"
+                  class="px-3 py-1 bg-red-500 hover:bg-red-600 text-black text-sm rounded transition hover:translate-y-1"
                   (click)="disapproveAnomaly(anomaly)">
                   Disapprove
               </button>
               <button 
-                  class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white text-xs rounded transition hover:translate-y-1"
+                  class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white text-sm rounded transition hover:translate-y-1"
                   (click)="revokeUser(anomaly)">
                   Revoke User
               </button>

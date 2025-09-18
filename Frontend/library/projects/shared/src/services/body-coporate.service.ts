@@ -340,6 +340,7 @@ export class BodyCoporateService {
                             houseName: res.name
                           }
                           this.addToAnomalies(anomly) 
+                          console.log(anomly);
                         }
                       })
                     }
