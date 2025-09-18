@@ -1,0 +1,25 @@
+<div class="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
+  <h2 class="text-xl font-bold mb-4">Request Inventory</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="mb-4">
+      <label>Project/Task</label>
+      <select class="w-full border rounded p-2" formControlName="taskUuid">
+        <option *ngFor="let task of assignedTasks" [value]="task.taskUuid">{{ task.title }}</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label>Inventory Item</label>
+      <select class="w-full border rounded p-2" formControlName="itemUuid">
+        <option *ngFor="let item of availableItems" [value]="item.itemUuid">{{ item.name }} ({{ item.quantityInStock }})</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label>Quantity</label>
+      <input type="number" class="w-full border rounded p-2" formControlName="quantity" min="1" />
+    </div>
+    <button type="submit" class="bg-yellow-400 px-4 py-2 rounded" [disabled]="form.invalid || loading">
+      Request Inventory
+    </button>
+    <div *ngIf="error" class="text-red-500 mt-2">{{ error }}</div>
+  </form>
+</div>

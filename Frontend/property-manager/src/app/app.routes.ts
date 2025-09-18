@@ -29,6 +29,8 @@ import { VotingDetailsComponent } from './pages/voting-details/voting-details.co
 import { TaskDetailsComponent } from './pages/task-details/task-details.component';
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 import { RestConfirmComponent } from './pages/reset-confirm/reset-confirm.component';
+import { ContractorInventoryRequestComponent } from './pages/contractor-inventory-request/contractor-inventory-request.component';
+
 
 export const routes: Routes = [
   {
@@ -175,6 +177,11 @@ export const routes: Routes = [
   path: 'ratings/:taskId',
   canActivate: [authGuard(['trustee', 'bodyCorporate'])],
   component: RatingsComponent
+  },
+  {
+  path: 'contractor-inventory-request',
+  canActivate: [authGuard(['contractor'])],
+  component: ContractorInventoryRequestComponent
   },
   {
     path: 'landingPage',

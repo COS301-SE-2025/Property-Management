@@ -259,5 +259,13 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
     });
   }
 
+  getInventoryByBuilding(buildingUuid: string) {
+    return this.http.get<any[]>(`/api/inventory/building/${buildingUuid}`);
+  }
+
+  createInventoryUsage(data: any) {
+    return this.http.post('/api/inventory-usage', data);
+  }
+
 
 }
