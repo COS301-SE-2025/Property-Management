@@ -267,5 +267,14 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
     return this.http.post('/api/inventory-usage', data);
   }
 
+  getPendingInventoryUsage() {
+    return this.http.get<any[]>(`/api/inventory-usage/pending-approval`);
+  }
 
+  approveInventoryUsage(usageUuid: string, approved: boolean) {
+    return this.http.patch(`/api/inventory-usage/${usageUuid}/approval`, {
+      trusteeApproved: approved,
+      approvalDate: new Date().toISOString().slice(0, 10)
+    });
+  }
 }

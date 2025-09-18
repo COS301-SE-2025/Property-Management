@@ -1,0 +1,12 @@
+<div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded shadow">
+  <h2 class="text-xl font-bold mb-4">Inventory Approval Queue</h2>
+  <div *ngIf="loading" class="text-center">Loading...</div>
+  <div *ngIf="!loading && pendingRequests.length === 0" class="text-gray-500">No pending requests.</div>
+  <div *ngFor="let req of pendingRequests" class="mb-4 border-b pb-2">
+    <div>
+      <strong>{{ req.itemName }}</strong> ({{ req.quantityUsed }}) for <strong>{{ req.taskTitle }}</strong> by <strong>{{ req.contractorName }}</strong>
+    </div>
+    <button class="bg-green-500 text-white px-3 py-1 rounded mr-2" (click)="approve(req)">Approve</button>
+    <button class="bg-red-500 text-white px-3 py-1 rounded" (click)="reject(req)">Reject</button>
+  </div>
+</div>
