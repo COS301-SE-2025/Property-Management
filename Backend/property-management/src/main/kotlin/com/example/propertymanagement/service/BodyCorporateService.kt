@@ -30,6 +30,11 @@ class BodyCorporateService(
             throw IllegalArgumentException("Email already exists")
         }
 
+        val passwordErrors = validatePassword(request.password)
+        if (passwordErrors.isNotEmpty()) {
+            throw IllegalArgumentException(passwordErrors.joinToString(", "))
+        }
+
         val username = request.email.substringBefore("@") + "_" + System.currentTimeMillis()
 
         val attributes =
@@ -110,7 +115,7 @@ class BodyCorporateService(
             .findAll(pageable)
             .map { it.toResponse() }
 
-    @Cacheable(value = ["apiCache"], key = "#id")
+    // @Cacheable(value = ["apiCache"], key = "#id")
     fun getBodyCorporateById(id: UUID): BodyCorporateResponse {
         val bodyCorporate =
             bodyCorporateRepository
@@ -119,7 +124,7 @@ class BodyCorporateService(
         return bodyCorporate.toResponse()
     }
 
-    @Cacheable(value = ["apiCache"], key = "'email_'+#email")
+    // @Cacheable(value = ["apiCache"], key = "'email_'+#email")
     fun getBodyCorporateByEmail(email: String): BodyCorporateResponse {
         val bodyCorporate =
             bodyCorporateRepository.findByEmail(email)
@@ -127,7 +132,7 @@ class BodyCorporateService(
         return bodyCorporate.toResponse()
     }
 
-    @Cacheable(value = ["apiCache"], key = "'user_'+#userId")
+    // @Cacheable(value = ["apiCache"], key = "'user_'+#userId")
     fun getBodyCorporateByUserId(userId: String): BodyCorporateResponse {
         val bodyCorporate =
             bodyCorporateRepository.findByUserId(userId)
@@ -135,7 +140,7 @@ class BodyCorporateService(
         return bodyCorporate.toResponse()
     }
 
-    @CacheEvict(value = ["apiCache"], key = "#id")
+    // @CacheEvict(value = ["apiCache"], key = "#id")
     fun updateBodyCorporate(
         id: UUID,
         request: UpdateBodyCorporateRequest,
@@ -162,7 +167,7 @@ class BodyCorporateService(
         return bodyCorporateRepository.save(updatedBodyCorporate).toResponse()
     }
 
-    @CacheEvict(value = ["apiCache"], key = "#id")
+    // @CacheEvict(value = ["apiCache"], key = "#id")
     fun deleteBodyCorporate(id: UUID) {
         val bodyCorporate =
             bodyCorporateRepository
@@ -172,13 +177,13 @@ class BodyCorporateService(
         bodyCorporateRepository.delete(bodyCorporate)
     }
 
-    @Cacheable(value = ["apiCache"], key = "'name_'+#name")
+    // @Cacheable(value = ["apiCache"], key = "'name_'+#name")
     fun searchBodyCorporatesByName(name: String): List<BodyCorporateResponse> =
         bodyCorporateRepository
             .findByCorporateNameContainingIgnoreCase(name)
             .map { it.toResponse() }
 
-    @Cacheable(value = ["apiCache"], key = "'contribution_'+#minContribution+'_'+#maxContribution")
+    // @Cacheable(value = ["apiCache"], key = "'contribution_'+#minContribution+'_'+#maxContribution")
     fun getBodyCorporatesByContributionRange(
         minContribution: BigDecimal,
         maxContribution: BigDecimal,
@@ -187,7 +192,7 @@ class BodyCorporateService(
             .findByContributionPerSqmBetween(minContribution, maxContribution)
             .map { it.toResponse() }
 
-    @Cacheable(value = ["apiCache"], key = "'minBudget_'+#minBudget")
+    // @Cacheable(value = ["apiCache"], key = "'minBudget_'+#minBudget")
     fun getBodyCorporatesByMinimumBudget(minBudget: BigDecimal): List<BodyCorporateResponse> =
         bodyCorporateRepository
             .findByTotalBudgetGreaterThanEqual(minBudget)
@@ -214,6 +219,26 @@ class BodyCorporateService(
             userId = this.userId,
             username = this.username,
         )
+
+    private fun validatePassword(password: String): List<String> {
+        val errors = mutableListOf<String>()
+        if (password.length < 8) {
+            errors.add("Password must be at least 8 characters long.")
+        }
+        if (!password.any { it.isUpperCase() }) {
+            errors.add("Password must contain at least one uppercase letter.")
+        }
+        if (!password.any { it.isLowerCase() }) {
+            errors.add("Password must contain at least one lowercase letter.")
+        }
+        if (!password.any { it.isDigit() }) {
+            errors.add("Password must contain at least one number.")
+        }
+        if (!password.any { !it.isLetterOrDigit() }) {
+            errors.add("Password must contain at least one special character.")
+        }
+        return errors
+    }
 
     data class BodyCorporateStatistics(
         val totalBodyCorporates: Long,

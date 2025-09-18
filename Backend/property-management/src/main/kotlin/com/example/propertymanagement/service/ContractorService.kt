@@ -15,11 +15,11 @@ class ContractorService(
 ) {
     fun getAll(): List<Contractor> = repository.findAll()
 
-    @Cacheable(value = ["apiCache"], key = "#uuid")
+    // @Cacheable(value = ["apiCache"], key = "#uuid")
     fun getByUuid(uuid: UUID): Contractor =
         repository.findByUuid(uuid).orElseThrow { NoSuchElementException("Contractor not found: $uuid") }
 
-    @CacheEvict(value = ["apiCache"], key = "#uuid")
+    // @CacheEvict(value = ["apiCache"], key = "#uuid")
     fun updateByUuid(
         uuid: UUID,
         update: Contractor,
@@ -48,13 +48,13 @@ class ContractorService(
     }
 
     @Transactional
-    @CacheEvict(value = ["apiCache"], key = "#uuid")
+    // @CacheEvict(value = ["apiCache"], key = "#uuid")
     fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
 
-    @CacheEvict(value = ["apiCache"], allEntries = true)
+    // @CacheEvict(value = ["apiCache"], allEntries = true)
     fun add(item: Contractor): Contractor = repository.save(item)
 
-    @CacheEvict(value = ["apiCache"], allEntries = true)
+    // @CacheEvict(value = ["apiCache"], allEntries = true)
     fun addUser(
         name: String,
         contact_info: String,
@@ -91,7 +91,7 @@ class ContractorService(
         return add(newUser)
     }
 
-    @Cacheable(value = ["apiCache"], key = "'email_'+#email")
+    // @Cacheable(value = ["apiCache"], key = "'email_'+#email")
     fun getByEmail(email: String): Contractor =
         repository.findByEmail(email).orElseThrow { NoSuchElementException("Trustee not found for email: $email") }
 
