@@ -1,10 +1,11 @@
-import { Component, input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, input, OnInit, ViewChild } from '@angular/core';
 // import { BudgetService } from '../../../services/budget.service';
 import { Graph } from 'shared';
 import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ChartOptions } from 'chart.js';
+import { UIChart } from 'primeng/chart';
 
 @Component({
   selector: 'app-graph-card',
@@ -21,20 +22,33 @@ export class GraphCardComponent implements OnInit {
   chartOptions!: ChartOptions<'line'>;
   darkMode = false;
 
+  @ViewChild('chart') chart!: UIChart;
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngOnInit()
   {
     this.darkMode = localStorage.getItem('darkMode') === 'true';
     this.chartOptions = this.getChartOptions();
 
-    window.addEventListener('storage', () => {
+    window.addEventListener('darkModeChange', () => {
       this.darkMode = localStorage.getItem('darkMode') === 'true';
       this.chartOptions = this.getChartOptions();
+
+      this.cdr.markForCheck();
+      this.chart?.refresh();
     });
   }
 
   getChartOptions(){
-    const textColor = this.darkMode ? '#000000' : '#000000';
-    const gridColor = this.darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.1)';
+
+    if(!this.budgetGraphData() || !this.budgetGraphData().datasets)
+    {
+      return {};
+    }
+
+    const textColor = this.darkMode ? '#ffffff' : '#000000';
+    const gridColor = this.darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
 
     const hasPrediction = this.budgetGraphData().datasets.some(g => g.label === 'Predicted Budget' && g.data.some(v => v !== null));
     return {

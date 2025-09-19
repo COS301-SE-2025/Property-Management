@@ -139,9 +139,21 @@ export class HousesService {
     this.budgetApiService.getBudgetsByBuildingId(houseId).subscribe(
       (buildingDetails: BuildingDetails[]) => {
         const firstElement = buildingDetails[buildingDetails.length-1];
-        this.budgets.set(firstElement);
+        // this.budgets.set(firstElement);
 
-        //Get predicted budget
+        //Get inventory predicted budget
+        this.budgetApiService.getBudgetPredictionHouse(houseId, "M", 6, "inventory_budget").subscribe({
+          next: (res) => {
+            firstElement.predictedInventoryBudget = res.prediction[0].yhat;
+            this.budgetPrediction(firstElement, houseId);
+          },
+          error: (err) => {
+            console.error("Couldnt get predicted inventory budget", err);
+            this.budgetPrediction(firstElement, houseId);
+          }
+        });
+
+        //Get total predicted budget
         this.budgetApiService.getBudgetPredictionHouse(houseId, "M", 6, "total_budget").subscribe({
           next: (res) => {
             this.handleBudgetPrediction(res, buildingDetails);
@@ -159,6 +171,20 @@ export class HousesService {
         this.createGraphData(sortedDetails, []);
       }
     );
+  }
+  private budgetPrediction(element: BuildingDetails, houseId: string)
+  {
+     //Get maintenance predicted budget
+      this.budgetApiService.getBudgetPredictionHouse(houseId, "M", 6, "maintenance_budget").subscribe({
+        next: (res) => {
+          element.predictedMaintenanceBudget = res.prediction[0].yhat;
+          this.budgets.set(element);
+        },
+        error: (err) => {
+          console.error("Couldnt get predicted maintance budget", err);
+          this.budgets.set(element);
+        }
+      })
   }
   private handleBudgetPrediction(prediction: BudgetPrediction, buildingDetails: BuildingDetails[])
   {
