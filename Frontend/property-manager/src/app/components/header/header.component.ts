@@ -190,7 +190,6 @@ ngOnInit() {
   openNotifications() {
     this.notificationDrawerService.toggleDrawer(); 
     if (this.notificationDrawerService.drawerVisible()) {
-      console.log('Drawer is opening, triggering fetch');
       this.notificationDrawerService.triggerFetch();
     }
   }
@@ -261,6 +260,7 @@ ngOnInit() {
     this.applyDarkMode();
 
     localStorage.setItem('darkMode', this.isDarkMode.toString());
+    window.dispatchEvent(new Event('darkModeChange'));
   }
   private applyDarkMode()
   {

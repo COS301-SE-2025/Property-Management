@@ -4,7 +4,7 @@
     </ion-card-header>
 
     <ion-card-content>
-      <p-table [value] = "inventory()">
+      <p-table [value] = "inventory()" [paginator]="true" [rows]="5" [responsiveLayout]="'scroll'">
         <ng-template #header>
         <tr>
             <th pSortableColumn="name">

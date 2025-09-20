@@ -1,13 +1,12 @@
 import { Component, inject, input } from '@angular/core';
-import { Anomaly, BodyCoporateService, BuildingApiService, getCookieValue, InventoryItemApiService, Notification, NotificationsApiService, PropertyService } from 'shared';
+import { Anomaly, BodyCoporateService, BuildingApiService, getCookieValue, InventoryItemApiService, Notification, NotificationsApiService, PropertyService, FormatAmountPipe } from 'shared';
 import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from "primeng/toast";
-import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-inventory-anomaly-card',
-  imports: [CommonModule, ToastModule],
+  imports: [CommonModule, ToastModule, FormatAmountPipe],
   templateUrl: './inventory-anomaly-card.component.html',
   styles: ``,
 })

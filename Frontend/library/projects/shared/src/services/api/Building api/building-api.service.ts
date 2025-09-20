@@ -62,6 +62,12 @@ export class BuildingApiService {
           name: name
         }
       }
+      else if(name === '')
+      {
+        updatedProperty = { 
+          coporateUuid: bcId
+        };
+      }
       else
       {
         updatedProperty = { 
@@ -74,10 +80,26 @@ export class BuildingApiService {
     {
       if(bcId === null || bcId === '')
       {
-        updatedProperty = {
-          name: name,
-          propertyImage: image
+        if(name === '')
+        {
+          updatedProperty = {
+            propertyImage: image
+          }
         }
+        else
+        {
+          updatedProperty = {
+            name: name,
+            propertyImage: image
+          }
+        }
+      }
+      else if(name === '')
+      {
+        updatedProperty = {
+          propertyImage: image,
+          coporateUuid: bcId
+        };
       }
       else
       {

@@ -15,6 +15,7 @@ import re
 import cloudscraper
 from bs4 import BeautifulSoup
 import json
+from budget_prediction import BudgetPrediction
 
 BASE_DIR = os.path.dirname(__file__)
 MODELS_DIR = os.path.join(BASE_DIR, "models")
@@ -377,11 +378,14 @@ async def anomaly_dectition(request: Request):
             "timestamp": datetime.now()
         }
     
-    mean_price = float(np.mean(prices));
-    std_price = float(np.std(prices));
+    mean_price = float(np.mean(prices))
+    std_price = float(np.std(prices))
+    Q1 = np.percentile(prices, 25)
+    Q3 = np.percentile(prices, 75)
+    IQR = Q3 - Q1
 
-    min_price = mean_price - (2 * std_price)
-    max_price = mean_price + (2 * std_price)
+    min_price = Q1 - (1.5 * IQR)
+    max_price = Q3 + (1.5 * IQR)
 
     if min_price <= 0:
         adjusted_min = 0.01
@@ -406,6 +410,50 @@ async def anomaly_dectition(request: Request):
             "samples_count": len(prices)
         }
     }
+
+class BudgetPredictionRequest(BaseModel):
+    freq: Optional[str] = "M"
+    periods: Optional[int] = 12
+    budget_type: Optional[str] = "totalBudget"
+
+@app.post("/budget-prediction/body-corporate/{bodyCorporateId}")
+def budget_prediction_overall(bodyCorporateId: str, request: BudgetPredictionRequest):
+    conn = get_connection()
+
+    # Get buildings in body corp
+    buildings_bc = """
+        SELECT building_uuid FROM building WHERE coporate_uuid = %s;
+    """
+    buildingIds = pd.read_sql(buildings_bc, conn, params=(bodyCorporateId,))["building_uuid"]
+
+    budgets = []
+    for i in buildingIds:
+        budget_query = """
+                    SELECT * FROM budget WHERE building_uuid_fk = %s;
+                """
+        budget = pd.read_sql(budget_query, conn, params=((i,)))
+        budgets.append(budget)
+    conn.close()
+
+    if not budgets:
+        raise HTTPException(status_code=404, detail="No budgets found for this body corporate")
+    
+    budgets_df = pd.concat(budgets, ignore_index=True)
+
+    b = BudgetPrediction()
+    return b.predict_budget(budgets_df, request.freq, request.periods, request.budget_type)
+
+@app.post("/budget-prediction/building/{buildingUuid}")
+def budget_prediciton_building(buildingUuid: str, request: BudgetPredictionRequest):
+    conn = get_connection()
+    budget_building = """
+    SELECT * FROM budget WHERE building_uuid_fk = %s;
+    """
+    budget_df = pd.read_sql(budget_building, conn, params = (buildingUuid,))
+    conn.close()
+
+    b = BudgetPrediction()
+    return b.predict_budget(budget_df, request.freq, request.periods, request.budget_type)
 
 if __name__ == "__main__":
     import uvicorn

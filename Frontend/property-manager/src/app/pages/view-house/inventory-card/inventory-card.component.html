@@ -1,6 +1,6 @@
 <div [ngClass]="showAddButton ? 'flex flex-col items-center justify-center pt-5 pb-3 bg-gray-300 dark:bg-gray-500 rounded-xl' : 'flex flex-col items-center justify-center pt-5'">
     <p-toast/>
-    <p-card class="text-center bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md">
+    <p-card class="text-center rounded-xl p-4">
         <ng-template #title>Inventory</ng-template>
         <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '25rem', 'max-width':'30rem' }" [paginator]="true" [rows]="rows" [responsiveLayout]="'scroll'">
             <ng-template #header>

@@ -173,11 +173,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
                 detail: 'Task added successfully'
               });
       
-              setTimeout(() => {
-                this.router.navigate(['viewHouse', this.houseId]).then(() => {
-                  window.location.reload();
-                });
-              }, 2000);
+              const buildingId = String(this.route.snapshot.paramMap.get('houseId'));
+              this.housesService.loadTasks(buildingId);
             }
           });
         }
@@ -189,11 +186,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
             detail: 'Task added successfully'
           });
   
-          setTimeout(() => {
-            this.router.navigate(['viewHouse', this.houseId]).then(() => {
-              window.location.reload();
-            });
-          }, 2000);
+          const buildingId = String(this.route.snapshot.paramMap.get('houseId'));
+          this.housesService.loadTasks(buildingId);
         }
 
       },

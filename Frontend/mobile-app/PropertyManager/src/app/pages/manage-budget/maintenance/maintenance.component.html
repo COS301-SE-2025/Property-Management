@@ -3,7 +3,7 @@
       <ion-card-title class="dark:text-white">Maintenance budget</ion-card-title>
       <ion-card-subtitle>
         <div class="flex items-center justify-center gap-2">
-            <p class="font-semibold mt-2">Remaining Allocated budget: </p>
+            <p class="font-semibold mt-2 dark:text-gray-200">Remaining Allocated budget: </p>
             <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ (budget().maintenanceBudget-budget().maintenanceSpent)| formatAmount}}</p>
         </div>
       </ion-card-subtitle>
@@ -12,26 +12,26 @@
     <ion-card-content>
       <div class="flex flex-col justify-center items-center">
 
-        <p class="pb-2 pt-8 pr-85">Maintenance expenditure</p>
+        <p class="pb-2 pt-8 pr-85 dark:text-gray-200">Maintenance expenditure</p>
         <p-table [value]="completedTasks()" selectionMode="single" (onRowSelect)="showMaintenanceDetailsDialog($event.data)" [tableStyle]="{ 'min-width': '22rem' }">
             <ng-template #header>
             <tr>
-                <th pSortableColumn="description">
+                <th pSortableColumn="description" class="dark:text-gray-200">
                     Description <p-sortIcon field="description"/>
                 </th>
-                <th pSortableColumn="cost">
+                <th pSortableColumn="cost" class="dark:text-gray-200">
                     Cost <p-sortIcon field="cost"/>
                 </th>
-                <th pSortableColumn="DoneBy.name">
+                <th pSortableColumn="DoneBy.name" class="dark:text-gray-200">
                     Done by <p-sortIcon field="DoneBy.name"/>
                 </th>
-                <th pSortableColumn="submitted_on">
+                <th pSortableColumn="submitted_on" class="dark:text-gray-200">
                     Date <p-sortIcon field="submitted_on"/>
                 </th>
             </tr>
             </ng-template>
             <ng-template #body let-maintain>
-            <tr [pSelectableRow]="maintain">
+            <tr [pSelectableRow]="maintain" class="dark:text-gray-300">
                 <td>{{ maintain.des }}</td>
                 <td>R {{ maintain.amount }}</td>
                 <td>{{ maintain.doneBy }}</td>
@@ -39,9 +39,12 @@
             </tr>
             </ng-template>
         </p-table>
-        <p class = "font-semibold pt-3">Total: R {{ getMaintenanceTotal() }}</p>
-        <button class = "cursor-pointer pt-6" (click)="editBudget.openModal()">
-            <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
+        <p class = "font-semibold pt-3 dark:text-gray-200">Total: R {{ getMaintenanceTotal() }}</p>
+        <button class = "mt-4 flex items-center gap-2 px-2 py-2 bg-yellow-400 text-black rounded-lg shadow-md" (click)="editBudget.openModal()">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Edit maintenance budget
         </button>
         <app-edit-budget #editBudget [budgetType]="'maintainence'" [oldBudgetAmount]="budget().maintenanceBudget" [budget]="budget()"></app-edit-budget>
       </div>
