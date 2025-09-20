@@ -437,7 +437,7 @@ def budget_prediction_overall(bodyCorporateId: str, request: BudgetPredictionReq
 
     if not budgets:
         raise HTTPException(status_code=404, detail="No budgets found for this body corporate")
-
+    
     budgets_df = pd.concat(budgets, ignore_index=True)
 
     b = BudgetPrediction()

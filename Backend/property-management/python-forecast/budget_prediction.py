@@ -19,7 +19,8 @@ class BudgetPrediction:
         if freq in ["M", "MS"]:
             df_resampled = df.resample("M", on='ds').sum().reset_index()
         elif freq in ["Y", "YE", "YS"]:
-            df_resampled = df.resample("YE", on="ds").sum().reset_index()
+            df_resampled = df.groupby(df["ds"].dt.to_period("Y"))["y"].sum().reset_index()
+            df_resampled["ds"] = df_resampled["ds"].dt.to_timestamp()
         else:
             raise HTTPException(status_code=400, detail="Invalid frequency")
         

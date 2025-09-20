@@ -94,6 +94,13 @@ app-tab {
   --p-datatable-header-cell-background: #000000 !important;
   --p-datatable-row-color: #333333; /* text color */
 }
+.dark .p-paginator{
+  background: var(--datatable-body-bg);
+}
+.dark .p-paginator-page.p-paginator-page-selected {
+  background: var(--card-border);
+  color: #9CA3AF;
+}
 
 .font-normal {
   font-size: 1rem;

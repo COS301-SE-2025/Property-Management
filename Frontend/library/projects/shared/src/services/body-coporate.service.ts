@@ -168,19 +168,79 @@ export class BodyCoporateService {
       const years = Object.keys(yearData).sort();
       const allBudgets = years.map(year => yearData[parseInt(year)]);
 
-      const graphData: Graph = {
-        labels: years,
-        datasets: [
-          {
-            data: allBudgets,
-            backgroundColor: 'rgba(255,227,114, 0.7)',
-            borderColor: 'rgb(255,227,114)',
-            borderWidth: 1
-          }
-        ]
-      };
+      //Get predicted budget
+      this.budgetApiService.getBudgetPredictionBodyCorporate(bcId, "Y", 3, "total_budget").subscribe({
+        next: (res) => {
+          const year3 = res.prediction;
 
-      this.maintenanceGraph.set(graphData);
+          const predictedYears = year3.map(p => new Date(p.ds).getFullYear().toString());
+          const predictedVal = year3.map(p => p.yhat);
+
+          const labels = [...years, ...predictedYears.filter(y => !years.includes(y))];
+          const existingData = labels.map(y => yearData[+y] !== undefined ? yearData[+y] : 0);
+          const predictedData = labels.map(y => {
+            const idx = predictedYears.indexOf(y);
+            return idx >= 0 ? predictedVal[idx] : 0;
+          });
+
+          const graphData: Graph = {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Existing Budget',
+                data: existingData,
+                backgroundColor: 'rgba(255,227,114,0.7)',
+                borderColor: 'rgb(255,227,114)',
+                borderWidth: 1
+              },
+              {
+                label: 'Predicted Budget',
+                data: predictedData,
+                backgroundColor: 'rgba(255, 165, 0, 0.7)',
+                borderColor: 'rgb(255, 165, 0)',
+                borderWidth: 1
+              }
+            ]
+          };
+          
+          //Get predicted inventory and maintennce budgets
+          this.budgetApiService.getBudgetPredictionBodyCorporate(bcId, "Y", 1, "inventory_budget").subscribe({
+            next: (res) => {
+              graphData.predictedInventoryBudget = res.prediction[0].yhat;
+              
+              this.budgetApiService.getBudgetPredictionBodyCorporate(bcId, "Y", 1, 'maintenance_budget').subscribe({
+                next: (res) => {
+                  graphData.predictedMaintenanceBudget = res.prediction[0].yhat;
+                  this.maintenanceGraph.set(graphData);
+                },
+                error: (err) => {
+                  console.error("Couldnt get predicted maintenance budgets", err);
+                  this.maintenanceGraph.set(graphData);
+                }
+              })
+            },
+            error: (err) => {
+              console.error("Couldnt get predicted inventory or maintenance budgets", err);
+              this.maintenanceGraph.set(graphData);
+            }
+          })
+        },
+        error: (err) => {
+          console.error("Couldnt get predicted budgets", err);
+          const graphData: Graph = {
+            labels: years,
+            datasets: [
+              {
+                data: allBudgets,
+                backgroundColor: 'rgba(255,227,114, 0.7)',
+                borderColor: 'rgb(255,227,114)',
+                borderWidth: 1
+              }
+            ]
+          };
+          this.maintenanceGraph.set(graphData);
+        }
+      });
     }
    }
    catch(error)
@@ -340,7 +400,6 @@ export class BodyCoporateService {
                             houseName: res.name
                           }
                           this.addToAnomalies(anomly) 
-                          console.log(anomly);
                         }
                       })
                     }

@@ -13,4 +13,6 @@ export interface Graph {
         borderDash?: number[];
         spanGaps?: boolean;
     }[];
+    predictedInventoryBudget?: number;
+    predictedMaintenanceBudget?: number;
 }

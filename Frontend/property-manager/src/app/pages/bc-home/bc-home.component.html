@@ -1,11 +1,11 @@
 <!-- <app-header/> -->
 
 <div class="flex flex-col items-center justify-center pb-10 pl-5 pr-5 mt-10">
-    <div [@floatUp] class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div [@floatUp] class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
         <app-pending-task-card [tasks]="bodyCoporateService.pendingTasks()"/>
+        <app-maintenance-graph-card class="h-full" [bcData]="bodyCoporateService.maintenanceGraph()"/>
         <app-life-cycle-card/>
-        <app-reserve-fund-card [schedule]="bodyCoporateService.fundContribution()" [contri]="bodyCoporateService.contribution()"/>
-        <app-maintenance-graph-card [bcData]="bodyCoporateService.maintenanceGraph()"/>
+        <app-reserve-fund-card class="h-full" [schedule]="bodyCoporateService.fundContribution()" [contri]="bodyCoporateService.contribution()"/>
         <app-inventory-anomaly-card [anomalies]="bodyCoporateService.anomalies()"/>
     </div>
 </div>
