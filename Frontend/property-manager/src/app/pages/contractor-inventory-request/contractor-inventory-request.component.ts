@@ -41,6 +41,10 @@ export class ContractorInventoryRequestComponent implements OnInit {
       next: (tasks: MaintenanceTask[]) => {
         this.assignedTasks = tasks;
         this.loading = false;
+
+        if (tasks.length > 0) {
+          this.form.get('taskUuid')?.setValue(tasks[0].uuid);
+        }
       },
       error: () => {
         this.error = 'Failed to load tasks';
@@ -49,11 +53,15 @@ export class ContractorInventoryRequestComponent implements OnInit {
     });
 
     this.form.get('taskUuid')?.valueChanges.subscribe(selectedUuid => {
-      const task = this.assignedTasks.find(t => t.uuid === selectedUuid);
-      if (task) {
-        this.inventoryItemApi.getInventoryItemsByBuilding(task.buuid).subscribe({
+
+      const task = this.assignedTasks.find(t => String(t.uuid) === String(selectedUuid));
+      if (task && task['buildingUuid']) {
+        this.inventoryItemApi.getInventoryItemsByBuilding(task['buildingUuid']).subscribe({
           next: (items) => {
-            this.availableItems = items;
+            this.availableItems = items.map(item => ({
+              ...item,
+              buildingUuid: item.buildingUuidFk ?? item.buildingUuid
+            }));
             this.itemControls = items.map(() => ({
               selected: new FormControl(false),
               quantity: new FormControl(1, [Validators.min(1)])
@@ -63,6 +71,9 @@ export class ContractorInventoryRequestComponent implements OnInit {
             this.error = 'Failed to load inventory items';
           }
         });
+      } else {
+        this.availableItems = [];
+        this.itemControls = [];
       }
     });
   }

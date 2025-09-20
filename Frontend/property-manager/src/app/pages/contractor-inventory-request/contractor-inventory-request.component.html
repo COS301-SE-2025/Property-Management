@@ -8,17 +8,18 @@
       </select>
     </div>
     <div class="mb-4">
-      <label>Inventory Items</label>
-      <div *ngFor="let item of availableItems; let i = index" class="flex items-center mb-2">
-        <input type="checkbox" [formControl]="itemControls[i].selected" />
-        <span class="ml-2">{{ item.name }} ({{ item.quantityInStock }})</span>
-        <input type="number" class="ml-4 w-20 border rounded p-1"
-              [formControl]="itemControls[i].quantity"
-              [min]="1"
-              [max]="item.quantityInStock"
-              [disabled]="!itemControls[i].selected.value" />
-      </div>
-    </div>
+  <label>Inventory Items</label>
+  <div *ngIf="availableItems.length === 0 && !loading" class="text-gray-500">No inventory items available for this project.</div>
+  <div *ngFor="let item of availableItems; let i = index" class="flex items-center mb-2">
+    <input type="checkbox" [formControl]="itemControls[i].selected" />
+    <span class="ml-2">{{ item.name }} ({{ item.quantityInStock }})</span>
+    <input type="number" class="ml-4 w-20 border rounded p-1"
+          [formControl]="itemControls[i].quantity"
+          [min]="1"
+          [max]="item.quantityInStock"
+          [disabled]="!itemControls[i].selected.value" />
+  </div>
+</div>
     <button type="submit" class="bg-yellow-400 px-4 py-2 rounded" [disabled]="form.invalid || loading">
       Request Inventory
     </button>
