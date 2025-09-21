@@ -38,6 +38,8 @@ export class TimelineCardComponent implements OnInit {
   bcUser = false;
   public darkMode = false;
 
+  count = 3;
+
   constructor(private router: Router){}
 
   ngOnInit()
@@ -49,6 +51,26 @@ export class TimelineCardComponent implements OnInit {
     }
 
     this.darkMode = localStorage.getItem('darkMode') === 'true';
+  }
+
+  get visibleTasks(): MaintenanceTask[]{
+    return this.timeline().slice(0, this.count);
+  }
+
+  toggleShow(){
+    if(this.count >= this.timeline().length)
+    {
+      this.count = 3;
+    }
+    else
+    {
+      this.count = Math.min(this.count + 3, this.timeline().length);
+    }
+  }
+
+  get toggleButton(): string
+  {
+    return this.count >= this.timeline().length ? 'Show Less' : 'Show More';
   }
 
   showDetails(task: MaintenanceTask)
