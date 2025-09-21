@@ -4,7 +4,7 @@
     </ion-card-header>
     
     <ion-card-content>
-      <p-timeline [value]="timeline()" align="alternate">
+      <p-timeline [value]="VisibleTask" align="alternate">
           <ng-template #content let-time>
               <div tabindex="0" role="button" class="dark:text-white" (click)="openDetails(time)">
                   {{ time.title }}
@@ -22,14 +22,18 @@
           </ng-template>
       </p-timeline>
   
+      <div class="mt-4 flex justify-center">
+        <button *ngIf="timeline().length > 3" (click)="toggleShow()" class="p-1 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg shadow-md">
+            {{ toggleButton }}
+        </button>
+      </div>
       <div class = "mt-5 flex flex-col justify-center items-center">
-          <button class="flex items-center gap-2 px-4 py-2 mt-2 bg-yellow-400 text-black rounded-lg shadow-md"
-                (click)="timelineAdd.openModal()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Add New Task
-            </button>
+          <button (click)="timelineAdd.openModal()" class="flex items-center gap-2 p-2 bg-yellow-400 text-black rounded-lg shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Add New Task
+          </button>
           <app-add-timeline #timelineAdd/>
       </div>
     </ion-card-content>

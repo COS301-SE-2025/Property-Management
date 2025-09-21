@@ -117,6 +117,13 @@ app-tab {
   color: #ffffff;
   background: #3B3B3B;
 }
+.dark .p-paginator{
+  background: var(--datatable-body-bg);
+}
+.dark .p-paginator-page.p-paginator-page-selected {
+  background: var(--card-border);
+  color: #9CA3AF;
+}
 
 .font-normal {
   font-size: 1rem;

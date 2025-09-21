@@ -20,6 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application files
 COPY forecast_api.py .
 COPY train_models.py .
+COPY budget_prediction.py .
 
 # Create models directory
 RUN mkdir -p models

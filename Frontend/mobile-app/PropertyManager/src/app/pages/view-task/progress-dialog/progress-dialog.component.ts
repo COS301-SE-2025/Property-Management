@@ -9,13 +9,12 @@ import { MultiSelectModule } from "primeng/multiselect";
 import { cameraOutline, trashOutline } from 'ionicons/icons';
 import { FormGroup, Validators, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { ImageApiService, Notification,  Inventory, InventoryItemApiService, InventoryUsageApiService, NotificationsApiService, StorageService, TaskApiService, TaskProgresApiService } from 'shared';
-import { InventoryComponent } from "../../view-house/inventory/inventory.component";
 
 @Component({
   selector: 'app-progress-dialog',
   templateUrl: './progress-dialog.component.html',
   styles: ``,
-  imports: [IonHeader, MultiSelectModule, IonIcon, IonContent, IonToolbar, IonButton, IonButtons, IonModal, ReactiveFormsModule, InventoryComponent, CommonModule],
+  imports: [IonHeader, MultiSelectModule, IonIcon, IonContent, IonToolbar, IonButton, IonButtons, IonModal, ReactiveFormsModule, CommonModule],
 })
 export class ProgressDialogComponent extends ModalComponent implements DoCheck {
 
