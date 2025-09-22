@@ -18,6 +18,8 @@ export class TimelineComponent{
   houseService = inject(HousesService);
   timeline = input.required<MaintenanceTask[]>();
 
+  count = 2;
+
   constructor(private router: Router) { }
 
   openDetails(item: MaintenanceTask): void
@@ -29,5 +31,25 @@ export class TimelineComponent{
     }
 
     this.router.navigate(['/view-task', item.uuid])
+  }
+
+  get VisibleTask(): MaintenanceTask[]{
+    return this.timeline().slice(0, this.count);
+  }
+
+  toggleShow(){
+    if(this.count >= this.timeline().length)
+    {
+      this.count = 2;
+    }
+    else
+    {
+      this.count = Math.min(this.count + 3, this.timeline().length);
+    }
+  }
+
+  get toggleButton(): string
+  {
+    return this.count >= this.timeline().length ? 'Show Less' : 'Show More';
   }
 }
