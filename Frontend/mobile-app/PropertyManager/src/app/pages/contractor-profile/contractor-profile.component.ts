@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IonContent, IonItem, IonInput, IonText, IonSpinner } from '@ionic/angular/standalone';
-import { ContractorService, ContractorDetails, getCookieValue, ImageApiService } from 'shared';
+import { ContractorService, ContractorDetails, ImageApiService, StorageService } from 'shared';
 import { TabComponent } from 'src/app/components/tab/tab.component';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -36,6 +36,7 @@ export class ContractorProfileComponent implements OnInit {
     private fb: FormBuilder,
     private contractorService: ContractorService,
     private imageService: ImageApiService,
+    private storageService: StorageService, 
     private router: Router
   ) {
     this.form = this.fb.group({
@@ -55,20 +56,33 @@ export class ContractorProfileComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    const contractorId = getCookieValue(document.cookie, 'contractorId');
-    if (contractorId) {
-      this.contractorService.getContractorById(contractorId).subscribe({
-        next: (contractor: ContractorDetails) => {
-          this.form.patchValue(contractor);
-          if (contractor.img) {
-            this.loadImage(contractor.img);
+  async ngOnInit() {
+    try {
+      const contractorId = await this.storageService.get('contractorId');
+      console.log('Contractor ID from storage:', contractorId);
+      
+      if (contractorId) {
+        this.contractorService.getContractorById(contractorId).subscribe({
+          next: (contractor: ContractorDetails) => {
+            console.log('Successfully loaded contractor:', contractor);
+            this.form.patchValue(contractor);
+            if (contractor.img) {
+              this.loadImage(contractor.img);
+            }
+          },
+          error: (err) => {
+            console.error('Error fetching contractor data:', err);
+            this.submissionError = 'Failed to load contractor data. Please try logging in again.';
           }
-        },
-        error: (err) => {
-          console.error('Error fetching contractor data:', err);
-        }
-      });
+        });
+      } else {
+        console.error('No contractor ID found in storage');
+        this.submissionError = 'Please log in to continue.';
+
+      }
+    } catch (error) {
+      console.error('Error getting contractor ID from storage:', error);
+      this.submissionError = 'Failed to access user data. Please try logging in again.';
     }
   }
 
@@ -94,7 +108,6 @@ export class ContractorProfileComponent implements OnInit {
       };
       reader.readAsDataURL(file);
 
-      // Upload to server
       this.imageService.uploadImage(file).subscribe({
         next: (response) => {
           this.form.patchValue({ img: response.imageId });
@@ -148,61 +161,120 @@ export class ContractorProfileComponent implements OnInit {
     this.projectImageFiles = Array.from((event.target as HTMLInputElement).files ?? []);
   }
 
-async onSubmit() {
-  if (this.form.invalid) {
-    this.submissionError = 'Please fill all required fields.';
-    return;
+  async onSubmit() {
+    if (this.form.invalid) {
+      this.submissionError = 'Please fill all required fields.';
+      return;
+    }
+    
+    this.isSubmitting = true;
+    this.submissionError = null;
+
+    try {
+      const contractorId = await this.storageService.get('contractorId');
+      
+      if (!contractorId) {
+        this.submissionError = 'Contractor ID not found. Please log in again.';
+        this.isSubmitting = false;
+        return;
+      }
+
+      const payload = { ...this.form.value };
+
+      const certIds: string[] = [];
+      for (const file of this.certFiles) {
+        try {
+          const res = await firstValueFrom(this.imageService.uploadImage(file));
+          certIds.push(res.imageId);
+        } catch (uploadError) {
+          console.error('Error uploading certification:', uploadError);
+          this.submissionError = 'Failed to upload certification files.';
+          this.isSubmitting = false;
+          return;
+        }
+      }
+      payload.certifications = certIds;
+
+      const licenseIds: string[] = [];
+      for (const file of this.licenseFiles) {
+        try {
+          const res = await firstValueFrom(this.imageService.uploadImage(file));
+          licenseIds.push(res.imageId);
+        } catch (uploadError) {
+          console.error('Error uploading license:', uploadError);
+          this.submissionError = 'Failed to upload license files.';
+          this.isSubmitting = false;
+          return;
+        }
+      }
+      payload.licenses = licenseIds;
+
+      const idIds: string[] = [];
+      for (const file of this.idFiles) {
+        try {
+          const res = await firstValueFrom(this.imageService.uploadImage(file));
+          idIds.push(res.imageId);
+        } catch (uploadError) {
+          console.error('Error uploading ID:', uploadError);
+          this.submissionError = 'Failed to upload ID files.';
+          this.isSubmitting = false;
+          return;
+        }
+      }
+      payload.ids = idIds;
+
+      const recordIds: string[] = [];
+      for (const file of this.projectRecordFiles) {
+        try {
+          const res = await firstValueFrom(this.imageService.uploadImage(file));
+          recordIds.push(res.imageId);
+        } catch (uploadError) {
+          console.error('Error uploading project record:', uploadError);
+          this.submissionError = 'Failed to upload project record files.';
+          this.isSubmitting = false;
+          return;
+        }
+      }
+      payload.projectRecords = recordIds;
+
+      const projectImageIds: string[] = [];
+      for (const file of this.projectImageFiles) {
+        try {
+          const res = await firstValueFrom(this.imageService.uploadImage(file));
+          projectImageIds.push(res.imageId);
+        } catch (uploadError) {
+          console.error('Error uploading project image:', uploadError);
+          this.submissionError = 'Failed to upload project image files.';
+          this.isSubmitting = false;
+          return;
+        }
+      }
+      payload.projectImages = projectImageIds;
+
+      console.log('Updating contractor with payload:', payload);
+      console.log('Contractor ID:', contractorId);
+
+      await firstValueFrom(this.contractorService.updateContractor(contractorId, payload));
+      
+      localStorage.setItem('contractorProfileComplete', 'true');
+      this.router.navigate(['/contractor-home']);
+      
+    } catch (err: any) {
+      console.error('Full error object:', err);
+
+      if (err.status === 0) {
+        this.submissionError = 'Unable to connect to server. Please check your internet connection.';
+      } else if (err.status === 404) {
+        this.submissionError = 'Contractor not found. Please try logging in again.';
+      } else if (err.status === 400) {
+        this.submissionError = 'Invalid data provided. Please check all fields.';
+      } else if (err.status >= 500) {
+        this.submissionError = 'Server error. Please try again later.';
+      } else {
+        this.submissionError = `Failed to update contractor profile. Error: ${err.message || 'Unknown error'}`;
+      }
+    } finally {
+      this.isSubmitting = false;
+    }
   }
-  this.isSubmitting = true;
-  this.submissionError = null;
-
-  const contractorId = getCookieValue(document.cookie, 'contractorId');
-  const payload = { ...this.form.value };
-
-  try {
-    const certIds: string[] = [];
-    for (const file of this.certFiles) {
-      const res = await firstValueFrom(this.imageService.uploadImage(file));
-      certIds.push(res.imageId);
-    }
-    payload.certifications = certIds;
-
-    const licenseIds: string[] = [];
-    for (const file of this.licenseFiles) {
-      const res = await firstValueFrom(this.imageService.uploadImage(file));
-      licenseIds.push(res.imageId);
-    }
-    payload.licenses = licenseIds;
-
-    const idIds: string[] = [];
-    for (const file of this.idFiles) {
-      const res = await firstValueFrom(this.imageService.uploadImage(file));
-      idIds.push(res.imageId);
-    }
-    payload.ids = idIds;
-
-    const recordIds: string[] = [];
-    for (const file of this.projectRecordFiles) {
-      const res = await firstValueFrom(this.imageService.uploadImage(file));
-      recordIds.push(res.imageId);
-    }
-    payload.projectRecords = recordIds;
-
-    const projectImageIds: string[] = [];
-    for (const file of this.projectImageFiles) {
-      const res = await firstValueFrom(this.imageService.uploadImage(file));
-      projectImageIds.push(res.imageId);
-    }
-    payload.projectImages = projectImageIds;
-
-    await this.contractorService.updateContractor(contractorId, payload).toPromise();
-    localStorage.setItem('contractorProfileComplete', 'true');
-    this.router.navigate(['/contractor-home']);
-  } catch (err: any) {
-    this.submissionError = 'Failed to update contractor profile.';
-    console.error(err);
-  } finally {
-    this.isSubmitting = false;
-  }
-}
 }
