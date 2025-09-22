@@ -14,7 +14,11 @@ interface InventoryUsageDisplay{
 @Component({
   selector: 'app-inventory-card',
   templateUrl: './inventory-card.component.html',
-  styles: ``,
+  styles: `
+    .dark .p-datatable-thead > tr > th {
+      background: #000000;         
+    }
+  `,
   imports: [IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, TableModule, IonCard, FormatAmountPipe, EditBudgetComponent],
 })
 export class InventoryCardComponent implements OnInit{

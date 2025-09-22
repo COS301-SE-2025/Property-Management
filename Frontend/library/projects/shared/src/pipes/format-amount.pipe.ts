@@ -6,19 +6,24 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FormatAmountPipe implements PipeTransform {
 
   transform(value: number): string {
-    const amountString = value.toString();
-    if(amountString.length === 5)
+
+    const amountString = value.toFixed(2);
+    const [integer, decimal] = amountString.split('.');
+    
+    let formatted = integer;
+
+    if(formatted.length === 5)
     {
-      return `${amountString.slice(0,2)} ${amountString.slice(2)}`;
+      return `${formatted.slice(0,2)} ${formatted.slice(2)}`;
     }
-    else if(amountString.length === 6)
+    else if(formatted.length === 6)
     {
-       return `${amountString.slice(0,3)} ${amountString.slice(3)}`;
+       return `${formatted.slice(0,3)} ${formatted.slice(3)}`;
     }
-    else if(amountString.length >= 7)
+    else if(formatted.length >= 7)
     {
-      return `${amountString.slice(0,1)} ${amountString.slice(1, 4)} ${amountString.slice(4)}`;
+      return `${formatted.slice(0,1)} ${formatted.slice(1, 4)} ${formatted.slice(4)}`;
     }
-    return amountString; 
+    return `${formatted}.${decimal}`; 
   }
 }

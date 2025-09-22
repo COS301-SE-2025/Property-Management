@@ -1,6 +1,7 @@
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
+import { CommonModule } from '@angular/common';
 import { ContractorApiService, FormatAmountPipe, FormatDatePipe, TaskApiService } from "shared";
 import { EditBudgetDialogComponent } from "../edit-budget-dialog/edit-budget-dialog.component";
 import { MaintenanceTask } from 'shared';
@@ -19,7 +20,7 @@ interface TaskAndQuote extends MaintenanceTask{
 
 @Component({
   selector: 'app-maintenance-card',
-  imports: [CardModule, TableModule, FormatAmountPipe, EditBudgetDialogComponent, FormatDatePipe, Toast],
+  imports: [CardModule, TableModule, FormatAmountPipe, EditBudgetDialogComponent, FormatDatePipe, Toast, CommonModule],
   providers: [MessageService],
   templateUrl: './maintenance-card.component.html',
   styles: ``
