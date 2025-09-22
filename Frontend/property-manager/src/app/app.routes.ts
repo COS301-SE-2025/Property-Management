@@ -29,7 +29,7 @@ import { VotingDetailsComponent } from './pages/voting-details/voting-details.co
 import { TaskDetailsComponent } from './pages/task-details/task-details.component';
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 import { RestConfirmComponent } from './pages/reset-confirm/reset-confirm.component';
-import { ContractorInventoryRequestComponent } from './pages/contractor-inventory-request/contractor-inventory-request.component';
+import { InventoryApprovalQueueComponent } from './pages/inventory-approval-queue/inventory-approval-queue.component';
 
 
 export const routes: Routes = [
@@ -174,15 +174,15 @@ export const routes: Routes = [
     component: RatingsComponent
   },
   {
-  path: 'ratings/:taskId',
-  canActivate: [authGuard(['trustee', 'bodyCorporate'])],
-  component: RatingsComponent
+    path: 'ratings/:taskId',
+    canActivate: [authGuard(['trustee', 'bodyCorporate'])],
+    component: RatingsComponent
   },
   {
-  path: 'contractor-inventory-request',
-  canActivate: [authGuard(['contractor'])],
-  component: ContractorInventoryRequestComponent
-  },
+    path: 'inventory-approval-queue',
+    canActivate: [authGuard(['trustee'])],
+    component: InventoryApprovalQueueComponent
+  }, 
   {
     path: 'landingPage',
     pathMatch: 'full',

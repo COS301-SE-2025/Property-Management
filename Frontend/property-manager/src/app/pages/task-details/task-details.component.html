@@ -86,7 +86,7 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
     <app-inventory-usage 
       *ngIf="inventoryUsage?.length" 
       [taskId]="this.taskId!"
@@ -100,6 +100,10 @@
         class="lg:col-span-2"
       >
       </app-contractor-timeline>
+      <app-contractor-inventory-request
+        [task]="task!"
+        class="lg:col-span-2"
+      ></app-contractor-inventory-request>
     }
   </div>
 </div>

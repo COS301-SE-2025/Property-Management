@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ApiService, InventoryItemApiService, getCookieValue, MaintenanceTask } from 'shared';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,7 @@ import { forkJoin } from 'rxjs';
   standalone: true
 })
 export class ContractorInventoryRequestComponent implements OnInit {
+  @Input() task!: MaintenanceTask;
   form: FormGroup;
   availableItems: any[] = [];
   assignedTasks: MaintenanceTask[] = [];
