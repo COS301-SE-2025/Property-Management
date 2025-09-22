@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Inventory } from '../../../models/inventory.model';
 import { environmentMobile } from '../../../environment';
+import { ForecastResponse } from '../../../models/forecast.model';
 
 interface Anomaly{
   message: string;
@@ -40,6 +41,13 @@ export class InventoryItemApiService {
   {
     return this.http.get<Inventory[]>(`${this.url}/inventory/building/${buildingId}`,
     { withCredentials: true });
+  }
+
+  getInventoryForecast(buildingId: string): Observable<ForecastResponse> {
+    return this.http.get<ForecastResponse>(
+      `${this.url}/buildings/${buildingId}/forecasts?months=2&freq=M`,
+      { withCredentials: true }
+    );
   }
 
   getInventoryItemsById(inventoryId: string): Observable<Inventory>

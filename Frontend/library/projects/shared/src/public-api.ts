@@ -28,6 +28,7 @@ export * from './services/api/Task Progress api/task-progress.service';
 
 //Models
 export * from './models/bodyCoporate.model';
+export * from './models/forecast.model';
 export * from './models/budget.model';
 export * from './models/buildingDetails.model';
 export * from './models/contractor.model';
