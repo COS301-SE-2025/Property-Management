@@ -1,6 +1,5 @@
 export const environmentMobile = {
-  production: false,
+  production: true,
   apiUrl : 'https://api.property-management.live/api',
-  wowFactorUrl: 'http://localhost:5000'
+  wowFactorUrl: 'http://localhost:5000',
 };
-
