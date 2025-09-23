@@ -1,4 +1,4 @@
-<div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+<div class="bg-white dark:bg-[#2d2d2d] rounded-xl shadow-md overflow-hidden">
     <div class="p-6">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -20,7 +20,7 @@
         <div class="relative">
             <div *ngFor="let time of timeline(); let i = index" class="mb-8 flex flex-col md:flex-row items-center">
                 <div class="flex-1 ml-4 md:ml-0 md:pl-4">
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div class="bg-gray-50 dark:bg-[#444] rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
                         <div class="flex flex-col">
                             <span class="text-sm font-medium mb-3">{{time.subDate! | formatTime }}</span>
                             <div class="mb-3">
