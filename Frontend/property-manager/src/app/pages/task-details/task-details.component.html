@@ -1,7 +1,7 @@
 <div class="p-6 max-w-7xl mx-auto">
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-6">
+  <div class="bg-white dark:bg-[#444] rounded-xl shadow-md overflow-hidden mb-6">
     <div class="md:flex">
-      <div class="md:w-2/5 p-6 flex items-center justify-center bg-gray-50 dark:bg-gray-700">
+      <div class="md:w-2/5 p-6 flex items-center justify-center bg-gray-50 dark:bg-[#2d2d2d]">
         <div class="w-full h-64 flex items-center justify-center">
           <img 
             [src]="imageUrl" 
@@ -70,17 +70,19 @@
         </div>
         
         @if(this.contractor) {
-          <div>
-            <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Assigned Contractor</h2>
-            <div class="flex items-center">
-              <div class="bg-yellow-100 dark:bg-yellow-900 h-10 w-10 rounded-full flex items-center justify-center mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600 dark:text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+          <button (click)="contractorDetails(contractor.uuid)" class="hover:translate-y-1 cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-800 p-4">
+            <div>
+              <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Assigned Contractor</h2>
+              <div class="flex items-center">
+                <div class="bg-yellow-100 dark:bg-yellow-900 h-10 w-10 rounded-full flex items-center justify-center mr-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600 dark:text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <p class="text-gray-800 dark:text-white font-medium">{{ contractor.name }}</p>
               </div>
-              <p class="text-gray-800 dark:text-white font-medium">{{ contractor.name }}</p>
             </div>
-          </div>
+          </button>
         }
       </div>
     </div>
