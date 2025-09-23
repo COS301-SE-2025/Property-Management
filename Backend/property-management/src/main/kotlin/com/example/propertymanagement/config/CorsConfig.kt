@@ -14,7 +14,7 @@ class CorsConfig : WebMvcConfigurer {
             .allowedOrigins("http://localhost:4200", 
             "http://localhost:8100", 
             "http://localhost:9876",
-            "http://localhost",
+            "https://localhost",
             "https://staging.d19cit456z7grf.amplifyapp.com",
             "https://*.property-management.live",
             )
