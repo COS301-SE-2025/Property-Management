@@ -18,6 +18,30 @@ export class AuthMobileService {
 
   constructor(){}
 
+  async login(email: string, password: string): Promise<AuthTokens> {
+    return new Promise((resolve, reject) => {
+      const req = { email, password };
+
+      this.http.post<AuthTokens>(`${this.url}/auth/login`, req, { withCredentials: true })
+        .subscribe({
+          next: async(result) => {
+            
+            switch(result.userType) {
+              case 'contractor':
+                await this.storage.set('userType', 'contractor');
+                await this.storage.set('contractorId', result.userId);
+                break;
+              case 'trustee':
+                await this.storage.set('userType', 'trustee');
+                await this.storage.set('trusteeId', result.userId);
+                break;
+            }
+            resolve(result);
+          },
+          error: (error) => reject(error)
+        });
+    });
+  }
   trusteeLogin(email: string, password: string): Promise<AuthTokens>
   {
     return new Promise((resolve, reject) => {
@@ -46,7 +70,7 @@ export class AuthMobileService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req,
+    return this.http.post<AuthTokens>(`${this.url}/auth/login`, req,
     { withCredentials: true });
   }
 
@@ -104,7 +128,6 @@ export class AuthMobileService {
           
          await this.storage.set('contractorId', contractorId);
          await this.storage.set('idToken', result.idToken);
-         console.log("Setting usertype to contractor");
          await this.storage.set('userType', 'contractor');
           resolve(result);
         },

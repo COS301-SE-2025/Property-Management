@@ -42,37 +42,59 @@ export class LoginComponent{
     this.passwordLimit = false;
 
     try {
-      const trustee = await this.authService.trusteeLogin(this.email, this.password);
-      if (trustee) {
-        this.router.navigate(['/home']);
-        return;
-      }
-    } catch (err) {
-      console.warn('Trustee login failed, trying Contractor...', err);
-      if (err instanceof HttpErrorResponse && !err.error) {
-        this.serverError = true;
-        this.loading = false;
-      }
-    }
+      const result = await this.authService.login(this.email, this.password);
 
-    try {
-      console.log('Trying contractor login...');
-      const contractor = await this.authService.contractorLogin(this.email, this.password);
-      if (contractor) {
-        this.router.navigate(['/contractor-home']);
-        return;
+      switch (result.userType) {
+        case 'contractor':
+          this.router.navigate(['/contractor-home']);
+          break;
+        case 'trustee':
+          this.router.navigate(['/home']);
+          break;
       }
-    } catch (err) {
-      console.warn('Contractor login failed:', err);
-      if (err instanceof HttpErrorResponse && !err.error) {
-        this.serverError = true;
-      } else if (err instanceof HttpErrorResponse && err.error?.error?.includes('Password attempts exceeded')) {
-        this.passwordLimit = true;
-      } else {
+
+    } catch (error: any) {
+      if (error.status === 401) {
         this.userError = true;
+      } else {
+        this.serverError = true;
       }
     } finally {
       this.loading = false;
     }
+
+    // try {
+    //   const trustee = await this.authService.login(this.email, this.password);
+    //   if (trustee) {
+    //     this.router.navigate(['/home']);
+    //     return;
+    //   }
+    // } catch (err) {
+    //   console.warn('Trustee login failed, trying Contractor...', err);
+    //   if (err instanceof HttpErrorResponse && !err.error) {
+    //     this.serverError = true;
+    //     this.loading = false;
+    //   }
+    // }
+
+    // try {
+    //   console.log('Trying contractor login...');
+    //   const contractor = await this.authService.contractorLogin(this.email, this.password);
+    //   if (contractor) {
+    //     this.router.navigate(['/contractor-home']);
+    //     return;
+    //   }
+    // } catch (err) {
+    //   console.warn('Contractor login failed:', err);
+    //   if (err instanceof HttpErrorResponse && !err.error) {
+    //     this.serverError = true;
+    //   } else if (err instanceof HttpErrorResponse && err.error?.error?.includes('Password attempts exceeded')) {
+    //     this.passwordLimit = true;
+    //   } else {
+    //     this.userError = true;
+    //   }
+    // } finally {
+    //   this.loading = false;
+    // }
   }
 }

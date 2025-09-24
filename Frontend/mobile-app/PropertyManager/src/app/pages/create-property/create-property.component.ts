@@ -1,10 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { IonicModule } from "@ionic/angular";
 import { CommonModule } from '@angular/common';
 import { TabComponent } from 'src/app/components/tab/tab.component';
-import { IonicModule, ToastController } from '@ionic/angular';
-import { ImageApiService, PropertyService, StorageService, getCookieValue } from 'shared';
+import { ToastController } from '@ionic/angular/standalone';
+import { ImageApiService, PropertyService, StorageService } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -17,7 +18,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-create-property',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, TabComponent],
+  imports: [CommonModule, ReactiveFormsModule, TabComponent, IonicModule],
   templateUrl: './create-property.component.html',
   styleUrls: ['./create-property.component.scss']
 })
