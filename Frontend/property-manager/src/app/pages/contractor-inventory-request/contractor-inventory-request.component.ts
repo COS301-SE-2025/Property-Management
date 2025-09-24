@@ -5,13 +5,15 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
-
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-contractor-inventory-request',
   templateUrl: './contractor-inventory-request.component.html',
   styleUrls: ['./contractor-inventory-request.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ToastModule],
+  providers: [MessageService],
   standalone: true
 })
 export class ContractorInventoryRequestComponent implements OnInit {
@@ -28,7 +30,8 @@ export class ContractorInventoryRequestComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService, 
     private inventoryItemApi: InventoryItemApiService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {
     this.form = this.fb.group({
       taskUuid: ['', Validators.required]
@@ -65,8 +68,18 @@ export class ContractorInventoryRequestComponent implements OnInit {
             }));
             this.itemControls = items.map(() => ({
               selected: new FormControl(false),
-              quantity: new FormControl(1, [Validators.min(1)])
+              quantity: new FormControl({ value: 1, disabled: true }, [Validators.min(1)])
             }));
+
+            this.itemControls.forEach((ctrl, i) => {
+              ctrl.selected.valueChanges.subscribe(selected => {
+                if (selected) {
+                  ctrl.quantity.enable();
+                } else {
+                  ctrl.quantity.disable();
+                }
+              });
+            });
           },
           error: () => {
             this.error = 'Failed to load inventory items';
@@ -80,9 +93,8 @@ export class ContractorInventoryRequestComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.form.invalid) return;
-    this.loading = true;
-    const contractorId = getCookieValue(document.cookie, 'contractorId');
+    if (this.form.invalid || this.loading) return;
+
     const requests = this.availableItems
       .map((item, i) => ({
         itemUuid: item.itemUuid,
@@ -91,7 +103,18 @@ export class ContractorInventoryRequestComponent implements OnInit {
       }))
       .filter(r => r.selected && r.quantity > 0);
 
-    const taskUuid = this.form.value.taskUuid;
+    if (requests.length === 0) {
+      this.error = 'Please select at least one inventory item and enter a valid quantity.';
+      return;
+    }
+
+    this.loading = true;
+    this.error = null;
+
+    const contractorId = getCookieValue(document.cookie, 'contractorId');
+    const taskUuid = this.task?.uuid || this.form.value.taskUuid;
+
+
     const apiCalls = requests.map(r =>
       this.api.createInventoryUsage({
         itemUuid: r.itemUuid,
@@ -103,11 +126,25 @@ export class ContractorInventoryRequestComponent implements OnInit {
 
     forkJoin(apiCalls).subscribe({
       next: () => {
-        this.router.navigate(['/contractorHome']);
-      },
-      error: () => {
-        this.error = 'Failed to submit inventory requests';
         this.loading = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Inventory Requested',
+          detail: 'Your inventory request has been submitted successfully.',
+          life: 3000
+        });
+        setTimeout(() => this.router.navigate(['/contractorHome']), 1000);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = 'Failed to submit inventory requests. Please try again.';
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to submit inventory requests.',
+          life: 3000
+        });
+        console.error(err);
       }
     });
   }

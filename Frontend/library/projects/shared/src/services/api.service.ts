@@ -264,7 +264,7 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
   }
 
   createInventoryUsage(data: any) {
-    return this.http.post('/api/inventory-usage', data);
+    return this.http.post(`${this.url}/inventory-usage`, data, { withCredentials: true });
   }
 
   getPendingInventoryUsage() {
