@@ -6,49 +6,191 @@
   <!-- Title -->
   <div class="ml-8 mb-10 animate-item">
     <h2 class="text-3xl font-semibold font-lato text-black" [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)' }">Create Quotation</h2>
-    <div class="w-65 h-1 bg-yellow-300 mt-2"></div>
+    <div class="w-64 h-1 bg-yellow-300 mt-2"></div>
   </div>
-
-  <!-- Form Card -->
-  <div class="rounded-lg p-6 font-semibold font-lato w-full max-w-md mx-auto shadow-sm animate-item"
-     [ngStyle]="{ 'background-color': 'var(--card-bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)' }">
-
-    <div class="grid grid-cols-2 gap-4 mb-4">
-      <p-datepicker
-  [(ngModel)]="IssueDate"
-  dateFormat="yy-mm-dd"
-  placeholder="Issue Date"
-  class="w-full rounded-lg bg-gray-100 text-gray-700"
-  [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)' }"
-/>
-
-<p-datepicker
-  [(ngModel)]="expirationDate"
-  dateFormat="yy-mm-dd"
-  placeholder="Expiration Date"
-  class="w-full rounded-lg bg-gray-100 text-gray-700"
-  [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)' }"
-
-/>
-      <input type="text" [(ngModel)]="quoteNo" pInputText placeholder="Quote No." class="w-full rounded-lg bg-gray-100 text-gray-700" [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)' }" />
-      <input type="number" [(ngModel)]="totalAmount" pInputText placeholder="Total amount" class="w-full rounded-lg bg-gray-100 text-gray-700" [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)' }" />
+   
+  <!-- Main Content Container - Side by Side Layout -->
+  <div class="flex flex-col lg:flex-row gap-6 animate-item h-full items-center justify-center">
+    
+    <!-- Table Section (Left Side) -->
+    <div class="flex-1 flex flex-col min-h-96 max-w-lg w-full bg-gray-400 rounded-xl">
+      <div class="flex flex-col h-full">
+        <p-card class="text-center rounded-xl p-4 h-full flex flex-col" 
+                [ngStyle]="{ 'background-color': 'var(--card-bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)' }">
+          <ng-template #title>
+            <div class="text-xl font-semibold mb-4">Inventory</div>
+          </ng-template>
+          
+          <div class="flex-1 overflow-hidden">
+            <p-table [value]="inventory" 
+                     [tableStyle]="{ 'min-width': '100%', 'font-size': '0.875rem' }" 
+                     [paginator]="true" 
+                     [rows]="5" 
+                     [responsiveLayout]="'scroll'"
+                     styleClass="p-datatable-sm h-full">
+              <ng-template #header>
+                <tr>
+                  <th pSortableColumn="name" class="py-2 px-3">Description</th>
+                  <th pSortableColumn="quantityInStock" class="py-2 px-3">Quantity</th>
+                  <th pSortableColumn="price" *ngIf="showPrice" class="py-2 px-3">Price</th>
+                  <th class="py-2 px-3">Actions</th>
+                </tr>
+              </ng-template>
+              <ng-template #body let-inventory let-rowIndex="rowIndex">
+                <tr>
+                  <td class="py-2 px-3">{{ inventory.name }}</td>
+                  <td class="py-2 px-3">
+                    @if(editingItems.get(inventory.itemUuid))
+                    {
+                      <input type="number" [ngModel]="draftQuantities.get(inventory.itemUuid)" min="0" 
+                             class="w-16 p-1 border rounded text-sm" 
+                             (keydown)="preventNegative($event)" 
+                             (input)="onManualInput(inventory, $event)">
+                    }
+                    @else {
+                      {{ inventory.quantityInStock }}
+                    }
+                  </td>
+                  <td  class="py-2 px-3">R {{ inventory.price }}</td>
+                  <td  class="py-2 px-3">
+                    @if(editingItems.get(inventory.itemUuid))
+                    {
+                      <div class="flex gap-1 justify-center">
+                        <p-button icon="pi pi-plus" size="small" styleClass="p-button-sm" severity="warn" (click)="changeQuantity(inventory, 1)"></p-button>
+                        <p-button icon="pi pi-minus" size="small" styleClass="p-button-sm" severity="warn" (click)="changeQuantity(inventory, -1)" [disabled]="draftQuantities.get(inventory.itemUuid)! <= 0"></p-button>
+                      </div>
+                    }
+                    @else {
+                      <div class="flex gap-1 justify-center">
+                        <p-button icon="pi pi-plus" size="small" styleClass="p-button-sm" severity="warn" (click)="startAction(inventory, 'increase')"></p-button>
+                        <p-button icon="pi pi-minus" size="small" styleClass="p-button-sm" severity="warn" (click)="startAction(inventory, 'decrease')" [disabled]="inventory.quantityInStock <= 0"></p-button>
+                        <p-button icon="pi pi-pencil" size="small" styleClass="p-button-sm" severity="secondary" (click)="startAction(inventory, 'edit')"></p-button>
+                      </div>
+                    }
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="paginatorright">
+                <p-dropdown 
+                  [options]="[3,5,10]" 
+                  [(ngModel)]="rows" 
+                  [appendTo]="'body'"
+                  styleClass="p-dropdown-sm">
+                </p-dropdown>
+              </ng-template>
+            </p-table>
+          </div>
+          
+          @if(isEditing && !readOnly)
+          {
+            <div class="flex justify-center items-center gap-2 mt-4 pt-4 border-t" 
+                 [ngStyle]="{ 'border-color': 'var(--border-color)' }">
+              <p-button label="Confirm" icon="pi pi-check" severity="success" (click)="confirmAction()" [disabled]="!hasChanges" styleClass="p-button-sm"></p-button>
+              <p-button label="Cancel" icon="pi pi-times" severity="danger" (click)="resetState()" styleClass="p-button-sm"></p-button>
+            </div>
+          }
+        </p-card>
+      </div>
     </div>
 
-    <!-- File Upload -->
-    <div class="card flex flex-col gap-6 mb-5 items-center justify-center">
-    
-    <p-fileupload #fu mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept=".pdf,image/*" maxFileSize="1000000" (onUpload)="onUpload($event)"  styleClass="custom-upload-button"/>
-    <p-button label="Upload" (onClick)="fu.upload()" severity="secondary" />
-</div>
+    <!-- Form Section (Right Side) -->
+    <div class="flex-1 flex flex-col min-h-96 max-w-lg w-full bg-gray-400 rounded-xl">
+      <p-card class="rounded-xl p-6 font-semibold font-lato h-full flex flex-col"
+        [ngStyle]="{ 'background-color': 'var(--card-bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)' }">
+        
+        <ng-template #title>
+          <div class="text-xl font-semibold text-center mb-4">Quotation Details</div>
+        </ng-template>
+        
+        <div class="space-y-4 flex-1">
+          <!-- Date Pickers -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Issue Date</label>
+              <p-datepicker
+                [(ngModel)]="IssueDate"
+                dateFormat="yy-mm-dd"
+                placeholder="Issue Date"
+                class="w-full"
+                [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)', 'border': '1px solid var(--border-color)' }"
+                inputStyleClass="p-inputtext-sm"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Expiration Date</label>
+              <p-datepicker
+                [(ngModel)]="expirationDate"
+                dateFormat="yy-mm-dd"
+                placeholder="Expiration Date"
+                class="w-full"
+                [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)', 'border': '1px solid var(--border-color)' }"
+                inputStyleClass="p-inputtext-sm"
+              />
+            </div>
+          </div>
 
-    <!-- Submit Button -->
-     <div class="flex flex-col justify-center items-center">
-       <button
-         (click)="submitQuote()"
-         label="Create Quotation"
-         class="bg-yellow-300 text-black font-semibold text-lg px-16 py-3 ml-25 rounded shadow hover:bg-yellow-400 transition"
-       > Create Quote</button>
-       
-     </div>
+          <!-- Quote Number and Total Amount -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Quote No.</label>
+              <input 
+                type="text" 
+                [(ngModel)]="quoteNo" 
+                pInputText 
+                placeholder="Quote No." 
+                class="w-full p-inputtext-sm" 
+                [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)', 'border': '1px solid var(--border-color)' }" 
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Total Amount</label>
+              <input 
+                type="number" 
+                [(ngModel)]="totalAmount" 
+                pInputText 
+                placeholder="Total amount" 
+                class="w-full p-inputtext-sm" 
+                [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)', 'border': '1px solid var(--border-color)' }" 
+              />
+            </div>
+          </div>
+
+          <!-- File Upload -->
+          <div class="flex flex-col gap-4">
+            <label class="block text-sm font-medium">Upload Document</label>
+            <div class="flex flex-col gap-3 items-center justify-center p-4 border-2 border-dashed rounded-lg"
+              [ngStyle]="{ 'border-color': 'var(--border-color)', 'background-color': 'var(--input-bg-color)' }">
+              <p-fileupload 
+                #fu 
+                mode="basic" 
+                chooseLabel="Choose File" 
+                chooseIcon="pi pi-upload" 
+                name="demo[]" 
+                url="https://www.primefaces.org/cdn/api/upload.php" 
+                accept=".pdf,image/*" 
+                maxFileSize="1000000" 
+                (onUpload)="onUpload($event)"  
+                styleClass="custom-upload-button p-button-sm"
+              />
+              <p-button 
+                label="Upload File" 
+                (onClick)="fu.upload()" 
+                severity="secondary" 
+                size="small"
+              />
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex justify-center items-center pt-4 mt-auto">
+            <button
+              (click)="submitQuote()"
+               class="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-600 text-white rounded-lg shadow-md hover:translate-y-1 transition-transform duration-200">
+              Create Quote
+            </button>
+          </div>
+        </div>
+      </p-card>
+    </div>
   </div>
 </div>

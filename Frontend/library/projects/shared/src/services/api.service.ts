@@ -258,6 +258,8 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
       withCredentials: true
     });
   }
-
+  getInventoryByBuilding(buildingUuid: string): Observable<Inventory[]> {
+  return this.http.get<Inventory[]>(`/api/inventory/building/${buildingUuid}`);
+}
 
 }
