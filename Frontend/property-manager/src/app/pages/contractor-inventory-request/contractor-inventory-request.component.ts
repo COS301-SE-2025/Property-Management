@@ -93,7 +93,7 @@ export class ContractorInventoryRequestComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.form.invalid || this.loading) return;
+    if (this.loading) return;
 
     const requests = this.availableItems
       .map((item, i) => ({
@@ -112,8 +112,7 @@ export class ContractorInventoryRequestComponent implements OnInit {
     this.error = null;
 
     const contractorId = getCookieValue(document.cookie, 'contractorId');
-    const taskUuid = this.task?.uuid || this.form.value.taskUuid;
-
+    const taskUuid = this.task.uuid;
 
     const apiCalls = requests.map(r =>
       this.api.createInventoryUsage({
@@ -126,6 +125,14 @@ export class ContractorInventoryRequestComponent implements OnInit {
 
     forkJoin(apiCalls).subscribe({
       next: () => {
+        requests.forEach(r => {
+          const item = this.availableItems.find(i => i.itemUuid === r.itemUuid);
+          if (item) {
+            item.quantityInStock -= r.quantity;
+            this.inventoryItemApi.updateInventoryItemQuantity(item.itemUuid, r.quantity, 'SUBTRACT').subscribe();
+          }
+        });
+        
         this.loading = false;
         this.messageService.add({
           severity: 'success',
