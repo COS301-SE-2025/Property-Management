@@ -136,7 +136,15 @@
               <label for="city">City</label>
             </p-floatlabel>
             <p-floatlabel class="w-full">
-              <input id="province" pInputText formControlName="province" />
+              <p-dropdown
+                id="province"
+                [options]="provinces"
+                formControlName="province"
+                [showClear]="true"
+                placeholder="Select Province"
+                class="w-full col-span-2"
+                [style]="{ width: '82%' }">
+              </p-dropdown>
               <label for="province">Province</label>
             </p-floatlabel>
           </div>
@@ -145,7 +153,15 @@
         <div class="mb-8">
           <div class="flex gap-4">
             <p-floatlabel class="w-full">
-              <input id="type" pInputText formControlName="type" class="w-full col-span-2" [style]="{ width: '91%' }"/>
+              <p-dropdown
+                id="type"
+                [options]="propertyTypes"
+                formControlName="type"
+                [showClear]="true"
+                placeholder="Select Property Type"
+                class="w-full col-span-2"
+                [style]="{ width: '91%' }">
+              </p-dropdown>
               <label for="type">Type</label>
             </p-floatlabel>
           </div>
