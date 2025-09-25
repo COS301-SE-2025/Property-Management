@@ -44,8 +44,6 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
     ) {}
 
     ngOnInit() {
-        this.loadTimelineData();
-        
         if (getCookieValue(document.cookie, 'contractorId')) {
             this.contractorUser = true;
         } else if (getCookieValue(document.cookie, 'trusteeId')) {
@@ -55,6 +53,12 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+
+        if(changes['task'] && this.task())
+        {
+            this.loadTimelineData();
+        }
+
         if (changes['inventoryUsage'] && this.inventoryUsage) {
             this.trackQuantityUsed();
         }

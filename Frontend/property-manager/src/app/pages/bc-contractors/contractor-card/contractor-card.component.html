@@ -1,9 +1,22 @@
-<div class = "shadow-md rounded-lg border w-75 text-center">
-    <button class = "cursor-pointer" (click)="viewContractorDetails(contractor().uuid!)">
-    <p-card>
-        <img [src]="contractor().img" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="">
-        <p class = "text-lg font-bold mt-4"> {{ contractor().name }}</p>
-        <p class = "text-gray-600 mb-4 dark:text-gray-300"> {{ contractor().address }}</p>
+<div class="bg-gray-300 dark:bg-gray-500/60 shadow-lg rounded-xl border border-gray-200 dark:border-gray-400 w-[22rem] text-center transition-all duration-200 hover:shadow-xl hover:-translate-y-1">
+    <button class = "cursor-pointer w-full focus:outline-none" (click)="viewContractorDetails(contractor().uuid!)">
+    <p-card [style]="{height: '18.5rem', width:'22rem', overflow:'hidden'}" class="rounded-2xl shadow-md">
+        <ng-template pTemplate="header">
+            <img [src]="contractor().img" class="w-full h-40 object-cover rounded-t-2xl border-b border-gray-200 dark:border-gray-700" alt="">
+        </ng-template>
+        <ng-template pTemplate="title">
+            <span class = "text-black dark:text-white font-semibold text-base"> {{ contractor().name }}</span>
+        </ng-template>
+        <ng-template pTemplate="subtitle">
+            <span class = "text-gray-600 tex-sm dark:text-gray-300 block truncate"> {{ contractor().address }}</span>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div>
+                <p class="inline-block px-3 py-1 rounded-full text-xs font-medium bg-gray-300 dark:bg-gray-900 text-gray-900 dark:text-gray-300 border border-gray-300 dark:border-gray-800 shadow-sm">
+                    View contractor details
+                </p>
+            </div>
+        </ng-template>
     </p-card>
 </button>
 </div>
