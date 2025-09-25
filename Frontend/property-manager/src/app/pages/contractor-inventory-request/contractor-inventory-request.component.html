@@ -27,7 +27,18 @@
           Request Inventory
         </button>
       </div>
+      <div class="flex justify-center mt-4">
+        <button type="button"
+                class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                (click)="openAddInventoryDialog()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+          Add Custom Inventory
+        </button>
+      </div>
       <div *ngIf="error" class="text-red-500 mt-4 text-center">{{ error }}</div>
     </form>
+      <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog>
   </div>
 </div>
