@@ -1,0 +1,33 @@
+<p-toast></p-toast>
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+  <div class="p-6">
+    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+      Request Inventory
+    </h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-6">
+        <label class="block text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Inventory Items</label>
+        <div *ngIf="availableItems.length === 0 && !loading" class="text-gray-500 dark:text-gray-400 py-4 text-center">
+          No inventory items available for this project.
+        </div>
+        <div *ngFor="let item of availableItems; let i = index" class="flex items-center mb-4 bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow-sm">
+          <input type="checkbox" [formControl]="itemControls[i].selected" class="form-checkbox h-5 w-5 text-yellow-600" />
+          <span class="ml-3 text-gray-800 dark:text-white font-medium">{{ item.name }} <span class="text-xs text-gray-500 dark:text-gray-400">({{ item.quantityInStock }} {{ item.unit }})</span></span>
+          <input type="number"
+                 class="ml-auto w-24 border rounded p-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
+                 [formControl]="itemControls[i].quantity"
+                 [min]="1"
+                 [max]="item.quantityInStock"/>
+        </div>
+      </div>
+      <div class="flex justify-center mt-6">
+        <button type="submit"
+                (click)="onSubmit()"
+                class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+          Request Inventory
+        </button>
+      </div>
+      <div *ngIf="error" class="text-red-500 mt-4 text-center">{{ error }}</div>
+    </form>
+  </div>
+</div>
