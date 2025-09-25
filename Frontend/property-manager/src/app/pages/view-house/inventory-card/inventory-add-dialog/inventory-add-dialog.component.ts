@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CommonModule } from '@angular/common';
@@ -22,6 +22,7 @@ import { HousesService } from 'shared';
 })
 export class InventoryAddDialogComponent extends DialogComponent implements OnInit{
 
+  @Input() buildingUuid: string = '';
   form!: FormGroup;
   houseId = '';
 
@@ -60,8 +61,8 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
       const name = this.form.value.name;
       const price = this.form.value.price;
       const quantity = this.form.value.quantity;
-
-      this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, this.houseId).subscribe({
+      const buildingId = this.buildingUuid || this.houseId;
+      this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, buildingId).subscribe({
         next: async () => {
 
           await this.getAndUpdateBudget((price*quantity));
