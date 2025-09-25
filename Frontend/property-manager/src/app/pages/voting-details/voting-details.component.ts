@@ -603,4 +603,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
       this.countdown = `${days}d ${hours}h ${minutes}m ${seconds}s`;
     });
   }
+  contractorDetails(contractorId: string)
+  {
+    this.router.navigate(['/contractorDetails', contractorId, 'trusted']);
+  }
 }

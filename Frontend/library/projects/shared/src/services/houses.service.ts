@@ -10,6 +10,13 @@ import { MaintenanceTask } from '../models/maintenanceTask.model';
 import { Graph } from '../models/graph.model';
 import { ImageApiService } from './api/Image api/image-api.service';
 import { first, firstValueFrom } from 'rxjs';
+import { BudgetPrediction } from '../public-api';
+
+interface Prediction{
+  ds: Date;
+  yhat: number;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -130,34 +137,145 @@ export class HousesService {
   async loadBudget(houseId: string){
 
     this.budgetApiService.getBudgetsByBuildingId(houseId).subscribe(
-      (bulidingDetails: BuildingDetails[]) => {
-        const firstElement = bulidingDetails[bulidingDetails.length-1];
-        this.budgets.set(firstElement);
+      (buildingDetails: BuildingDetails[]) => {
+        const firstElement = buildingDetails[buildingDetails.length-1];
+        // this.budgets.set(firstElement);
 
-        const sortedDetails = [...bulidingDetails].sort((a, b) => {
-          return new Date(a.approvalDate).getTime() - new Date(b.approvalDate).getTime();
+        //Get inventory predicted budget
+        this.budgetApiService.getBudgetPredictionHouse(houseId, "M", 6, "inventory_budget").subscribe({
+          next: (res) => {
+            firstElement.predictedInventoryBudget = res.prediction[0].yhat;
+            this.budgetPrediction(firstElement, houseId);
+          },
+          error: (err) => {
+            console.error("Couldnt get predicted inventory budget", err);
+            this.budgetPrediction(firstElement, houseId);
+          }
         });
 
-        const graphData: Graph = {
-          labels: sortedDetails.map(item => {
-            const date = new Date(item.approvalDate);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}/${month}/${day}`;
-          }),
-          datasets: [{
-            data: bulidingDetails.map(item => item.totalBudget).filter((v): v is number => v !== undefined),
+        //Get total predicted budget
+        this.budgetApiService.getBudgetPredictionHouse(houseId, "M", 6, "total_budget").subscribe({
+          next: (res) => {
+            this.handleBudgetPrediction(res, buildingDetails);
+          },
+          error: (err) => {
+            console.error("Budget prediction failed", err)
+            this.handleBudgetData(buildingDetails, []);
+          }
+        });
+
+        const sortedDetails = [...buildingDetails].sort((a, b) => {
+            return new Date(a.approvalDate).getTime() - new Date(b.approvalDate).getTime();
+        });
+
+        this.createGraphData(sortedDetails, []);
+      }
+    );
+  }
+  private budgetPrediction(element: BuildingDetails, houseId: string)
+  {
+     //Get maintenance predicted budget
+      this.budgetApiService.getBudgetPredictionHouse(houseId, "M", 6, "maintenance_budget").subscribe({
+        next: (res) => {
+          element.predictedMaintenanceBudget = res.prediction[0].yhat;
+          this.budgets.set(element);
+        },
+        error: (err) => {
+          console.error("Couldnt get predicted maintance budget", err);
+          this.budgets.set(element);
+        }
+      })
+  }
+  private handleBudgetPrediction(prediction: BudgetPrediction, buildingDetails: BuildingDetails[])
+  {
+    const threeMonths = prediction.prediction.slice(0, 3);
+    this.handleBudgetData(buildingDetails, threeMonths);
+  }
+  private handleBudgetData(buildingDetails: BuildingDetails[], predictions: Prediction[])
+  {
+    const sortedDetails = [...buildingDetails].sort((a, b) => {
+      return new Date(a.approvalDate).getTime() - new Date(b.approvalDate).getTime();
+    });
+
+    this.createGraphData(sortedDetails, predictions);
+
+  }
+  private createGraphData(data: BuildingDetails[], predictions: Prediction[])
+  {
+    const labels = data.map(item => {
+      const date = new Date(item.approvalDate);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}/${month}/${day}`;
+    });
+
+    const values = data.map(item => item.totalBudget).filter((v): v is number => v !== undefined);
+
+    if(predictions.length !== 0)
+    {
+
+      const predictionLabels = predictions.map(pred => {
+        const date = new Date(pred.ds);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}/${month}/${day}`;
+      });
+  
+      const predictionValues = predictions.map(pred => pred.yhat);
+  
+      const allLabels = [...labels, ...predictionLabels];
+  
+      const graphData: Graph = {
+        labels: allLabels,
+        datasets: [
+          {
+            label: 'Existing Budget',
+            data: [...values, null, null, null],
             fill: false,
             backgroundColor: 'rgba(255,227,114, 0.7)',
             borderColor: 'rgb(255,227,114)',
+            pointBackgroundColor: 'rgb(255, 227, 114)',
             tension: 0.1,
-            borderWidth: 2
-          }]
-        };
-        this.budgetGraph.set(graphData);
-      }
-    )
+            borderWidth: 2,
+            spanGaps: true
+          },
+          {
+            label: 'Predicted Budget',
+            data: [...Array(values.length-1).fill(null), values[values.length-1], ...predictionValues],
+            fill: false,
+            backgroundColor: 'rgba(255, 68, 33, 0.7)',
+            borderColor: 'rgb(255, 68, 33)',
+            pointBackgroundColor: 'rgb(255, 68, 33)',
+            tension: 0.1,
+            borderWidth: 2,
+            spanGaps: true
+          }
+        ]
+      };
+      this.budgetGraph.set(graphData);
+    }
+    else
+    {
+      const graphData: Graph = {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Existing Budget',
+            data: values,
+            fill: false,
+            backgroundColor: 'rgba(255,227,114, 0.7)',
+            borderColor: 'rgb(255,227,114)',
+            pointBackgroundColor: 'rgb(255, 227, 114)',
+            tension: 0.1,
+            borderWidth: 2,
+            spanGaps: true
+          }
+        ]
+      };
+      this.budgetGraph.set(graphData);
+    }
   }
   async isBudget(buildingId: string): Promise<boolean>
   {

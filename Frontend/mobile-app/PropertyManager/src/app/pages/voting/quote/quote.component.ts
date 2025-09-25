@@ -1,12 +1,12 @@
 import { Component, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
-import { IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent, IonTitle } from '@ionic/angular/standalone';
+import { IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent } from '@ionic/angular/standalone';
 import { Contractor, Quote, FormatDatePipe, TaskApiService, ContractorApiService, ApiService } from 'shared';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 
 @Component({
   selector: 'app-quote',
-  imports: [IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent, CommonModule, FormatDatePipe, IonTitle],
+  imports: [IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonContent, CommonModule, FormatDatePipe],
   templateUrl: './quote.component.html',
   styles: ``,
 })

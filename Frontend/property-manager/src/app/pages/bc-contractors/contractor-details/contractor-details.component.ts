@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService, BodyCoporateService } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContractorDetails, FormatPhoneNumberPipe, getCookieValue, ContractorApiService, ImageApiService, FormatFileName } from 'shared';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-contractor-details',
@@ -50,24 +50,28 @@ export class ContractorDetailsComponent implements OnInit{
       {
         //Get pdfs
         const pdfReq = [
-          this.apiService.getContractorPDF(contractorId!, 'certifications'),
-          this.apiService.getContractorPDF(contractorId!, 'licenses'),
-          this.apiService.getContractorPDF(contractorId!, 'ids'),
-          this.apiService.getContractorPDF(contractorId!, 'projectRecords')
+          this.apiService.getContractorPDF(contractorId!, 'certifications').pipe(catchError(() => of(null))),
+          this.apiService.getContractorPDF(contractorId!, 'licenses').pipe(catchError(() => of(null))),
+          this.apiService.getContractorPDF(contractorId!, 'ids').pipe(catchError(() => of(null))),
+          this.apiService.getContractorPDF(contractorId!, 'projectRecords').pipe(() => of(null)) 
         ];
 
         forkJoin(pdfReq).subscribe({
           next: (res) => {
-            console.log(res);
             const [certifications, licenses, ids, projectRecords] = res;
-            foundContractor.certifications = certifications;
-            foundContractor.licenses = licenses;
-            foundContractor.ids = ids;
-            foundContractor.projectRecords = projectRecords;
+            foundContractor.certifications = certifications ?? undefined;
+            foundContractor.licenses = licenses ?? undefined;
+            foundContractor.ids = ids ?? undefined;
+            foundContractor.projectRecords = projectRecords ?? undefined;
 
             this.contractorService.getAverageRating(contractorId!).subscribe({
               next: (res) => {
                 foundContractor.averageRating = res;
+                this.currentContractor.set(foundContractor);
+              },
+              error: (err) => {
+                console.error("Error getting average rating", err);
+                foundContractor.averageRating = 0;
                 this.currentContractor.set(foundContractor);
               }
             })
@@ -83,23 +87,22 @@ export class ContractorDetailsComponent implements OnInit{
       }
       else{
         this.contractorService.getContractorById(contractorId!).subscribe(contractor => {
-
           if (contractor) {
             //Get pdfs
             const pdfReq = [
-              this.apiService.getContractorPDF(contractorId!, 'certifications'),
-              this.apiService.getContractorPDF(contractorId!, 'licenses'),
-              this.apiService.getContractorPDF(contractorId!, 'ids'),
-              this.apiService.getContractorPDF(contractorId!, 'projectRecords')
+              this.apiService.getContractorPDF(contractorId!, 'certifications').pipe(catchError(() => of(null))),
+              this.apiService.getContractorPDF(contractorId!, 'licenses').pipe(catchError(() => of(null))),
+              this.apiService.getContractorPDF(contractorId!, 'ids').pipe(catchError(() => of(null))),
+              this.apiService.getContractorPDF(contractorId!, 'projectRecords').pipe(catchError(() => of(null)))
             ];
 
             forkJoin(pdfReq).subscribe({
               next: (res) => {
                 const [certifications, licenses, ids, projectRecords] = res;
-                contractor.certifications = certifications;
-                contractor.licenses = licenses;
-                contractor.ids = ids;
-                contractor.projectRecords = projectRecords;
+                contractor.certifications = certifications ?? undefined;
+                contractor.licenses = licenses ?? undefined;
+                contractor.ids = ids ?? undefined;
+                contractor.projectRecords = projectRecords ?? undefined;
 
                 this.imageService.getImage(contractor.img ?? '').subscribe(i => {
                   this.currentContractor.set(contractor);

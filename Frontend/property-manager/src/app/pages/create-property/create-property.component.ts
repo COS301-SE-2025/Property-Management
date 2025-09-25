@@ -44,6 +44,15 @@ export class CreatePropertyComponent implements OnInit {
   isSubmitting = false;
   submissionError: string | null = null;
 
+  provinces = [
+    'Eastern Cape', 'Free State', 'Gauteng', 'KwaZulu-Natal', 'Limpopo',
+    'Mpumalanga', 'Northern Cape', 'North West', 'Western Cape'
+  ];
+
+  propertyTypes = [
+    'House', 'Apartment', 'Communal Area', 'Townhouse', 'Loft', 'Duplex', 'Penthouse', 'Studio', 'Cluster'
+  ];
+
   constructor(
     private fb: FormBuilder,
     private propertyService: PropertyService,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CommonModule } from '@angular/common';
@@ -22,6 +22,7 @@ import { HousesService } from 'shared';
 })
 export class InventoryAddDialogComponent extends DialogComponent implements OnInit{
 
+  @Input() buildingUuid: string = '';
   form!: FormGroup;
   houseId = '';
 
@@ -53,80 +54,82 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     super.closeDialog();
     this.form.reset();
   }
- async onSubmit(){
-
-    if(this.form.valid){
+ async onSubmit() {
+    if (this.form.valid) {
       const name = this.form.value.name;
       const price = this.form.value.price;
       const quantity = this.form.value.quantity;
+      const buildingId = this.buildingUuid || this.houseId;
+      this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, buildingId).subscribe({
+        next: async () => {
+          await this.getAndUpdateBudget((price * quantity));
+          await this.housesService.loadInventory(this.houseId);
+          await this.housesService.loadBudget(this.houseId);
 
-      this.inventoryItemApiService.detectAnomaly(name, price).subscribe({
-        next: (res) => {
-          console.log(res);
-          if(res.message === 'Item normal')
-          {
-            this.inventoryItemApiService.addInventoryItem(name, "normal", price, quantity, this.houseId).subscribe({
-              next: async () => {
-      
-                await this.getAndUpdateBudget((price*quantity));
-                await this.housesService.loadInventory(this.houseId);
-                await this.housesService.loadBudget(this.houseId);
-      
-                this.messageService.add({
-                  severity: 'success',
-                  summary: 'Success',
-                  detail: 'Inventory item added succesfully',
-                })
-                
-                this.form.reset();
-                this.closeDialog();
-              },
-              error: async (err) => {
-                console.error("Failed to create inventory item", err);
-      
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Failed to add inventory item',
-                })
-              }
-            });
-          }
-          else
-          {
-            this.inventoryItemApiService.addInventoryItem(name, "ANOMALY", price, quantity, this.houseId).subscribe({
-              next: async () => {
-      
-                await this.housesService.loadInventory(this.houseId);
-                await this.housesService.loadBudget(this.houseId);
-      
-                this.messageService.add({
-                  severity: 'warn',
-                  summary: 'Warning',
-                  detail: 'Inventory anomaly detected, awaiting body corporate approval',
-                })
-                
-                this.form.reset();
-                this.closeDialog();
-              },
-              error: async (err) => {
-                console.error("Failed to create inventory item", err);
-      
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Failed to add inventory item',
-                })
-              }
-            });
-          }
+          this.form.reset();
+          this.closeDialog();
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Inventory item added successfully'
+          });
+
+          this.inventoryItemApiService.detectAnomaly(name, price).subscribe({
+            next: (res) => {
+              const status = res.message === 'Item normal' ? 'normal' : 'ANOMALY';
+              this.addInventoryItem(name, status, price, quantity);
+            },
+            error: (err) => {
+              console.error("Anomaly detection failed", err)
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Warning',
+                detail: 'Inventory anomaly detection failed',
+              });
+            }
+          });
         }
       });
-    }
-    else
-    {
+    } else {
       this.addError = true;
     }
+  }
+  private addInventoryItem(name: string, status: string, price : number, quantity: number)
+  {
+    this.inventoryItemApiService.addInventoryItem(name, status, price, quantity, this.houseId).subscribe({
+      next: async () => {
+        if (status === 'normal') {
+          await this.getAndUpdateBudget((price * quantity));
+        }
+
+        await this.housesService.loadInventory(this.houseId);
+        await this.housesService.loadBudget(this.houseId);
+
+        const severity = status === 'normal' ? 'success' : 'warn';
+        const summary = status === 'normal' ? 'Success' : 'Warning';
+        const detail = status === 'normal' 
+          ? 'Inventory item added successfully' 
+          : 'Inventory anomaly detected, awaiting body corporate approval';
+
+        this.messageService.add({
+          severity,
+          summary,
+          detail,
+        });
+        
+        this.form.reset();
+        this.closeDialog();
+      },
+      error: async(err) => {
+        console.error("Failed to create inventory item", err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to add inventory item',
+        });
+      }
+    })
   }
   private async getAndUpdateBudget(overallPrice: number)
   {
