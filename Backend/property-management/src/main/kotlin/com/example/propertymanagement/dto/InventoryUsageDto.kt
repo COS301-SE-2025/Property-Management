@@ -1,6 +1,6 @@
 package com.example.propertymanagement.dto
-
-import java.sql.Date
+import com.fasterxml.jackson.annotation.JsonFormat
+import java.time.LocalDate
 import java.util.UUID
 
 data class CreateInventoryUsageRequest(
@@ -13,7 +13,7 @@ data class CreateInventoryUsageRequest(
 data class UpdateInventoryUsageRequest(
     val quantityUsed: Int?,
     val trusteeApproved: Boolean?,
-    val approvalDate: Date?,
+    val approvalDate: LocalDate?,
 )
 
 data class InventoryUsageResponse(
@@ -23,12 +23,13 @@ data class InventoryUsageResponse(
     val usedByContractorUuid: UUID?,
     val quantityUsed: Int,
     val trusteeApproved: Boolean,
-    val approvalDate: Date?,
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    val approvalDate: LocalDate?,
 )
 
 data class ApprovalRequest(
     val trusteeApproved: Boolean,
-    val approvalDate: Date = Date(System.currentTimeMillis()),
+    val approvalDate: LocalDate? = null,
 )
 
 data class AssignContractorRequest(

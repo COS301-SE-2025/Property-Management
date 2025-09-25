@@ -33,7 +33,6 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     private fb: FormBuilder,
     private inventoryItemApiService: InventoryItemApiService, 
     private route: ActivatedRoute, 
-    private router: Router, 
     private budgetApiService: BudgetApiService, 
     private housesService: HousesService,
     private messageService: MessageService
@@ -77,15 +76,19 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
             summary: 'Success',
             detail: 'Inventory item added successfully'
           });
+
+      this.inventoryItemApiService.detectAnomaly(name, price).subscribe({
+        next: (res) => {
+          const status = res.message === 'Item normal' ? 'normal' : 'ANOMALY';
+          this.addInventoryItem(name, status, price, quantity);
         },
         error: (err) => {
-          console.error("Failed to create inventory item", err);
-
+          console.error("Anomaly detection failed", err)
           this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to add inventory item',
-          })
+            severity: 'warn',
+            summary: 'Warning',
+            detail: 'Inventory anomaly detection failed',
+          });
         }
       });
     }
@@ -93,6 +96,42 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     {
       this.addError = true;
     }
+  }
+  private addInventoryItem(name: string, status: string, price : number, quantity: number)
+  {
+    this.inventoryItemApiService.addInventoryItem(name, status, price, quantity, this.houseId).subscribe({
+      next: async () => {
+        if (status === 'normal') {
+          await this.getAndUpdateBudget((price * quantity));
+        }
+
+        await this.housesService.loadInventory(this.houseId);
+        await this.housesService.loadBudget(this.houseId);
+
+        const severity = status === 'normal' ? 'success' : 'warn';
+        const summary = status === 'normal' ? 'Success' : 'Warning';
+        const detail = status === 'normal' 
+          ? 'Inventory item added successfully' 
+          : 'Inventory anomaly detected, awaiting body corporate approval';
+
+        this.messageService.add({
+          severity,
+          summary,
+          detail,
+        });
+        
+        this.form.reset();
+        this.closeDialog();
+      },
+      error: async(err) => {
+        console.error("Failed to create inventory item", err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to add inventory item',
+        });
+      }
+    })
   }
   private async getAndUpdateBudget(overallPrice: number)
   {

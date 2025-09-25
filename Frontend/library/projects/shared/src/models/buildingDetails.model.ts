@@ -8,4 +8,6 @@ export interface BuildingDetails{
     maintenanceBudget: number;
     maintenanceSpent: number;
     year?: number;   
+    predictedInventoryBudget?: number;
+    predictedMaintenanceBudget?: number;
 }

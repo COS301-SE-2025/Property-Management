@@ -151,7 +151,7 @@ export const routes: Routes = [
   },
   {
     path: 'contractorDetails/:contractorId/:source',
-    canActivate: [authGuard(['bodyCorporate'])],
+    canActivate: [authGuard(['bodyCorporate', 'trustee'])],
     pathMatch: 'full',
     component: ContractorDetailsComponent
   },

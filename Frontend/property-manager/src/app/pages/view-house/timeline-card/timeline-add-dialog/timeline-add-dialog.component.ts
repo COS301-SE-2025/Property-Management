@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
+import { CheckboxModule } from 'primeng/checkbox';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ToastModule } from 'primeng/toast';
 import { SelectModule } from 'primeng/select';
@@ -21,7 +22,7 @@ import { InventoryCardComponent } from '../../inventory-card/inventory-card.comp
 
 @Component({
   selector: 'app-timeline-add-dialog',
-  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, FileUploadModule, ToastModule, MultiSelectModule, TableModule, InventoryCardComponent, SelectModule],
+  imports: [ReactiveFormsModule, DialogModule, DatePickerModule, CommonModule, FileUploadModule, ToastModule, MultiSelectModule, TableModule, InventoryCardComponent, SelectModule, CheckboxModule],
   templateUrl: './timeline-add-dialog.component.html',
   styles: `
     :host ::ng-deep .low-priority {
@@ -90,12 +91,14 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       next: (res) => {
         this.inventoryItemsAvailable = res;
       }
-    });
+    });  
  }
 
  override closeDialog(): void{
   super.closeDialog();
   this.form.reset();
+  this.selectedFile = null;
+  this.inventoryItemsUsed = undefined;
   // this.contractors = [];
  }
  onFileSelect(event: FileSelectEvent)
@@ -170,11 +173,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
                 detail: 'Task added successfully'
               });
       
-              setTimeout(() => {
-                this.router.navigate(['viewHouse', this.houseId]).then(() => {
-                  window.location.reload();
-                });
-              }, 2000);
+              const buildingId = String(this.route.snapshot.paramMap.get('houseId'));
+              this.housesService.loadTasks(buildingId);
             }
           });
         }
@@ -186,11 +186,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
             detail: 'Task added successfully'
           });
   
-          setTimeout(() => {
-            this.router.navigate(['viewHouse', this.houseId]).then(() => {
-              window.location.reload();
-            });
-          }, 2000);
+          const buildingId = String(this.route.snapshot.paramMap.get('houseId'));
+          this.housesService.loadTasks(buildingId);
         }
 
       },
@@ -223,21 +220,21 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       true
     );
 
-    const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
-    if(org)
-    {
-      org.quantityInStock -= item.quantityInStock;
-      if(org.quantityInStock <= 0)
-      {
-        this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
+    // const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
+    // if(org)
+    // {
+    //   org.quantityInStock -= item.quantityInStock;
+    //   if(org.quantityInStock <= 0)
+    //   {
+    //     this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
 
-        this.housesService.deleteInvetoryItem(item);
-      }
-      else
-      {
-        this.housesService.updateInventory([org]);
-      }
-    }
+    //     this.housesService.deleteInvetoryItem(item);
+    //   }
+    //   else
+    //   {
+    //     this.housesService.updateInventory([org]);
+    //   }
+    // }
   });
  }
  onQuantitiesChanged(updated: Inventory[])

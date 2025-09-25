@@ -85,7 +85,7 @@ export class ApiService {
       { withCredentials: true });
   }
 
-  getTrusteesById(id: number): Observable<Trustee>
+  getTrusteesById(id: number | string): Observable<Trustee>
   {
     return this.http.get<Trustee>(`${this.url}/trustee/${id}` ,
       { withCredentials: true });
@@ -258,10 +258,10 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
       withCredentials: true
     });
   }
-
-  getInventoryByBuilding(buildingUuid: string) {
-    return this.http.get<any[]>(`/api/inventory/building/${buildingUuid}`);
-  }
+  getInventoryByBuilding(buildingUuid: string): Observable<Inventory[]> {
+  return this.http.get<Inventory[]>(`/api/inventory/building/${buildingUuid}`);
+}
+  
 
   createInventoryUsage(data: any) {
     return this.http.post(`${this.url}/inventory-usage`, data, { withCredentials: true });
