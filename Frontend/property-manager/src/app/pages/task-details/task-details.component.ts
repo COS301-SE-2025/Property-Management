@@ -8,12 +8,14 @@ import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.servic
 import { InventoryUsageComponent } from '../../components/inventory-usage/inventory-usage.component';
 import { lastValueFrom } from 'rxjs';
 import { ContractorTimelineComponent } from "./contractor-timeline/contractor-timeline.component";
+import { ContractorInventoryRequestComponent } from '../contractor-inventory-request/contractor-inventory-request.component';
+
 
 @Component({
   selector: 'app-timeline-details',
   templateUrl: './task-details.component.html',
   styles: ``,
-  imports: [FormatDatePipe, CommonModule, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent],
+  imports: [FormatDatePipe, CommonModule, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent, ContractorInventoryRequestComponent],
 })
 export class TaskDetailsComponent implements OnInit, OnDestroy {
 

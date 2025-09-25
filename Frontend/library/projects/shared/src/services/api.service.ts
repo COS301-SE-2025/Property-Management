@@ -258,6 +258,23 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
       withCredentials: true
     });
   }
+  getInventoryByBuilding(buildingUuid: string): Observable<Inventory[]> {
+  return this.http.get<Inventory[]>(`/api/inventory/building/${buildingUuid}`);
+}
+  
 
+  createInventoryUsage(data: any) {
+    return this.http.post(`${this.url}/inventory-usage`, data, { withCredentials: true });
+  }
 
+  getPendingInventoryUsage() {
+    return this.http.get<any[]>(`/api/inventory-usage/pending-approval`);
+  }
+
+  approveInventoryUsage(usageUuid: string, approved: boolean) {
+    return this.http.patch(`/api/inventory-usage/${usageUuid}/approval`, {
+      trusteeApproved: approved,
+      approvalDate: new Date().toISOString().slice(0, 10)
+    });
+  }
 }
