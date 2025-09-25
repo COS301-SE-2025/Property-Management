@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ApiService, InventoryItemApiService, getCookieValue, MaintenanceTask } from 'shared';
 import { CommonModule } from '@angular/common';
@@ -7,17 +7,20 @@ import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { InventoryAddDialogComponent } from '../view-house/inventory-card/inventory-add-dialog/inventory-add-dialog.component';
+
 
 @Component({
   selector: 'app-contractor-inventory-request',
   templateUrl: './contractor-inventory-request.component.html',
   styleUrls: ['./contractor-inventory-request.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, ToastModule],
+  imports: [CommonModule, ReactiveFormsModule, ToastModule, InventoryAddDialogComponent],
   providers: [MessageService],
   standalone: true
 })
 export class ContractorInventoryRequestComponent implements OnInit {
   @Input() task!: MaintenanceTask;
+  @ViewChild('inventoryAddDialog') inventoryAddDialog!: InventoryAddDialogComponent;
   form: FormGroup;
   availableItems: any[] = [];
   assignedTasks: MaintenanceTask[] = [];
@@ -103,6 +106,13 @@ export class ContractorInventoryRequestComponent implements OnInit {
       });
     }
   }
+
+  openAddInventoryDialog() {
+  if (this.inventoryAddDialog && this.task?.buuid) {
+    this.inventoryAddDialog.buildingUuid = this.task.buuid; 
+    this.inventoryAddDialog.openDialog();
+  }
+}
 
   onSubmit() {
     if (this.loading) return;
