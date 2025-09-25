@@ -50,7 +50,10 @@
 }
 ion-content {
   --background: #f5f5f5; 
-  --padding-bottom: 80px;
+  --padding-bottom: [10rem];
+  --padding-top: [10rem];
+  padding-bottom: 10rem;
+  padding-top: 10rem;
   height: 100%;
 }
 
