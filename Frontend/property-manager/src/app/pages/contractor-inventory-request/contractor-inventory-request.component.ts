@@ -25,6 +25,7 @@ export class ContractorInventoryRequestComponent implements OnInit {
   error: string | null = null;
   itemControls: { selected: FormControl, quantity: FormControl }[] = [];
 
+  contractor = false;
 
   constructor(
     private fb: FormBuilder,
@@ -39,57 +40,68 @@ export class ContractorInventoryRequestComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loading = true;
     const contractorId = getCookieValue(document.cookie, 'contractorId');
-    this.api.getContractorMaintenanceTasks(contractorId).subscribe({
-      next: (tasks: MaintenanceTask[]) => {
-        this.assignedTasks = tasks;
-        this.loading = false;
 
-        if (tasks.length > 0) {
-          this.form.get('taskUuid')?.setValue(tasks[0].uuid);
-        }
-      },
-      error: () => {
-        this.error = 'Failed to load tasks';
-        this.loading = false;
-      }
-    });
+    if(contractorId)
+    {
+      this.contractor = true;
+      return;
+    }
+    
+    this.loading = true;
 
-    this.form.get('taskUuid')?.valueChanges.subscribe(selectedUuid => {
-
-      const task = this.assignedTasks.find(t => String(t.uuid) === String(selectedUuid));
-      if (task && task['buildingUuid']) {
-        this.inventoryItemApi.getInventoryItemsByBuilding(task['buildingUuid']).subscribe({
-          next: (items) => {
-            this.availableItems = items.map(item => ({
-              ...item,
-              buildingUuid: item.buildingUuidFk ?? item.buildingUuid
-            }));
-            this.itemControls = items.map(() => ({
-              selected: new FormControl(false),
-              quantity: new FormControl({ value: 1, disabled: true }, [Validators.min(1)])
-            }));
-
-            this.itemControls.forEach((ctrl, i) => {
-              ctrl.selected.valueChanges.subscribe(selected => {
-                if (selected) {
-                  ctrl.quantity.enable();
-                } else {
-                  ctrl.quantity.disable();
-                }
-              });
-            });
-          },
-          error: () => {
-            this.error = 'Failed to load inventory items';
+    if(this.contractor)
+    {
+      this.api.getContractorMaintenanceTasks(contractorId).subscribe({
+        next: (tasks: MaintenanceTask[]) => {
+          this.assignedTasks = tasks;
+          this.loading = false;
+  
+          if (tasks.length > 0) {
+            this.form.get('taskUuid')?.setValue(tasks[0].uuid);
           }
-        });
-      } else {
-        this.availableItems = [];
-        this.itemControls = [];
-      }
-    });
+        },
+        error: () => {
+          this.error = 'Failed to load tasks';
+          this.loading = false;
+        }
+      });
+  
+      this.form.get('taskUuid')?.valueChanges.subscribe(selectedUuid => {
+  
+        const task = this.assignedTasks.find(t => String(t.uuid) === String(selectedUuid));
+        if (task && task['buildingUuid']) {
+          this.inventoryItemApi.getInventoryItemsByBuilding(task['buildingUuid']).subscribe({
+            next: (items) => {
+              this.availableItems = items.map(item => ({
+                ...item,
+                buildingUuid: item.buildingUuidFk ?? item.buildingUuid
+              }));
+              this.itemControls = items.map(() => ({
+                selected: new FormControl(false),
+                quantity: new FormControl({ value: 1, disabled: true }, [Validators.min(1)])
+              }));
+  
+              this.itemControls.forEach((ctrl, i) => {
+                ctrl.selected.valueChanges.subscribe(selected => {
+                  if (selected) {
+                    ctrl.quantity.enable();
+                  } else {
+                    ctrl.quantity.disable();
+                  }
+                });
+              });
+            },
+            error: () => {
+              this.error = 'Failed to load inventory items';
+            }
+          });
+        } else {
+          this.availableItems = [];
+          this.itemControls = [];
+        }
+      });
+    }
   }
 
   onSubmit() {
