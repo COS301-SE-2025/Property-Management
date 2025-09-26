@@ -14,7 +14,7 @@
   <div class="space-y-3">
     <div 
       *ngIf="visibleItems.length > 0"
-      class="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+      class="p-3 bg-gray-300 dark:bg-gray-500 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
     >
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -57,7 +57,7 @@
       <div class="space-y-3 pt-2">
         <div 
           *ngFor="let item of remainingItems; let i = index"
-          class="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
+          class="p-3 bg-gray-300 dark:bg-gray-500 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
           [style.animation-delay]="showMore ? (i * 100) + 'ms' : '0ms'"
         >
           <div class="flex items-center justify-between">
@@ -101,7 +101,7 @@
     <div class="text-center mt-3" *ngIf="forecastData.items_forecasts.length > 1">
       <button 
         (click)="toggleShowMore()"
-        class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900/40 transition-all duration-200 hover:scale-105"
+        class="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-600 text-white rounded-lg shadow-md hover:translate-y-1 transition-transform duration-200"
       >
         <span *ngIf="!showMore">Show {{ remainingItems.length }} more item{{ remainingItems.length > 1 ? 's' : '' }}</span>
         <span *ngIf="showMore">Show less</span>
