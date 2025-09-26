@@ -53,7 +53,7 @@ describe('InventoryItemApiService', () => {
         next: (items) => {
           expect(items.length).toBe(2);
           expect(items).toEqual(mockItems);
-          expect(httpClientSpy.get).toHaveBeenCalledWith(`${url}/inventory`);
+          expect(httpClientSpy.get).toHaveBeenCalledWith(`${url}/inventory`, { withCredentials: true});
         },
         error: () => fail('expected items but got error')
       });
@@ -102,7 +102,8 @@ describe('InventoryItemApiService', () => {
         next: (items) => {
           expect(items).toEqual(mockItems);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${url}/inventory/building/bldg1`
+            `${url}/inventory/building/bldg1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected items but got error')
@@ -138,7 +139,8 @@ describe('InventoryItemApiService', () => {
         next: (item) => {
           expect(item).toEqual(mockItem);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${url}/inventory/1`
+            `${url}/inventory/1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected item but got error')
@@ -183,7 +185,8 @@ describe('InventoryItemApiService', () => {
           expect(item).toEqual(newItem);
           expect(httpClientSpy.post).toHaveBeenCalledWith(
             `${url}/inventory`,
-            expectedBody
+            expectedBody,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected item but got error')
@@ -227,7 +230,8 @@ describe('InventoryItemApiService', () => {
           expect(item).toEqual(updatedItem);
           expect(httpClientSpy.put).toHaveBeenCalledWith(
             `${url}/inventory/1`,
-            expectedBody
+            expectedBody,
+            { withCredentials: true  }
           );
         },
         error: () => fail('expected item but got error')
@@ -277,7 +281,8 @@ describe('InventoryItemApiService', () => {
           expect(item.quantityInStock).toBe(15);
           expect(httpClientSpy.patch).toHaveBeenCalledWith(
             `${url}/inventory/1/quantity`,
-            expectedBody
+            expectedBody,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected item but got error')
@@ -334,7 +339,8 @@ describe('InventoryItemApiService', () => {
         next: (item) => {
           expect(item).toEqual(deletedItem);
           expect(httpClientSpy.delete).toHaveBeenCalledWith(
-            `${url}/inventory/1`
+            `${url}/inventory/1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected item but got error')

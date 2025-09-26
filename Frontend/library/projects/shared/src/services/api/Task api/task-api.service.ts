@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, scheduled } from 'rxjs';
+import { map, Observable, scheduled,switchMap } from 'rxjs';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { Quote } from '../../../public-api';
 import { environmentMobile } from '../../../environment';
@@ -63,6 +63,13 @@ export class TaskApiService {
     return this.http.put<MaintenanceTask>(`${this.url}/maintenance/${taskId}`, req,
     { withCredentials: true });
   }
+
+  updateTaskAllowContractor(taskId: string): Observable<MaintenanceTask> {
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/${taskId}/approve`, null, {
+      withCredentials: true
+    });
+  }
+
   updateTaskAssignedContractor(contractorId: string, taskId: string)
   {
     const pastDate = new Date();

@@ -1,43 +1,100 @@
- <div class="flex flex-col pt-5 p-4 bg-gray-300 dark:bg-gray-500 rounded-xl shadow-md">   
-    <p-card class="text-center bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md">
-        <ng-template #title>Timeline</ng-template>
-        <p-timeline [value]="timeline()">
+<div class="flex flex-col rounded-xl shadow-md">   
+    <p-card class="text-center bg-gray-300 dark:bg-gray-500 rounded-xl shadow-md p-4">
+        <ng-template #title>
+            <div class="flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xl font-semibold">Maintenance Timeline</span>
+            </div>
+        </ng-template>
+        
+        <p-timeline [value]="visibleTasks" class="mt-4">
             <ng-template #content let-time>
-                <div class="cursor-pointer hover:underline hover:translate-y-0.5 transition-transform duration-200" tabindex="0" role="button" (click)="showDetails(time)" (keydown.enter)="showDetails(time)" (keydown.space)="showDetails(time)">
-                    {{ time.title }}
+                <div class="cursor-pointer p-3 mb-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-sm border border-gray-100 dark:border-gray-700" 
+                     tabindex="0" role="button" 
+                     (click)="showDetails(time)" 
+                     (keydown.enter)="showDetails(time)" 
+                     (keydown.space)="showDetails(time)">
+                    
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-semibold text-gray-800 dark:text-gray-200 text-lg">{{ time.title }}</h3>
+                        <span class="text-xs font-medium px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                            {{ time.approvalStatus === 'COMPLETED' ? 'Completed' : 'Pending' }}
+                        </span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Due Date</div>
+                        <div class="text-base font-medium" [ngClass]="changeDueDate(time)">
+                            {{ time.scheduled_date | formatDate }}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Priority</div>
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium shadow-sm"
+                            [ngClass]="{
+                            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': time?.priority === 'Low',
+                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': time?.priority === 'Medium',
+                            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': time?.priority === 'High'
+                            }">
+                        @if(time?.priority === 'Low') {
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 9l7 7 7-7" />
+                            </svg>
+                            Low
+                        }
+                        @else if(time?.priority === 'Medium') {
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14" />
+                            </svg>
+                            Medium
+                        }
+                        @else {
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                            </svg>
+                            High
+                        }
+                        </div>
+                    </div>
                 </div>
             </ng-template>
+            
             <ng-template #marker let-time>
-                <div class="flex items-center justify-center w-6 h-6 rounded-full shadow-md bg-white dark:bg-gray-700">
-                    @if(!darkMode)
-                    {
-                        <ng-container *ngIf="(time.status==='done'); else pending">
-                            <img src="assets/icons/task_done.svg" alt="Done" class="w-5 h-5"/>
-                        </ng-container>
-                        <ng-template #pending>
-                            <i class="pi pi-clock text-gray-800"></i>
-                        </ng-template>
-                    }
-                    @else
-                    {
-                        <ng-container *ngIf="(time.status==='done'); else pending">
-                            <img src="assets/icons/check_white.svg" alt="Done" class="w-5 h-5"/>
-                        </ng-container>
-                        <ng-template #pending>
-                            <i class="pi pi-clock text-gray-200"></i>
-                        </ng-template>
+                <div class="flex items-center justify-center w-8 h-8 rounded-full shadow-md bg-white dark:bg-gray-700 border-2">
+                    @if(time.approvalStatus === 'COMPLETED') {
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                    } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                     }
                 </div>
             </ng-template>
         </p-timeline>
-        <div class="mt-7">
+
+        <div class="mt-4 flex justify-center">
+            <button *ngIf="timeline().length > 3" (click)="toggleShow()" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors duration-200"> 
+                {{ toggleButton }}
+            </button>
+        </div>
+        
+        <div class="mt-6 flex justify-center">
             @if(!bcUser)
             {
-                <button class="cursor-pointer hover:translate-y-2 transition-transform duration-200" (click)="timelineAddDialog.openDialog()">
-                    <img class="h-8 w-8" src="assets/icons/add_circle_gray.svg" alt="add inventory">
+                <button class="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-600 text-white rounded-lg shadow-md hover:translate-y-1 transition-transform duration-200"
+                    (click)="timelineAddDialog.openDialog()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Add New Task
                 </button>
                 <app-timeline-add-dialog #timelineAddDialog/>
             }
         </div>
     </p-card>
- </div>
+</div>

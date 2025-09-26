@@ -10,12 +10,21 @@
 </div>
 
 <div class="flex justify-center mt-4 space-x-4">
-  <button (click)="findAddress()" class="px-4 py-2 bg-yellow-500 text-white dark:text-gray-200 rounded-lg shadow hover:bg-yellow-600 transition">
-    Search
+  <button (click)="findAddress()" [disabled]="isLoading" class="px-4 py-2 bg-yellow-500 text-white dark:text-gray-200 rounded-lg shadow hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed">
+    {{ isLoading ? 'Searching...' : 'Search' }}
   </button>
   <button (click)="enableLiveLocation()" class="px-4 py-2 bg-yellow-500 text-white dark:text-gray-200 rounded-lg shadow hover:bg-yellow-600 transition">
     Enable Live Location
   </button>
 </div>
 
-<div id="map" class="w-full h-[20rem] mt-4 rounded-lg shadow-md"></div>
+<div class="relative w-full h-[20rem] mt-4 rounded-lg shadow-md">
+  <div id="map" class="w-full h-full rounded-lg"></div>
+
+  @if(isLoading)
+  {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+  }
+</div>

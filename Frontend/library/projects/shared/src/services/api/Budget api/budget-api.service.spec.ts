@@ -148,7 +148,8 @@ describe('BudgetApiService', () => {
         expect(response.length).toBe(2);
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.get).toHaveBeenCalledWith(
-          `${url}/budgets`
+          `${url}/budgets`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -182,7 +183,8 @@ describe('BudgetApiService', () => {
       next: (response) => {
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.get).toHaveBeenCalledWith(
-          `${url}/budgets/building/bldg1`
+          `${url}/budgets/building/bldg1`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -208,7 +210,8 @@ describe('BudgetApiService', () => {
         expect(response.length).toBe(1);
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.get).toHaveBeenCalledWith(
-          `${url}/budgets/year/2025`
+          `${url}/budgets/year/2025`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -234,7 +237,8 @@ describe('BudgetApiService', () => {
         expect(response.length).toBe(1);
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.get).toHaveBeenCalledWith(
-          `${url}/budgets/building/bldg1/year/2025`
+          `${url}/budgets/building/bldg1/year/2025`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -270,7 +274,8 @@ describe('BudgetApiService', () => {
         expect(response).toEqual(mockBudget);
         expect(httpClientSpy.put).toHaveBeenCalledWith(
           `${url}/budgets/bldg1`, 
-          expectedBody
+          expectedBody,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')
@@ -293,7 +298,8 @@ describe('BudgetApiService', () => {
       next: (response) => {
         expect(response).toEqual(mockResponse);
         expect(httpClientSpy.delete).toHaveBeenCalledWith(
-          `${url}/budgets/1`
+          `${url}/budgets/1`,
+          { withCredentials: true}
         );
       },
       error: () => fail('expected success but got error')

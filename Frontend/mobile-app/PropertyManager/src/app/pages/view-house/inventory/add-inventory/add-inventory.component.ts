@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastController } from '@ionic/angular/standalone';
 import { BudgetApiService, BuildingDetails, HousesService, InventoryItemApiService } from 'shared';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-add-inventory',
@@ -68,31 +69,67 @@ export class AddInventoryComponent extends ModalComponent implements OnInit {
       const price = this.form.value.itemPrice;
       const quantity = this.form.value.quantity;
 
-      this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, this.houseId).subscribe({
-        next: async () => {
-
-          await this.getAndUpdateBudget((price*quantity));
-          await this.housesService.loadInventory(this.houseId);
-          await this.housesService.loadBudget(this.houseId);
-
-          this.loading = false;
-
-          await this.presentToast('Inventory item added succesfully', "success");
-          
-          this.form.reset();
-          this.closeModal();
-          
-          setTimeout(() => {
-            this.router.navigate(['view-house', this.houseId]).then(() => {
-              window.location.reload();
+      this.inventoryItemApiService.detectAnomaly(name, price).subscribe({
+        next: (res) => {
+          if(res.message === 'Item normal')
+          {
+            this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, this.houseId).subscribe({
+              next: async () => {
+      
+                await this.getAndUpdateBudget((price*quantity));
+                await this.housesService.loadInventory(this.houseId);
+                await this.housesService.loadBudget(this.houseId);
+      
+                this.loading = false;
+      
+                await this.presentToast('Inventory item added succesfully', "success");
+                
+                this.form.reset();
+                this.closeModal();
+                
+                setTimeout(() => {
+                  this.router.navigate(['view-house', this.houseId]).then(() => {
+                    window.location.reload();
+                  });
+                }, 2000);
+              },
+              error: async (err) => {
+                this.loading = false;
+                console.error("Failed to create inventory item", err);
+      
+                await this.presentToast('Failed to add inventory item', "danger")
+              }
             });
-          }, 2000);
-        },
-        error: async (err) => {
-          this.loading = false;
-          console.error("Failed to create inventory item", err);
-
-          await this.presentToast('Failed to add inventory item', "danger")
+          }
+          else
+          {
+            this.inventoryItemApiService.addInventoryItem(name, "ANOMALY", price, quantity, this.houseId).subscribe({
+              next: async () => {
+      
+                await this.housesService.loadInventory(this.houseId);
+                await this.housesService.loadBudget(this.houseId);
+      
+                this.loading = false;
+      
+                await this.presentToast('Inventory anomaly detected, awaiting body corporate approval', "warning");
+                
+                this.form.reset();
+                this.closeModal();
+                
+                setTimeout(() => {
+                  this.router.navigate(['view-house', this.houseId]).then(() => {
+                    window.location.reload();
+                  });
+                }, 2000);
+              },
+              error: async (err) => {
+                this.loading = false;
+                console.error("Failed to create inventory item", err);
+      
+                await this.presentToast('Failed to add inventory item', "danger")
+              }
+            });
+          }
         }
       });
     }

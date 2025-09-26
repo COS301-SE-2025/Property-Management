@@ -28,6 +28,7 @@ export * from './services/api/Task Progress api/task-progress.service';
 
 //Models
 export * from './models/bodyCoporate.model';
+export * from './models/forecast.model';
 export * from './models/budget.model';
 export * from './models/buildingDetails.model';
 export * from './models/contractor.model';
@@ -47,7 +48,8 @@ export * from './models/quote.model';
 export * from './models/Notifications.model';
 export * from './models/Progress.model';
 export * from './models/TrustedContractor.model';
-export * from './models/PDF.model'
+export * from './models/PDF.model';
+export * from './models/Anomaly.model';
 
 //Utils
 export * from './utils/cookie-utils';
@@ -57,3 +59,4 @@ export * from './pipes/format-amount.pipe';
 export * from './pipes/format-date.pipe';
 export * from './pipes/format-phone-number.pipe';
 export * from './pipes/format-date-time.pipe';
+export * from './pipes/format-fileName';

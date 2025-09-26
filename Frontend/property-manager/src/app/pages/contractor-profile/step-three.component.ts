@@ -3,11 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ApiService } from 'shared'; // Adjust import path as needed
 import { ImageApiService } from 'shared'; // Adjust import path as needed
+import { MessageService } from 'primeng/api';
+import { ToastModule } from "primeng/toast";
 
 @Component({
   selector: 'app-step-three',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ToastModule],
   templateUrl: 'step-three.component.html',
   styles: [`
 .profile-container {
@@ -170,7 +172,8 @@ export class StepThreeComponent implements OnDestroy {
 
   constructor(
     private apiService: ApiService,
-    private imageApiService: ImageApiService
+    private imageApiService: ImageApiService,
+    private messageService: MessageService
   ) {}
 
   async onProjectRecordsSelected(event: Event) {
@@ -181,7 +184,11 @@ export class StepThreeComponent implements OnDestroy {
 
     // Validate file type (PDFs for project records)
     if (file.type !== 'application/pdf') {
-      alert('Please select a PDF file only');
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'Please select a PDF file only'
+      })
       input.value = '';
       return;
     }
@@ -189,7 +196,11 @@ export class StepThreeComponent implements OnDestroy {
     // Validate file size (max 20MB for project records)
     const maxSize = 20 * 1024 * 1024; // 20MB
     if (file.size > maxSize) {
-      alert('File size must be less than 20MB');
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'File size must be less than 20MB'
+      })
       input.value = '';
       return;
     }
@@ -246,7 +257,11 @@ export class StepThreeComponent implements OnDestroy {
     const invalidFiles = Array.from(files).filter(file => !validTypes.includes(file.type));
     
     if (invalidFiles.length > 0) {
-      alert('Please select only image files (JPEG, PNG, GIF, WebP)');
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'Please select only image files (JPEG, PNG, GIF, WebP)'
+      })
       input.value = '';
       return;
     }
@@ -256,14 +271,22 @@ export class StepThreeComponent implements OnDestroy {
     const oversizedFiles = Array.from(files).filter(file => file.size > maxSize);
     
     if (oversizedFiles.length > 0) {
-      alert('Each image must be less than 5MB');
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'Each image must be less than 5MB'
+      })
       input.value = '';
       return;
     }
 
     // Limit number of images (e.g., max 10)
     if (files.length > 10) {
-      alert('You can upload a maximum of 10 images');
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'You can upload a maximum of 10 images'
+      })
       input.value = '';
       return;
     }
@@ -371,13 +394,21 @@ export class StepThreeComponent implements OnDestroy {
 
   emitRelevantData() {
     if (this.description.trim().length === 0) {
-      alert('Please provide a description of your project history');
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'Please provide a description of your project history'
+      })
       return;
     }
 
     // Check if any uploads are still in progress
     if (this.isUploading()) {
-      alert('Please wait for file uploads to complete');
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'Please wait for file uploads to complete'
+      })
       return;
     }
 
