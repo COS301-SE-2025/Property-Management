@@ -10,7 +10,7 @@
   </div>
  
   <!-- Main Content Container - Side by Side Layout -->
-  <div class="flex flex-col lg:flex-row gap-6 animate-item h-full items-center justify-center" *ngIf="isTaskApproved">
+  <div class="flex flex-col lg:flex-row gap-6 animate-item h-full items-start justify-center" *ngIf="isTaskApproved">
     
     <!-- Tables Section (Left Side) -->
     <div class="flex-1 flex flex-col gap-6 min-h-96 max-w-lg w-full">
@@ -34,16 +34,14 @@
                 <ng-template #header>
                   <tr>
                     <th pSortableColumn="name" class="py-2 px-3">Description</th>
-                    <th pSortableColumn="quantityInStock" class="py-2 px-3">Quantity</th>
-                    <th pSortableColumn="price" *ngIf="showPrice" class="py-2 px-3">Price</th>
-                    <!-- Actions column only shown if task is not approved -->
+                    <th pSortableColumn="quantityInStock" class="py-2 px-3 text-center">Quantity</th>
                     <th class="py-2 px-3" *ngIf="!isTaskApproved">Actions</th>
                   </tr>
                 </ng-template>
                 <ng-template #body let-inventory let-rowIndex="rowIndex">
                   <tr>
                     <td class="py-2 px-3">{{ inventory.name }}</td>
-                    <td class="py-2 px-3">
+                    <td class="py-2 px-3 text-center">
                       @if(editingItems.get(inventory.itemUuid) && !isTaskApproved)
                       {
                         <input type="number" [ngModel]="draftQuantities.get(inventory.itemUuid)" min="0" 
@@ -55,8 +53,6 @@
                         {{ inventory.quantityInStock }}
                       }
                     </td>
-                    <td class="py-2 px-3">R {{ inventory.price }}</td>
-                    <!-- Actions column only shown if task is not approved -->
                     <td class="py-2 px-3" *ngIf="!isTaskApproved">
                       @if(editingItems.get(inventory.itemUuid))
                       {
@@ -117,15 +113,13 @@
                 <ng-template #header>
                   <tr>
                     <th pSortableColumn="name" class="py-2 px-3">Item Name</th>
-                    <th pSortableColumn="quantityUsed" class="py-2 px-3">Quantity Used</th>
-                    <th pSortableColumn="price" *ngIf="showPrice" class="py-2 px-3">Unit Price</th>
+                    <th pSortableColumn="quantityUsed" class="py-2 px-3 text-center">Quantity Used</th>
                   </tr>
                 </ng-template>
                 <ng-template #body let-allocatedItem let-rowIndex="rowIndex">
                   <tr>
                     <td class="py-2 px-3">{{ allocatedItem.name }}</td>
-                    <td class="py-2 px-3">{{ allocatedItem.quantityUsed }}</td>
-                    <td class="py-2 px-3" *ngIf="showPrice">R {{ allocatedItem.price || 'N/A' }}</td>
+                    <td class="py-2 px-3 text-center">{{ allocatedItem.quantityUsed }}</td>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="paginatorright">
