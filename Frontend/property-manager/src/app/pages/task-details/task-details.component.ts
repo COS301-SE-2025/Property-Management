@@ -1,19 +1,21 @@
 import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaintenanceTask, ContractorDetails, ContractorApiService, ImageApiService, FormatDatePipe, InventoryItemApiService, InventoryUsageApiService, TaskApiService, InventoryUsage, Inventory, getCookieValue } from 'shared';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { BreadCrumbService } from '../../components/breadcrumb/breadcrumb.service';
 import { InventoryUsageComponent } from '../../components/inventory-usage/inventory-usage.component';
 import { lastValueFrom } from 'rxjs';
 import { ContractorTimelineComponent } from "./contractor-timeline/contractor-timeline.component";
+import { ContractorInventoryRequestComponent } from '../contractor-inventory-request/contractor-inventory-request.component';
+
 
 @Component({
   selector: 'app-timeline-details',
   templateUrl: './task-details.component.html',
   styles: ``,
-  imports: [FormatDatePipe, CommonModule, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent],
+  imports: [FormatDatePipe, CommonModule, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent, ContractorInventoryRequestComponent],
 })
 export class TaskDetailsComponent implements OnInit, OnDestroy {
 
@@ -32,7 +34,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     private inventoryUsageService: InventoryUsageApiService,
     private taskService: TaskApiService, 
     private route: ActivatedRoute,
-    private breadCrumb: BreadCrumbService
+    private breadCrumb: BreadCrumbService,
+    private router: Router
   ) { 
     effect(() => {
      this.breadCrumb.setBreadCrumbs([
@@ -93,5 +96,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.inventoryUsageService.getUsageRecordsByTaskId(this.taskId)
       );
     }
+  }
+  contractorDetails(contractorId: string)
+  {
+    this.breadCrumb.setBreadCrumbs([
+        { label: 'Task details', route: `/taskDetails/${this.taskId}`},
+        { label: 'Contractor details', route: `/contractorDetails/${contractorId}/trusted` }
+      ]);
+    this.router.navigate(['/contractorDetails', contractorId, 'trusted']);
   }
 }
