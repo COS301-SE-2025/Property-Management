@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CommonModule } from '@angular/common';
@@ -22,6 +22,7 @@ import { HousesService } from 'shared';
 })
 export class InventoryAddDialogComponent extends DialogComponent implements OnInit{
 
+  @Input() buildingUuid: string = '';
   form!: FormGroup;
   houseId = '';
 
@@ -53,30 +54,44 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     super.closeDialog();
     this.form.reset();
   }
- async onSubmit(){
-
-    if(this.form.valid){
+ async onSubmit() {
+    if (this.form.valid) {
       const name = this.form.value.name;
       const price = this.form.value.price;
       const quantity = this.form.value.quantity;
+      const buildingId = this.buildingUuid || this.houseId;
+      this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, buildingId).subscribe({
+        next: async () => {
+          await this.getAndUpdateBudget((price * quantity));
+          await this.housesService.loadInventory(this.houseId);
+          await this.housesService.loadBudget(this.houseId);
 
-      this.inventoryItemApiService.detectAnomaly(name, price).subscribe({
-        next: (res) => {
-          const status = res.message === 'Item normal' ? 'normal' : 'ANOMALY';
-          this.addInventoryItem(name, status, price, quantity);
-        },
-        error: (err) => {
-          console.error("Anomaly detection failed", err)
+          this.form.reset();
+          this.closeDialog();
+
           this.messageService.add({
-            severity: 'warn',
-            summary: 'Warning',
-            detail: 'Inventory anomaly detection failed',
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Inventory item added successfully'
+          });
+
+          this.inventoryItemApiService.detectAnomaly(name, price).subscribe({
+            next: (res) => {
+              const status = res.message === 'Item normal' ? 'normal' : 'ANOMALY';
+              this.addInventoryItem(name, status, price, quantity);
+            },
+            error: (err) => {
+              console.error("Anomaly detection failed", err)
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Warning',
+                detail: 'Inventory anomaly detection failed',
+              });
+            }
           });
         }
       });
-    }
-    else
-    {
+    } else {
       this.addError = true;
     }
   }
