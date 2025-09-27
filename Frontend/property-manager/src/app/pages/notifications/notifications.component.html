@@ -28,7 +28,12 @@
               (keydown.space)="showDetails(time)"
               class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded"
             >
-              {{ time.createdAtDate | formatTime }} <br /> {{ time.message }}
+              <div class="text-sm font-medium mb-1" style="color: #facc15;">
+                {{ time.createdAtDate | formatTime }}
+              </div>
+              <div class="text-gray-800 dark:text-gray-200">
+                {{ time.message }}
+              </div>
             </div>
           </ng-template>
           <ng-template #marker let-time>
@@ -50,7 +55,12 @@
             (keydown.space)="showDetails(time)"
             class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded"
           >
-            {{ time.createdAtDate | formatTime }} <br /> {{ time.message }}
+            <div class="text-sm font-medium mb-1" style="color: #facc15;">
+              {{ time.createdAtDate | formatTime }}
+            </div>
+            <div class="text-gray-600 dark:text-gray-300">
+              {{ time.message }}
+            </div>
           </div>
         </ng-template>
         <ng-template #marker let-time>
@@ -61,5 +71,12 @@
       </p-timeline>
     </div>
   </div>
+
   <app-invite-dialog [display]="inviteDialogVisible" [inviteId]="inviteId() ?? ''" />
+  <app-inventory-approval-dialog
+    [visible]="inventoryApprovalVisible"
+    [requestData]="inventoryRequestData"
+    (visibleChange)="inventoryApprovalVisible = $event"
+    (requestProcessed)="onInventoryRequestProcessed()"
+  />
 </p-drawer>
