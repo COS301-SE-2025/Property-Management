@@ -103,6 +103,11 @@ class ContractorController(
     fun register(
         @RequestBody request: RegisterRequest,
     ): ResponseEntity<Map<String, String>> {
+        val passwordErrors = validatePassword(request.password)
+        if (passwordErrors.isNotEmpty()) {
+            return ResponseEntity.badRequest().body(mapOf("errors" to passwordErrors.joinToString(", ")))
+        }
+
         val username = request.email.substringBefore("@") + System.currentTimeMillis()
         val cognitoUserSub =
             cognitoService.signUp(
@@ -190,5 +195,25 @@ class ContractorController(
     ): ResponseEntity<Map<String, String>> {
         cognitoService.confirmPasswordReset(request.email, request.confirmationCode, request.newPassword)
         return ResponseEntity.ok(mapOf("message" to "Password has been reset successfully."))
+    }
+
+    private fun validatePassword(password: String): List<String> {
+        val errors = mutableListOf<String>()
+        if (password.length < 8) {
+            errors.add("Password must be at least 8 characters long.")
+        }
+        if (!password.any { it.isUpperCase() }) {
+            errors.add("Password must contain at least one uppercase letter.")
+        }
+        if (!password.any { it.isLowerCase() }) {
+            errors.add("Password must contain at least one lowercase letter.")
+        }
+        if (!password.any { it.isDigit() }) {
+            errors.add("Password must contain at least one number.")
+        }
+        if (!password.any { !it.isLetterOrDigit() }) {
+            errors.add("Password must contain at least one special character.")
+        }
+        return errors
     }
 }
