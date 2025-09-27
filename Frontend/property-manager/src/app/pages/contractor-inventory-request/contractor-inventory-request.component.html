@@ -6,12 +6,28 @@
       <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
         Request Inventory
       </h2>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <!-- Warning message when task is not approved -->
+      <div *ngIf="!isTaskApproved" class="mb-6">
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+          <strong>Notice:</strong> This task must be approved before you can request inventory items.
+          <br>Current status: <span class="font-semibold">{{ task.status }}</span>
+        </div>
+      </div>
+
+      <!-- Show form only if task is approved -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="isTaskApproved">
         <div class="mb-6">
           <label class="block text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Inventory Items</label>
+          
+          <div *ngIf="loading" class="text-gray-500 dark:text-gray-400 py-4 text-center">
+            Loading inventory items...
+          </div>
+          
           <div *ngIf="availableItems.length === 0 && !loading" class="text-gray-500 dark:text-gray-400 py-4 text-center">
             No inventory items available for this project.
           </div>
+          
           <div *ngFor="let item of availableItems; let i = index" class="flex items-center mb-4 bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow-sm">
             <input type="checkbox" [formControl]="itemControls[i].selected" class="form-checkbox h-5 w-5 text-yellow-600" />
             <span class="ml-3 text-gray-800 dark:text-white font-medium">{{ item.name }} <span class="text-xs text-gray-500 dark:text-gray-400">({{ item.quantityInStock }} {{ item.unit }})</span></span>
@@ -22,27 +38,43 @@
                    [max]="item.quantityInStock"/>
           </div>
         </div>
+        
         <div class="flex justify-center mt-6">
           <button type="submit"
                   (click)="onSubmit()"
-                  class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-            Request Inventory
+                  [disabled]="loading"
+                  class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+            <span *ngIf="loading">Processing...</span>
+            <span *ngIf="!loading">Request Inventory</span>
           </button>
         </div>
+        
         <div class="flex justify-center mt-4">
-        <button type="button"
-                class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                (click)="openAddInventoryDialog()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-          Add Custom Inventory
-        </button>
-      </div>
-      <div *ngIf="error" class="text-red-500 mt-4 text-center">{{ error }}</div>
+          <button type="button"
+                  class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                  (click)="openAddInventoryDialog()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Add Custom Inventory
+          </button>
+        </div>
+        
+        <div *ngIf="error" class="text-red-500 mt-4 text-center">{{ error }}</div>
       </form>
-        <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog>
-  </div>
-  </div>
 
+      <!-- Message when task is not approved -->
+      <div class="text-center py-8" *ngIf="!isTaskApproved">
+        <div class="text-gray-500 dark:text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0-6v3m-6 0l3-3 3 3m6-8l-3-3-3 3" />
+          </svg>
+          <p class="text-lg font-medium">Task Approval Required</p>
+          <p class="text-sm">You can request inventory items once this task is approved.</p>
+        </div>
+      </div>
+
+      <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog>
+    </div>
+  </div>
 }

@@ -116,4 +116,9 @@ export class InventoryItemApiService {
       }
       return this.http.post<Anomaly>(`${this.wowFactorUrl}/anomaly`, req);
   }
+
+  updateInventoryItemStatus(itemUuid: string, status: string): Observable<any> {
+    return this.http.patch<any>(`${this.url}/inventory-items/${itemUuid}/status`, { status }, { withCredentials: true });
+  }
+
 }

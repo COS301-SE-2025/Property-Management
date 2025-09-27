@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { ApiService, InventoryItemApiService, getCookieValue, MaintenanceTask } from 'shared';
+import { ApiService, InventoryItemApiService, getCookieValue, MaintenanceTask, NotificationsApiService, Notification, ContractorApiService, BuildingApiService } from 'shared';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,7 +8,6 @@ import { forkJoin } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { InventoryAddDialogComponent } from '../view-house/inventory-card/inventory-add-dialog/inventory-add-dialog.component';
-
 
 @Component({
   selector: 'app-contractor-inventory-request',
@@ -29,11 +28,21 @@ export class ContractorInventoryRequestComponent implements OnInit {
   itemControls: { selected: FormControl, quantity: FormControl }[] = [];
 
   contractor = false;
+  contractorDetails: any = null;
+  buildingDetails: any = null;
+
+  // Check if task is approved
+  get isTaskApproved(): boolean {
+    return this.task?.status === 'APPROVED';
+  }
 
   constructor(
     private fb: FormBuilder,
     private api: ApiService, 
     private inventoryItemApi: InventoryItemApiService,
+    private notificationsApi: NotificationsApiService,
+    private contractorApi: ContractorApiService,
+    private buildingApi: BuildingApiService,
     private router: Router,
     private messageService: MessageService
   ) {
@@ -45,81 +54,125 @@ export class ContractorInventoryRequestComponent implements OnInit {
   ngOnInit() {
     const contractorId = getCookieValue(document.cookie, 'contractorId');
 
-    if(contractorId)
-    {
+    if(contractorId) {
       this.contractor = true;
+      this.loadContractorDetails(contractorId);
+    } else {
+      return;
+    }
+
+    // Only load inventory if task is approved
+    if (!this.isTaskApproved) {
       return;
     }
     
     this.loading = true;
+    this.loadBuildingDetails();
+    this.loadInventoryItems();
+  }
 
-    if(this.contractor)
-    {
-      this.api.getContractorMaintenanceTasks(contractorId).subscribe({
-        next: (tasks: MaintenanceTask[]) => {
-          this.assignedTasks = tasks;
+  async loadContractorDetails(contractorId: string) {
+    try {
+      this.contractorDetails = await this.contractorApi.getContractorById(contractorId).toPromise();
+    } catch (error) {
+      console.error('Failed to load contractor details:', error);
+    }
+  }
+
+  async loadBuildingDetails() {
+    if (this.task?.buuid) {
+      try {
+        this.buildingDetails = await this.buildingApi.getBuildingById(this.task.buuid).toPromise();
+      } catch (error) {
+        console.error('Failed to load building details:', error);
+      }
+    }
+  }
+
+  loadInventoryItems() {
+    if (this.task?.buuid) {
+      this.inventoryItemApi.getInventoryItemsByBuilding(this.task.buuid).subscribe({
+        next: (items) => {
+          this.availableItems = items.map(item => ({
+            ...item,
+            buildingUuid: item.buildingUuidFk ?? item.buildingUuid
+          }));
+          this.itemControls = items.map(() => ({
+            selected: new FormControl(false),
+            quantity: new FormControl({ value: 1, disabled: true }, [Validators.min(1)])
+          }));
+
+          this.itemControls.forEach((ctrl, i) => {
+            ctrl.selected.valueChanges.subscribe(selected => {
+              if (selected) {
+                ctrl.quantity.enable();
+              } else {
+                ctrl.quantity.disable();
+              }
+            });
+          });
+          
           this.loading = false;
-  
-          if (tasks.length > 0) {
-            this.form.get('taskUuid')?.setValue(tasks[0].uuid);
-          }
         },
         error: () => {
-          this.error = 'Failed to load tasks';
+          this.error = 'Failed to load inventory items';
           this.loading = false;
         }
       });
-  
-      this.form.get('taskUuid')?.valueChanges.subscribe(selectedUuid => {
-  
-        const task = this.assignedTasks.find(t => String(t.uuid) === String(selectedUuid));
-        if (task && task['buildingUuid']) {
-          this.inventoryItemApi.getInventoryItemsByBuilding(task['buildingUuid']).subscribe({
-            next: (items) => {
-              this.availableItems = items.map(item => ({
-                ...item,
-                buildingUuid: item.buildingUuidFk ?? item.buildingUuid
-              }));
-              this.itemControls = items.map(() => ({
-                selected: new FormControl(false),
-                quantity: new FormControl({ value: 1, disabled: true }, [Validators.min(1)])
-              }));
-  
-              this.itemControls.forEach((ctrl, i) => {
-                ctrl.selected.valueChanges.subscribe(selected => {
-                  if (selected) {
-                    ctrl.quantity.enable();
-                  } else {
-                    ctrl.quantity.disable();
-                  }
-                });
-              });
-            },
-            error: () => {
-              this.error = 'Failed to load inventory items';
-            }
-          });
-        } else {
-          this.availableItems = [];
-          this.itemControls = [];
-        }
-      });
+    } else {
+      this.availableItems = [];
+      this.itemControls = [];
+      this.loading = false;
     }
   }
 
   openAddInventoryDialog() {
-  if (this.inventoryAddDialog && this.task?.buuid) {
-    this.inventoryAddDialog.buildingUuid = this.task.buuid; 
-    this.inventoryAddDialog.openDialog();
+    if (this.inventoryAddDialog && this.task?.buuid) {
+      this.inventoryAddDialog.buildingUuid = this.task.buuid; 
+      this.inventoryAddDialog.openDialog();
+    }
   }
-}
+
+  async createNotificationForTrustee(itemName: string, quantity: number) {
+    try {
+      // Get trustee UUID from the task
+      const trusteeUuid = this.task?.tuuid;
+      if (!trusteeUuid) {
+        console.warn('No trustee UUID found for notification');
+        return;
+      }
+
+      const contractorName = this.contractorDetails?.name || 'Contractor';
+      const taskTitle = this.task?.title || 'Unknown Task';
+      const buildingName = this.buildingDetails?.name || 'Unknown Building';
+
+      const notification: Notification = {
+        notificationType: 'inventory_usage_request',
+        message: `The contractor ${contractorName} requested ${quantity} ${itemName} for task "${taskTitle}" in building "${buildingName}"`,
+        recipientType: 'trustee',
+        recipientUuid: trusteeUuid,
+        isRead: false,
+        relatedTaskUuid: this.task.uuid
+      };
+
+      await this.notificationsApi.createNotifications(notification).toPromise();
+    } catch (error) {
+      console.error('Failed to create notification:', error);
+    }
+  }
 
   onSubmit() {
     if (this.loading) return;
 
+    if (!this.isTaskApproved) {
+      this.error = 'This task must be approved before you can request inventory items.';
+      return;
+    }
+
     const requests = this.availableItems
       .map((item, i) => ({
         itemUuid: item.itemUuid,
+        itemName: item.name,
         quantity: this.itemControls[i].quantity.value,
         selected: this.itemControls[i].selected.value
       }))
@@ -146,14 +199,18 @@ export class ContractorInventoryRequestComponent implements OnInit {
     );
 
     forkJoin(apiCalls).subscribe({
-      next: () => {
-        requests.forEach(r => {
-          const item = this.availableItems.find(i => i.itemUuid === r.itemUuid);
+      next: async () => {
+        // Update inventory quantities and create notifications
+        for (const request of requests) {
+          const item = this.availableItems.find(i => i.itemUuid === request.itemUuid);
           if (item) {
-            item.quantityInStock -= r.quantity;
-            this.inventoryItemApi.updateInventoryItemQuantity(item.itemUuid, r.quantity, 'SUBTRACT').subscribe();
+            item.quantityInStock -= request.quantity;
+            this.inventoryItemApi.updateInventoryItemQuantity(item.itemUuid, request.quantity, 'SUBTRACT').subscribe();
           }
-        });
+          
+          // Create notification for each requested item
+          await this.createNotificationForTrustee(request.itemName, request.quantity);
+        }
         
         this.loading = false;
         this.messageService.add({
