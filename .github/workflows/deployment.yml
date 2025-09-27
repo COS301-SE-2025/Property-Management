@@ -20,6 +20,9 @@ jobs:
               run: ./gradlew clean build -x test
               working-directory: Backend/property-management
 
+            - name: Debug - List built JAR files
+              run: ls -la Backend/property-management/build/libs/
+
             - name: Clean old JAR file
               uses: appleboy/ssh-action@v0.1.7
               with: 
@@ -27,7 +30,12 @@ jobs:
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY }}
                 script: |
-                  rm -f /home/${{ secrets.EC2_USER }}/Property-Management/EC2/property-managemnet-0.0.1-SNAPSHOT.jar
+                  echo "Current directory: $(pwd)"
+                  echo "Directory contents:"
+                  ls -la
+                  echo "Property-Management contents:"
+                  ls -la Property-Management/ || echo "Property-Management not found"
+                  rm -f /home/${{ secrets.EC2_USER }}/Property-Management/property-managemnet-0.0.1-SNAPSHOT.jar
 
             - name: Copy JAR to EC2
               uses: appleboy/scp-action@v0.1.7
@@ -36,8 +44,18 @@ jobs:
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY }}
                 source: Backend/property-management/build/libs/property-managemnet-0.0.1-SNAPSHOT.jar
-                target: /home/${{ secrets.EC2_USER }}/Property-Management/EC2
+                target: Property-Management/EC2
                 overwrite: true
+
+            - name: Verify JAR was copied
+              uses: appleboy/ssh-action@v0.1.7
+              with:
+                host: ${{ secrets.EC2_HOST }}
+                username: ${{ secrets.EC2_USER }}
+                key: ${{ secrets.EC2_KEY }}
+                script: |
+                  echo "JAR file location:"
+                  ls -la /home/${{ secrets.EC2_USER }}/Property-Management/property-managemnet-0.0.1-SNAPSHOT.jar
 
             - name: Run migrations
               uses: appleboy/ssh-action@v0.1.7
