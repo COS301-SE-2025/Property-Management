@@ -38,7 +38,6 @@ jobs:
                 source: Backend/property-management/build/libs/property-managemnet-0.0.1-SNAPSHOT.jar
                 target: /home/${{ secrets.EC2_USER }}/Property-Management/EC2
                 overwrite: true
-                strip_components: 5
 
             - name: Run migrations
               uses: appleboy/ssh-action@v0.1.7
