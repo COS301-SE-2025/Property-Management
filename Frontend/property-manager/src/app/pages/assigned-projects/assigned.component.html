@@ -13,7 +13,7 @@
         <!--  assigneed tasks -->
         <div *ngIf="tasks.length > 0" class="flex flex-wrap gap-8 justify-center w-full">
             <div *ngFor="let task of tasks" class="block animate-item">
-                <p-card [style]="{ height: '20rem', width: '15rem', overflow: 'hidden', backgroundColor: 'white' }">
+                <p-card [style]="{ height: '20rem', width: '15rem', overflow: 'hidden',  backgroundColor: '#f3f4f6' }">
                     <ng-template #header>
                         <img [src]="task.img" alt="Project Image" class="w-full h-40 object-cover" />
                     </ng-template>
