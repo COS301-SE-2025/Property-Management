@@ -112,4 +112,10 @@ export class InventoryUsageApiService {
     return this.http.get<number>(`${this.url}/inventory-usage/total-quantity/contractor/${contractorId}`,
     { withCredentials: true });
   }
+
+  createInventoryUsageWithApproval(inventoryUsage: any): Observable<InventoryUsage> {
+    return this.http.post<InventoryUsage>(`${this.url}/inventory-usage`, inventoryUsage, { withCredentials: true });
+  }
 }
+
+

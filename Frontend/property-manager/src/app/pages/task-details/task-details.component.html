@@ -69,6 +69,19 @@
           </div>
         </div>
         
+        <!-- Task Status Display -->
+        <div class="mb-5">
+          <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Status</h2>
+          <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+               [ngClass]="{
+                 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': task?.status === 'APPROVED',
+                 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': task?.status === 'PENDING',
+                 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': task?.status === 'REJECTED'
+               }">
+            {{ task?.status || 'Unknown' }}
+          </div>
+        </div>
+        
         @if(this.contractor) {
           <button (click)="contractorDetails(contractor.uuid)" class="hover:translate-y-1 cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-800 p-4">
             <div>
@@ -94,7 +107,9 @@
         *ngIf="inventoryUsage?.length" 
         [taskId]="this.taskId!"
       />
-      @if(this.contractor) {
+      
+      <!-- Only show inventory request component if task is approved and user is contractor -->
+      @if(this.contractor && isTaskApproved) {
         <app-contractor-inventory-request
           [task]="task!"
         ></app-contractor-inventory-request>
