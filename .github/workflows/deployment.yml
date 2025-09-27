@@ -20,6 +20,31 @@ jobs:
               run: ./gradlew clean build -x test
               working-directory: Backend/property-management
 
+            - name: Debug - Check built JAR
+              run: |
+                echo "=== Built JAR files ==="
+                ls -la Backend/property-management/build/libs/
+                echo "=== JAR file details ==="
+                file Backend/property-management/build/libs/property-managemnet-0.0.1-SNAPSHOT.jar
+
+            - name: Check EC2 directory structure
+              uses: appleboy/ssh-action@v0.1.7
+              with: 
+                host: ${{ secrets.EC2_HOST }}
+                username: ${{ secrets.EC2_USER }}
+                key: ${{ secrets.EC2_KEY }}
+                script: |
+                  echo "=== Current directory structure ==="
+                  pwd
+                  ls -la
+                  echo "=== Property-Management directory ==="
+                  ls -la Property-Management/ || echo "Property-Management not found"
+                  echo "=== Property-Management/EC2 directory ==="
+                  ls -la Property-Management/EC2/ 2>/dev/null || echo "EC2 directory not found"
+                  echo "=== Creating EC2 directory if it doesn't exist ==="
+                  mkdir -p Property-Management/EC2
+                  ls -la Property-Management/EC2/
+
             - name: Clean old JAR file on EC2
               uses: appleboy/ssh-action@v0.1.7
               with: 
@@ -27,30 +52,35 @@ jobs:
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY }}
                 script: |
+                  echo "=== Cleaning old JAR files ==="
                   rm -f /home/${{ secrets.EC2_USER }}/Property-Management/EC2/property-managemnet-0.0.1-SNAPSHOT.jar
+                  rm -f /home/${{ secrets.EC2_USER }}/property-managemnet-0.0.1-SNAPSHOT.jar
+                  find /home/${{ secrets.EC2_USER }} -name "property-managemnet-*.jar" -type f
 
-            - name: Copy JAR to EC2
+            - name: Copy JAR to EC2 using absolute path
               uses: appleboy/scp-action@v0.1.7
               with:
                 host: ${{ secrets.EC2_HOST }}
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY }}
                 source: Backend/property-management/build/libs/property-managemnet-0.0.1-SNAPSHOT.jar
-                target: /home/${{ secrets.EC2_USER }}/Property-Management/EC2/
+                target: /home/${{ secrets.EC2_USER }}/
                 overwrite: true
 
-            - name: Verify JAR was copied
+            - name: Move JAR to correct location
               uses: appleboy/ssh-action@v0.1.7
               with:
                 host: ${{ secrets.EC2_HOST }}
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY }}
                 script: |
-                  echo "JAR file location:"
+                  echo "=== Moving JAR to correct location ==="
+                  mv /home/${{ secrets.EC2_USER }}/property-managemnet-0.0.1-SNAPSHOT.jar /home/${{ secrets.EC2_USER }}/Property-Management/EC2/
+                  echo "=== Verifying JAR in correct location ==="
                   ls -la /home/${{ secrets.EC2_USER }}/Property-Management/EC2/property-managemnet-0.0.1-SNAPSHOT.jar
                   echo "File size:"
                   du -h /home/${{ secrets.EC2_USER }}/Property-Management/EC2/property-managemnet-0.0.1-SNAPSHOT.jar
-                
+
             - name: Run migrations
               uses: appleboy/ssh-action@v0.1.7
               with:
@@ -73,9 +103,12 @@ jobs:
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY }}
                 script: |
-                    sudo systemctl daemon-reload
-                    sudo systemctl restart property-backend
-                    sudo systemctl status property-backend --no-pager
+                  sudo systemctl daemon-reload
+                  sudo systemctl restart property-backend
+                  sleep 5
+                  sudo systemctl status property-backend --no-pager
+                  echo "=== Checking recent logs ==="
+                  sudo journalctl -u property-backend -n 20 --no-pager
 
     frontend:
         runs-on: ubuntu-22.04
