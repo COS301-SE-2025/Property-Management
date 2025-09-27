@@ -63,8 +63,10 @@ export class InventoryUsageApiService {
   {
     const updateStatus = {
       trusteeApproved: inventoryUsage.trusteeApproval,
-      approvalDate: inventoryUsage.approvedDate
-    }
+      approvalDate: inventoryUsage.approvedDate instanceof Date
+        ? inventoryUsage.approvedDate.toISOString().split('T')[0]
+        : inventoryUsage.approvedDate
+    };
 
     return this.http.patch<InventoryUsage>(`${this.url}/inventory-usage/${usageId}/approval`, updateStatus,
     { withCredentials: true });

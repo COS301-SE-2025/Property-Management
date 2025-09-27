@@ -63,7 +63,7 @@ export class ViewHouseComponent implements OnInit{
     const cookieId = getCookieValue(document.cookie, 'trusteeId');
     
     const house = await this.houseService.loadHouseById(this.houseId!);
-    
+
     if(!house)
     {
       throw new Error('House not found');

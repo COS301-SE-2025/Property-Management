@@ -1,6 +1,7 @@
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
+import { CommonModule } from '@angular/common';
 import { ContractorService, Inventory, InventoryUsage, InventoryUsageApiService } from 'shared';
 import { FormatAmountPipe } from "shared";
 import { EditBudgetDialogComponent } from "../edit-budget-dialog/edit-budget-dialog.component";
@@ -16,7 +17,7 @@ interface InventoryUsageDisplay{
 
 @Component({
   selector: 'app-inventory-budget-card',
-  imports: [CardModule, TableModule, FormatAmountPipe, EditBudgetDialogComponent],
+  imports: [CardModule, TableModule, FormatAmountPipe, EditBudgetDialogComponent, CommonModule],
   templateUrl: './inventory-budget-card.component.html',
   styles: ``
 })

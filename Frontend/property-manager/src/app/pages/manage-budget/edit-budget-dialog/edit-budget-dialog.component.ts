@@ -1,4 +1,4 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { SliderModule } from 'primeng/slider';
@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DialogComponent } from '../../../components/dialog/dialog.component';
-import { BuildingDetails } from 'shared';
+import { BuildingDetails, HousesService } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BudgetApiService } from 'shared';
 
@@ -29,10 +29,11 @@ export class EditBudgetDialogComponent extends DialogComponent implements OnInit
   public budgetType = input.required<string>();
   public oldBudgetAmount = input.required<number>();
 
+  private houseService = inject(HousesService);
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute, 
-    private router: Router, 
     private budgetApiService: BudgetApiService,
     private messageService: MessageService
   ){
@@ -89,11 +90,7 @@ export class EditBudgetDialogComponent extends DialogComponent implements OnInit
             detail: 'Budget updated successfully'
           });
 
-          setTimeout(() => {
-            this.router.navigate(['manageBudget', this.houseId]).then(() => {
-              window.location.reload();
-            });
-          }, 2500);
+          this.houseService.loadBudget(this.houseId);
         },
         error: (err) => {
           console.error("Failed to update budget", err);

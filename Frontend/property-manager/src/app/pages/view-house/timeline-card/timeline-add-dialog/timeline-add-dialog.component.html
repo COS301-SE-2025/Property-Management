@@ -1,14 +1,24 @@
 <p-toast/>
-<p-dialog header="Add new task to timeline?" [style]="{ width: '40rem'}" [(visible)]="displayDialog" [modal]="true">
-    <span class="p-text-secondary block mb-8">Update timeline with a pending task</span>
+<p-dialog header="Add new task to timeline?" [style]="{ width: '45rem'}" [(visible)]="displayDialog" [modal]="true">
+    <ng-template #header>
+        <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-xl font-semibold">Add New Timeline Task</span>
+        </div>
+    </ng-template>
+    <div class="p-text-secondary block mb-6 text-gray-600 dark:text-gray-300">
+        Create a new maintenance task for your property timeline
+    </div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mx-auto max-w-lg">
         <div class = "flex flex-col mb-3 gap-2">
-            <label for="timeline-task" class="font-semibold">Task name</label>
-            <input id="timeline-task" class="border rounded w-70 mx-auto px-2" type="text" formControlName="name" required>
+            <label for="timeline-task" class="font-bold">Task name</label>
+            <input id="timeline-task" class="border rounded w-70 mx-auto px-2" type="text" formControlName="name" placeholder="Enter task name" required>
         </div>
         <div class = "flex flex-col mt-8 mb-4 gap-4">
             <label for="timeline-description" class="font-bold">Task description</label>
-            <textarea id="timeline-description" class = "border rounded w-90 mx-auto h-20 px-2" formControlName = "description" required></textarea>
+            <textarea id="timeline-description" class = "border rounded w-90 mx-auto h-20 px-2" formControlName = "description" placeholder="Describe the task in detail" required></textarea>
         </div>
         <div class="mb-6 pt-2">
             <p class="font-bold pb-2">Assign inventory items to task</p>
@@ -37,6 +47,10 @@
                 (quantitiesChanged)="onQuantitiesChanged($event)"
             ></app-inventory-card>
         </div>
+        <div>
+            <p-checkbox formControlName="allowContractor" [binary]="true"/>
+            <span class="font-bold p-3">Allow contractor to see inventory?</span>
+        </div>
         <div class = "mb-6 mt-10">
             <p class="font-bold pb-4">Upload picture of task for the contractors</p>
             <p-fileupload 
@@ -51,9 +65,9 @@
         </div>
         <div class = "mb-6">
             <label for="timeline-dueDate" class="font-bold block">Proposed due date</label>
-            <p-datepicker id="timeline-dueDate" formControlName="date" styleClass="w-75 p-3 h-12" [iconDisplay]="'input'" [showIcon]="true" size="small" [appendTo]="'body'" required/>
+            <p-datepicker id="timeline-dueDate" formControlName="date" styleClass="w-75 p-3 h-12" [iconDisplay]="'input'" [showIcon]="true" size="small" [appendTo]="'body'" placeholder="Enter due date" required/>
         </div>
-        <div class="pb-[3.7rem]">
+        <div class="pb-[4rem]">
             <label for="priority" class="font-semibold block pb-2">Assign a priority</label>
             <p-select 
                 id="priority"
@@ -68,18 +82,18 @@
             </ng-template>
             </p-select>
         </div>
-        <div class="mb-6 text-center">
+        <div class="mb-3 text-center">
             <p class = "font-semibold text-red-500" *ngIf="addError">Error adding new task</p>
         </div>
         <div class = "flex justify-end mt-3">
-            <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer  hover:translate-y-1 transition-transform duration-200" (click)="closeDialog()">Cancel</button>
+            <button class = "bg-gray-300 px-3 py-2 rounded mr-2 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="closeDialog()">Cancel</button>
             <button type="submit" 
-                class = "px-3 py-2 rounded cursor-pointer  hover:translate-y-1 transition-transform duration-200"
+                class = "px-3 py-2 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200"
                 [class.bg-black]="form.valid"
                 [class.bg-gray-200]="!form.valid"
                 [class.text-white]="form.valid"
                 [disabled]="!form.valid">
-                Add item
+                Add Task
             </button>
         </div>
     </form>

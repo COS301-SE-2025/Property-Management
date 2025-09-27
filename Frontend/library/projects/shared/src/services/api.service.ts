@@ -85,7 +85,7 @@ export class ApiService {
       { withCredentials: true });
   }
 
-  getTrusteesById(id: number): Observable<Trustee>
+  getTrusteesById(id: number | string): Observable<Trustee>
   {
     return this.http.get<Trustee>(`${this.url}/trustee/${id}` ,
       { withCredentials: true });
@@ -258,6 +258,39 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
       withCredentials: true
     });
   }
+  resetTrusteePasswordRequest(email: string): Observable<any> {
+  const body = { email: email };
+  return this.http.post(`${this.url}/trustee/auth/password-reset-request`, body, {
+    withCredentials: true
+  });
+}
 
+confirmTrusteeResetPassword(email: string, confirmationCode: string, newPassword: string): Observable<any> {
+  const body = {
+    email: email,
+    confirmationCode: confirmationCode,
+    newPassword: newPassword
+  };
+  return this.http.post(`${this.url}/trustee/auth/password-reset-confirm`, body, {
+    withCredentials: true
+  });
+}  getInventoryByBuilding(buildingUuid: string): Observable<Inventory[]> {
+  return this.http.get<Inventory[]>(`/api/inventory/building/${buildingUuid}`);
+}
+  
 
+  createInventoryUsage(data: any) {
+    return this.http.post(`${this.url}/inventory-usage`, data, { withCredentials: true });
+  }
+
+  getPendingInventoryUsage() {
+    return this.http.get<any[]>(`/api/inventory-usage/pending-approval`);
+  }
+
+  approveInventoryUsage(usageUuid: string, approved: boolean) {
+    return this.http.patch(`/api/inventory-usage/${usageUuid}/approval`, {
+      trusteeApproved: approved,
+      approvalDate: new Date().toISOString().slice(0, 10)
+    });
+  }
 }

@@ -4,7 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import java.sql.Date
+import java.time.LocalDate
 import java.util.UUID
 
 @Entity
@@ -24,5 +24,5 @@ data class InventoryUsage(
     @Column(name = "trustee_approved")
     val trusteeApproved: Boolean = false,
     @Column(name = "approval_date")
-    val approvalDate: Date? = null,
+    val approvalDate: LocalDate? = null,
 )

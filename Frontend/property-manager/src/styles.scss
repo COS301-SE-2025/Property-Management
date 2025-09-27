@@ -168,6 +168,29 @@ p, .text, .font-normal {
 .dark-theme .p-datatable .p-datatable-tbody > tr:hover {
   background: var(--datatable-row-hover-bg);
 }
+.dark-theme .p-paginator{
+  background: var(--datatable-body-bg);
+}
+.dark-theme .p-paginator-page.p-paginator-page-selected {
+  background: var(--card-border);
+  color: #fff;
+}
+.dark-theme .p-select-option{
+  color: #fff;
+  background: #000000;
+}
+.dark-theme .p-select-list-container{
+  background: #000000;
+}
+.dark-theme .p-select-option.p-select-option-selected.p-focus {
+  background: var(--card-hover);
+  color: #fff;
+}
+
+.dark-theme .p-dropdown{
+  background: #D3D3D3;
+}
+
 .dark-theme .p-dialog {
   background: var(--dialog-bg);
   color: var(--dialog-content-text);
