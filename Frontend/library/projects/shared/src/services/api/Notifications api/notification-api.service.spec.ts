@@ -7,7 +7,7 @@ import { environmentMobile } from '../../../environment';
 describe('NotificationsApiService', () => {
   let service: NotificationsApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:8080/api';
+  const mockApiUrl = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
