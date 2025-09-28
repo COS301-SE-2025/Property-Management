@@ -80,7 +80,11 @@ As shown we have a average response time of 1700 ms and no errors occured with a
 Here is also a screenshot from our cloudwatch showing the CPU utilization and the network statistics
 
 #### 2. Uploading files
-This requests simulates file uploads to our s3 bucket to test file upload performance. The results are shown in the screenshot below:
+This requests simulates file uploads to our s3 bucket to test file upload performance. We tested 1000 concurrent file uploads with a ramp up time of 30 seconds. The results are shown in the screenshot below:
+
+![alt text](../images/Demo%204/file_performance.png)
+
+As shown, it takes an average of 500ms for a file of size 1mb to be uploaded and receive the presigned url back.
 
 ### 5.2 Reliability
 
