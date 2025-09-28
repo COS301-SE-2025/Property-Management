@@ -14,10 +14,13 @@ import { BudgetApiService } from 'shared';
 import { BuildingDetails } from 'shared';
 import { ActivatedRoute } from '@angular/router';
 import { InventoryAddDialogComponent } from "./inventory-add-dialog/inventory-add-dialog.component";
+// import { InventoryForecastComponent, ForecastResponse } from './inventory-forecast/inventory-forecast.component';
+import { InventoryForecastComponent } from './inventory-forecast/inventory-forecast.component';
+import { ForecastResponse } from 'shared';
 
 @Component({
   selector: 'app-inventory-card',
-  imports: [CardModule, TableModule, CommonModule, ButtonModule, FormsModule, InputNumberModule, ToastModule, InventoryAddDialogComponent, DropdownModule],
+  imports: [CardModule, TableModule, CommonModule, ButtonModule, FormsModule, InputNumberModule, ToastModule, InventoryAddDialogComponent, DropdownModule, InventoryForecastComponent],
   templateUrl: './inventory-card.component.html',
   styles: ``,
   providers: [MessageService]
@@ -30,6 +33,8 @@ export class InventoryCardComponent implements OnInit{
   private houseId = ''; 
   bcUser = false;
 
+  forecastData: ForecastResponse | null = null;
+
   isEditing = false;
   editingItems = new Map<string, boolean>();
   draftQuantities = new Map<string, number>();
@@ -37,7 +42,6 @@ export class InventoryCardComponent implements OnInit{
 
   rows = 5;
 
-  //Used inside dialogs that call the table
   @Output() itemUsage = new EventEmitter<{taskId: string, itemId: string, quantity: number}>();
   @Output() quantitiesChanged = new EventEmitter<Inventory[]>();
 
@@ -51,14 +55,24 @@ export class InventoryCardComponent implements OnInit{
     this.houseId = String(this.route.snapshot.paramMap.get('houseId'));
   }
 
-  ngOnInit()
-  {
-    if(getCookieValue(document.cookie, 'bodyCoporateId'))
-    {
+  async ngOnInit() {
+    if(getCookieValue(document.cookie, 'bodyCoporateId')) {
       this.bcUser = true;
     }
-    
+
     this.resetState();
+
+    await this.loadForecastData();
+  }
+
+  private async loadForecastData() {
+    try {
+      await this.houseService.loadInventoryForecast(this.houseId);
+      this.forecastData = this.houseService.inventoryForecast();
+    } catch (error) {
+      console.error('Error loading forecast data:', error);
+      this.forecastData = null;
+    }
   }
 
   startAction(inventory: Inventory, action: 'increase' | 'decrease' | 'edit')
@@ -148,6 +162,8 @@ export class InventoryCardComponent implements OnInit{
      summary: 'Success',
      detail: 'Inventory updated successfully'
     });
+    
+    await this.loadForecastData();
    }
    this.resetState();
 

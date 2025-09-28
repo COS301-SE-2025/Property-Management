@@ -68,6 +68,10 @@
                     Add New Inventory Item
                 </button>
                 <app-inventory-add-dialog #inventoryAddDialog></app-inventory-add-dialog>
+
+                <div class="w-full max-w-md mt-4">
+                    <app-inventory-forecast [forecastData]="forecastData"></app-inventory-forecast>
+                </div>
             </div>
         }
     </p-card>

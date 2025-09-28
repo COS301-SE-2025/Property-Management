@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { NotificationsApiService, InviteWithTrustee2 } from './notifications-api.service';
+import { NotificationsApiService } from './notifications-api.service';
 import { Notification } from '../../../public-api';
 import { environmentMobile } from '../../../environment';
 
 describe('NotificationsApiService', () => {
   let service: NotificationsApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:8080/api';
+  const mockApiUrl = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -113,7 +113,7 @@ describe('NotificationsApiService', () => {
   describe('getInviteById', () => {
     it('should send a GET request for invite by ID', () => {
       const inviteUuid = 'invite-123';
-      const mockInvite: InviteWithTrustee2 = {
+      const mockInvite = {
         inviteUuid,
         status: 'pending',
         invitedOn: '2023-01-01',
