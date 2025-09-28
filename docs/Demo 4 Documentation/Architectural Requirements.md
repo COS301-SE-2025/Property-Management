@@ -76,6 +76,20 @@ This requests simulates file uploads to our s3 bucket to test file upload perfor
 
 ### 5.2 Reliability
 
+To ensure the robustness and stability of our system under various conditions, we conducted a series of reliability tests and implemented key infrastructure safeguards.
+
+#### Infrastructure & Monitoring
+- Our system is hosted and managed on **Amazon Web Services (AWS)**, leveraging its scalability and reliability.
+- Real-time monitoring is enabled via AWS CloudWatch, tracking key performance metrics such as:
+  - **CPU Utilization**
+  - **Network Packets**
+  - **Network In (bytes)**
+  - **CPU Credit Usage**
+  - **Network Packets In (count)**
+  - **CPU Credit Balance (count)**
+
+![System Monitoring Screenshot]("./docs/images/AWS stats.jpg")
+
 ### 5.3 Security
 
 ### 5.4 Maintainability 
