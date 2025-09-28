@@ -171,7 +171,9 @@ Our security testing approach ensures that all critical backend and frontend sec
         <img src="../images/Demo%204/Frontend_Guard_Tests.png" alt="Frontend Guard Test Results" width="450"/>
     </div>
 - **GitHub Actions Summary:**  
-  ![GitHub Actions Test Summary](../images/Demo%204/github_actions_summary.png)
+    <div style="display: flex; gap: 30px;">
+        <img src="../images/Demo%204/Github_Actions_Tests.png" alt="GitHub Actions Test Summary" width="900"/>
+    </div>
 
 #### Policy Reference
 
