@@ -73,7 +73,7 @@ This request simulates the simple data a user would request when first logging i
 
 ![alt text](../images/Demo%204/Basic_performance.png)
 
-As shown we have a average response time of 1700 ms and no errors occured with any of the requests
+As shown we have a average response time of 1050 ms and no errors occured with any of the requests
 
 ![alt text](../images/Demo%204/Basic_performance_cloudwatch.png)
 
