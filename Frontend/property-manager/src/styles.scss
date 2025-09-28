@@ -188,7 +188,7 @@ p, .text, .font-normal {
 }
 
 .dark-theme .p-dropdown{
-  background: rgb(107 114 128 / var(--tw-bg-opacity, 1));
+  background: #D3D3D3;
 }
 
 .dark-theme .p-dialog {
@@ -384,4 +384,59 @@ option.custom-option {
   background: #8e8e8e !important;
   color: #ffffff !important;
   border-color: #facc15;
+}
+
+/* Hide scrollbar for notification drawer */
+.p-drawer .p-drawer-content {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.p-drawer .p-drawer-content::-webkit-scrollbar {
+  display: none; /* WebKit browsers (Chrome, Safari, Edge) */
+}
+
+/* Alternative approach - target the drawer more specifically */
+.p-drawer[data-pc-name="drawer"] .p-drawer-content {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.p-drawer[data-pc-name="drawer"] .p-drawer-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Notification item styling for better visual distinction */
+.notification-date {
+  color: #facc15 !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.notification-message {
+  color: rgb(31, 41, 55);
+  line-height: 1.4;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .notification-message {
+    color: rgb(229, 231, 235);
+  }
+}
+
+/* If you're using a dark mode class instead of media query */
+.dark .notification-message {
+  color: rgb(229, 231, 235);
+}
+
+/* Read notification styling */
+.notification-message-read {
+  color: rgb(75, 85, 99);
+}
+
+.dark .notification-message-read {
+  color: rgb(209, 213, 219);
 }

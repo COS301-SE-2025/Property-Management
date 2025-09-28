@@ -4,11 +4,12 @@
   <p-progressSpinner></p-progressSpinner>
 </div>
 
-<div class = "mt-10 ml-10" *ngIf="!loading && votingTasks().length <= 0 && pendingTasks().length <= 0 && finalApproval().length <= 0 && approvedTasks().length <= 0">
-    <p class = "text-xl font-normal flex flex-col justify-center items-center pr-12 text-yellow-300">No tasks open for voting. Come back later</p>
+<div class="mt-10 flex flex-col items-center justify-center" *ngIf="!loading && votingTasks().length <= 0 && pendingTasks().length <= 0 && finalApproval().length <= 0 && approvedTasks().length <= 0">
+    <img src="/assets/icons/empty-folder.svg" alt="No tasks" class="w-24 h-24 mb-4 opacity-60" />
+    <p class="text-xl font-normal ">No tasks open for voting. Come back later</p>
 </div>
 
-<div *ngIf="!loading" [@floatUp] class="flex flex-col justify-center items-center mt-10">
+<div *ngIf="!loading&& votingTasks().length > 0 && pendingTasks().length > 0 && finalApproval().length > 0 && approvedTasks().length > 0" [@floatUp] class="flex flex-col justify-center items-center mt-10">
   <p-table [value]="allTasks" showGridlines selectionMode="single" (onRowSelect)="showDetails($event)" [metaKeySelection]="false" [globalFilterFields]="['priorty', 'type']" dataKey="uuid" [tableStyle]="{ 'min-width' : '65rem' }">
     <ng-template #header>
       <tr>

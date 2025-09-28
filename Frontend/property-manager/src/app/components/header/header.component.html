@@ -118,7 +118,7 @@
   </div>
 
   <!-- Breadcrumb -->
-  <div class="pl-5" [ngStyle]="{ 'background-color': 'var(--bg-color)' }">
+  <div class="pl-32 -mt-5" [ngStyle]="{ 'background-color': 'var(--bg-color)' }">
     <p-breadcrumb class="max-w-full" [model]="items">
       <ng-template #item let-item>
         <ng-container *ngIf="item.route && !item.active; else elseBlock">
