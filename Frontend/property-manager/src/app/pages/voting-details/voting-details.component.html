@@ -30,7 +30,7 @@
           </div>
         </div>
         
-        <div class="md:w-3/5 p-6">
+        <div class="md:w-3/5 p-6 flex flex-col">
           <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">{{ task()?.title }}</h1>
           
           <div class="mb-5">
@@ -149,7 +149,7 @@
           }
           @else {
             <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
-              <div class="mb-5">
+              <div class="mb-5 flex-grow">
                 <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase  mb-2">Assign Contractors</h2>
                 <p-multiselect
                   id="contractors"
@@ -159,7 +159,7 @@
                   optionValue="uuid"
                   class="w-full"
                   formControlName="contractorName"
-                  [panelStyle]="{ background: 'var(--surface-ground)', border: '1px solid var(--surface-border)' }">
+                  [panelStyle]="{ background: '#CBCBCB', border: '1px solid var(--surface-border)' }">
                 </p-multiselect>
               </div>
               
