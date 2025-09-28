@@ -66,10 +66,18 @@ Reasons for using Decomposition
 
 ### 5.1 Performance
 
-Using Jmeter, we tested 10000 requests being made simulateneously with a ramp up time of 15 seconds. We run two test suites:
+Using Jmeter, we run two test suites:
 
 #### 1. Simple example requests
-This request simulates the simple data a user would request when first logging into the platform. This involves fetching data from a single table. The results are shown in the screenshot below:
+This request simulates the simple data a user would request when first logging into the platform, this makes 10000 requests withs a ramp up time of 300 seconds. This involves fetching data from a single endpoints. The results are shown in the screenshot below:
+
+![alt text](../images/Demo%204/Basic_performance.png)
+
+As shown we have a average response time of 1700 ms and no errors occured with any of the requests
+
+![alt text](../images/Demo%204/Basic_performance_cloudwatch.png)
+
+Here is also a screenshot from our cloudwatch showing the CPU utilization and the network statistics
 
 #### 2. Uploading files
 This requests simulates file uploads to our s3 bucket to test file upload performance. The results are shown in the screenshot below:
