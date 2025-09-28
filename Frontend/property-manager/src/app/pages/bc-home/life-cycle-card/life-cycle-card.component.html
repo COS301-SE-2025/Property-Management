@@ -49,7 +49,7 @@
                         <td>{{ cost.timeframe || '-' }}</td>
                         <td>
                             <span *ngIf="cost.estimatedCost !== null && cost.estimatedCost !== undefined; else noCost">
-                                R {{ cost.estimatedCost | formatAmount }}
+                                R {{ cost.estimatedCost | number:'1.2-2' }}
                             </span>
                             <ng-template #noCost>-</ng-template>
                         </td>
