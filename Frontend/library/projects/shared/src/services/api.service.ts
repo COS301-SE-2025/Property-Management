@@ -277,4 +277,22 @@ async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
       approvalDate: new Date().toISOString().slice(0, 10)
     });
   }
+  resetTrusteePasswordRequest(email: string): Observable<any> {
+  const body = { email: email };
+  return this.http.post(`${this.url}/trustee/auth/password-reset-request`, body, {
+    withCredentials: true
+  });
+}
+
+confirmTrusteeResetPassword(email: string, confirmationCode: string, newPassword: string): Observable<any> {
+  const body = {
+    email: email,
+    confirmationCode: confirmationCode,
+    newPassword: newPassword
+  };
+  return this.http.post(`${this.url}/trustee/auth/password-reset-confirm`, body, {
+    withCredentials: true
+  });
+}
+
 }
