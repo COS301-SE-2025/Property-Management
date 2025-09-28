@@ -6,23 +6,35 @@
         <p class = "text-yellow-500 font-semibold">Could not load house. Please try again</p>
     </div>
     <div class="space-y-8">
-        @if(!house()?.coporateUuid)
-        {
-            <div class="flex items-center justify-center">
-                <div class="relative inline-block">
-                    <img [src]="house()?.propertyImage" class="w-60 h-43 mx-auto object-cover mt-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow" alt="">
+        <div class="flex items-center justify-center">
+            <div class="relative inline-block">
+                <img [src]="house()?.propertyImage" class="w-[25rem] h-43 mx-auto object-cover mt-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow" alt="">
+                @if(!house()?.coporateUuid)
+                {
                     <button class="absolute top-5 -right-5 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="updateHouse.openDialog()">
                         <img *ngIf="!house()?.coporateUuid" src="assets/icons/screwdriver.svg" class="w-5 h-5">
                     </button>
                     <app-update-house-dialog #updateHouse [houseId]="house()?.buildingUuid!"/>
+                }
                 </div>
             </div>
-        }
-        <p class="text-center text-3xl font-bold mt-4 text-gray-800 dark:text-gray-100 truncate" title="{{ house()?.name }}">{{ house()?.name }}</p>
-        <div [@floatUp] class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pb-3 px-3">
-            <app-inventory-card [inventory]="houseService.inventory()"/>
-            <app-budget-card [budget]="houseService.budgets()"/>
-            <app-timeline-card [timeline]="houseService.timeline()"/>
+        <div class="flex flex-col items-center">
+          <p class="text-center text-4xl font-bold  px-8 py-1 mt-1 text-gray-800 dark:text-gray-100 truncate" title="{{ house()?.name }}">
+            {{ house()?.name }}
+          </p>
+          <div class="h-1 w-64 bg-yellow-400 mb-6 mt-1"></div>
         </div>
+
+        <div [@floatUp] class="flex gap-4 mt-4 pb-3 px-3">
+  <div class="flex-[3]">
+    <app-inventory-card [inventory]="houseService.inventory()"/>
+  </div>
+  <div class="flex-[2]">
+    <app-budget-card [budget]="houseService.budgets()"/>
+  </div>
+  <div class="flex-[3]">
+    <app-timeline-card [timeline]="houseService.timeline()"/>
+  </div>
+</div>
     </div>
 </div>

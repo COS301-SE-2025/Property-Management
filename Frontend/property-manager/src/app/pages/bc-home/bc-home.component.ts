@@ -12,19 +12,21 @@ import { PropertyService } from 'shared';
 import { ApiService } from 'shared';
 import { MessageService } from 'primeng/api';
 import { Toast } from "primeng/toast";
+import { InventoryAnomalyCardComponent } from "./inventory-anomaly-card/inventory-anomaly-card.component";
 
 @Component({
   selector: 'app-bc-home',
   imports: [
-    PendingTaskCardComponent, 
-    LifeCycleCardComponent, 
-    ReserveFundCardComponent, 
-    MaintenanceGraphCardComponent, 
-    DropdownModule, 
-    CommonModule, 
-    FormsModule, 
-    Toast
-  ],
+    PendingTaskCardComponent,
+    LifeCycleCardComponent,
+    ReserveFundCardComponent,
+    MaintenanceGraphCardComponent,
+    DropdownModule,
+    CommonModule,
+    FormsModule,
+    Toast,
+    InventoryAnomalyCardComponent
+],
   providers: [MessageService],
   templateUrl: './bc-home.component.html',
   styles: ``,
@@ -64,7 +66,8 @@ export class BcHomeComponent implements OnInit {
       await Promise.all([
         this.bodyCoporateService.loadFundContribution(bcId),
         this.bodyCoporateService.loadPendingTasks(bcId),
-        this.bodyCoporateService.loadGraph(bcId)
+        this.bodyCoporateService.loadGraph(bcId),
+        this.bodyCoporateService.loadAnomalies(bcId)
       ]);
     } catch (error) {
       this.messageService.add({

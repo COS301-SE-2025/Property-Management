@@ -63,8 +63,10 @@ export class InventoryUsageApiService {
   {
     const updateStatus = {
       trusteeApproved: inventoryUsage.trusteeApproval,
-      approvalDate: inventoryUsage.approvedDate
-    }
+      approvalDate: inventoryUsage.approvedDate instanceof Date
+        ? inventoryUsage.approvedDate.toISOString().split('T')[0]
+        : inventoryUsage.approvedDate
+    };
 
     return this.http.patch<InventoryUsage>(`${this.url}/inventory-usage/${usageId}/approval`, updateStatus,
     { withCredentials: true });
@@ -110,4 +112,10 @@ export class InventoryUsageApiService {
     return this.http.get<number>(`${this.url}/inventory-usage/total-quantity/contractor/${contractorId}`,
     { withCredentials: true });
   }
+
+  createInventoryUsageWithApproval(inventoryUsage: any): Observable<InventoryUsage> {
+    return this.http.post<InventoryUsage>(`${this.url}/inventory-usage`, inventoryUsage, { withCredentials: true });
+  }
 }
+
+

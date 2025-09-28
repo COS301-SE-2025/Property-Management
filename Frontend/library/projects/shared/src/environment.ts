@@ -1,5 +1,6 @@
 export const environmentMobile = {
-  production: false,
-  apiUrl: 'https://api.property-management.live/api' 
+  production: true,
+  apiUrl : 'https://api.property-management.live/api',
+  wowFactorUrl: 'https://api.property-management.live/forecast'
 };
 

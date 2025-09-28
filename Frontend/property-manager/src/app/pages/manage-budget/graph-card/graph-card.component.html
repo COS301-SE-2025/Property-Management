@@ -1,4 +1,4 @@
-<p-card styleClass = "h-[25rem] w-[40rem]">
+<p-card styleClass = "h-[30rem] w-[52.5rem]">
     <ng-template #title>Budget over Time</ng-template>
-    <p-chart type="line" [data]="budgetGraphData()"[options] = "getChartOptions()"/>
+    <p-chart #chart type="line" [data]="budgetGraphData()"[options] = "chartOptions"/>
 </p-card>

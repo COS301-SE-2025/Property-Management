@@ -1,24 +1,35 @@
-@if(this.inventoryUsage && this.inventoryUsage.length > 0)
-{
-    <p-card>
-        <ng-template #title class="text-lg font-semibold">Inventory items assigned</ng-template>
-        <p-table [value]="inventoryItem!">
-            <ng-template #header>
-            <tr>
-                <th pSortableColumn="name">
-                    Description <p-sortIcon field="name"/>
-                </th>
-                <th pSortableColumn="quantityUsed">
-                    Quantity <p-sortIcon field="quantityUsed"/>
-                </th>
-            </tr>
-            </ng-template>
-            <ng-template #body let-inventory let-rowIndex="rowIndex">
-            <tr>
-                <td> {{ inventory.name }}</td>
-                <td> {{ inventory.quantityUsed }}</td>
-            </tr>
-            </ng-template>
-        </p-table>
-    </p-card>
+<!-- Inventory Items Card -->
+@if(this.inventoryUsage && this.inventoryUsage.length > 0) {
+    <div class="bg-white dark:bg-[#2d2d2d] rounded-xl shadow-md overflow-hidden mb-6">
+        <div class="p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            Inventory Items Assigned
+        </h2>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full">
+            <thead>
+                <tr class="text-left border-b border-gray-200 dark:border-gray-700">
+                <th class="pb-3 text-gray-500 dark:text-gray-400 font-medium">Description</th>
+                <th class="pb-3 text-gray-500 dark:text-gray-400 font-medium">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let inventory of inventoryItem!" 
+                    class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                <td class="py-3 text-gray-700 dark:text-gray-300">{{ inventory.name }}</td>
+                <td class="py-3">
+                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-sm">
+                    {{ inventory.quantityInStock }}
+                    </span>
+                </td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
 }

@@ -6,7 +6,7 @@ import { environmentMobile } from '../../../environment';
 describe('ImageApiService', () => {
   let service: ImageApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:8080/api';
+  const mockApiUrl = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

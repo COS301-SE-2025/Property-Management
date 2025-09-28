@@ -200,7 +200,8 @@
               }
             ],
             "styles": [
-              "property-manager/src/styles.scss"
+              "property-manager/src/styles.scss",
+              "node_modules/leaflet/dist/leaflet.css"
             ],
             "stylePreprocessorOptions": {
               "includePaths": ["node_modules"]

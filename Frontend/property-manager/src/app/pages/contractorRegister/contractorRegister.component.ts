@@ -52,7 +52,27 @@ export class ContractorRegisterComponent {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(email);
     }
-    
+
+    private getPasswordErrors(password: string): string[] {
+      const errors: string[] = [];
+      if (password.length < 8) {
+        errors.push('Password must be at least 8 characters.');
+      }
+      if (!/[A-Z]/.test(password)) {
+        errors.push('Password must contain an uppercase letter.');
+      }
+      if (!/[a-z]/.test(password)) {
+        errors.push('Password must contain a lowercase letter.');
+      }
+      if (!/[0-9]/.test(password)) {
+        errors.push('Password must contain a number.');
+      }
+      if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\];'/+=~`]/.test(password)) {
+        errors.push('Password must contain a special character.');
+      }
+      return errors;
+    }
+
     async register(): Promise<void> {
       // Reset errors
       this.errors = {
@@ -92,6 +112,12 @@ export class ContractorRegisterComponent {
       if (!this.password) {
         this.errors.password = 'Password is required.';
         hasError = true;
+      } else {
+        const passwordErrors = this.getPasswordErrors(this.password);
+        if (passwordErrors.length > 0) {
+          this.errors.password = passwordErrors.join(' ');
+          hasError = true;
+        }
       }
 
       if (hasError) {

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BuildingDetails } from '../../../models/buildingDetails.model';
 import { environmentMobile } from '../../../environment';
+import { BudgetPrediction } from '../../../public-api';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class BudgetApiService {
 
   // private url = '/api';
   private url = environmentMobile.apiUrl;
+  private wowFactorUrl = environmentMobile.wowFactorUrl
 
   constructor(private http: HttpClient) { }
 
@@ -81,5 +83,24 @@ export class BudgetApiService {
   {
     return this.http.delete<BuildingDetails>(`${this.url}/budgets/${budgetId}`,
     { withCredentials: true });
+  }
+
+  getBudgetPredictionHouse(buildingId: string, freq: string, period: number, type: string)
+  {
+    const req = {
+      freq: freq,
+      periods: period,
+      budget_type: type
+    }
+    return this.http.post<BudgetPrediction>(`${this.wowFactorUrl}/budget-prediction/building/${buildingId}`, req, {withCredentials: true});
+  }
+  getBudgetPredictionBodyCorporate(bcId: string, freq: string, period: number, type: string)
+  {
+    const req = {
+      freq: freq,
+      periods: period,
+      budget_type: type
+    }
+    return this.http.post<BudgetPrediction>(`${this.wowFactorUrl}/budget-prediction/body-corporate/${bcId}`, req, {withCredentials: true});
   }
 }

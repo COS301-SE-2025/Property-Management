@@ -13,7 +13,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ButtonModule } from 'primeng/button';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { Toast } from 'primeng/toast';
-import { forkJoin, switchMap } from 'rxjs';
+import { firstValueFrom, forkJoin, interval, Subscription, switchMap } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { QuoteDetailsComponent } from './quote-details/quote-details.component';
 import { VotingResultsComponent } from './voting-results/voting-results.component';
@@ -70,6 +70,9 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
 
   public voteResult = false;
   public awaitFinal = false;
+
+  public countdown = '';
+  private countdownSub!: Subscription;
 
   constructor(
     private route: ActivatedRoute, 
@@ -165,75 +168,79 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
                 this.taskService.getTaskById(this.taskId).subscribe({
                   next: (res) => {
                     this.taskName = res.title;
-                  if(res.cuuid !== '' && res.cuuid)
-                  {
-                    this.voteResult = true;
-                  }
-                  else if(res.approvalStatus === 'PENDING' && res.scheduled_date < new Date())
-                  {
-                    this.awaitFinal = true;
-                  }
 
-                  if(res.img)
-                  {
-                    this.imageService.getImage(res.img).subscribe({
-                      next: (url) => {
-                        res.img = url
-                      } 
-                    })
-                  }
-                  else
-                  {
-                    res.img = "assets/images/no_img.png";
-                  }
+                    if(res.cuuid !== '' && res.cuuid)
+                    {
+                      this.voteResult = true;
+                    }
+                    else if(res.approvalStatus === 'PENDING' && res.scheduled_date < new Date())
+                    {
+                      this.awaitFinal = true;
+                    }
 
-                  if(this.taskId)
-                  {
-                    this.votingService.getAssignedContractors(this.taskId).subscribe({
-                      next: (contractors) => {
-                        contractors.forEach( contractor => {
-                          //get contractor details
-                          this.contractorService.getContractorById(contractor.contractorUuid!).subscribe({
-                            next: (c) => {
+                    if(res.img)
+                    {
+                      this.imageService.getImage(res.img).subscribe({
+                        next: (url) => {
+                          res.img = url
+                        } 
+                      })
+                    }
+                    else
+                    {
+                      res.img = "assets/images/no_img.png";
+                    }
 
-                              if(!this.voteResult || this.awaitFinal)
-                              {
-                                const contractorDetails: AssignedContractor = {
-                                  ...c,
-                                  quoteSubmitted: contractor.quoteSubmitted,
-                                  quoteUuid: contractor.quoteUuid
-                                }
-                                this.addToContractors(contractorDetails);
-                              }
-                              else
-                              {
-                                this.contractorService.getContractorById(this.task()?.cuuid!).subscribe({
-                                  next: (c) => {
-                                    if(this.contractors()?.some(ct => ct.uuid === c.uuid))
-                                    {
-                                      return;
-                                    }
-                                    this.contractors.set([]);
+                    if(this.taskId)
+                    {
+                      this.votingService.getAssignedContractors(this.taskId).subscribe({
+                        next: (contractors) => {
+                          contractors.forEach( contractor => {
+                            //get contractor details
+                            this.contractorService.getContractorById(contractor.contractorUuid!).subscribe({
+                              next: (c) => {
 
-                                     const contractorDetails: AssignedContractor = {
-                                      ...c,
-                                      quoteSubmitted: contractor.quoteSubmitted,
-                                      quoteUuid: contractor.quoteUuid
-                                    }
-                                    this.addToContractors(contractorDetails);
+                                if(!this.voteResult || this.awaitFinal)
+                                {
+                                  const contractorDetails: AssignedContractor = {
+                                    ...c,
+                                    quoteSubmitted: contractor.quoteSubmitted,
+                                    quoteUuid: contractor.quoteUuid
                                   }
-                                })
+                                  this.addToContractors(contractorDetails);
+                                }
+                                else
+                                {
+                                  this.contractorService.getContractorById(this.task()?.cuuid!).subscribe({
+                                    next: (c) => {
+                                      if(this.contractors()?.some(ct => ct.uuid === c.uuid))
+                                      {
+                                        return;
+                                      }
+                                      this.contractors.set([]);
+
+                                      const contractorDetails: AssignedContractor = {
+                                        ...c,
+                                        quoteSubmitted: contractor.quoteSubmitted,
+                                        quoteUuid: contractor.quoteUuid
+                                      }
+                                      this.addToContractors(contractorDetails);
+                                    }
+                                  })
+                                }
+                              },
+                              error: (err) => {
+                                console.error("Couldnt find assigned contractors", err);
                               }
-                            },
-                            error: (err) => {
-                              console.error("Couldnt find assigned contractors", err);
-                            }
-                          });
-                        })
-                      }
-                    })
-                  }
-                  this.task.set(res);
+                            });
+                          })
+                        }
+                      })
+                    }
+                    this.task.set(res);
+                    if (this.task()?.scheduled_date) {
+                      this.startCountdown(new Date(this.task()!.scheduled_date));
+                    }
                 },
                 error: (err) => {
                 console.error("Couldnt find task", err);
@@ -263,6 +270,11 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
     }
   }
   ngOnDestroy(): void {
+    if (this.countdownSub) 
+    {
+      this.countdownSub.unsubscribe();
+    }
+
     this.breadCrumb.clearBreadCrumb();
   }
 
@@ -278,9 +290,30 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
 
       if(this.taskId)
       {
-        //TODO - Change scheduled date
-        await this.votingService.createVotingSession(contractors, this.taskId, bcId).then(() => {
+        try {
+          const inventoryUsages = await firstValueFrom(
+            this.inventoryUsageService.getInventoryUsageByTaskId(this.taskId)
+          );
 
+          if (inventoryUsages && inventoryUsages.length > 0) {
+            const approvalRequests = inventoryUsages.map(usage => {
+              const updatedUsage: InventoryUsage = {
+                usageUuid: usage.usageUuid,
+                itemUuid: usage.itemUuid,
+                taskUuid: usage.taskUuid,
+                contractorUuid: usage.contractorUuid,
+                quantityUsed: usage.quantityUsed,
+                trusteeApproval: true,
+                approvedDate: new Date()
+              };
+              return this.inventoryUsageService.ApproveOrRejectInventoryUsage(usage.usageUuid, updatedUsage); 
+            });
+            await firstValueFrom(forkJoin(approvalRequests));
+          }else {
+            console.log('No inventory usage records found for this task.');
+          }
+
+          await this.votingService.createVotingSession(contractors, this.taskId, bcId).then(() => {
           const noti: Notification = {
             notificationType: 'Task approval',
             message: `Task ${this.taskName} has been initially approved`,
@@ -288,26 +321,46 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
             recipientUuid: this.trusteeId!,
             relatedTaskUuid: this.taskId!,
             isRead: false
-          }
+          };
           this.notificationService.createNotifications(noti).subscribe({
             next: () => {
               this.messageSerive.add({
                 severity: 'success',
                 summary: 'Success',
-                detail: 'Task succesfully approved'
+                detail: inventoryUsages.length > 0
+                  ? 'Task and inventory usage successfully approved'
+                  : 'Task successfully approved'
               });
-    
+
               setTimeout(() => {
-                this.router.navigate(['voting']).then(() => {
                   window.location.reload();
-                })
               }, 2500);
+            },
+            error: (err) => {
+              console.error('Failed to send notification:', err);
+              this.messageSerive.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to send notification'
+              });
             }
-          })
+          });
+        });
+      } catch (err: any) {
+        console.error('Error approving task or inventory usage:', err);
+        const errorMessage = err.status === 404
+          ? 'Task or inventory usage not found'
+          : 'Failed to approve task or inventory usage';
+        this.messageSerive.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: errorMessage
         });
       }
     }
   }
+}
+        
   async submitVote()
   {
       const contractorId = this.selectedContractorId();
@@ -526,5 +579,32 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
         });
       }
     })
+  }
+  cancelVote()
+  {
+    this.selectedContractorId.set(null);
+  }
+  private startCountdown(deadline: Date) {
+    this.countdownSub = interval(1000).subscribe(() => {
+      const now = new Date().getTime();
+      const distance = deadline.getTime() - now;
+
+      if (distance <= 0) {
+        this.countdown = 'Voting closed';
+        this.countdownSub.unsubscribe();
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      this.countdown = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    });
+  }
+  contractorDetails(contractorId: string)
+  {
+    this.router.navigate(['/contractorDetails', contractorId, 'trusted']);
   }
 }

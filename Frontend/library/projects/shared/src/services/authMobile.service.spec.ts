@@ -37,7 +37,7 @@ describe('AuthMobileService', () => {
   let service: AuthMobileService;
   let httpMock: HttpTestingController;
   let storageService: MockStorageService;
-  const mockApiUrl = 'http://localhost:8080/api';
+  const mockApiUrl = environmentMobile.apiUrl;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({

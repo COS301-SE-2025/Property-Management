@@ -5,6 +5,7 @@ import com.example.propertymanagement.dto.BuildingCreateDto
 import com.example.propertymanagement.dto.BuildingResponseDto
 import com.example.propertymanagement.dto.BuildingUpdateDto
 import com.example.propertymanagement.service.BuildingService
+import com.example.propertymanagement.service.InventoryUsageService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
@@ -30,6 +31,9 @@ class BuildingControllerTest(
 ) {
     @MockBean
     lateinit var buildingService: BuildingService
+
+    @MockBean
+    lateinit var inventoryUsageService: InventoryUsageService
 
     @Autowired
     lateinit var objectMapper: com.fasterxml.jackson.databind.ObjectMapper

@@ -3,7 +3,7 @@
 
 <div class="px-10 py-8" [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
   <h2 class="text-2xl font-bold mb-2">Create New Property</h2>
-  <div class="h-1 w-64 bg-yellow-400 mb-6"></div>
+  <div class="h-1 w-80 bg-yellow-400 mb-6"></div>
   <div class="h-1 w-64 mb-6" [ngStyle]="{ 'background-color': 'var(--accent-color)' }"></div>
 
   <div
@@ -136,8 +136,15 @@
               <label for="city">City</label>
             </p-floatlabel>
             <p-floatlabel class="w-full">
-              <input id="province" pInputText formControlName="province" />
-              <label for="province">Province</label>
+              <p-dropdown
+                id="province"
+                [options]="provinces"
+                formControlName="province"
+                [showClear]="true"
+                placeholder="Select Province"
+                class="w-full col-span-2"
+                [style]="{ width: '82%' }">
+              </p-dropdown>
             </p-floatlabel>
           </div>
         </div>
@@ -145,8 +152,15 @@
         <div class="mb-8">
           <div class="flex gap-4">
             <p-floatlabel class="w-full">
-              <input id="type" pInputText formControlName="type" class="w-full col-span-2" [style]="{ width: '91%' }"/>
-              <label for="type">Type</label>
+              <p-dropdown
+                id="type"
+                [options]="propertyTypes"
+                formControlName="type"
+                [showClear]="true"
+                placeholder="Select Property Type"
+                class="w-full col-span-2"
+                [style]="{ width: '91%' }">
+              </p-dropdown>
             </p-floatlabel>
           </div>
         </div>
