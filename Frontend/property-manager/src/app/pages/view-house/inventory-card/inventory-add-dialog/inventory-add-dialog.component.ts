@@ -66,42 +66,30 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
       const quantity = this.form.value.quantity;
       const buildingId = this.buildingUuid || this.houseId;
 
-      const role = getCookieValue(document.cookie, 'role');
+      let role: 'TRUSTEE' | 'CONTRACTOR' | null = null;
+
+      if (getCookieValue(document.cookie, 'trusteeId')) {
+        role = 'TRUSTEE';
+      } else if (getCookieValue(document.cookie, 'contractorId')) {
+        role = 'CONTRACTOR';
+      }
 
       if (role === 'CONTRACTOR') {
-        // NEW: Contractors → add as PENDING and send notification
         this.handleContractorRequest(name, price, quantity, buildingId);
       } else {
-        // OLD: Trustees → keep original direct flow (unchanged)
-        this.inventoryItemApiService.addInventoryItem(name, "unit 1", price, quantity, buildingId).subscribe({
-          next: async () => {
-            await this.getAndUpdateBudget((price * quantity), buildingId);
-            await this.housesService.loadInventory(buildingId);
-            await this.housesService.loadBudget(buildingId);
-
-            this.form.reset();
-            this.closeDialog();
-
+        this.inventoryItemApiService.detectAnomaly(name, price).subscribe({
+          next: (res) => {
+            const status = res.message === 'Item normal' ? 'normal' : 'ANOMALY';
+            this.addInventoryItem(name, status, price, quantity);
+          },
+          error: (err) => {
+            console.error("Anomaly detection failed", err);
             this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Inventory item added successfully'
+              severity: 'warn',
+              summary: 'Warning',
+              detail: 'Inventory anomaly detection failed, adding item anyway',
             });
-
-            this.inventoryItemApiService.detectAnomaly(name, price).subscribe({
-              next: (res) => {
-                const status = res.message === 'Item normal' ? 'normal' : 'ANOMALY';
-                this.addInventoryItem(name, status, price, quantity);
-              },
-              error: (err) => {
-                console.error("Anomaly detection failed", err)
-                this.messageService.add({
-                  severity: 'warn',
-                  summary: 'Warning',
-                  detail: 'Inventory anomaly detection failed',
-                });
-              }
-            });
+            this.addInventoryItem(name, 'normal', price, quantity);
           }
         });
       }
@@ -110,17 +98,12 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     }
   }
 
-  /**
-   * NEW: Handle contractor requests - add as PENDING item and send notification
-   */
+
   private handleContractorRequest(name: string, price: number, quantity: number, buildingId: string) {
-    // First add the inventory item with PENDING status
     this.inventoryItemApiService.addInventoryItem(name, "PENDING", price, quantity, buildingId).subscribe({
       next: async (inventoryItem) => {
-        // Get trustee UUID for notification
         const trusteeUuid = await this.getBuildingTrustee(buildingId);
         if (trusteeUuid) {
-          // Create notification with item details
           const contractorId = getCookieValue(document.cookie, 'contractorId');
           this.notificationsService.createNotification({
             type: 'INVENTORY_REQUEST',
@@ -183,7 +166,6 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
     }
   }
 
-  // OLD: Keep existing methods unchanged
   private addInventoryItem(name: string, status: string, price: number, quantity: number) {
     const buildingId = this.buildingUuid || this.houseId;
     this.inventoryItemApiService.addInventoryItem(name, status, price, quantity, buildingId).subscribe({
