@@ -11,8 +11,8 @@ import { homeOutline, archiveOutline, notificationsOutline, personOutline } from
   templateUrl: './tab.component.html',
   styles: `
     ion-tabs{
-      height: [20rem];
-      padding-botton: [8rem];
+      height: 78px;
+      padding-bottom: 20px;
     }
   `,
 })

@@ -15,7 +15,11 @@ import { ThemeService } from 'src/app/services/theme.service';
     IonIcon, IonItem, IonButton, TabComponent, IonContent, IonList, IonSelect, IonSelectOption,RouterModule,HeaderComponent
   ],
   templateUrl: './profile.component.html',
-  styles: ``,
+  styles: `
+    ion-select{
+      color: rgb(229 231 235 / var(--tw-text-opacity, 1));
+    }
+  `,
 })
 export class ProfileComponent implements OnInit {
   public darkMode = false;
