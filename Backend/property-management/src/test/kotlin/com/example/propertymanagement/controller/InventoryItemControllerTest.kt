@@ -21,8 +21,10 @@ import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import java.util.UUID
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 
 @WebMvcTest(InventoryItemController::class)
+@AutoConfigureMockMvc(addFilters = false)
 class InventoryItemControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc

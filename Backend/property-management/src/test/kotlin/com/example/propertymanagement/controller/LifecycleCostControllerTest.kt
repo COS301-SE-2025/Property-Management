@@ -19,8 +19,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.math.BigDecimal
 import java.util.UUID
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 
 @WebMvcTest(controllers = [LifecycleCostController::class])
+@AutoConfigureMockMvc(addFilters = false)
 class LifecycleCostControllerTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val objectMapper: ObjectMapper,

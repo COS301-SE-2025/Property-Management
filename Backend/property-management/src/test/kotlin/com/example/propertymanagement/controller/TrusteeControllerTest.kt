@@ -17,8 +17,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.UUID
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 
 @WebMvcTest(TrusteeController::class)
+@AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [com.example.propertymanagement.PropertyManagemnetApplication::class])
 class TrusteeControllerTest {
     @Autowired
