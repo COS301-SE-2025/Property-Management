@@ -24,8 +24,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
 import java.util.UUID
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 
 @WebMvcTest(controllers = [BuildingController::class])
+@AutoConfigureMockMvc(addFilters = false)
 class BuildingControllerTest(
     @Autowired val mockMvc: MockMvc,
 ) {

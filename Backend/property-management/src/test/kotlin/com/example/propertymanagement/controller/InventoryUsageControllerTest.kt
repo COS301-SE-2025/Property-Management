@@ -18,10 +18,12 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.context.annotation.Import
 import java.sql.Date
 import java.util.UUID
 
 @WebMvcTest(controllers = [InventoryUsageController::class])
+@Import(com.example.propertymanagement.TestSecurityConfig::class)
 class InventoryUsageControllerTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val objectMapper: ObjectMapper,

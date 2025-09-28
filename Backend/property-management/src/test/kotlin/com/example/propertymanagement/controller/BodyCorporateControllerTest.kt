@@ -7,8 +7,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import java.util.UUID
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 
 @WebMvcTest(controllers = [BodyCorporateController::class])
+@AutoConfigureMockMvc(addFilters = false)
 class BodyCorporateControllerTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val objectMapper: ObjectMapper,

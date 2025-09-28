@@ -22,12 +22,14 @@ import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import org.springframework.context.annotation.Import
 import java.time.LocalDate
 import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("integration")
 @Testcontainers
+@Import(com.example.propertymanagement.TestIntegrationSecurityConfig::class)
 class InventoryItemIntegrationTest {
     companion object {
         @Container
