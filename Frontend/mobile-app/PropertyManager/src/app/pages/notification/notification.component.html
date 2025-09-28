@@ -3,8 +3,10 @@
     <app-header/>
 
     <div class="flex flex-col justify-start items-start ml-5 my-4">
-      <h1 class="text-xl dark:text-white">All Notifications</h1>
-      <div class="w-[8.5rem] h-1 bg-yellow-300 mt-2"></div>
+    <div class="animate-item mt-5 ml-2">
+      <h1 class="text-2xl font-bold dark:text-white">Notifications</h1>
+      <div class="w-24 h-1 bg-yellow-300 mt-2"></div>
+    </div>
 
       <div *ngIf="notiError">
           <p class="text-red-500">Error getting notifications, please try again</p>
@@ -14,8 +16,8 @@
             <div class="space-y-2">
                 <p class="text-lg pb-2 dark:text-white">Unread</p>
                 <p-timeline [value]="unreadTimeline()" align="left">
-                    <ng-template #content let-time>
-                        <div tabindex="0" role="button" (click)="showDetails(time)" (keydown.enter)="showDetails(time)" (keydown.space)="showDetails(time)">
+                    <ng-template #content let-time >
+                        <div  tabindex="0" role="button" (click)="showDetails(time)" (keydown.enter)="showDetails(time)" (keydown.space)="showDetails(time)">
                             {{ time.createdAtDate | formatTime }}  <br>  {{ time.message }}
                         </div>
                     </ng-template>

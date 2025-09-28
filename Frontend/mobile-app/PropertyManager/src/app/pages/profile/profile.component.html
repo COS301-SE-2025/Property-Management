@@ -1,9 +1,13 @@
 <ion-content class="dark:bg-gray-700 ">
-  <h3 class="text-lg mt-4 ml-4 text-center dark:text-white ">My Account</h3>
+  <app-header />
+  <div class="ion-padding animate-item">
+    <h2 class="text-3xl font-semibold dark:text-white">My Account</h2>
+    <div class="w-24 h-1 bg-yellow-300 mt-2"></div>
+  </div>
   <div class="flex flex-col justify-start items-start pt-4 justify-center items-center">
-    <ion-list class="dark:bg-gray-700">
-      <ion-item class=" dark:bg-gray-700">
-        @if(darkMode)
+    <ion-list class="dark:bg-gray-600 rounded-2xl w-[20rem]  items-center">
+      <ion-item class=" dark:bg-gray-600" style="--border-width: 0; --inner-border-width: 0;">
+        @if(darkMode) 
         {
           <ion-button color="light" fill="clear" (click)="changeTheme()">
             <ion-icon slot="start" name="moon-outline"></ion-icon>
@@ -18,28 +22,21 @@
         }
       </ion-item>
       @if (userType === 'contractor') {
-      <ion-item>
+      <ion-item style="--border-width: 0; --inner-border-width: 0;">
         <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/contractor-profile">
           <ion-icon slot="start" src="assets/icons/settings_gray.svg"></ion-icon>
           Edit Contractor Profile
         </ion-button>
       </ion-item>
-      <ion-item>
+      <ion-item style="--border-width: 0; --inner-border-width: 0;">
         <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/submitted-quotations">
           <ion-icon slot="start" name="document-text-outline"></ion-icon>
           Submitted Quotations
         </ion-button>
       </ion-item>
     }
-         @if (userType === 'contractor') {
-        <ion-item>
-          <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/submitted-quotations">
-            <ion-icon slot="start" name="document-text-outline"></ion-icon>
-            Submitted Quotations
-          </ion-button>
-        </ion-item>
-      }
-      <ion-item>
+        
+      <ion-item style="--border-width: 0; --inner-border-width: 0;">
         <ion-button [color]="darkMode? 'light': 'dark'" fill="clear">
             <ion-icon slot="start" name="text-outline"></ion-icon>
             <ion-select [value]="fontSize" (ionChange)="changeFontSize($event.detail.value)">
@@ -49,13 +46,13 @@
     </ion-select>
         </ion-button>
       </ion-item>
-      <ion-item>
+      <ion-item style="--border-width: 0; --inner-border-width: 0;">
         <ion-button [color]="darkMode? 'light': 'dark'" fill="clear" routerLink="/help">
             <ion-icon slot="start" name="help-outline"></ion-icon>
             Help
           </ion-button>
       </ion-item>
-      <ion-item>
+      <ion-item style="--border-width: 0; --inner-border-width: 0;">
         <ion-button color="danger" fill="clear" (click)="signOut()">
             <ion-icon slot="start" name="log-out-outline"></ion-icon>
             Sign out
