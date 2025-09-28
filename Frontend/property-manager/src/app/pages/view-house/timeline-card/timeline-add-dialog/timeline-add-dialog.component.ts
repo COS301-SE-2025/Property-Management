@@ -76,7 +76,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       name: ['', Validators.required],
       description: ['', Validators.required],
       date: ['', Validators.required],
-      priority: ['', Validators.required]
+      priority: ['', Validators.required],
+      allowContractor: [false]
     });
 
     //Get contractors
@@ -108,25 +109,21 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     this.selectedFile = event.files[0];
   }
  }
+
  async onSubmit() {
-  if(this.form.valid)
-  {
+  if (this.form.valid) {
     this.addError = false;
 
     let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
 
-    if(this.selectedFile)
-    {
-      try{
+    if (this.selectedFile) {
+      try {
         const upload = await this.imageService.uploadImage(this.selectedFile).toPromise();
-        if(upload?.imageId){
-          imageId = upload?.imageId;
+        if (upload?.imageId) {
+          imageId = upload.imageId;
         }
-      }
-      catch(err)
-      {
+      } catch (err) {
         console.error("Image upload failed", err);
-
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -136,17 +133,27 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     }
 
     const userId = getCookieValue(document.cookie, 'trusteeId');
-    const isBodyCorporate = userId === '' ? true : false
+    const isBodyCorporate = userId === '' ? true : false;
     const name = this.form.value.name;
     const des = this.form.value.description;
     const date = this.form.value.date;
     const proirity = this.form.value.priority.value;
+    const allowContractor = this.form.value.allowContractor;
 
     this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate, proirity).subscribe({
       next: (task) => {
+        if (allowContractor) {
+          this.taskApiService.updateTaskAllowContractor(task.uuid).subscribe({
+            next: () => {
+              console.log('Task status updated to allow');
+            },
+            error: (err) => {
+              console.error('Failed to update task status to allow', err);
+            }
+          });
+        }
 
-        if(this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0)
-        {
+        if (this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0) {
           this.handleInventoryUsage(task.uuid);
         }
 
@@ -155,16 +162,17 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
 
         const house = this.housesService.getHouseById(this.houseId);
 
-        if(house?.coporateUuid)
-        {
+        const buildingId = String(this.route.snapshot.paramMap.get('houseId'));
+
+        if (house?.coporateUuid) {
           const noti: Notification = {
             notificationType: 'Task Creation',
-            message: `New task: ${name} has been added to ${house?.name}`,
-            recipientUuid: house?.coporateUuid!,
+            message: `New task: ${name} has been added to ${house.name}`,
+            recipientUuid: house.coporateUuid!,
             recipientType: 'bodycoporate',
             isRead: false,
             relatedTaskUuid: task.uuid
-          }
+          };
           this.notificationService.createNotifications(noti).subscribe({
             next: () => {
               this.messageService.add({
@@ -172,24 +180,17 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
                 summary: 'Success',
                 detail: 'Task added successfully'
               });
-      
-              const buildingId = String(this.route.snapshot.paramMap.get('houseId'));
               this.housesService.loadTasks(buildingId);
             }
           });
-        }
-        else
-        {
+        } else {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Task added successfully'
           });
-  
-          const buildingId = String(this.route.snapshot.paramMap.get('houseId'));
           this.housesService.loadTasks(buildingId);
         }
-
       },
       error: (err) => {
         console.error("Failed to create task", err);
@@ -197,7 +198,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       }
     });
   }
- }
+}
+
  updateInventoryItemsUsed(event: MultiSelectChangeEvent)
  {
   const selectedIds = event.value as string[];

@@ -48,7 +48,7 @@
             ></app-inventory-card>
         </div>
         <div>
-            <p-checkbox [binary]="true"/>
+            <p-checkbox formControlName="allowContractor" [binary]="true"/>
             <span class="font-bold p-3">Allow contractor to see inventory?</span>
         </div>
         <div class = "mb-6 mt-10">
@@ -67,7 +67,7 @@
             <label for="timeline-dueDate" class="font-bold block">Proposed due date</label>
             <p-datepicker id="timeline-dueDate" formControlName="date" styleClass="w-75 p-3 h-12" [iconDisplay]="'input'" [showIcon]="true" size="small" [appendTo]="'body'" placeholder="Enter due date" required/>
         </div>
-        <div class="pb-[4rem]">
+        <div class="pb-[5rem]">
             <label for="priority" class="font-semibold block pb-2">Assign a priority</label>
             <p-select 
                 id="priority"

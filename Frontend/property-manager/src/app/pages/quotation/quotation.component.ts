@@ -12,7 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ApiService, getCookieValue } from 'shared'; 
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePicker, DatePickerModule } from 'primeng/datepicker';
-import { MaintenanceTask,Inventory } from 'shared';
+import { MaintenanceTask,Inventory , InventoryUsage , InventoryUsageApiService} from 'shared';
 import {
   trigger,
   transition,
@@ -26,8 +26,11 @@ interface FileUploadEvent {
   files: File[];
 }
 
-
-
+interface AllocatedInventoryItem {
+  name: string;
+  quantityUsed: number;
+  price?: number;
+}
 
 
 @Component({
@@ -72,6 +75,7 @@ export class QuotationComponent implements OnInit{
   taskId = ''; 
   type = 'pending';
   buildingUuid = '';
+  currentTask: MaintenanceTask | null = null;
 
   // Properties to fix the template errors
   showAddButton = false;
@@ -84,6 +88,11 @@ export class QuotationComponent implements OnInit{
   
   // Actual inventory data
   inventory: Inventory[] = [];
+  allocatedInventory: AllocatedInventoryItem[] = [];
+
+  get isTaskApproved(): boolean {
+    return this.currentTask?.status === 'APPROVED';
+  }
 
   // Properties for inventory management
   editingItems = new Map<string, boolean>();
@@ -92,6 +101,7 @@ export class QuotationComponent implements OnInit{
   constructor(
   private messageService: MessageService,
   private apiService: ApiService,
+  private inventoryUsageService: InventoryUsageApiService,
   private route: ActivatedRoute,
   private router: Router
 ) {
@@ -136,6 +146,18 @@ export class QuotationComponent implements OnInit{
           return;
         }
 
+        this.currentTask = task;
+
+        //check if task status is approved
+        if (task.status !== 'APPROVED') {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Task Not Approved',
+            detail: 'This task must be approved before creating a quotation.'
+          });
+          return;
+        }
+
         // // Check if task is assigned to this contractor
         // if (task.cuuid !== this.contractorId) {
         //   this.messageService.add({
@@ -160,6 +182,7 @@ export class QuotationComponent implements OnInit{
 
         // Load inventory for the building
         this.loadBuildingInventory(this.buildingUuid);
+        this.loadAllocatedInventory();
       },
       error: (err) => {
         console.error('Error loading tasks:', err);
@@ -193,6 +216,48 @@ export class QuotationComponent implements OnInit{
         });
         // Fallback to empty array
         this.inventory = [];
+      }
+    });
+  }
+
+  loadAllocatedInventory(): void {
+    this.inventoryUsageService.getUsageRecordsByTaskId(this.taskId).subscribe({
+      next: (usageRecords: InventoryUsage[]) => {
+        // For each usage record, get the inventory item details
+        const inventoryPromises = usageRecords.map(usage => {
+          return this.apiService.getInventory().toPromise().then(allInventory => {
+            const inventoryItem = allInventory?.find(item => item.itemUuid === usage.itemUuid);
+            if (inventoryItem) {
+              return {
+                name: inventoryItem.name,
+                quantityUsed: usage.quantityUsed,
+                price: inventoryItem.price
+              } as AllocatedInventoryItem;
+            }
+            return null;
+          });
+        });
+
+        Promise.all(inventoryPromises).then(results => {
+          this.allocatedInventory = results.filter(item => item !== null) as AllocatedInventoryItem[];
+          
+          if (this.allocatedInventory.length === 0) {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'No Allocated Inventory',
+              detail: 'No inventory has been allocated to this task yet.'
+            });
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error loading allocated inventory:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load allocated inventory.'
+        });
+        this.allocatedInventory = [];
       }
     });
   }

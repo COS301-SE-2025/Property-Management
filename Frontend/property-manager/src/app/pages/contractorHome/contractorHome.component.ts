@@ -66,20 +66,24 @@ export class ContractorHomeComponent implements OnInit {
       
         const taskRequests = tasks.map(task => {
           task.uuid = task.taskUuid!;
+          const mappedTask = {
+            ...task,
+            des: task['description'] || task.des 
+          };
           if (task.imageUuid) {
             return this.api.getPresignedImageUrl(task.imageUuid).pipe(
               map(imageUrl => ({
-                ...task,
+                ...mappedTask,
                 img: imageUrl || 'assets/images/no_image.png'
               })),
               catchError(() => of({
-                ...task,
+                ...mappedTask,
                 img: 'assets/images/no_image.png'
               }))
             );
           } else {
             return of({
-              ...task,
+              ...mappedTask,
               img: 'assets/images/no_image.png'
             });
           }

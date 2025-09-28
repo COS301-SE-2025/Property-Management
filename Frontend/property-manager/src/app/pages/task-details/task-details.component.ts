@@ -28,6 +28,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   taskId: string | null = null;
   contractorUser = false;
 
+  get isTaskApproved(): boolean {
+    return this.task?.status === 'APPROVED';
+  }
+  
   constructor(
     private imageService: ImageApiService, 
     private contractorService: ContractorApiService, 
