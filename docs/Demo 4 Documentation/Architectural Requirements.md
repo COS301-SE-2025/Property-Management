@@ -88,7 +88,7 @@ To ensure the robustness and stability of our system under various conditions, w
   - **Network Packets In (count)**
   - **CPU Credit Balance (count)**
 
-![System Monitoring Screenshot]("./docs/images/AWS stats.jpg")
+![System Monitoring Screenshot](../images/AWS%20stats.jpg)
 
 ### 5.3 Security
 
