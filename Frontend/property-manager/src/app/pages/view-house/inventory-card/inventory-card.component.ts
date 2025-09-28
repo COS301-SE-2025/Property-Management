@@ -166,10 +166,6 @@ export class InventoryCardComponent implements OnInit{
     await this.loadForecastData();
    }
    this.resetState();
-
-   setTimeout(() => {
-     window.location.reload();
-   }, 2000);
   }
   private async getAndUpdateBudget(overallPrice: number)
   {
