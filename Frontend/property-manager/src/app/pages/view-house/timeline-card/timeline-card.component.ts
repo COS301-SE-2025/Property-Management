@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
   templateUrl: './timeline-card.component.html',
   styles: `
     .due-date-normal {
-      color: #374151;
+      color: #d3d3d3;
     }
     .due-date-urgent {
       color: #dc2626;
