@@ -2,7 +2,7 @@ name: Deploy Backend and Frontend
 
 on:
     push:
-        branches: [main]
+        branches: [frontend]
 
 jobs:
     backend:
@@ -20,15 +20,49 @@ jobs:
               run: ./gradlew clean build -x test
               working-directory: Backend/property-management
 
-            - name: Copy JAR to EC2
-              uses: appleboy/scp-action@v0.1.7
+            - name: Clean old JAR file on EC2
+              uses: appleboy/ssh-action@v0.1.7
+              with: 
+                host: ${{ secrets.EC2_HOST }}
+                username: ${{ secrets.EC2_USER }}
+                key: ${{ secrets.EC2_KEY }}
+                script: |
+                  rm -f /home/${{ secrets.EC2_USER }}/Property-Management/EC2/property-managemnet-0.0.1-SNAPSHOT.jar
+
+            - name: Verify JAR was built in GitHub runner
+              run: |
+                echo "Current directory:"
+                pwd
+                echo "Checking if JAR exists in GitHub runner:"
+                ls -la Backend/property-management/build/libs/
+                echo "Full path:"
+                find . -name "*.jar" -type f
+
+            - name: Setup SSH key for rsync
+              run: |
+                mkdir -p ~/.ssh
+                echo "${{ secrets.EC2_KEY }}" > ~/.ssh/id_rsa
+                chmod 600 ~/.ssh/id_rsa
+                ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+            - name: Copy JAR to EC2 using rsync
+              run: |
+                rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+                  Backend/property-management/build/libs/property-managemnet-0.0.1-SNAPSHOT.jar \
+                  ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/Property-Management/EC2/
+
+            - name: Verify JAR was copied
+              uses: appleboy/ssh-action@v0.1.7
               with:
                 host: ${{ secrets.EC2_HOST }}
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY }}
-                source: Backend/property-management/build/libs/property-managemnet-0.0.1-SNAPSHOT.jar
-                target: /home/${{ secrets.EC2_USER }}/Property-Management/EC2/
-
+                script: |
+                  echo "JAR file location:"
+                  ls -la /home/${{ secrets.EC2_USER }}/Property-Management/EC2/property-managemnet-0.0.1-SNAPSHOT.jar
+                  echo "File size:"
+                  du -h /home/${{ secrets.EC2_USER }}/Property-Management/EC2/property-managemnet-0.0.1-SNAPSHOT.jar
+                
             - name: Run migrations
               uses: appleboy/ssh-action@v0.1.7
               with:
@@ -36,6 +70,7 @@ jobs:
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY}}
                 script: | 
+                    cd /home/${{ secrets.EC2_USER }}/Property-Management/EC2
                     flyway \
                     -url=${{ secrets.DB_URL }} \
                     -user=${{ secrets.DB_USER }} \
@@ -50,7 +85,9 @@ jobs:
                 username: ${{ secrets.EC2_USER }}
                 key: ${{ secrets.EC2_KEY }}
                 script: |
+                    sudo systemctl daemon-reload
                     sudo systemctl restart property-backend
+                    sudo systemctl status property-backend --no-pager
 
     frontend:
         runs-on: ubuntu-22.04

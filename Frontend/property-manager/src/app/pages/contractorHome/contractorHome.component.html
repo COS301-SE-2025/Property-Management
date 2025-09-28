@@ -21,7 +21,7 @@
 
     <div *ngIf="tasks.length > 0; else noTasks" class="flex flex-wrap gap-8 justify-center w-full">
       <a *ngFor="let task of tasks" [routerLink]="['/quotation', task.taskUuid]" class="block animate-item">
-        <p-card [style]="{ height: '18.5rem', width: '15rem', overflow: 'hidden', backgroundColor: 'white' }">
+        <p-card [style]="{ height: '18.5rem', width: '15rem', overflow: 'hidden',  backgroundColor: '#f3f4f6' }">
           <ng-template #header>
             <img
               [src]="task.img"
