@@ -105,6 +105,13 @@ To ensure the robustness and stability of our system under various conditions, w
 ### 5.3 Security
 
 ### 5.4 Maintainability 
+To maintain maintainability, we follow a strict code quality guideline. For the backend we use Klint for Kotlin coding standards which helps in enforcing consistent formatting and naming conventions. While for the front end we use ESLint. Both catch syntax errors, unused variables and stylistic issues and are ran automatically Using GitHub actions for the backend, frontend and dev branches. 
+
+We also use automated build and tests on top of the linting, where we make sure the entire application compiles successfully and all the tests previously mentioned succeed for both the backend and frontend, if all checks succeed, we can merge into main, else not GitHub Actions fails the pipeline. This ensures changes font break existing functionality and the CI pipeline catches errors early. 
+
+We also adhere to a strict coding standards document in terms of naming conventions as in to use camel case or snake case, file and folder structure, commenting and documentation practices and testing requirements for new features. This ensures that across the board all our code looks the same, is readable and that whichever file or folder you are searching for is easily identifiable from its characteristics 
+
+Deployment wise AWS RDS using PostgreSQL fully manages our database and using their services we have automated daily snapshots, auto security and minor version updates with high availability as it’s a global service and is easy to scale. All of this reduces operational burdens on developers to focus more on the code and not database maintenance
 
 ### 5.5 Usability
 
