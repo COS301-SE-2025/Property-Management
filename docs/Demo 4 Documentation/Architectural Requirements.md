@@ -185,45 +185,37 @@ Our security testing approach ensures that all critical backend and frontend sec
 <br>
 Yes we had very externsive use of toasts that show the status of multiple operations within the system.
 
-- Match between system and real world
-<br>
+- Match between system and real world:
 Our system has a very well developed match with the real-world as we have multiple real world user groups, namely:-
+
   - **Body corporate**
   - **Trustee**
   - **Contractor**
   <br>
 We have a quotes,voting system for trustee's and a ten year maintenance plan that you can find in the real year.
 
-- User control and freedom
-<br>
+- User control and freedom:
 A contractor can change and update their profile and a trustee can change their property details
 
-- Consistency and standards
-<br>
+- Consistency and standards:
 We kept the same theme and styling through our pages to keep good cosistency.
 
-- Error prevention
-<br>
+- Error prevention:
 we have toasts that warn the user to add missing field in a form.
 
-- Recognition rather than recall
-<br>
+- Recognition rather than recall:
 for the header we used a cork and profile icons as button for the settings and profile page.
 
-- Flexibility and efficiency
-<br>
+- Flexibility and efficiency:
 Accommodates both novice and expert users by having bold headings foor each page that discribes it's function.
 
-- Aesthetic and minimalist design
-<br>
+- Aesthetic and minimalist design:
 No irrelevant information was used throughout the system with deliberate and skillfull use of white space to emphasis the utility of the system.
 
-- Help users recognize, diagnose, and recover from errors
-<br>
+- Help users recognize, diagnose, and recover from errors:
 The login page tells you if you inout an incorrect email or password.
 
-- Help and documentation
-<br>
+- Help and documentation:
 It is very easy to find the help page because it tis the dropdown of the header.
 
 #### Accessability
