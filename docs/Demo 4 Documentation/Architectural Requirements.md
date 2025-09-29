@@ -180,13 +180,61 @@ Our security testing approach ensures that all critical backend and frontend sec
 > We use GitHub Actions to run all backend and frontend tests on every push and pull request. Security tests are implemented in SecurityTests.kt for the backend and in guard spec files for the frontend. Test results are available in the Actions tab of our GitHub repository.
 
 ### 5.4 Maintainability 
-To maintain maintainability, we follow a strict code quality guideline. For the backend we use Klint for Kotlin coding standards which helps in enforcing consistent formatting and naming conventions. While for the front end we use ESLint. Both catch syntax errors, unused variables and stylistic issues and are ran automatically Using GitHub actions for the backend, frontend and dev branches. 
+### 5.4 Maintainability
 
-We also use automated build and tests on top of the linting, where we make sure the entire application compiles successfully and all the tests previously mentioned succeed for both the backend and frontend, if all checks succeed, we can merge into main, else not GitHub Actions fails the pipeline. This ensures changes font break existing functionality and the CI pipeline catches errors early. 
+To ensure long-term maintainability and code quality, we have implemented a comprehensive strategy covering code standards, automated testing, and deployment practices.
 
-We also adhere to a strict coding standards document in terms of naming conventions as in to use camel case or snake case, file and folder structure, commenting and documentation practices and testing requirements for new features. This ensures that across the board all our code looks the same, is readable and that whichever file or folder you are searching for is easily identifiable from its characteristics 
+#### Code Quality Enforcement
 
-Deployment wise AWS RDS using PostgreSQL fully manages our database and using their services we have automated daily snapshots, auto security and minor version updates with high availability as it’s a global service and is easy to scale. All of this reduces operational burdens on developers to focus more on the code and not database maintenance
+**Backend (Kotlin)**
+- **Ktlint** is used to enforce Kotlin coding standards, ensuring consistent formatting and naming conventions across the codebase.
+- Automatically catches syntax errors, unused variables, and stylistic issues.
+
+**Frontend (Angular)**
+- **ESLint** enforces TypeScript/JavaScript coding standards and best practices.
+- Identifies potential bugs, code smells, and maintains consistent code style.
+
+Both linting tools run automatically via **GitHub Actions** on every push to the backend, frontend, and dev branches.
+
+#### Continuous Integration Pipeline
+
+Our CI/CD pipeline ensures code quality and stability through automated checks:
+
+1. **Automated Linting**: Code style and formatting validation
+2. **Automated Build**: Ensures the entire application compiles successfully
+3. **Automated Testing**: Runs all unit, integration, and security tests
+4. **Merge Protection**: Changes can only be merged to main if all checks pass
+
+This approach ensures that:
+- Breaking changes are caught early in development
+- Existing functionality remains intact
+- Code quality standards are consistently maintained
+
+#### Coding Standards Documentation
+
+We maintain a comprehensive coding standards document that defines:
+- **Naming Conventions**: camelCase for variables/functions, PascalCase for classes
+- **File and Folder Structure**: Organized by feature modules with clear separation of concerns
+- **Testing Requirements**: Minimum coverage thresholds and test patterns for new features
+
+These standards ensure:
+- Uniform code appearance across the entire codebase
+- High readability for all team members
+- Easy navigation and file discovery based on naming conventions
+
+#### Database Management & Deployment
+
+**AWS RDS with PostgreSQL** provides fully managed database infrastructure:
+
+| Feature | Benefit |
+|---------|---------|
+| Automated Daily Snapshots | Point-in-time recovery capability |
+| Automatic Security Patches | Reduced vulnerability exposure |
+| Minor Version Updates | Latest features and bug fixes |
+| High Availability | Global service with minimal downtime |
+| Easy Scalability | Vertical and horizontal scaling options |
+
+This managed approach reduces operational burden, allowing developers to focus on feature development rather than infrastructure maintenance.
 
 ### 5.5 Usability
 
