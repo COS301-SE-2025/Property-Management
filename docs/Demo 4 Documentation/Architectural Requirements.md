@@ -73,7 +73,7 @@ This request simulates the simple data a user would request when first logging i
 
 ![alt text](../images/Demo%204/Basic_performance.png)
 
-As shown we have a average response time of 1700 ms and no errors occured with any of the requests
+As shown we have a average response time of 1050 ms and no errors occured with any of the requests
 
 ![alt text](../images/Demo%204/Basic_performance_cloudwatch.png)
 
@@ -171,13 +171,74 @@ Our security testing approach ensures that all critical backend and frontend sec
         <img src="../images/Demo%204/Frontend_Guard_Tests.png" alt="Frontend Guard Test Results" width="450"/>
     </div>
 - **GitHub Actions Summary:**  
-  ![GitHub Actions Test Summary](../images/Demo%204/github_actions_summary.png)
+    <div style="display: flex; gap: 30px;">
+        <img src="../images/Demo%204/Github_Actions_Tests.png" alt="GitHub Actions Test Summary" width="900"/>
+    </div>
 
 #### Policy Reference
 
 > We use GitHub Actions to run all backend and frontend tests on every push and pull request. Security tests are implemented in SecurityTests.kt for the backend and in guard spec files for the frontend. Test results are available in the Actions tab of our GitHub repository.
 
-### 5.4 Maintainability 
+### 5.4 Maintainability
+
+To ensure long-term maintainability and code quality, we have implemented a comprehensive strategy covering code standards, automated testing, and deployment practices.
+
+#### Code Quality Enforcement
+
+**Backend (Kotlin)**
+- **Ktlint** is used to enforce Kotlin coding standards, ensuring consistent formatting and naming conventions across the codebase.
+- Automatically catches syntax errors, unused variables, and stylistic issues.
+
+**Frontend (Angular)**
+- **ESLint** enforces TypeScript/JavaScript coding standards and best practices.
+- Identifies potential bugs, code smells, and maintains consistent code style.
+
+Both linting tools run automatically via **GitHub Actions** on every push to the backend, frontend, and dev branches.
+
+#### Continuous Integration Pipeline
+
+Our CI/CD pipeline ensures code quality and stability through automated checks:
+
+1. **Automated Linting**: Code style and formatting validation
+2. **Automated Build**: Ensures the entire application compiles successfully
+3. **Automated Testing**: Runs all unit, integration, and security tests
+4. **Merge Protection**: Changes can only be merged to main if all checks pass
+
+![CI Pipeline](../images/Demo%204/Workflow.png)
+
+This approach ensures that:
+- Breaking changes are caught early in development
+- Existing functionality remains intact
+- Code quality standards are consistently maintained
+
+#### Coding Standards Documentation
+
+We maintain a comprehensive coding standards document that defines:
+- **Naming Conventions**: camelCase for variables/functions, PascalCase for classes
+- **File and Folder Structure**: Organized by feature modules with clear separation of concerns
+![File Structure Example](../images/Demo%204/File%20Structure.png)
+
+
+These standards ensure:
+- Uniform code appearance across the entire codebase
+- High readability for all team members
+- Easy navigation and file discovery based on naming conventions
+
+#### Database Management & Deployment
+
+**AWS RDS with PostgreSQL** provides fully managed database infrastructure:
+
+| Feature | Benefit |
+|---------|---------|
+| Automated Daily Snapshots | Point-in-time recovery capability |
+| Automatic Security Patches | Reduced vulnerability exposure |
+| Minor Version Updates | Latest features and bug fixes |
+| High Availability | Global service with minimal downtime |
+| Easy Scalability | Vertical and horizontal scaling options |
+
+This managed approach reduces operational burden, allowing developers to focus on feature development rather than infrastructure maintenance.
+
+![RDS Backups](../images/Demo%204/RDS%20Backups.png)
 
 ### 5.5 Usability
 #### Nielsen's 10 usability heuristics
