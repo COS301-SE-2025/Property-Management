@@ -179,7 +179,6 @@ Our security testing approach ensures that all critical backend and frontend sec
 
 > We use GitHub Actions to run all backend and frontend tests on every push and pull request. Security tests are implemented in SecurityTests.kt for the backend and in guard spec files for the frontend. Test results are available in the Actions tab of our GitHub repository.
 
-### 5.4 Maintainability 
 ### 5.4 Maintainability
 
 To ensure long-term maintainability and code quality, we have implemented a comprehensive strategy covering code standards, automated testing, and deployment practices.
@@ -205,6 +204,8 @@ Our CI/CD pipeline ensures code quality and stability through automated checks:
 3. **Automated Testing**: Runs all unit, integration, and security tests
 4. **Merge Protection**: Changes can only be merged to main if all checks pass
 
+![CI Pipeline](../images/Demo%204/Workflow.png)
+
 This approach ensures that:
 - Breaking changes are caught early in development
 - Existing functionality remains intact
@@ -215,7 +216,8 @@ This approach ensures that:
 We maintain a comprehensive coding standards document that defines:
 - **Naming Conventions**: camelCase for variables/functions, PascalCase for classes
 - **File and Folder Structure**: Organized by feature modules with clear separation of concerns
-- **Testing Requirements**: Minimum coverage thresholds and test patterns for new features
+![File Structure Example](../images/Demo%204/File%20Structure.png)
+
 
 These standards ensure:
 - Uniform code appearance across the entire codebase
@@ -235,6 +237,8 @@ These standards ensure:
 | Easy Scalability | Vertical and horizontal scaling options |
 
 This managed approach reduces operational burden, allowing developers to focus on feature development rather than infrastructure maintenance.
+
+![RDS Backups](../images/Demo%204/RDS%20Backups.png)
 
 ### 5.5 Usability
 
