@@ -73,7 +73,7 @@ This request simulates the simple data a user would request when first logging i
 
 ![alt text](../images/Demo%204/Basic_performance.png)
 
-As shown we have a average response time of 1700 ms and no errors occured with any of the requests
+As shown we have a average response time of 1050 ms and no errors occured with any of the requests
 
 ![alt text](../images/Demo%204/Basic_performance_cloudwatch.png)
 
@@ -103,6 +103,81 @@ To ensure the robustness and stability of our system under various conditions, w
 ![System Monitoring Screenshot](../images/AWS%20stats.jpg)
 
 ### 5.3 Security
+
+#### Security Testing Strategy
+
+Our security testing approach ensures that all critical backend and frontend security mechanisms are validated automatically as part of our CI/CD pipeline.
+
+**Backend Security Tests**
+
+- **Authentication, Authorization, CSRF, and SQL Injection** are tested using JUnit and Spring Security in the backend.
+- All security tests are implemented in `Backend/property-management/src/test/kotlin/com/propertymanagement/security/SecurityTests.kt`.
+- These tests verify:
+  - Protected endpoints require authentication.
+  - CSRF protection blocks unauthorized POST/DELETE requests.
+  - SQL injection attempts are rejected.
+  - Contractor and building endpoints enforce access control.
+
+**Frontend Security Tests**
+
+- **Route Guards** are tested using Jasmine/Karma in the frontend.
+- Guard tests are implemented in `Frontend/property-manager/src/app/guards/auth.guard.spec.ts`.
+- These tests ensure that unauthenticated users cannot access protected routes.
+
+#### Security Test Automation
+
+- All tests are run automatically via **GitHub Actions** on every push and pull request.
+- Test results are available in the Actions tab of our GitHub repository.
+
+#### Security Test Implementation
+
+| Security Aspect      | Tool/Method        | Test File/Location                                                      | How to Run/Test                        |
+|----------------------|--------------------|-------------------------------------------------------------------------|----------------------------------------|
+| Authentication       | JUnit, Spring Sec. | SecurityTests.kt | `./gradlew test`                       |
+| Authorization Guard  | Jasmine/Karma      | auth.guard.spec.ts            | `npm run test`                         |
+| CSRF Protection      | JUnit, Spring Sec. | SecurityTests.kt                                                           | `./gradlew test`                       |
+| SQL Injection        | JUnit, Spring Sec. | SecurityTests.kt                                                           | `./gradlew test`                       |
+
+**Key Files Added for Security Testing:**
+- SecurityTests.kt
+- TestSecurityConfig.kt
+- TestIntegrationSecurityConfig.kt
+- auth.guard.spec.ts
+
+#### How to Run Security Tests
+
+- **Backend:**  
+  Run all backend security tests with:
+  ```
+  ./gradlew test --tests "*SecurityTests"
+  ```
+- **Frontend:**  
+  Run all frontend guard tests with:
+  ```
+  npm run test
+  ```
+
+#### Test Results
+
+- **Backend Security Tests:**  
+    <div style="display: flex; gap: 30px;">
+        <img src="../images/Demo%204/Backend_Security_Tests_1.png" alt="Backend Security Test Results 1" width="600"/>
+        <img src="../images/Demo%204/Backend_Security_Tests.png" alt="Backend Security Test Results 2" width="600"/>
+    </div>
+
+- **Frontend Guard Tests:**  
+    <div style="display: flex; gap: 30px;">
+        <img src="../images/Demo%204/Frontend_Guard_Tests_1.png" alt="Frontend Guard Test Results" width="450"/>
+        <img src="../images/Demo%204/Frontend_Guard_Tests.png" alt="Frontend Guard Test Results" width="450"/>
+    </div>
+- **GitHub Actions Summary:**  
+    <div style="display: flex; gap: 30px;">
+        <img src="../images/Demo%204/Github_Actions_Tests.png" alt="GitHub Actions Test Summary" width="900"/>
+    </div>
+
+#### Policy Reference
+
+> We use GitHub Actions to run all backend and frontend tests on every push and pull request. Security tests are implemented in SecurityTests.kt for the backend and in guard spec files for the frontend. Test results are available in the Actions tab of our GitHub repository.
 
 ### 5.4 Maintainability 
 To maintain maintainability, we follow a strict code quality guideline. For the backend we use Klint for Kotlin coding standards which helps in enforcing consistent formatting and naming conventions. While for the front end we use ESLint. Both catch syntax errors, unused variables and stylistic issues and are ran automatically Using GitHub actions for the backend, frontend and dev branches. 
