@@ -65,8 +65,11 @@ export class TaskApiService {
   }
 
   updateTaskAllowContractor(taskId: string): Observable<MaintenanceTask> {
-    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/${taskId}/approve`, null, {
-      withCredentials: true
+    const body = { status: 'APPROVED' };
+
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, body, {
+      withCredentials: true,
+      headers: { 'isBodyCorporate': 'true' }
     });
   }
 
