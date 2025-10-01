@@ -14,6 +14,7 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
@@ -33,6 +34,7 @@ import java.util.NoSuchElementException
 import java.util.UUID
 
 @WebMvcTest(controllers = [BodyCorporateController::class])
+@AutoConfigureMockMvc(addFilters = false)
 class BodyCorporateControllerTest(
     @Autowired val mockMvc: MockMvc,
 ) {
