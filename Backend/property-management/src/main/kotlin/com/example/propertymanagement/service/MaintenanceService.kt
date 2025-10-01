@@ -196,7 +196,7 @@ class MaintenanceService(
                 cUuid = if (dto.approvalStatus == "APPROVED") dto.contractorUuid ?: task.cUuid else task.cUuid,
                 img = imageUuid ?: task.img,
                 priority = dto.priority ?: task.priority,
-                status = dto.status ?: task.status 
+                status = dto.status ?: task.status,
             )
 
         val savedTask = repository.save(updatedTask)

@@ -40,7 +40,7 @@ data class MaintenanceTaskUpdateDto(
     val contractorUuid: UUID? = null,
     val imageUuid: String? = null,
     val priority: String? = null,
-    val status: String? = null 
+    val status: String? = null,
 )
 
 data class TaskContractorAssignDto(

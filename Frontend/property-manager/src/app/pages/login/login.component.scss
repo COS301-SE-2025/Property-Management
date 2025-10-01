@@ -2,32 +2,28 @@
   color-scheme: light !important;
 }
 
-/* Force light mode for all elements in this component */
 :host ::ng-deep * {
   color-scheme: light !important;
 }
 
-/* Input fields */
 :host ::ng-deep input,
 :host ::ng-deep textarea,
 :host ::ng-deep .p-inputtext {
   background-color: white !important;
   color: #111111 !important;
   border-color: #d1d5db !important;
-  padding-left: 2.5rem !important; /* Make room for the icon */
+  padding-left: 2.5rem !important; 
 }
 
-/* Float labels - keep them transparent/clear at all times */
 :host ::ng-deep .p-float-label label,
 :host ::ng-deep .p-float-label > label,
 :host ::ng-deep label[for] {
   background-color: transparent !important;
   color: #6b7280 !important;
   padding: 0 0.25rem !important;
-  left: 2.5rem !important; /* Position label after the icon */
+  left: 2.5rem !important; 
 }
 
-/* When input is focused or filled - label floats up */
 :host ::ng-deep .p-float-label input:focus ~ label,
 :host ::ng-deep .p-float-label input.p-filled ~ label,
 :host ::ng-deep .p-float-label textarea:focus ~ label,
@@ -35,10 +31,9 @@
   background-color: transparent !important;
   color: #111111 !important;
   padding: 0 0.25rem !important;
-  left: 2.5rem !important; /* Keep label position when floating */
+  left: 2.5rem !important; 
 }
 
-/* Variant="on" specific styles */
 :host ::ng-deep .p-float-label.p-variant-on label {
   background-color: transparent !important;
   color: #6b7280 !important;
@@ -52,7 +47,6 @@
   left: 2.5rem !important;
 }
 
-/* Autofill styles */
 :host ::ng-deep input:-webkit-autofill,
 :host ::ng-deep input:-webkit-autofill:hover,
 :host ::ng-deep input:-webkit-autofill:focus {
@@ -61,7 +55,6 @@
   border: 1px solid #d1d5db !important;
 }
 
-/* Override browser dark mode completely */
 @media (prefers-color-scheme: dark) {
   :host ::ng-deep input,
   :host ::ng-deep textarea,
@@ -86,22 +79,18 @@
   }
 }
 
-/* Ensure the yellow background section stays correct */
 :host ::ng-deep .propertyYellow-bg {
   background-color: #FFE372 !important;
 }
 
-/* The container div */
 :host ::ng-deep div {
   color-scheme: light !important;
 }
 
-/* Error messages */
 :host ::ng-deep .text-red-500 {
   color: #ef4444 !important;
 }
 
-/* Links */
 :host ::ng-deep a {
   color: #111111 !important;
 }
@@ -110,7 +99,6 @@
   color: #000000 !important;
 }
 
-/* Button */
 :host ::ng-deep button.bg-black {
   background-color: #000000 !important;
   color: white !important;
