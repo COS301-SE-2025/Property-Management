@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ForecastResponse } from 'shared';
+import { BuildingApiService } from 'shared';
 
 @Component({
   selector: 'app-inventory-forecast',
@@ -9,9 +10,27 @@ import { ForecastResponse } from 'shared';
   imports: [CommonModule, CardModule],
   templateUrl: './inventory-forecast.component.html'
 })
-export class InventoryForecastComponent {
+export class InventoryForecastComponent implements OnChanges {
   @Input() forecastData: ForecastResponse | null = null;
+  buildingName: string | null = null;
   showMore = false;
+
+  constructor(private buildingApiService: BuildingApiService) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['forecastData'] && this.forecastData?.alert) {
+      const buildingId = this.forecastData.alert; // this is UUID
+      this.buildingApiService.getBuildingById(buildingId).subscribe({
+        next: (building) => {
+          this.buildingName = building.name;
+        },
+        error: (err) => {
+          console.error('Error fetching building name:', err);
+          this.buildingName = null;
+        }
+      });
+    }
+  }
 
   get visibleItems() {
     return this.forecastData?.items_forecasts || [];
