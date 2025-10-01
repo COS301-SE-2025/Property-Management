@@ -11,6 +11,7 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
@@ -26,6 +27,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 @WebMvcTest(controllers = [BuildingController::class])
+@AutoConfigureMockMvc(addFilters = false)
 class BuildingControllerTest(
     @Autowired val mockMvc: MockMvc,
 ) {

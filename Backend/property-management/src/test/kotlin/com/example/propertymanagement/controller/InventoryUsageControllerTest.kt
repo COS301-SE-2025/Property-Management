@@ -12,6 +12,7 @@ import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
@@ -22,6 +23,7 @@ import java.sql.Date
 import java.util.UUID
 
 @WebMvcTest(controllers = [InventoryUsageController::class])
+@Import(com.example.propertymanagement.TestSecurityConfig::class)
 class InventoryUsageControllerTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val objectMapper: ObjectMapper,

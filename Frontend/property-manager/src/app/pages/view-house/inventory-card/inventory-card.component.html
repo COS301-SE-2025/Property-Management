@@ -23,7 +23,7 @@
                             {{ inventory.quantityInStock }}
                         }
                     </td>
-                    <td *ngIf="showPrice">R {{ inventory.price }}</td>
+                    <td *ngIf="showPrice">R {{ inventory.price | number:'1.2-2' }}</td>
                     <td *ngIf="!bcUser">
                         @if(editingItems.get(inventory.itemUuid))
                         {
