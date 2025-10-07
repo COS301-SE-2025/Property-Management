@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.Date
 import java.util.NoSuchElementException
 import java.util.UUID
+import java.math.BigDecimal
 
 @Service
 class MaintenanceService(
@@ -64,6 +65,7 @@ class MaintenanceService(
         tUuid: UUID,
         cUuid: UUID,
         priority: String,
+        maxBudget: BigDecimal? = null,
     ): Maintenance {
         val newTask =
             Maintenance(
@@ -78,6 +80,7 @@ class MaintenanceService(
                 tUuid = tUuid,
                 cUuid = cUuid,
                 priority = priority,
+                maxBudget = maxBudget,
             )
         return add(newTask)
     }
@@ -101,6 +104,7 @@ class MaintenanceService(
                 cUuid = newItem.cUuid,
                 approvalStatus = newItem.approvalStatus,
                 priority = newItem.priority,
+                maxBudget = newItem.maxBudget,
             )
         return repository.save(updated)
     }
@@ -108,7 +112,6 @@ class MaintenanceService(
     @Transactional
     fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
 
-    // fun delete(id: Int) = repository.deleteById(id)
 
     fun createTask(
         dto: MaintenanceTaskCreateDto,
@@ -153,6 +156,7 @@ class MaintenanceService(
                 cUuid = if (isOwner && building.coporateUuid == null) dto.contractorUuid else null,
                 approvalStatus = if (building.coporateUuid == null) "APPROVED" else "PENDING",
                 priority = dto.priority ?: "Low",
+                maxBudget = dto.maxBudget,
             )
 
         val savedTask = repository.save(task)
@@ -197,6 +201,7 @@ class MaintenanceService(
                 img = imageUuid ?: task.img,
                 priority = dto.priority ?: task.priority,
                 status = dto.status ?: task.status,
+                maxBudget = dto.maxBudget ?: task.maxBudget,
             )
 
         val savedTask = repository.save(updatedTask)
@@ -315,5 +320,6 @@ class MaintenanceService(
             trusteeUuid = task.tUuid,
             contractorUuid = task.cUuid,
             priority = task.priority,
+            maxBudget = task.maxBudget,
         )
 }

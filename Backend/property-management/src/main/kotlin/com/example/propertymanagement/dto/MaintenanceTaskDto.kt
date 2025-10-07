@@ -3,6 +3,7 @@ package com.example.propertymanagement.dto
 import java.sql.Date
 import java.time.LocalDate
 import java.util.UUID
+import java.math.BigDecimal
 
 data class MaintenanceTaskCreateDto(
     val title: String,
@@ -14,6 +15,8 @@ data class MaintenanceTaskCreateDto(
     val trusteeUuid: UUID,
     val contractorUuid: UUID? = null,
     val priority: String? = null,
+    val maxBudget: BigDecimal? = null,
+
 )
 
 data class MaintenanceTaskResponseDto(
@@ -30,6 +33,7 @@ data class MaintenanceTaskResponseDto(
     val trusteeUuid: UUID?,
     val contractorUuid: UUID? = null,
     val priority: String,
+    val maxBudget: BigDecimal? = null,
 )
 
 data class MaintenanceTaskUpdateDto(
@@ -41,6 +45,7 @@ data class MaintenanceTaskUpdateDto(
     val imageUuid: String? = null,
     val priority: String? = null,
     val status: String? = null,
+    val maxBudget: BigDecimal? = null,
 )
 
 data class TaskContractorAssignDto(

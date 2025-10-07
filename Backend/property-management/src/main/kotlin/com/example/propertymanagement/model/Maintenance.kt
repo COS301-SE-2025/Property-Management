@@ -6,6 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.util.Date
 import java.util.UUID
+import java.math.BigDecimal
 
 @Entity
 @Table(name = "maintenancetask")
@@ -33,4 +34,6 @@ data class Maintenance(
     val approvalStatus: String = "PENDING",
     @Column(name = "priority")
     val priority: String = "Low",
+    @Column(name = "max_budget")
+    val maxBudget: BigDecimal? = null,
 )

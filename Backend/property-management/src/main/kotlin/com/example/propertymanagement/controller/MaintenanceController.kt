@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.Date
 import java.util.UUID
+import java.math.BigDecimal
 
 @RestController
 @RequestMapping("/api/maintenance")
@@ -52,6 +53,7 @@ class MaintenanceController(
         val cUuid: UUID,
         val approvalStatus: String,
         val priority: String,
+        val maxBudget: BigDecimal? = null,
     )
 
     @PostMapping
@@ -69,6 +71,7 @@ class MaintenanceController(
             info.tUuid,
             info.cUuid,
             info.priority,
+            info.maxBudget,
         )
 
     @PutMapping("/{uuid}")
