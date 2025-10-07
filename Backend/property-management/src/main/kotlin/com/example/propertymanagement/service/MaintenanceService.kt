@@ -13,10 +13,10 @@ import com.example.propertymanagement.repository.MaintenanceRepository
 import com.example.propertymanagement.repository.MaintenancetaskContractorRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.util.Date
 import java.util.NoSuchElementException
 import java.util.UUID
-import java.math.BigDecimal
 
 @Service
 class MaintenanceService(
@@ -111,7 +111,6 @@ class MaintenanceService(
 
     @Transactional
     fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
-
 
     fun createTask(
         dto: MaintenanceTaskCreateDto,

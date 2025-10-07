@@ -4,9 +4,9 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.math.BigDecimal
 import java.util.Date
 import java.util.UUID
-import java.math.BigDecimal
 
 @Entity
 @Table(name = "maintenancetask")
