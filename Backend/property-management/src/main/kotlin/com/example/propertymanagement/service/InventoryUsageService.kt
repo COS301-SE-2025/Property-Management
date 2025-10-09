@@ -5,9 +5,9 @@ import com.example.propertymanagement.dto.CreateInventoryUsageRequest
 import com.example.propertymanagement.dto.InventoryUsageResponse
 import com.example.propertymanagement.dto.UpdateInventoryUsageRequest
 import com.example.propertymanagement.model.InventoryUsage
+import com.example.propertymanagement.repository.BuildingRepository
 import com.example.propertymanagement.repository.InventoryItemRepository
 import com.example.propertymanagement.repository.InventoryUsageRepository
-import com.example.propertymanagement.repository.BuildingRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -24,7 +24,7 @@ import java.util.concurrent.Executors
 class InventoryUsageService(
     private val inventoryUsageRepository: InventoryUsageRepository,
     private val inventoryItemRepository: InventoryItemRepository,
-    private val buildingRepository: BuildingRepository,  
+    private val buildingRepository: BuildingRepository,
     private val objectMapper: ObjectMapper,
 ) {
     private val bgExecutor = Executors.newSingleThreadExecutor()
@@ -185,8 +185,11 @@ class InventoryUsageService(
     ): Map<String, Any> {
         val itemUuids = getItemsForBuilding(buildingUuid)
 
-        val buildingName = buildingRepository.findById(buildingUuid)
-            .orElse(null)?.name ?: "Unknown Building"
+        val buildingName =
+            buildingRepository
+                .findById(buildingUuid)
+                .orElse(null)
+                ?.name ?: "Unknown Building"
 
         if (itemUuids.isEmpty()) {
             return mapOf(
