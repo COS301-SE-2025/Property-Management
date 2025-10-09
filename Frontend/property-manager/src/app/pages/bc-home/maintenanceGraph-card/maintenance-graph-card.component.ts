@@ -3,13 +3,13 @@ import { CardModule } from 'primeng/card';
 import { ChartModule, UIChart } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
 import { CommonModule } from '@angular/common';
-import { BodyCoporateService, FormatAmountPipe } from 'shared';
+import { BodyCoporateService} from 'shared';
 import { Graph } from 'shared';
 import { ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-maintenance-graph-card',
-  imports: [CardModule, ChartModule, CommonModule, FormatAmountPipe, DividerModule],
+  imports: [CardModule, ChartModule, CommonModule, DividerModule],
   templateUrl: './maintenance-graph-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush

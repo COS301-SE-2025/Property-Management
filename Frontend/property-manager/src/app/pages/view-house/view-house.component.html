@@ -1,9 +1,9 @@
 <!-- <app-header/> -->
 
-<div class= "flex flex-col items-center pt-10">
+<div class="flex flex-col items-center pt-10">
     
-    <div *ngIf = "!findHouse" class = "pb-200">
-        <p class = "text-yellow-500 font-semibold">Could not load house. Please try again</p>
+    <div *ngIf="!findHouse" class="pb-200">
+        <p class="text-yellow-500 font-semibold">Could not load house. Please try again</p>
     </div>
     <div class="space-y-8">
         <div class="flex items-center justify-center">
@@ -16,25 +16,25 @@
                     </button>
                     <app-update-house-dialog #updateHouse [houseId]="house()?.buildingUuid!"/>
                 }
-                </div>
             </div>
+        </div>
         <div class="flex flex-col items-center">
-          <p class="text-center text-4xl font-bold  px-8 py-1 mt-1 text-gray-800 dark:text-gray-100 truncate" title="{{ house()?.name }}">
-            {{ house()?.name }}
-          </p>
-          <div class="h-1 w-64 bg-yellow-400 mb-6 mt-1"></div>
+            <p class="text-center text-4xl font-bold px-8 py-1 mt-1 text-gray-800 dark:text-gray-100 truncate" title="{{ house()?.name }}">
+                {{ house()?.name }}
+            </p>
+            <div class="h-1 w-64 bg-yellow-400 mb-6 mt-1"></div>
         </div>
 
         <div [@floatUp] class="flex gap-4 mt-4 pb-3 px-3">
-  <div class="flex-[3]">
-    <app-inventory-card [inventory]="houseService.inventory()"/>
-  </div>
-  <div class="flex-[2]">
-    <app-budget-card [budget]="houseService.budgets()"/>
-  </div>
-  <div class="flex-[3]">
-    <app-timeline-card [timeline]="houseService.timeline()"/>
-  </div>
-</div>
+            <div class="flex-[3]">
+                <app-inventory-card [inventory]="houseService.inventory()"/>
+            </div>
+            <div class="flex-[2]">
+                <app-budget-card [budget]="houseService.budgets()"/>
+            </div>
+            <div class="flex-[3]">
+                <app-timeline-card [timeline]="houseService.timeline()"/>
+            </div>
+        </div>
     </div>
 </div>

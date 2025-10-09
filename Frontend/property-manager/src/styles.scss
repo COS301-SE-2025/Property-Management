@@ -420,19 +420,16 @@ option.custom-option {
   line-height: 1.4;
 }
 
-/* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .notification-message {
     color: rgb(229, 231, 235);
   }
 }
 
-/* If you're using a dark mode class instead of media query */
 .dark .notification-message {
   color: rgb(229, 231, 235);
 }
 
-/* Read notification styling */
 .notification-message-read {
   color: rgb(75, 85, 99);
 }
@@ -440,3 +437,31 @@ option.custom-option {
 .dark .notification-message-read {
   color: rgb(209, 213, 219);
 }
+
+.p-breadcrumb,
+.p-breadcrumb .p-breadcrumb-nav,
+.p-breadcrumb .p-breadcrumb-list {
+  background-color: var(--bg-color) !important;
+}
+
+.p-breadcrumb .p-breadcrumb-list {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.p-breadcrumb .p-breadcrumb-item-link {
+  color: #111111;
+  font-weight: 500;
+}
+
+.p-breadcrumb .p-breadcrumb-item:last-child span {
+  color: #facc15 !important; 
+  font-weight: 600;
+}
+
+.p-breadcrumb {
+  margin: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
