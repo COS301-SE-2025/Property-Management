@@ -75,14 +75,14 @@ async uploadImages(
   await Promise.all(uploadPromises);
   return uploadResults; // Return all image IDs
 }
-  getUserImages(uuid: string, type: string): Observable<string>{
+  getUserImages(uuid: string): Observable<string>{
     return this.http.get(`${this.url}/images/presigned/user/${uuid}`, {
       responseType: 'text',
       withCredentials: true
     });
   }
 
-    getTaskImages(uuid: string, type: string): Observable<string>{
+    getTaskImages(uuid: string): Observable<string>{
     return this.http.get(`${this.url}/images/presigned/task/${uuid}`, {
       responseType: 'text',
       withCredentials: true

@@ -8,7 +8,7 @@ import {  MultiSelectModule } from "primeng/multiselect";
 import { getCookieValue, ImageApiService, Inventory, InventoryItemApiService, InventoryUsageApiService, Notification, NotificationsApiService, TaskApiService, TaskProgresApiService } from "shared";
 import { FileSelectEvent, FileUploadModule } from "primeng/fileupload";
 import { MessageService } from "primeng/api";
-
+import { ApiService } from 'shared';
 @Component({
   selector: 'app-add-progress-dialog',
   templateUrl: './add-progress-dialog.component.html',
@@ -33,7 +33,8 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
       private notificationService: NotificationsApiService,
       private taskProgressService: TaskProgresApiService,
       private inventoryUsageService: InventoryUsageApiService,
-      private taskService: TaskApiService 
+      private taskService: TaskApiService,
+      private apiService: ApiService
     ){
       super();
       this.form = this.fb.group({
@@ -81,13 +82,21 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
       if(this.form.valid)
       {
         this.addError = false;
+      
+
+      const contractorUuid = this.apiService.getCookieValue('contractorId');
+      
+      if (!contractorUuid) {
+        throw new Error('Contractor UUID not found');
+      }
+
 
     let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
     let defualt_uuid : string = "30000000-0000-0000-0000-000000000000";
 
     if(this.selectedFile) {
       try {
-        const imageIds = await this.imageService.uploadImages([this.selectedFile], defualt_uuid);
+        const imageIds = await this.imageService.uploadImages([this.selectedFile], contractorUuid, this.taskId());
         
         if(imageIds && imageIds.length > 0) {
           imageId = imageIds[0]; // Get the first (and only) image ID
