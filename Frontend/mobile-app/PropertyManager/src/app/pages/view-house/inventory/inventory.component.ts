@@ -134,10 +134,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       })
       await toast.present();
       this.resetState();
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 2200);
     }
   }
   private async getAndUpdateBudget(overallPrice: number)

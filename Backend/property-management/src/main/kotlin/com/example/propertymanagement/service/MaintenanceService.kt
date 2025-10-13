@@ -283,6 +283,22 @@ class MaintenanceService(
     // @Cacheable("apiCache")
     fun getContractorsForTask(taskUuid: UUID): List<MaintenancetaskContractor> = taskContractorRepository.findByTaskUuid(taskUuid)
 
+    fun approveTask(uuid: UUID): MaintenanceTaskResponseDto {
+        val task = getByUuid(uuid)
+        if (task.approvalStatus == "APPROVED") {
+            throw IllegalStateException("Task is already approved")
+        }
+
+        val updatedTask =
+            task.copy(
+                approvalStatus = "APPROVED",
+                status = "APPROVED",
+            )
+
+        val savedTask = repository.save(updatedTask)
+        return mapToResponseDto(savedTask)
+    }
+
     private fun mapToResponseDto(task: Maintenance): MaintenanceTaskResponseDto =
         MaintenanceTaskResponseDto(
             taskUuid = task.uuid!!,

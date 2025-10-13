@@ -3,12 +3,12 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { AuthService } from './auth.service';
 import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
 import { TokenUtilService } from '../services/token-util.service';
+import { environmentMobile } from '../environment';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  let tokenUtil: TokenUtilService;
-  const apiUrl = 'http://localhost:8080/api';
+  const apiUrl = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -20,7 +20,6 @@ describe('AuthService', () => {
     });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
-    tokenUtil = TestBed.inject(TokenUtilService);
 
     // Clear all cookies before each test
     document.cookie.split(';').forEach(cookie => {

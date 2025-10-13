@@ -31,6 +31,8 @@ dependencies {
 	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
@@ -48,6 +50,10 @@ dependencies {
 	testImplementation("org.mockito.kotlin:mockito-kotlin:4.+")
 	implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+	// implementation("org.springframework.boot:spring-boot-starter-security")
+	// implementation("org.springframework.security:spring-security-oauth2-resource-server")
+	// implementation("org.springframework.security:spring-security-oauth2-jose")
+	// implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
 
 }
 

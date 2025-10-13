@@ -1,6 +1,6 @@
 <!-- Inventory Items Card -->
 @if(this.inventoryUsage && this.inventoryUsage.length > 0) {
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="bg-white dark:bg-[#2d2d2d] rounded-xl shadow-md overflow-hidden mb-6">
         <div class="p-6">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -22,9 +22,17 @@
                     class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
                 <td class="py-3 text-gray-700 dark:text-gray-300">{{ inventory.name }}</td>
                 <td class="py-3">
-                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-sm">
-                    {{ inventory.quantityInStock }}
-                    </span>
+                    @if(inventory.quantityUsed)
+                    {
+                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-sm">
+                            {{ inventory.quantityUsed }}
+                        </span>
+                    }
+                    @else {
+                       <span class="px-2 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-sm">
+                            {{ inventory.quantityInStock }}
+                        </span> 
+                    }
                 </td>
                 </tr>
             </tbody>

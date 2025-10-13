@@ -8,7 +8,7 @@ import { environmentMobile } from '../../../environment';
 describe('TaskApiService', () => {
   let service: TaskApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:8080/api';
+  const mockApiUrl = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

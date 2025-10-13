@@ -62,6 +62,12 @@ export class BuildingApiService {
           name: name
         }
       }
+      else if(name === '')
+      {
+        updatedProperty = { 
+          coporateUuid: bcId
+        };
+      }
       else
       {
         updatedProperty = { 
@@ -74,10 +80,26 @@ export class BuildingApiService {
     {
       if(bcId === null || bcId === '')
       {
-        updatedProperty = {
-          name: name,
-          propertyImage: image
+        if(name === '')
+        {
+          updatedProperty = {
+            propertyImage: image
+          }
         }
+        else
+        {
+          updatedProperty = {
+            name: name,
+            propertyImage: image
+          }
+        }
+      }
+      else if(name === '')
+      {
+        updatedProperty = {
+          propertyImage: image,
+          coporateUuid: bcId
+        };
       }
       else
       {
@@ -112,5 +134,10 @@ export class BuildingApiService {
   getBuildingsByType(buildingType: string): Observable<Property[]> {
     return this.http.get<Property[]>(`${this.url}/buildings/type/${buildingType}`,
     { withCredentials: true });
+  }
+
+  removeBuildingFromBc(buildingId: string)
+  {
+    return this.http.put(`${this.url}/buildings/${buildingId}/revoke-corporate`, {});
   }
 }

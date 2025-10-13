@@ -4,7 +4,7 @@
       <ion-card-title class="dark:text-white">Inventory Budget</ion-card-title>
       <ion-card-subtitle>
         <div class = "flex items-center justify-center gap-2">
-            <p class ="font-semibold mt-2">Remaining Allocated budget: </p>
+            <p class ="font-semibold mt-2 dark:text-gray-200">Remaining Allocated budget: </p>
             <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ (budget().inventoryBudget - budget().inventorySpent) | formatAmount }}</p>
         </div>
       </ion-card-subtitle>
@@ -13,23 +13,23 @@
     <ion-card-content>
       <div class="flex flex-col items-center justify-center">
 
-        <p>Inventory expenditure</p>
-        <p-table [value] = "inventoryUsage()">
+        <p class="dark:text-gray-200">Inventory expenditure</p>
+        <p-table [value] = "inventoryUsage()" [paginator]="true" [rows]="5" [responsiveLayout]="'scroll'">
             <ng-template #header>
             <tr>
-                <th pSortableColumn="name">
+                <th pSortableColumn="name" class="dark:text-gray-200">
                     Description <p-sortIcon field="name"/>
                 </th>
-                <th pSortableColumn="quantityInStock">
+                <th pSortableColumn="quantityInStock" class="dark:text-gray-200">
                     Quantity <p-sortIcon field="quantityInStock"/>
                 </th>
-                <th pSortableColumn="contractorName">
+                <th pSortableColumn="contractorName" class="dark:text-gray-200">
                     Used by contractor <p-sortIcon field="contractorName"/>
                 </th>
             </tr>
             </ng-template>
             <ng-template #body let-usage>
-            <tr>
+            <tr class="dark:text-gray-400">
                 <td>{{ usage.itemName }}</td>
                 <td>{{ usage.quantityUsed }}</td>
                 <td>{{ usage.contractorName }}</td>
@@ -37,8 +37,11 @@
             </ng-template>
         </p-table>
     
-        <button class = "cursor-pointer pt-6" (click)="editBudget.openModal()">
-            <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
+        <button class = "mt-4 flex items-center gap-2 px-1 py-1 bg-yellow-400 text-black rounded-lg shadow-md" (click)="editBudget.openModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Edit inventory budget
         </button>
         <app-edit-budget #editBudget [budgetType]="'inventory'" [oldBudgetAmount]="budget().inventoryBudget" [budget]="budget()"></app-edit-budget>
       </div>

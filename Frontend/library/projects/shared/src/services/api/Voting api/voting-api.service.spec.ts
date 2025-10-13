@@ -8,8 +8,8 @@ import { environmentMobile } from '../../../environment';
 describe('VotingApiService', () => {
   let service: VotingApiService;
   let httpMock: HttpTestingController;
-  const mockApiUrl = 'http://localhost:8080/api/vote';
-  const mockQuoteUrl = 'http://localhost:8080/api'
+  const mockApiUrl = `${environmentMobile.apiUrl}/vote`;
+  const mockQuoteUrl = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

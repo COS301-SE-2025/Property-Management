@@ -58,6 +58,7 @@ export class ContractorProfileComponent implements OnInit {
     if (contractorId) {
       this.contractorService.getContractorById(contractorId).subscribe({
         next: (contractor) => {
+          console.log(contractor);
           this.contractor = contractor;
           if (this.contractor.img) {
             this.imageService.getImage(this.contractor.img).subscribe({
@@ -142,8 +143,6 @@ export class ContractorProfileComponent implements OnInit {
         }
         return;
       }
-
-      console.log("File selected:", file.name);
 
       if (!isStepThree) {
         const reader = new FileReader();

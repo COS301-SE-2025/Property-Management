@@ -9,15 +9,15 @@
   </div>
 
   <div *ngIf="!detailError" class="space-y-6">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+    <div class="bg-white dark:bg-[#444] rounded-xl shadow-md overflow-hidden">
       <div class="md:flex">
-        <div class="md:w-2/5 p-6 flex items-center justify-center bg-gray-50 dark:bg-gray-700">
+        <div class="md:w-2/5 p-6 flex items-center justify-center bg-gray-50 dark:bg-[#2d2d2d]">
           <div class="w-full h-64 flex items-center justify-center">
             <img 
               [src]="task()?.img" 
               alt="Task image" 
               *ngIf="task()?.img; else noImg" 
-              class="max-h-60 w-auto object-contain rounded-lg shadow-sm"
+              class="max-h-80 w-auto object-contain rounded-lg shadow-sm"
             >
             <ng-template #noImg>
               <div class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 p-6">
@@ -30,7 +30,7 @@
           </div>
         </div>
         
-        <div class="md:w-3/5 p-6">
+        <div class="md:w-3/5 p-6 flex flex-col">
           <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">{{ task()?.title }}</h1>
           
           <div class="mb-5">
@@ -88,18 +88,18 @@
                   <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                     <div class="flex justify-between items-center">
                       <div class="flex items-center">
-                        <div class="bg-yellow-100 dark:bg-yellow-900 h-10 w-10 rounded-full flex items-center justify-center mr-3">
+                        <div class="bg-yellow-100 dark:bg-yellow-900 h-10 w-10 rounded-full flex items-center justify-center mr-3 cursor-pointer" (click)="contractorDetails(contractor.uuid)">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600 dark:text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                           </svg>
                         </div>
                         <div>
-                          <p class="text-gray-800 dark:text-white font-medium">{{ contractor.name }}</p>
+                          <p class="text-gray-800 dark:text-white font-medium cursor-pointer" (click)="contractorDetails(contractor.uuid)">{{ contractor.name }}</p>
                           <div class="text-sm text-gray-500 dark:text-gray-400">
                             @if(contractor.quoteSubmitted) {
                               <button 
                                 class="text-yellow-500 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300 hover:underline" 
-                                (click)="quoteDetails.openDialog()">
+                                (click)="quoteDetails.openDialog(); $event.stopPropagation()">
                                 View quote
                               </button>
                               <app-quote-details #quoteDetails [taskId]="this.taskId!" [contractorId]="contractor.uuid" (quoteSelected)="onQuoteSelected(contractor.uuid, $event)"></app-quote-details>
@@ -149,7 +149,7 @@
           }
           @else {
             <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
-              <div class="mb-5">
+              <div class="mb-5 flex-grow">
                 <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase  mb-2">Assign Contractors</h2>
                 <p-multiselect
                   id="contractors"
@@ -159,7 +159,7 @@
                   optionValue="uuid"
                   class="w-full"
                   formControlName="contractorName"
-                  [panelStyle]="{ background: 'var(--surface-ground)', border: '1px solid var(--surface-border)' }">
+                  [panelStyle]="{ background: '#CBCBCB', border: '1px solid var(--surface-border)' }">
                 </p-multiselect>
               </div>
               

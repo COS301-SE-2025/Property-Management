@@ -145,4 +145,12 @@ class MaintenanceController(
         service.submitQuote(quoteDto)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
+
+    @PutMapping("/{uuid}/approve")
+    fun approveTask(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<MaintenanceTaskResponseDto> {
+        val updatedTask = service.approveTask(uuid)
+        return ResponseEntity.ok(updatedTask)
+    }
 }
