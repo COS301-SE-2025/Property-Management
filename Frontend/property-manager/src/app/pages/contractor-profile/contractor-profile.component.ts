@@ -154,8 +154,9 @@ export class ContractorProfileComponent implements OnInit {
       }
 
       // Upload to server
-      this.imageService.uploadImage(file).subscribe({
-        next: (response) => {
+      this.imageService.uploadImages([file], this.contractor.uuid)
+        .then((response: any) => {
+          console.log("File successfully uploaded:", response);
           this.contractor.img = response.imageId;
           this.loadImage(response.imageId);
           if (isStepThree) {
@@ -166,8 +167,8 @@ export class ContractorProfileComponent implements OnInit {
               life: 3000
             });
           }
-        },
-        error: (err) => {
+        })
+        .catch((err) => {
           console.error('Error uploading image:', err);
           this.imageError = true;
           this.messageService.add({
@@ -180,8 +181,7 @@ export class ContractorProfileComponent implements OnInit {
           if (!isStepThree) {
             this.fileInput.nativeElement.value = '';
           }
-        }
-      });
+        });
     }
   }
 
