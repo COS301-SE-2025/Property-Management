@@ -82,27 +82,27 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
       {
         this.addError = false;
 
-        let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
+    let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
+    let defualt_uuid : string = "30000000-0000-0000-0000-000000000000";
 
-        if(this.selectedFile)
-        {
-          try{
-            const upload = await this.imageService.uploadImage(this.selectedFile).toPromise();
-            if(upload?.imageId){
-              imageId = upload?.imageId;
-            }
-          }
-          catch(err)
-          {
-            console.error("Image upload failed", err);
-
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to upload image, please try again'
-            });
-          }
+    if(this.selectedFile) {
+      try {
+        const imageIds = await this.imageService.uploadImages([this.selectedFile], defualt_uuid);
+        
+        if(imageIds && imageIds.length > 0) {
+          imageId = imageIds[0]; // Get the first (and only) image ID
         }
+      } catch(err) {
+        console.error("Image upload failed", err);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to upload image, please try again'
+        });
+        return;
+      }
+    }
 
         const des = this.form.value.description
         const itemsUsed = this.getQuantities()[0];
