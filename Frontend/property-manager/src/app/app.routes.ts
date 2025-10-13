@@ -30,6 +30,9 @@ import { TaskDetailsComponent } from './pages/task-details/task-details.componen
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 import { RestConfirmComponent } from './pages/reset-confirm/reset-confirm.component';
 import { InventoryApprovalQueueComponent } from './pages/inventory-approval-queue/inventory-approval-queue.component';
+import { LandingheaderComponent } from './pages/LandingPage/landingheader/landingheader.component';
+import { LandingfooterComponent } from './pages/LandingPage/landingfooter/landingfooter.component';
+import { OurteamComponent } from './pages/LandingPage/ourteam/ourteam.component';
 
 
 export const routes: Routes = [
@@ -212,5 +215,20 @@ export const routes: Routes = [
     path: 'notifications',
     pathMatch: 'full',
     component: NotificationsComponent
-  }
+  },
+   {
+    path: 'landing-header',
+    pathMatch: 'full',
+    component: LandingheaderComponent
+  },
+    {
+      path: 'landing-footer',
+      pathMatch: 'full',
+      component: LandingfooterComponent
+  },
+    {
+      path: 'our-team',
+      pathMatch: 'full',
+      component: OurteamComponent
+    }
 ];
