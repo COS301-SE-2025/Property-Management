@@ -8,6 +8,10 @@
       <ion-icon name="archive-outline"></ion-icon>
       Voting
     </ion-tab-button>
+    <ion-tab-button href="/assigned-tasks" *ngIf="type === 'contractor'" class="dark:text-white">
+      <ion-icon name="hammer-outline"></ion-icon>
+      Tasks
+    </ion-tab-button>
     <ion-tab-button href="/notifications" class="dark:text-white">
       <ion-icon name="notifications-outline"></ion-icon>
       Notifications

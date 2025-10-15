@@ -3,7 +3,7 @@ import { IonTabBar, IonTabButton, IonIcon, IonTabs } from '@ionic/angular/standa
 import { NgIf } from '@angular/common';
 import { StorageService } from 'shared';
 import { addIcons } from 'ionicons';
-import { homeOutline, archiveOutline, notificationsOutline, personOutline } from 'ionicons/icons';
+import { homeOutline, archiveOutline, notificationsOutline, personOutline, hammerOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tab',
@@ -23,7 +23,7 @@ export class TabComponent implements OnInit {
   private storage = inject(StorageService);
 
   constructor(){
-    addIcons({ homeOutline, archiveOutline, notificationsOutline, personOutline });
+    addIcons({ homeOutline, archiveOutline, notificationsOutline, personOutline, hammerOutline });
   }
 
   async ngOnInit() {
