@@ -6,10 +6,11 @@ import { BudgetApiService, BuildingDetails } from 'shared';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { SliderModule } from 'primeng/slider';
 
 @Component({
   selector: 'app-edit-budget',
-  imports: [IonInput,  IonModal, IonToolbar, IonHeader, IonButtons, IonButton, IonContent, IonItem, CommonModule, ReactiveFormsModule ],
+  imports: [IonInput,  IonModal, IonToolbar, IonHeader, IonButtons, IonButton, IonContent, IonItem, CommonModule, ReactiveFormsModule, SliderModule ],
   templateUrl: './edit-budget.component.html',
   styles: ``,
 })
@@ -116,6 +117,13 @@ export class EditBudgetComponent extends ModalComponent implements OnInit {
     if(!isNaN(value))
     {
       this.updatedBudget = value;
+    }
+  }
+  onSliderChange(event: { value?:number}) {
+
+    if(event.value !== undefined)
+    {
+      this.form.get('updatedBudget')?.setValue(event.value);
     }
   }
 }

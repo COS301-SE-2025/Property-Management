@@ -89,7 +89,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
     if(val >= 0 && (!this.capOriginal || val <= max))
     {
-       this.draftQuantities.set(inventory.itemUuid, val)
+      this.draftQuantities.set(inventory.itemUuid, val)
       this.emitQuantities();
     }
   }
