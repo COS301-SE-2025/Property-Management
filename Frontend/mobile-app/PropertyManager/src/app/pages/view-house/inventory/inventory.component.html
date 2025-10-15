@@ -1,10 +1,10 @@
-  <ion-card class="dark:bg-gray-900">
+<ion-card class="dark:bg-gray-900">
     <ion-card-header>
       <ion-card-title class="dark:text-white">Inventory</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-      <p-table [value] = "inventory()" [paginator]="true" [rows]="5" [responsiveLayout]="'scroll'">
+      <p-table [value]="inventory()" [paginator]="true" [rows]="5" [responsiveLayout]="'scroll'">
         <ng-template #header>
         <tr>
             <th pSortableColumn="name" class="dark:text-gray-400">
@@ -66,7 +66,7 @@
             </ion-button>
         </div>
     }
-    <div class = "mt-2 flex flex-col justify-center items-center" *ngIf="showAddButton">
+    <div class="mt-2 flex flex-col justify-center items-center" *ngIf="showAddButton">
       <button (click)="inventoryAddDialog.openModal()" class="flex items-center gap-2 p-2 bg-yellow-400 text-black rounded-lg shadow-md">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -74,6 +74,9 @@
           Add Inventory Item
       </button>
       <app-add-inventory #inventoryAddDialog/>
+      <div class="w-full max-w-md mt-4">
+          <app-inventory-forecast [forecastData]="forecastData"></app-inventory-forecast>
+      </div>
     </div>
   </ion-card-content>
 </ion-card>

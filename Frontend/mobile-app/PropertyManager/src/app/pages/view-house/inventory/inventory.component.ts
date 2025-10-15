@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IonCard, IonCardTitle, IonCardHeader, IonButton, ToastController, IonIcon, IonCardContent } from "@ionic/angular/standalone";
-import { BudgetApiService, BuildingDetails, HousesService, Inventory, InventoryUsageApiService } from 'shared';
+import { BudgetApiService, BuildingDetails, ForecastResponse, HousesService, Inventory, InventoryUsageApiService } from 'shared';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { addIcons } from 'ionicons';
 import { addOutline, removeOutline, checkmarkOutline, closeOutline  } from 'ionicons/icons';
 import { AddInventoryComponent } from './add-inventory/add-inventory.component';
+import { InventoryForecastComponent } from './inventory-forecast/inventory-forecast.component';
 import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
@@ -19,7 +20,7 @@ import { ChangeDetectionStrategy } from '@angular/core';
       background: #000000;         
     }
   `,
-  imports: [IonButton, IonCardHeader, IonCardTitle, IonCard, FormsModule, CommonModule, TableModule, IonIcon, IonCardContent, AddInventoryComponent],
+  imports: [IonButton, IonCardHeader, IonCardTitle, IonCard, FormsModule, CommonModule, TableModule, IonIcon, IonCardContent, AddInventoryComponent , InventoryForecastComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InventoryComponent implements OnInit, OnDestroy {
@@ -29,6 +30,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   inventory = input.required<Inventory[]>();
   private houseId: string | null = ''; 
   private paramSub!: Subscription;
+
+  forecastData: ForecastResponse | null = null;
 
   isEditing = false;
   editingItems = new Map<string, boolean>();
@@ -48,18 +51,39 @@ export class InventoryComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private toastController: ToastController, private inventoryUsage: InventoryUsageApiService) {
     this.paramSub = this.route.paramMap.subscribe(params => {
         this.houseId = params.get('houseId');
+        // ensure forecast loads when route params change
+        if (this.houseId) {
+          this.loadForecastData().catch(err => console.error('Error loading forecast on param change', err));
+        }
       });
 
       addIcons({ addOutline, removeOutline, checkmarkOutline, closeOutline});
    }
 
-  ngOnInit() {
+  // call loadForecastData on init so mobile behaves like web
+  async ngOnInit() {
     this.resetState();
+    await this.loadForecastData();
   }
   ngOnDestroy()
   {
     this.paramSub.unsubscribe();
   }
+
+  private async loadForecastData() {
+    try {
+      if (this.houseId) {
+        await this.houseService.loadInventoryForecast(this.houseId);
+        this.forecastData = this.houseService.inventoryForecast();
+      } else {
+        this.forecastData = null;
+      }
+    } catch (error) {
+      console.error('Error loading forecast data:', error);
+      this.forecastData = null;
+    }
+  }
+
   startAction(inventory: Inventory, action: 'increase' | 'decrease' | 'edit')
   {
     if(!this.isEditing)
@@ -133,6 +157,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         color: "warning"
       })
       await toast.present();
+
+      await this.loadForecastData();
+
       this.resetState();
     }
   }
