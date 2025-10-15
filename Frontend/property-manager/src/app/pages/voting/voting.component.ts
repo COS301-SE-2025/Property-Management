@@ -16,14 +16,16 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   templateUrl: './voting.component.html',
   styles: `
     .due-date-normal{
-      color:inherit;
+      color: #3f3f3f;
     }
     .due-date-urgent{
       color: #f01111;
     }
     .due-date-past{
-      color: #858585;
+      color: #949494;
     }
+    :host-context(.dark-theme) .due-date-normal { color: #d3d3d3; }
+    :host-context(.dark-theme) .due-date-past   { color: #6a6a6a; }
   `,
   animations: [
     trigger('floatUp', [
@@ -50,6 +52,7 @@ export class VotingComponent  implements OnInit {
 
   bcUser = false;
   loading = true;
+  darkMode = false;
 
   priorityOptions = [
     { label: 'Low', value: 'Low' },
@@ -76,6 +79,7 @@ export class VotingComponent  implements OnInit {
   async ngOnInit() {
 
     this.loading = true;
+    this.darkMode = localStorage.getItem('darkMode') === 'true';
     if(!this.bcUser)
     {
       const trusteeId = getCookieValue(document.cookie, 'trusteeId');
@@ -120,9 +124,17 @@ export class VotingComponent  implements OnInit {
   }
   changeDueDate(task: MaintenanceTask | Voting)
   {
-    if(!task.scheduled_date) return 'due-date-normal';
+    if(!task.scheduled_date){
+      return 'due-date-normal';
+    }
+    else if(!task.scheduled_date) 
+    {
+      return 'dark due-date-normal'
+    }
 
-    if(task.scheduled_date < new Date()) return 'due-date-past';
+    if(task.scheduled_date < new Date()) {
+      return 'due-date-past';
+    }
 
     const date = new Date();
     const taskDate = new Date(task!.scheduled_date);

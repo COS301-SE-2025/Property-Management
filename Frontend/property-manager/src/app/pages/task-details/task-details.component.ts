@@ -101,6 +101,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       );
     }
   }
+  
   contractorDetails(contractorId: string)
   {
     this.breadCrumb.setBreadCrumbs([

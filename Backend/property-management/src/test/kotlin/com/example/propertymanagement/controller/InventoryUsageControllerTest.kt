@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.sql.Date
 import java.util.UUID
 
+// @Import(com.example.propertymanagement.TestSecurityConfig::class)
 @WebMvcTest(controllers = [InventoryUsageController::class])
 class InventoryUsageControllerTest(
     @Autowired val mockMvc: MockMvc,

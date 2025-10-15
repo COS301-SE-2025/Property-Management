@@ -22,6 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.LocalDate
 import java.util.UUID
 
+// @Import(com.example.propertymanagement.TestIntegrationSecurityConfig::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("integration")
 @Testcontainers

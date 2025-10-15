@@ -1,59 +1,27 @@
 import { Component } from '@angular/core';
-import { AuthService } from 'shared';
-import { ButtonModule } from 'primeng/button';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-  query,
-  stagger
-} from '@angular/animations';
+import { LandingheaderComponent } from './landingheader/landingheader.component';
+import { OurteamComponent } from './ourteam/ourteam.component';
+import { LandingfooterComponent } from './landingfooter/landingfooter.component';
 
 @Component({
-  selector: 'app-landing-page',
-  imports: [ButtonModule, CommonModule, RouterLink],
+  selector: 'app-landingpage',
   standalone: true,
-  templateUrl: `./Landingpage.component.html`,
-  styles: [`
-    .perspective-1000 {
-      perspective: 1000px;
-    }
-    .preserve-3d {
-      transform-style: preserve-3d;
-    }
-    .backface-hidden {
-      backface-visibility: hidden;
-    }
-    @keyframes morph-1 {
-      0%, 100% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.2) rotate(10deg); }
-    }
-    @keyframes morph-2 {
-      0%, 100% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(0.8) rotate(-20deg); }
-    }
-    .animate-morph-1 { animation: morph-1 8s ease-in-out infinite; }
-    .animate-morph-2 { animation: morph-2 10s ease-in-out infinite alternate; }
-  `],
-  animations: [
-    trigger('fadeInStagger', [
-      transition(':enter', [
-        query('.animate-item', [
-          style({ opacity: 0, transform: 'translateY(20px)' }),
-          stagger(100, [
-            animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-          ])
-        ])
-      ])
-    ])
-  ]
+  imports: [CommonModule, LandingheaderComponent, OurteamComponent, LandingfooterComponent],
+  templateUrl: './Landingpage.component.html',
+  styleUrls: ['./Landingpage.component.scss']
 })
 export class LandingPageComponent {
-  public dropDownOpen = false;
+  currentSlide = 0;
+  animationKey = 0; 
+  
+  slides = [
+    { image: '/assets/images/landingpage/skyline.jpg', text: 'Inventory Tracking' },
+    { image: '/assets/images/landingpage/contractoeTable.jpg', text: 'Contractor Sourcing' },
+    { image: '/assets/images/landingpage/contractor.jpg', text: 'Budget Management' },
+    { image: '/assets/images/landingpage/houseInside.jpg', text: 'Lifecycle Cost Analysis' }
+  ];
+
   public features = [
     {
       title: 'Contractor Management',
@@ -71,37 +39,20 @@ export class LandingPageComponent {
       description: 'Simplified quote collection and comparison process'
     },
     {
-      title: 'Moble App',
+      title: 'Mobile App',
       icon: '/assets/icons/mobile.svg',
-      description: 'Moble App for contractor quote submition and trustee notififcations'
+      description: 'Mobile App for contractor quote submission and trustee notifications'
     }
   ];
 
-  constructor(private authService: AuthService, private router: Router) {}
-
-  dropDown() {
-    this.dropDownOpen = !this.dropDownOpen;
+  nextSlide() {
+    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+    this.animationKey++; 
   }
 
-  signOut() {
-    // Implementation remains the same
-  }
-
-  tilt(event: MouseEvent) {
-    const card = event.currentTarget as HTMLElement;
-    const rect = card.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateY = (x - centerX) / 10;
-    const rotateX = (centerY - y) / 10;
-    
-    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-  }
-
-  resetTilt(event: MouseEvent) {
-    const card = event.currentTarget as HTMLElement;
-    card.style.transform = 'rotateX(0) rotateY(0)';
+  prevSlide() {
+    this.currentSlide =
+      (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+    this.animationKey++; 
   }
 }

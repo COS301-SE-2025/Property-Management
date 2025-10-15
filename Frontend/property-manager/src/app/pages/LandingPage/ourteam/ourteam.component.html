@@ -1,0 +1,21 @@
+<section class="our-team-section">
+  <h2 class="section-title">Our Team</h2>
+  <div class="underline"></div>
+
+  <div class="team-grid">
+    <div class="team-card" *ngFor="let member of teamMembers">
+      <div class="image-container">
+        <img [src]="member.image" [alt]="member.name" />
+        <span class="role-label">{{ member.role }}</span>
+      </div>
+
+      <div class="info">
+        <h3 class="name">{{ member.name }}</h3>
+        <p class="role">{{ member.role }}</p>
+        <a [href]="member.linkedin" target="_blank" rel="noopener noreferrer" class="linkedin-link">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

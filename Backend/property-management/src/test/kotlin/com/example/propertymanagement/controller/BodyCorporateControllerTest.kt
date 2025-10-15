@@ -1,405 +1,485 @@
 package com.example.propertymanagement.controller
 
+import com.example.propertymanagement.dto.BodyCorporateRegistrationResponse
+import com.example.propertymanagement.dto.BodyCorporateResponse
+import com.example.propertymanagement.dto.CreateBodyCorporateRequest
+import com.example.propertymanagement.dto.LoginRequest
+import com.example.propertymanagement.dto.LoginResponse
+import com.example.propertymanagement.dto.UpdateBodyCorporateRequest
 import com.example.propertymanagement.service.BodyCorporateService
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.example.propertymanagement.service.CognitoService
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.math.BigDecimal
+import java.util.NoSuchElementException
 import java.util.UUID
 
 @WebMvcTest(controllers = [BodyCorporateController::class])
+@AutoConfigureMockMvc(addFilters = false)
 class BodyCorporateControllerTest(
     @Autowired val mockMvc: MockMvc,
-    @Autowired val objectMapper: ObjectMapper,
 ) {
     @MockBean
     lateinit var bodyCorporateService: BodyCorporateService
 
-    private val corporateUuid = UUID.randomUUID()
+    @MockBean
+    lateinit var cognitoService: CognitoService
+
+    @Autowired
+    lateinit var objectMapper: com.fasterxml.jackson.databind.ObjectMapper
+
+    private val testUuid = UUID.randomUUID()
     private val testEmail = "test@example.com"
-    private val testCorporateName = "Test Corp"
-    private val testUsername = "test_user"
+    private val testUserId = "user123"
+    private val testName = "Test Corp"
 
-    // @Test
-    // fun `registerBodyCorporate should return created response`() {
-    //     val request =
-    //         CreateBodyCorporateRequest(
-    //             corporateName = testCorporateName,
-    //             contributionPerSqm = BigDecimal("100.00"),
-    //             totalBudget = BigDecimal("10000.00"),
-    //             email = testEmail,
-    //             password = "password123",
-    //             contactNumber = "+278712393826",
-    //         )
-    //     val response =
-    //         BodyCorporateRegistrationResponse(
-    //             corporateUuid = corporateUuid,
-    //             corporateName = testCorporateName,
-    //             email = testEmail,
-    //             cognitoUserId = "cognito123",
-    //             username = testUsername,
-    //             emailVerificationRequired = true,
-    //         )
+    @Test
+    fun `registerBodyCorporate should return 201 CREATED when registration is successful`() {
+        val request =
+            CreateBodyCorporateRequest(
+                corporateName = testName,
+                contributionPerSqm = BigDecimal("100.00"),
+                totalBudget = BigDecimal("100000.00"),
+                email = testEmail,
+                password = "password123",
+                contactNumber = "1234567890",
+            )
 
-    //     Mockito.`when`(bodyCorporateService.registerBodyCorporate(eq(request))).thenReturn(response)
+        val response =
+            BodyCorporateRegistrationResponse(
+                corporateUuid = testUuid,
+                corporateName = testName,
+                email = testEmail,
+                cognitoUserId = testUserId,
+                username = "testuser",
+                emailVerificationRequired = true,
+            )
 
-    //     mockMvc
-    //         .perform(
-    //             MockMvcRequestBuilders
-    //                 .post("/api/body-corporates/register")
-    //                 .contentType(MediaType.APPLICATION_JSON)
-    //                 .content(objectMapper.writeValueAsString(request)),
-    //         ).andExpect(MockMvcResultMatchers.status().isCreated)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.corporateUuid").value(corporateUuid.toString()))
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.corporateName").value(testCorporateName))
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(testEmail))
+        `when`(bodyCorporateService.registerBodyCorporate(any())).thenReturn(response)
 
-    //     Mockito.verify(bodyCorporateService).registerBodyCorporate(eq(request))
-    // }
+        mockMvc
+            .perform(
+                post("/api/body-corporates/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isCreated)
+            .andExpect(jsonPath("$.corporateUuid").value(testUuid.toString()))
+            .andExpect(jsonPath("$.corporateName").value(testName))
+            .andExpect(jsonPath("$.email").value(testEmail))
 
-    // @Test
-    // fun `confirmRegistration should return success message`() {
-    //     val request = ConfirmRegistrationRequest(testUsername, "123456")
-    //     Mockito.doNothing().`when`(bodyCorporateService).confirmRegistration(eq(request))
+        verify(bodyCorporateService).registerBodyCorporate(any())
+    }
 
-    //     mockMvc
-    //         .perform(
-    //             MockMvcRequestBuilders
-    //                 .post("/api/body-corporates/confirm-registration")
-    //                 .contentType(MediaType.APPLICATION_JSON)
-    //                 .content(objectMapper.writeValueAsString(request)),
-    //         ).andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Registration confirmed successfully"))
+    @Test
+    fun `registerBodyCorporate should return 400 BAD REQUEST when request body is invalid`() {
+        mockMvc
+            .perform(
+                post("/api/body-corporates/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{ invalid json }"),
+            ).andExpect(status().isBadRequest)
+    }
 
-    //     Mockito.verify(bodyCorporateService).confirmRegistration(eq(request))
-    // }
+    @Test
+    fun `login should return 200 OK when login is successful`() {
+        val request =
+            LoginRequest(
+                email = testEmail,
+                password = "password123",
+            )
 
-    // @Test
-    // fun `confirmRegistration should return error on failure`() {
-    //     val request = ConfirmRegistrationRequest(testUsername, "123456")
-    //     val errorMessage = "Invalid code"
-    //     Mockito.doThrow(RuntimeException(errorMessage)).`when`(bodyCorporateService).confirmRegistration(eq(request))
+        val response =
+            LoginResponse(
+                idToken = "id123",
+                accessToken = "token123",
+                refreshToken = "refresh123",
+                userId = "id123",
+                userType = "BODY_CORPORATE",
+            )
 
-    //     mockMvc
-    //         .perform(
-    //             MockMvcRequestBuilders
-    //                 .post("/api/body-corporates/confirm-registration")
-    //                 .contentType(MediaType.APPLICATION_JSON)
-    //                 .content(objectMapper.writeValueAsString(request)),
-    //         ).andExpect(MockMvcResultMatchers.status().isBadRequest)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.error").value(errorMessage))
+        `when`(bodyCorporateService.login(any())).thenReturn(response)
 
-    //     Mockito.verify(bodyCorporateService).confirmRegistration(eq(request))
-    // }
+        mockMvc
+            .perform(
+                post("/api/body-corporates/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.accessToken").value("token123"))
 
-    // @Test
-    // fun `login should return login response`() {
-    //     val request = LoginRequest(testEmail, "password123")
-    //     val response = LoginResponse("idToken", "accessToken", "refreshToken", "BODY_CORPORATE", corporateUuid.toString())
+        verify(bodyCorporateService).login(any())
+    }
 
-    //     Mockito.`when`(bodyCorporateService.login(eq(request))).thenReturn(response)
+    @Test
+    fun `getAllBodyCorporates should return 200 OK with paginated list`() {
+        val bodyCorporates =
+            listOf(
+                BodyCorporateResponse(
+                    corporateUuid = testUuid,
+                    corporateName = testName,
+                    contributionPerSqm = BigDecimal("100.00"),
+                    totalBudget = BigDecimal("100000.00"),
+                    email = testEmail,
+                    userId = testUserId,
+                    username = "testuser",
+                ),
+            )
+        val pageable = PageRequest.of(0, 20, Sort.by("corporateName").ascending())
+        val page = PageImpl(bodyCorporates, pageable, bodyCorporates.size.toLong())
 
-    //     mockMvc
-    //         .perform(
-    //             MockMvcRequestBuilders
-    //                 .post("/api/body-corporates/login")
-    //                 .contentType(MediaType.APPLICATION_JSON)
-    //                 .content(objectMapper.writeValueAsString(request)),
-    //         ).andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.idToken").value("idToken"))
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(corporateUuid.toString()))
+        `when`(bodyCorporateService.getAllBodyCorporates(any())).thenReturn(page)
 
-    //     Mockito.verify(bodyCorporateService).login(eq(request))
-    // }
+        mockMvc
+            .perform(get("/api/body-corporates?page=0&size=20&sortBy=corporateName&sortDirection=asc"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.content.length()").value(1))
+            .andExpect(jsonPath("$.content[0].corporateName").value(testName))
 
-    // @Test
-    // fun `getBodyCorporateById should return body corporate when found`() {
-    //     val response =
-    //         BodyCorporateResponse(
-    //             corporateUuid = corporateUuid,
-    //             corporateName = testCorporateName,
-    //             contributionPerSqm = BigDecimal("100.00"),
-    //             totalBudget = BigDecimal("10000.00"),
-    //             email = testEmail,
-    //             userId = "user123",
-    //             username = testUsername,
-    //         )
-    //     Mockito.`when`(bodyCorporateService.getBodyCorporateById(corporateUuid)).thenReturn(response)
+        verify(bodyCorporateService).getAllBodyCorporates(any())
+    }
 
-    //     mockMvc
-    //         .perform(MockMvcRequestBuilders.get("/api/body-corporates/$corporateUuid"))
-    //         .andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.corporateUuid").value(corporateUuid.toString()))
+    @Test
+    fun `getBodyCorporateById should return 200 OK when body corporate exists`() {
+        val response =
+            BodyCorporateResponse(
+                corporateUuid = testUuid,
+                corporateName = testName,
+                contributionPerSqm = BigDecimal("100.00"),
+                totalBudget = BigDecimal("100000.00"),
+                email = testEmail,
+                userId = testUserId,
+                username = "testuser",
+            )
 
-    //     Mockito.verify(bodyCorporateService).getBodyCorporateById(corporateUuid)
-    // }
+        `when`(bodyCorporateService.getBodyCorporateById(testUuid)).thenReturn(response)
 
-    // @Test
-    // fun `getBodyCorporateById should return 404 when not found`() {
-    //     Mockito
-    //         .`when`(bodyCorporateService.getBodyCorporateById(corporateUuid))
-    //         .thenThrow(NoSuchElementException("Not found"))
+        mockMvc
+            .perform(get("/api/body-corporates/{id}", testUuid))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.corporateUuid").value(testUuid.toString()))
+            .andExpect(jsonPath("$.corporateName").value(testName))
 
-    //     mockMvc
-    //         .perform(MockMvcRequestBuilders.get("/api/body-corporates/$corporateUuid"))
-    //         .andExpect(MockMvcResultMatchers.status().isNotFound)
+        verify(bodyCorporateService).getBodyCorporateById(testUuid)
+    }
 
-    //     Mockito.verify(bodyCorporateService).getBodyCorporateById(corporateUuid)
-    // }
+    @Test
+    fun `getBodyCorporateById should return 404 NOT FOUND when body corporate does not exist`() {
+        `when`(bodyCorporateService.getBodyCorporateById(testUuid)).thenThrow(NoSuchElementException())
 
-    // @Test
-    // fun `getBodyCorporateByEmail should return body corporate when found`() {
-    //     val response =
-    //         BodyCorporateResponse(
-    //             corporateUuid = corporateUuid,
-    //             corporateName = testCorporateName,
-    //             contributionPerSqm = BigDecimal("100.00"),
-    //             totalBudget = BigDecimal("10000.00"),
-    //             email = testEmail,
-    //             userId = "user123",
-    //             username = testUsername,
-    //         )
-    //     Mockito.`when`(bodyCorporateService.getBodyCorporateByEmail(testEmail)).thenReturn(response)
+        mockMvc
+            .perform(get("/api/body-corporates/{id}", testUuid))
+            .andExpect(status().isNotFound)
 
-    //     mockMvc
-    //         .perform(MockMvcRequestBuilders.get("/api/body-corporates/email/$testEmail"))
-    //         .andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(testEmail))
+        verify(bodyCorporateService).getBodyCorporateById(testUuid)
+    }
 
-    //     Mockito.verify(bodyCorporateService).getBodyCorporateByEmail(testEmail)
-    // }
+    @Test
+    fun `getBodyCorporateByEmail should return 200 OK when body corporate exists`() {
+        val response =
+            BodyCorporateResponse(
+                corporateUuid = testUuid,
+                corporateName = testName,
+                contributionPerSqm = BigDecimal("100.00"),
+                totalBudget = BigDecimal("100000.00"),
+                email = testEmail,
+                userId = testUserId,
+                username = "testuser",
+            )
 
-    // @Test
-    // fun `getBodyCorporateByEmail should return 404 when not found`() {
-    //     Mockito
-    //         .`when`(bodyCorporateService.getBodyCorporateByEmail(testEmail))
-    //         .thenThrow(NoSuchElementException("Not found"))
+        `when`(bodyCorporateService.getBodyCorporateByEmail(testEmail)).thenReturn(response)
 
-    //     mockMvc
-    //         .perform(MockMvcRequestBuilders.get("/api/body-corporates/email/$testEmail"))
-    //         .andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc
+            .perform(get("/api/body-corporates/email/{email}", testEmail))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.email").value(testEmail))
 
-    //     Mockito.verify(bodyCorporateService).getBodyCorporateByEmail(testEmail)
-    // }
+        verify(bodyCorporateService).getBodyCorporateByEmail(testEmail)
+    }
 
-    // @Test
-    // fun `getBodyCorporateByUserId should return body corporate when found`() {
-    //     val userId = "user123"
-    //     val response =
-    //         BodyCorporateResponse(
-    //             corporateUuid = corporateUuid,
-    //             corporateName = testCorporateName,
-    //             contributionPerSqm = BigDecimal("100.00"),
-    //             totalBudget = BigDecimal("10000.00"),
-    //             email = testEmail,
-    //             userId = userId,
-    //             username = testUsername,
-    //         )
-    //     Mockito.`when`(bodyCorporateService.getBodyCorporateByUserId(userId)).thenReturn(response)
+    @Test
+    fun `getBodyCorporateByEmail should return 404 NOT FOUND when body corporate does not exist`() {
+        `when`(bodyCorporateService.getBodyCorporateByEmail(testEmail)).thenThrow(NoSuchElementException())
 
-    //     mockMvc
-    //         .perform(MockMvcRequestBuilders.get("/api/body-corporates/user/$userId"))
-    //         .andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(userId))
+        mockMvc
+            .perform(get("/api/body-corporates/email/{email}", testEmail))
+            .andExpect(status().isNotFound)
 
-    //     Mockito.verify(bodyCorporateService).getBodyCorporateByUserId(userId)
-    // }
+        verify(bodyCorporateService).getBodyCorporateByEmail(testEmail)
+    }
 
-    // @Test
-    // fun `getBodyCorporateByUserId should return 404 when not found`() {
-    //     val userId = "user123"
-    //     Mockito
-    //         .`when`(bodyCorporateService.getBodyCorporateByUserId(userId))
-    //         .thenThrow(NoSuchElementException("Not found"))
+    @Test
+    fun `getBodyCorporateByUserId should return 200 OK when body corporate exists`() {
+        val response =
+            BodyCorporateResponse(
+                corporateUuid = testUuid,
+                corporateName = testName,
+                contributionPerSqm = BigDecimal("100.00"),
+                totalBudget = BigDecimal("100000.00"),
+                email = testEmail,
+                userId = testUserId,
+                username = "testuser",
+            )
 
-    //     mockMvc
-    //         .perform(MockMvcRequestBuilders.get("/api/body-corporates/user/$userId"))
-    //         .andExpect(MockMvcResultMatchers.status().isNotFound)
+        `when`(bodyCorporateService.getBodyCorporateByUserId(testUserId)).thenReturn(response)
 
-    //     Mockito.verify(bodyCorporateService).getBodyCorporateByUserId(userId)
-    // }
+        mockMvc
+            .perform(get("/api/body-corporates/user/{userId}", testUserId))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.userId").value(testUserId))
 
-    // @Test
-    // fun `updateBodyCorporate should return updated response when successful`() {
-    //     val request =
-    //         UpdateBodyCorporateRequest(
-    //             corporateName = "Updated Corp",
-    //             contributionPerSqm = BigDecimal("200.00"),
-    //             totalBudget = BigDecimal("20000.00"),
-    //             email = "updated@example.com",
-    //         )
-    //     val response =
-    //         BodyCorporateResponse(
-    //             corporateUuid = corporateUuid,
-    //             corporateName = "Updated Corp",
-    //             contributionPerSqm = BigDecimal("200.00"),
-    //             totalBudget = BigDecimal("20000.00"),
-    //             email = "updated@example.com",
-    //             userId = "user123",
-    //             username = testUsername,
-    //         )
-    //     Mockito.`when`(bodyCorporateService.updateBodyCorporate(eq(corporateUuid), eq(request))).thenReturn(response)
+        verify(bodyCorporateService).getBodyCorporateByUserId(testUserId)
+    }
 
-    //     mockMvc
-    //         .perform(
-    //             MockMvcRequestBuilders
-    //                 .put("/api/body-corporates/$corporateUuid")
-    //                 .contentType(MediaType.APPLICATION_JSON)
-    //                 .content(objectMapper.writeValueAsString(request)),
-    //         ).andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.corporateName").value("Updated Corp"))
+    @Test
+    fun `getBodyCorporateByUserId should return 404 NOT FOUND when body corporate does not exist`() {
+        `when`(bodyCorporateService.getBodyCorporateByUserId(testUserId)).thenThrow(NoSuchElementException())
 
-    //     Mockito.verify(bodyCorporateService).updateBodyCorporate(eq(corporateUuid), eq(request))
-    // }
+        mockMvc
+            .perform(get("/api/body-corporates/user/{userId}", testUserId))
+            .andExpect(status().isNotFound)
 
-    // @Test
-    // fun `updateBodyCorporate should return 404 when not found`() {
-    //     val request = UpdateBodyCorporateRequest(corporateName = "Updated Corp")
-    //     Mockito
-    //         .`when`(bodyCorporateService.updateBodyCorporate(eq(corporateUuid), eq(request)))
-    //         .thenThrow(NoSuchElementException("Not found"))
+        verify(bodyCorporateService).getBodyCorporateByUserId(testUserId)
+    }
 
-    //     mockMvc
-    //         .perform(
-    //             MockMvcRequestBuilders
-    //                 .put("/api/body-corporates/$corporateUuid")
-    //                 .contentType(MediaType.APPLICATION_JSON)
-    //                 .content(objectMapper.writeValueAsString(request)),
-    //         ).andExpect(MockMvcResultMatchers.status().isNotFound)
+    @Test
+    fun `updateBodyCorporate should return 200 OK when update is successful`() {
+        val request =
+            UpdateBodyCorporateRequest(
+                corporateName = "Updated Corp",
+                contributionPerSqm = BigDecimal("150.00"),
+            )
 
-    //     Mockito.verify(bodyCorporateService).updateBodyCorporate(eq(corporateUuid), eq(request))
-    // }
+        val response =
+            BodyCorporateResponse(
+                corporateUuid = testUuid,
+                corporateName = "Updated Corp",
+                contributionPerSqm = BigDecimal("150.00"),
+                totalBudget = BigDecimal("100000.00"),
+                email = testEmail,
+                userId = testUserId,
+                username = "testuser",
+            )
 
-    // @Test
-    // fun `deleteBodyCorporate should return success message`() {
-    //     Mockito.doNothing().`when`(bodyCorporateService).deleteBodyCorporate(corporateUuid)
+        `when`(bodyCorporateService.updateBodyCorporate(eq(testUuid), any())).thenReturn(response)
 
-    //     mockMvc
-    //         .perform(MockMvcRequestBuilders.delete("/api/body-corporates/$corporateUuid"))
-    //         .andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Body corporate deleted successfully"))
+        mockMvc
+            .perform(
+                put("/api/body-corporates/{id}", testUuid)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.corporateName").value("Updated Corp"))
 
-    //     Mockito.verify(bodyCorporateService).deleteBodyCorporate(corporateUuid)
-    // }
+        verify(bodyCorporateService).updateBodyCorporate(eq(testUuid), any())
+    }
 
-    // @Test
-    // fun `deleteBodyCorporate should return 404 when not found`() {
-    //     Mockito.doThrow(NoSuchElementException("Not found")).`when`(bodyCorporateService).deleteBodyCorporate(corporateUuid)
+    @Test
+    fun `updateBodyCorporate should return 404 NOT FOUND when body corporate does not exist`() {
+        val request = UpdateBodyCorporateRequest(corporateName = "Updated Corp")
+        `when`(bodyCorporateService.updateBodyCorporate(eq(testUuid), any())).thenThrow(NoSuchElementException())
 
-    //     mockMvc
-    //         .perform(MockMvcRequestBuilders.delete("/api/body-corporates/$corporateUuid"))
-    //         .andExpect(MockMvcResultMatchers.status().isNotFound)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Not found"))
+        mockMvc
+            .perform(
+                put("/api/body-corporates/{id}", testUuid)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isNotFound)
 
-    //     Mockito.verify(bodyCorporateService).deleteBodyCorporate(corporateUuid)
-    // }
+        verify(bodyCorporateService).updateBodyCorporate(eq(testUuid), any())
+    }
 
-    // @Test
-    // fun `searchBodyCorporatesByName should return matching corporates`() {
-    //     val response =
-    //         BodyCorporateResponse(
-    //             corporateUuid = corporateUuid,
-    //             corporateName = testCorporateName,
-    //             contributionPerSqm = BigDecimal("100.00"),
-    //             totalBudget = BigDecimal("10000.00"),
-    //             email = testEmail,
-    //             userId = "user123",
-    //             username = testUsername,
-    //         )
-    //     Mockito.`when`(bodyCorporateService.searchBodyCorporatesByName("test")).thenReturn(listOf(response))
+    @Test
+    fun `updateBodyCorporate should return 400 BAD REQUEST when request body is invalid`() {
+        mockMvc
+            .perform(
+                put("/api/body-corporates/{id}", testUuid)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{ invalid json }"),
+            ).andExpect(status().isBadRequest)
+    }
 
-    //     mockMvc
-    //         .perform(
-    //             MockMvcRequestBuilders
-    //                 .get("/api/body-corporates/search")
-    //                 .param("name", "test"),
-    //         ).andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$[0].corporateName").value(testCorporateName))
+    @Test
+    fun `deleteBodyCorporate should return 200 OK when deletion is successful`() {
+        mockMvc
+            .perform(delete("/api/body-corporates/{id}", testUuid))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.message").value("Body corporate deleted successfully"))
 
-    //     Mockito.verify(bodyCorporateService).searchBodyCorporatesByName("test")
-    // }
+        verify(bodyCorporateService).deleteBodyCorporate(testUuid)
+    }
 
-    // @Test
-    // fun `getBodyCorporatesByContributionRange should return matching corporates`() {
-    //     val response =
-    //         BodyCorporateResponse(
-    //             corporateUuid = corporateUuid,
-    //             corporateName = testCorporateName,
-    //             contributionPerSqm = BigDecimal("100.00"),
-    //             totalBudget = BigDecimal("10000.00"),
-    //             email = testEmail,
-    //             userId = "user123",
-    //             username = testUsername,
-    //         )
-    //     val minContribution = BigDecimal("50.00")
-    //     val maxContribution = BigDecimal("150.00")
-    //     Mockito
-    //         .`when`(
-    //             bodyCorporateService.getBodyCorporatesByContributionRange(
-    //                 eq(minContribution),
-    //                 eq(maxContribution),
-    //             ),
-    //         ).thenReturn(listOf(response))
+    @Test
+    fun `deleteBodyCorporate should return 404 NOT FOUND when body corporate does not exist`() {
+        `when`(bodyCorporateService.deleteBodyCorporate(testUuid)).thenThrow(NoSuchElementException("Not found"))
 
-    //     mockMvc
-    //         .perform(
-    //             MockMvcRequestBuilders
-    //                 .get("/api/body-corporates/filter/contribution")
-    //                 .param("minContribution", "50.00")
-    //                 .param("maxContribution", "150.00"),
-    //         ).andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$[0].contributionPerSqm").value(100.00))
+        mockMvc
+            .perform(delete("/api/body-corporates/{id}", testUuid))
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.error").value("Not found"))
 
-    //     Mockito.verify(bodyCorporateService).getBodyCorporatesByContributionRange(
-    //         eq(minContribution),
-    //         eq(maxContribution),
-    //     )
-    // }
+        verify(bodyCorporateService).deleteBodyCorporate(testUuid)
+    }
 
-    // @Test
-    // fun `getBodyCorporatesByMinimumBudget should return matching corporates`() {
-    //     val response =
-    //         BodyCorporateResponse(
-    //             corporateUuid = corporateUuid,
-    //             corporateName = testCorporateName,
-    //             contributionPerSqm = BigDecimal("100.00"),
-    //             totalBudget = BigDecimal("10000.00"),
-    //             email = testEmail,
-    //             userId = "user123",
-    //             username = testUsername,
-    //         )
-    //     val minBudget = BigDecimal("5000.00")
-    //     Mockito
-    //         .`when`(bodyCorporateService.getBodyCorporatesByMinimumBudget(eq(minBudget)))
-    //         .thenReturn(listOf(response))
+    @Test
+    fun `searchBodyCorporatesByName should return 200 OK with matching body corporates`() {
+        val bodyCorporates =
+            listOf(
+                BodyCorporateResponse(
+                    corporateUuid = testUuid,
+                    corporateName = testName,
+                    contributionPerSqm = BigDecimal("100.00"),
+                    totalBudget = BigDecimal("100000.00"),
+                    email = testEmail,
+                    userId = testUserId,
+                    username = "testuser",
+                ),
+            )
 
-    //     mockMvc
-    //         .perform(
-    //             MockMvcRequestBuilders
-    //                 .get("/api/body-corporates/filter/budget")
-    //                 .param("minBudget", "5000.00"),
-    //         ).andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$[0].totalBudget").value(10000.00))
+        `when`(bodyCorporateService.searchBodyCorporatesByName("Test")).thenReturn(bodyCorporates)
 
-    //     Mockito.verify(bodyCorporateService).getBodyCorporatesByMinimumBudget(eq(minBudget))
-    // }
+        mockMvc
+            .perform(get("/api/body-corporates/search?name=Test"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.length()").value(1))
+            .andExpect(jsonPath("$[0].corporateName").value(testName))
 
-    // @Test
-    // fun `getBodyCorporateStatistics should return statistics`() {
-    //     val stats =
-    //         BodyCorporateService.BodyCorporateStatistics(
-    //             totalBodyCorporates = 10,
-    //             totalCombinedBudget = BigDecimal("100000.00"),
-    //         )
-    //     Mockito.`when`(bodyCorporateService.getBodyCorporateStatistics()).thenReturn(stats)
+        verify(bodyCorporateService).searchBodyCorporatesByName("Test")
+    }
 
-    //     mockMvc
-    //         .perform(MockMvcRequestBuilders.get("/api/body-corporates/statistics"))
-    //         .andExpect(MockMvcResultMatchers.status().isOk)
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.totalBodyCorporates").value(10))
-    //         .andExpect(MockMvcResultMatchers.jsonPath("$.totalCombinedBudget").value(100000.00))
+    @Test
+    fun `searchBodyCorporatesByName should return 200 OK with empty list when no matches found`() {
+        `when`(bodyCorporateService.searchBodyCorporatesByName("NonExistent")).thenReturn(emptyList())
 
-    //     Mockito.verify(bodyCorporateService).getBodyCorporateStatistics()
-    // }
+        mockMvc
+            .perform(get("/api/body-corporates/search?name=NonExistent"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.length()").value(0))
+
+        verify(bodyCorporateService).searchBodyCorporatesByName("NonExistent")
+    }
+
+    @Test
+    fun `getBodyCorporatesByContributionRange should return 200 OK with matching body corporates`() {
+        val bodyCorporates =
+            listOf(
+                BodyCorporateResponse(
+                    corporateUuid = testUuid,
+                    corporateName = testName,
+                    contributionPerSqm = BigDecimal("100.00"),
+                    totalBudget = BigDecimal("100000.00"),
+                    email = testEmail,
+                    userId = testUserId,
+                    username = "testuser",
+                ),
+            )
+
+        `when`(bodyCorporateService.getBodyCorporatesByContributionRange(BigDecimal("50.00"), BigDecimal("150.00")))
+            .thenReturn(bodyCorporates)
+
+        mockMvc
+            .perform(get("/api/body-corporates/filter/contribution?minContribution=50.00&maxContribution=150.00"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.length()").value(1))
+            .andExpect(jsonPath("$[0].contributionPerSqm").value(100.00))
+
+        verify(bodyCorporateService).getBodyCorporatesByContributionRange(BigDecimal("50.00"), BigDecimal("150.00"))
+    }
+
+    @Test
+    fun `getBodyCorporatesByMinimumBudget should return 200 OK with matching body corporates`() {
+        val bodyCorporates =
+            listOf(
+                BodyCorporateResponse(
+                    corporateUuid = testUuid,
+                    corporateName = testName,
+                    contributionPerSqm = BigDecimal("100.00"),
+                    totalBudget = BigDecimal("100000.00"),
+                    email = testEmail,
+                    userId = testUserId,
+                    username = "testuser",
+                ),
+            )
+
+        `when`(bodyCorporateService.getBodyCorporatesByMinimumBudget(BigDecimal("50000.00")))
+            .thenReturn(bodyCorporates)
+
+        mockMvc
+            .perform(get("/api/body-corporates/filter/budget?minBudget=50000.00"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.length()").value(1))
+            .andExpect(jsonPath("$[0].totalBudget").value(100000.00))
+
+        verify(bodyCorporateService).getBodyCorporatesByMinimumBudget(BigDecimal("50000.00"))
+    }
+
+    @Test
+    fun `getBodyCorporateStatistics should return 200 OK with statistics`() {
+        val statistics =
+            BodyCorporateService.BodyCorporateStatistics(
+                totalBodyCorporates = 10,
+                totalCombinedBudget = BigDecimal("100000.00"),
+            )
+
+        `when`(bodyCorporateService.getBodyCorporateStatistics()).thenReturn(statistics)
+
+        mockMvc
+            .perform(get("/api/body-corporates/statistics"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.totalBodyCorporates").value(10))
+
+        verify(bodyCorporateService).getBodyCorporateStatistics()
+    }
+
+    @Test
+    fun `passwordResetRequest should return 200 OK when request is successful`() {
+        val request = BodyCorporateController.PasswordResetRequest(email = testEmail)
+
+        mockMvc
+            .perform(
+                post("/api/body-corporates/auth/password-reset-request")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.message").value("Password reset code sent to your email."))
+
+        verify(cognitoService).initiatePasswordReset(testEmail)
+    }
+
+    @Test
+    fun `passwordResetConfirm should return 200 OK when confirmation is successful`() {
+        val request =
+            BodyCorporateController.PasswordResetConfirmRequest(
+                email = testEmail,
+                confirmationCode = "123456",
+                newPassword = "newpassword123",
+            )
+
+        mockMvc
+            .perform(
+                post("/api/body-corporates/auth/password-reset-confirm")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)),
+            ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.message").value("Password has been reset successfully."))
+
+        verify(cognitoService).confirmPasswordReset(testEmail, "123456", "newpassword123")
+    }
 }
