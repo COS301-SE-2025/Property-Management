@@ -1,23 +1,23 @@
-<ion-tabs class="border border-black dark:bg-gray-800 shadow-lg rounded-lg bg-white">
-  <ion-tab-bar slot="bottom ">
+<ion-tabs class="border border-black dark:bg-gray-800 shadow-lg rounded-lg bg-white ion-safe-area-bottom">
+  <ion-tab-bar slot="bottom">
     <ion-tab-button [attr.href]="type === 'contractor' ? '/contractor-home' : '/home'" class="dark:text-white">
-      <ion-icon src="assets/icons/home-app.svg" class="dark:invert"></ion-icon>
+      <ion-icon name="home-outline"></ion-icon>
       Home
     </ion-tab-button>
-    <ion-tab-button href="/assigned-tasks" *ngIf="type === 'contractor'" class="dark:text-white">
-      <ion-icon src="assets/icons/screwdriver.svg" class="dark:invert"></ion-icon>
-      projects
-    </ion-tab-button>
     <ion-tab-button href="/voting" *ngIf="type !== 'contractor'" class="dark:text-white">
-      <ion-icon src="assets/icons/vote.svg" class="dark:invert"></ion-icon>
+      <ion-icon name="archive-outline"></ion-icon>
       Voting
     </ion-tab-button>
+    <ion-tab-button href="/assigned-tasks" *ngIf="type === 'contractor'" class="dark:text-white">
+      <ion-icon name="hammer-outline"></ion-icon>
+      Tasks
+    </ion-tab-button>
     <ion-tab-button href="/notifications" class="dark:text-white">
-      <ion-icon src="assets/icons/notifications.svg" class="dark:invert"></ion-icon>
+      <ion-icon name="notifications-outline"></ion-icon>
       Notifications
     </ion-tab-button>
     <ion-tab-button href="/profile" class="dark:text-white">
-      <ion-icon src="assets/icons/profile.svg" class="dark:invert"></ion-icon>
+      <ion-icon name="person-outline"></ion-icon>
       Profile
     </ion-tab-button>
   </ion-tab-bar>

@@ -91,7 +91,7 @@ export class QuotationComponent implements OnInit{
   allocatedInventory: AllocatedInventoryItem[] = [];
 
   get isTaskApproved(): boolean {
-    return this.currentTask?.status === 'APPROVED';
+    return this.currentTask?.approvalStatus === 'APPROVED';
   }
 
   // Properties for inventory management
@@ -118,6 +118,7 @@ export class QuotationComponent implements OnInit{
       const id = params.get('taskId');
       if (id) {
         this.taskId = id;
+        console.log(this.taskId);
         this.loadMaintenanceTaskAndInventory();
       }
     });
@@ -149,7 +150,8 @@ export class QuotationComponent implements OnInit{
         this.currentTask = task;
 
         //check if task status is approved
-        if (task.status !== 'APPROVED') {
+        console.log(task);
+        if (task.approvalStatus !== 'APPROVED') {
           this.messageService.add({
             severity: 'warn',
             summary: 'Task Not Approved',
@@ -170,6 +172,7 @@ export class QuotationComponent implements OnInit{
 
         // Get the building UUID from the task
         this.buildingUuid = task.buuid || '';
+        console.log(this.buildingUuid);
         
         if (!this.buildingUuid) {
           this.messageService.add({
@@ -199,6 +202,7 @@ export class QuotationComponent implements OnInit{
     this.apiService.getInventoryByBuilding(buildingUuid).subscribe({
       next: (inventory: Inventory[]) => {
         this.inventory = inventory;
+        console.log(this.inventory);
         if (this.inventory.length === 0) {
           this.messageService.add({
             severity: 'info',
@@ -227,6 +231,8 @@ export class QuotationComponent implements OnInit{
         const inventoryPromises = usageRecords.map(usage => {
           return this.apiService.getInventory().toPromise().then(allInventory => {
             const inventoryItem = allInventory?.find(item => item.itemUuid === usage.itemUuid);
+
+            console.log(inventoryItem);
             if (inventoryItem) {
               return {
                 name: inventoryItem.name,
@@ -240,6 +246,7 @@ export class QuotationComponent implements OnInit{
 
         Promise.all(inventoryPromises).then(results => {
           this.allocatedInventory = results.filter(item => item !== null) as AllocatedInventoryItem[];
+          console.log(this.allocatedInventory);
           
           if (this.allocatedInventory.length === 0) {
             this.messageService.add({

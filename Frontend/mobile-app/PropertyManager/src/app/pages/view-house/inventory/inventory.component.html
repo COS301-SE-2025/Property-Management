@@ -7,16 +7,13 @@
       <p-table [value] = "inventory()" [paginator]="true" [rows]="5" [responsiveLayout]="'scroll'">
         <ng-template #header>
         <tr>
-            <th pSortableColumn="name">
+            <th pSortableColumn="name" class="dark:text-gray-400">
                 Description <p-sortIcon field="name"/>
             </th>
-            <th pSortableColumn="quantityInStock">
+            <th pSortableColumn="quantityInStock" class="dark:text-gray-400">
                 Quantity <p-sortIcon field="quantityInStock"/>
             </th>
-            <th pSortableColumn="price" *ngIf="showPrice">
-                Price <p-sortIcon field="price"/>
-            </th>
-            <th>Actions</th>
+            <th class="dark:text-gray-400">Actions</th>
         </tr>
         </ng-template>
         <ng-template #body let-inventory let-rowIndex="rowIndex">
@@ -31,25 +28,24 @@
                     {{ inventory.quantityInStock }}
                 }
             </td>
-            <td *ngIf="showPrice">R {{ inventory.price }}</td>
             <td>
                 @if(editingItems.get(inventory.itemUuid))
                 {
                     <div class="flex gap-2">
-                        <ion-button color="warning" size="small" (click)="changeQuantity(rowIndex, 1)">
+                        <ion-button color="warning" size="small" (click)="changeQuantity(inventory, 1)">
                           <ion-icon name="add-outline"></ion-icon>
                         </ion-button>
-                        <ion-button color="warning" size="small" (click)="changeQuantity(rowIndex, -1)" [disabled]="draftQuantities.get(inventory.itemUuid)! <= 0">
+                        <ion-button color="warning" size="small" (click)="changeQuantity(inventory, -1)" [disabled]="draftQuantities.get(inventory.itemUuid)! <= 0">
                           <ion-icon name="remove-outline"></ion-icon>
                         </ion-button>
                     </div>
                 }
                 @else {
                     <div class="flex gap-1">
-                        <ion-button color="warning" size="small" (click)="startAction(rowIndex, 'increase')">
+                        <ion-button color="warning" size="small" (click)="startAction(inventory, 'increase')">
                           <ion-icon name="add-outline"></ion-icon>
                         </ion-button>
-                        <ion-button color="warning" size="small" (click)="startAction(rowIndex, 'decrease')" [disabled]="inventory.quantityInStock <= 0">
+                        <ion-button color="warning" size="small" (click)="startAction(inventory, 'decrease')" [disabled]="inventory.quantityInStock <= 0">
                           <ion-icon name="remove-outline"></ion-icon>
                         </ion-button>
                     </div>
@@ -73,9 +69,9 @@
     <div class = "mt-2 flex flex-col justify-center items-center" *ngIf="showAddButton">
       <button (click)="inventoryAddDialog.openModal()" class="flex items-center gap-2 p-2 bg-yellow-400 text-black rounded-lg shadow-md">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
-          Add Inventory item
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add Inventory Item
       </button>
       <app-add-inventory #inventoryAddDialog/>
     </div>

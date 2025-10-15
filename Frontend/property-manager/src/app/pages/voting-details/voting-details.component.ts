@@ -27,6 +27,10 @@ import { VotingResultsComponent } from './voting-results/voting-results.componen
   styles: `
     .due-date-normal{
       color:inherit;
+      background-color: #FED000;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-weight: bold;
     }
     .due-date-urgent {
       color: #fff;
@@ -135,6 +139,9 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
             res.img = "assets/images/no_img.png";
           }
           this.task.set(res);
+          if (this.task()?.scheduled_date) {
+            this.startCountdown(new Date(this.task()!.scheduled_date));
+          }
 
           await this.bodyCorporateService.loadTrustedContractors(bcId)
           this.contractors.set(this.bodyCorporateService.contractorDetails());

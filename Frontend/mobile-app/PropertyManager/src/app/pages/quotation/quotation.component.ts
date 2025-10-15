@@ -17,7 +17,7 @@ import {
 import { addIcons } from 'ionicons';
 import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline } from 'ionicons/icons';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 
 @Component({
@@ -42,6 +42,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class QuotationComponent implements OnInit {
   private api = inject(ApiService);
   private route = inject(ActivatedRoute);
+  private sanitizer = inject(DomSanitizer);
   t_uuid: string = '';
 
   IssueDate: Date = new Date();
@@ -50,6 +51,7 @@ export class QuotationComponent implements OnInit {
   totalAmount: number=0;
   file: File | null = null;
   filePreviewUrl: string | null = null;
+  safeFilePreviewUrl: SafeResourceUrl | null = null;
   isImage: boolean = false;
   showIssueDate = false;
   showExpirationDate = false;
@@ -78,9 +80,11 @@ export class QuotationComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      this.file = file;
       const reader = new FileReader();
       reader.onload = () => {
         this.filePreviewUrl = reader.result as string;
+        this.safeFilePreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.filePreviewUrl);
         this.isImage = file.type.startsWith('image');
       };
       reader.readAsDataURL(file);
@@ -118,9 +122,9 @@ export class QuotationComponent implements OnInit {
             if (this.file) {
               this.uploadFile();
             } else {
-              setTimeout(() => {
-                this.router.navigate(['/contractor-home']);
-              }, 1500);
+              // setTimeout(() => {
+              //   this.router.navigate(['/contractor-home']);
+              // }, 1500);
             }
           },
           error: (err) => {
@@ -130,7 +134,7 @@ export class QuotationComponent implements OnInit {
         });
       
     } catch (err) {
-      this.showToast(`Error submitting} quotation.`, 'danger');
+      this.showToast(`Error submitting quotation.`, 'danger');
     } finally {
       this.loading = false;
     }
@@ -147,9 +151,9 @@ export class QuotationComponent implements OnInit {
       }
     }
     
-    setTimeout(() => {
-      this.router.navigate(['/contractor-home']);
-    }, 1500);
+    // setTimeout(() => {
+    //   this.router.navigate(['/contractor-home']);
+    // }, 1500);
   }
 
   showToast(message: string, color: 'success' | 'danger') {

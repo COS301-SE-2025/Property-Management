@@ -13,7 +13,7 @@
     <ion-content class="bg-white dark:bg-gray-700">
       <form [formGroup]="form" (ngSubmit)="confirm()">
         <div class="flex flex-col justify-center items-center mt-4 space-y-2">
-          <p class="text-gray-700 pl-2 pb-2 dark:text-gray-400">Add new maintenance task</p>
+          <p class="text-gray-700 pl-2 pb-2 dark:text-white">Add new maintenance task</p>
           <ion-item>
             <ion-input
               label="Task name"
@@ -60,7 +60,7 @@
             <p class="text-red-500" *ngIf="form.get('date')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
           </ion-item>
           <div class="px-5">
-            <label for="priority" class="font-semibold block pb-3 dark:text-gray-200">Assign a priority</label>
+            <label for="priority" class="font-semibold block pb-3 dark:text-gray-300">Assign a priority</label>
             <p-select 
                 id="priority"
                 [options]="priorities" 
@@ -69,9 +69,9 @@
                 optionLabel="label"
                 optionStyleClass="styleClass"
             >
-              <ng-template let-priority pTemplate="item">
-                  <span [class]="priority.styleClass">{{priority.label}}</span>
-              </ng-template>
+            <ng-template let-priority pTemplate="item">
+                <span [class]="priority.styleClass">{{priority.label}}</span>
+            </ng-template>
             </p-select>
           </div>
           <div class="pt-6 flex flex-col justify-center items-center">

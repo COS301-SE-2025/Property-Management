@@ -1,13 +1,14 @@
 <ion-content class="dark:bg-gray-700">
-  <div class="container mx-auto">
+  <div class="container mx-auto pb-[5rem]">
     <app-header/>
 
     <div class="flex justify-center items-center mt-5" *ngIf="loading">
       <p-progressSpinner></p-progressSpinner>
     </div>
     
-    <div class="mt-4 ml-3" *ngIf="!loading">
-        <p class = "text-xl font-normal dark:text-white">Your properties</p>
+    <div class="animate-item mt-5 ml-2">
+      <h1 class="text-2xl font-bold dark:text-white">Your properties</h1>
+      <div class="w-[15rem] h-1 bg-yellow-300 mt-2"></div>
     </div>
   
     <div class=" mt-3 flex flex-col justify-center items-center" *ngIf="!loading">
@@ -18,12 +19,12 @@
         }   
       </div>
   
-      <ion-item>
-        <button type="button" (click)="RouteToCreateProperty()">
+      <ion-item style="--border-width: 0; --inner-border-width: 0;">
+        <button type="button" (click)="RouteToCreateProperty()" >
           <img class="w-9 h-9" [src]="darkMode ? 'assets/icons/add_circle_gray.svg' : 'assets/icons/add_circle.svg'" alt="">
         </button>
       </ion-item>
     </div>
   </div>
-  <app-tab/>
 </ion-content>
+<app-tab/>

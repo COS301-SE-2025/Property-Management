@@ -1,10 +1,10 @@
 
-<ion-content class="ion-padding font-lato dark:bg-gray-800">
+<ion-content class="ion-padding font-lato dark:bg-gray-700">
      <app-header/>
   <!-- Title -->
   <div class="mb-6 mt-7">
-    <h2 class="text-2xl font-lato dark:text-gray-300">Create Quotation</h2>
-    <div class="w-24 h-1 propertyYellow-bg mt-2"></div>
+    <h2 class="text-2xl font-lato dark:text-gray-200">Create Quotation</h2>
+    <div class="w-[16rem] h-1 propertyYellow-bg mt-2"></div>
   </div>
 
   <!-- Quotation Form -->
@@ -20,15 +20,15 @@
     </ion-item>
     <ion-modal [isOpen]="showExpirationDate" (didDismiss)="showExpirationDate = false">
       <ng-template>
-        <ion-header>
+        <ion-header class="bg-white dark:bg-gray-700">
           <ion-toolbar>
-            <ion-title>Select Expiration Date</ion-title>
+            <ion-title class="dark:text-gray-200">Select Expiration Date</ion-title>
             <ion-buttons slot="end">
-              <ion-button (click)="showExpirationDate = false">Close</ion-button>
+              <ion-button (click)="showExpirationDate = false" class="dark:text-gray-200" >Close</ion-button>
             </ion-buttons>
           </ion-toolbar>
         </ion-header>
-        <ion-content class="ion-padding">
+        <ion-content class="ion-padding bg-white dark:bg-gray-700">
           <ion-datetime
             presentation="date"
             [(ngModel)]="expirationDate"
@@ -43,7 +43,7 @@
     <ion-item fill="outline" lines="inset" class=" bg-grey-100"> 
       <ion-icon name="newspaper-outline" slot="start"></ion-icon>
       <ion-label position="stacked" class="dark:text-gray-300">Quote Number</ion-label>
-      <ion-input [(ngModel)]="quoteNo" name="quoteNo"  required></ion-input>
+      <ion-input class="dark:text-gray-200" [(ngModel)]="quoteNo" name="quoteNo"  required></ion-input>
     </ion-item>
 
     <!-- Total Amount -->
@@ -54,7 +54,7 @@
     </ion-item>
 
    <div class="mt-4 flex flex-col items-center space-y-2">
-  <label class="block text-sm text-gray-600 mb-2">Upload File (PDF/Image)</label>
+  <label class="block text-sm text-gray-600 dark:text-gray-300 mb-2">Upload File (PDF/Image)</label>
 
   <!-- Styled Upload Button -->
   <label class="inline-flex items-center px-4 py-2 bg-black text-white rounded-lg cursor-pointer hover:bg-blue-600 transition">
@@ -120,9 +120,10 @@
       </ion-header>
       <ion-content class="ion-padding bg-white dark:bg-gray-700">
         <img *ngIf="isImage" [src]="filePreviewUrl" class="w-full rounded" />
-        <iframe *ngIf="!isImage" [src]="filePreviewUrl" class="w-full h-96"></iframe>
+        <iframe *ngIf="!isImage" [src]="safeFilePreviewUrl" class="w-full h-96"></iframe>
       </ion-content>
     </ng-template>
   </ion-modal>
-   <app-tab/>
+   
 </ion-content>
+<app-tab/>
