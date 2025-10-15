@@ -75,7 +75,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 {{ (task()?.scheduled_date ?? '') | formatDate }}
-                <span *ngIf="task()?.approvalStatus !== 'COMPLETED'" [class]="changeDueDate()" class="ml-[6rem]">{{ countdown }}</span>
+                <span *ngIf="task()?.approvalStatus !== 'COMPLETED'" [class]="changeDueDate()" class="ml-[3rem]">{{ countdown }}</span>
               </p>
             </div>
           </div>
@@ -159,7 +159,8 @@
                   optionValue="uuid"
                   class="w-full"
                   formControlName="contractorName"
-                  [panelStyle]="{ background: '#CBCBCB', border: '1px solid var(--surface-border)' }">
+                  appendTo="body"
+                  [panelStyle]="{ background: '#ECECEC', border: '1px solid var(--surface-border)' }">
                 </p-multiselect>
               </div>
               
