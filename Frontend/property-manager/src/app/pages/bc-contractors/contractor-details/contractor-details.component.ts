@@ -50,10 +50,10 @@ export class ContractorDetailsComponent implements OnInit{
       {
         //Get pdfs
         const pdfReq = [
-          this.apiService.getContractorPDF(contractorId!, 'certifications').pipe(catchError(() => of(null))),
-          this.apiService.getContractorPDF(contractorId!, 'licenses').pipe(catchError(() => of(null))),
-          this.apiService.getContractorPDF(contractorId!, 'ids').pipe(catchError(() => of(null))),
-          this.apiService.getContractorPDF(contractorId!, 'projectRecords').pipe(() => of(null)) 
+          this.apiService.getContractorPDF(contractorId!, 'certifications', "").pipe(catchError(() => of(null))),
+          this.apiService.getContractorPDF(contractorId!, 'licenses', "").pipe(catchError(() => of(null))),
+          this.apiService.getContractorPDF(contractorId!, 'ids', "").pipe(catchError(() => of(null))),
+          this.apiService.getContractorPDF(contractorId!, 'projectRecords', "").pipe(() => of(null)) 
         ];
 
         forkJoin(pdfReq).subscribe({
@@ -90,10 +90,10 @@ export class ContractorDetailsComponent implements OnInit{
           if (contractor) {
             //Get pdfs
             const pdfReq = [
-              this.apiService.getContractorPDF(contractorId!, 'certifications').pipe(catchError(() => of(null))),
-              this.apiService.getContractorPDF(contractorId!, 'licenses').pipe(catchError(() => of(null))),
-              this.apiService.getContractorPDF(contractorId!, 'ids').pipe(catchError(() => of(null))),
-              this.apiService.getContractorPDF(contractorId!, 'projectRecords').pipe(catchError(() => of(null)))
+              this.apiService.getContractorPDF(contractorId!, 'certifications', "").pipe(catchError(() => of(null))),
+              this.apiService.getContractorPDF(contractorId!, 'licenses', "").pipe(catchError(() => of(null))),
+              this.apiService.getContractorPDF(contractorId!, 'ids', "").pipe(catchError(() => of(null))),
+              this.apiService.getContractorPDF(contractorId!, 'projectRecords', "").pipe(catchError(() => of(null)))
             ];
 
             forkJoin(pdfReq).subscribe({

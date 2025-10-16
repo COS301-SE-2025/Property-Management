@@ -73,7 +73,7 @@ export class QuoteDetailsComponent extends DialogComponent implements OnInit {
     const quote = this.quote();
     if (!quote) return;
 
-    this.apiService.getContractorPDF(this.contractorId(), "Quote").subscribe({
+    this.apiService.getContractorPDF(this.contractorId(), "Quote", this.taskId.toString()).subscribe({
       next: (presignedUrl: string) => {
         window.open(presignedUrl, '_blank');
       },
