@@ -157,7 +157,7 @@ export class StepTwoComponent {
       }
 
       // Upload the file
-      await this.apiService.uploadPDF(file, contractorUuid, type);
+      await this.apiService.uploadPDF(file, contractorUuid, type, "");
       
       // Success
       this.uploadStates[type] = { 

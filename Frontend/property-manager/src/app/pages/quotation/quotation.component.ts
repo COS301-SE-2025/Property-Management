@@ -302,7 +302,7 @@ export class QuotationComponent implements OnInit{
     const file = event.files[0]; // Assuming single file upload
     if (!file) return;
     try {
-      await this.apiService.uploadPDF(file, this.contractorId, "Quote");
+      await this.apiService.uploadPDF(file, this.contractorId, "Quote", this.taskId);
       this.messageService.add({
         severity: 'success',
         summary: 'Upload Complete',

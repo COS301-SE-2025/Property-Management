@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { environmentMobile } from '../../../environment';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -32,12 +33,61 @@ export class ImageApiService{
       })
     ); 
   }
-  uploadImage(file: File)
-  {
-    const formData = new FormData();
-    formData.append('file', file);
+async uploadImages(
+  files: File[],
+  uuid: string,
+  task_uuid?: string
+): Promise<string[]> {  // Return array of image IDs
+  const uploadResults: string[] = [];
+  
+  const uploadPromises = files.map(async (file) => {
+    try {
+      const presignResponse: any = await firstValueFrom(
+        this.http.get(`${this.url}/images/presigned-upload/${encodeURIComponent(file.name)}`, { withCredentials: true })
+      );
+      const uploadUrl = presignResponse.uploadUrl;
+      const key = presignResponse.fileKey;
+      const id = presignResponse.id;
+      
+      await firstValueFrom(
+        this.http.put(uploadUrl, file, {
+          headers: new HttpHeaders({ 'Content-Type': file.type }),
+          responseType: 'text',
+          withCredentials: false
+        })
+      );
+      
+      let notifyUrl = `${this.url}/images/notify-upload/${id}/${encodeURIComponent(file.name)}/${key}/${uuid}`;
+      if (task_uuid) {
+        notifyUrl += `?taskUuid=${task_uuid}`;
+      }
+      
+      await firstValueFrom(
+        this.http.post(notifyUrl, {}, { responseType: 'text', withCredentials: true })
+      );
+      
+      uploadResults.push(id); // Store the image ID
+    } catch (error) {
+      console.error(`Failed to upload file ${file.name}:`, error);
+      throw error;
+    }
+  });
 
-    return this.http.post<{ imageKey: string}>(`${this.url}/images/upload`, formData, { withCredentials: true })
-    .pipe(map(response => ({ imageId:  response.imageKey })));
+  await Promise.all(uploadPromises);
+  return uploadResults; // Return all image IDs
+}
+  getUserImages(uuid: string): Observable<string>{
+    return this.http.get(`${this.url}/images/presigned/user/${uuid}`, {
+      responseType: 'text',
+      withCredentials: true
+    });
   }
+
+    getTaskImages(uuid: string): Observable<string>{
+    return this.http.get(`${this.url}/images/presigned/task/${uuid}`, {
+      responseType: 'text',
+      withCredentials: true
+    });
+  }
+
 }

@@ -80,7 +80,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   async getImages()
   {
     if (this.task?.img) {
-      this.imageUrl = await this.imageService.getImage(this.task.img).toPromise();
+      this.imageUrl = await this.imageService.getTaskImages(this.task.img).toPromise();
     } else {
       this.imageUrl = "assets/images/no_image.png";
     }

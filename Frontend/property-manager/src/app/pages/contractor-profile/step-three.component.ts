@@ -222,7 +222,7 @@ export class StepThreeComponent implements OnDestroy {
       }
 
       // Upload the file
-      await this.apiService.uploadPDF(file, contractorUuid, 'projectRecords');
+      await this.apiService.uploadPDF(file, contractorUuid, 'projectRecords', "");
       
       // Success
       this.uploadStates.projectRecords = { 
@@ -246,104 +246,100 @@ export class StepThreeComponent implements OnDestroy {
     input.value = '';
   }
 
-  async onImageSelect(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const files = input.files;
+ async onImageSelect(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const files = input.files;
+  
+  if (!files || files.length === 0) return;
+
+  // Validate file types
+  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  const invalidFiles = Array.from(files).filter(file => !validTypes.includes(file.type));
+  
+  if (invalidFiles.length > 0) {
+    this.messageService.add({
+      severity: 'warning',
+      summary: 'Warning',
+      detail: 'Please select only image files (JPEG, PNG, GIF, WebP)'
+    });
+    input.value = '';
+    return;
+  }
+
+  // Limit number of images (e.g., max 10)
+  if (files.length > 10) {
+    this.messageService.add({
+      severity: 'warning',
+      summary: 'Warning',
+      detail: 'You can upload a maximum of 10 images'
+    });
+    input.value = '';
+    return;
+  }
+
+  // Store selected images and create previews
+  this.selectedImages = Array.from(files);
+  this.createImagePreviews();
+
+  // Set upload state
+  this.uploadStates.projectImages = {
+    uploading: true,
+    uploaded: false,
+    error: false,
+    fileCount: files.length
+  };
+
+  try {
+    // Upload all images at once using the updated uploadImage method
+    await this.uploadImage(Array.from(files));
     
-    if (!files || files.length === 0) return;
-
-    // Validate file types
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-    const invalidFiles = Array.from(files).filter(file => !validTypes.includes(file.type));
-    
-    if (invalidFiles.length > 0) {
-      this.messageService.add({
-        severity: 'warning',
-        summary: 'Warning',
-        detail: 'Please select only image files (JPEG, PNG, GIF, WebP)'
-      })
-      input.value = '';
-      return;
-    }
-
-    // Validate file sizes (max 5MB per image)
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    const oversizedFiles = Array.from(files).filter(file => file.size > maxSize);
-    
-    if (oversizedFiles.length > 0) {
-      this.messageService.add({
-        severity: 'warning',
-        summary: 'Warning',
-        detail: 'Each image must be less than 5MB'
-      })
-      input.value = '';
-      return;
-    }
-
-    // Limit number of images (e.g., max 10)
-    if (files.length > 10) {
-      this.messageService.add({
-        severity: 'warning',
-        summary: 'Warning',
-        detail: 'You can upload a maximum of 10 images'
-      })
-      input.value = '';
-      return;
-    }
-
-    // Store selected images and create previews
-    this.selectedImages = Array.from(files);
-    this.createImagePreviews();
-
-    // Set upload state
+    // Success
     this.uploadStates.projectImages = {
-      uploading: true,
-      uploaded: false,
+      uploading: false,
+      uploaded: true,
       error: false,
       fileCount: files.length
     };
-
-    try {
-      // Upload each image using ImageApiService
-      const uploadPromises = Array.from(files).map(file => this.uploadImage(file));
-      await Promise.all(uploadPromises);
-      
-      // Success
-      this.uploadStates.projectImages = {
-        uploading: false,
-        uploaded: true,
-        error: false,
-        fileCount: files.length
-      };
-      
-    } catch (error) {
-      console.error('Error uploading project images:', error);
-      this.uploadStates.projectImages = {
-        uploading: false,
-        uploaded: false,
-        error: true,
-        fileCount: files.length
-      };
-    }
-
-    // Clear the input
-    input.value = '';
+    
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: `${files.length} image(s) uploaded successfully`
+    });
+    
+  } catch (error) {
+    console.error('Error uploading project images:', error);
+    this.uploadStates.projectImages = {
+      uploading: false,
+      uploaded: false,
+      error: true,
+      fileCount: files.length
+    };
+    
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Failed to upload images. Please try again.'
+    });
   }
 
-  private async uploadImage(file: File): Promise<void> {
-    try {
-      // Using your existing ImageApiService
-      const result = await this.imageApiService.uploadImage(file).toPromise();
-      if (result && result.imageId) {
-        console.log('Image uploaded successfully:', result.imageId);
-      } else {
-        console.log('Image uploaded, but no imageId returned:', result);
-      }
-    } catch (error) {
-      console.error('Failed to upload image:', file.name, error);
-      throw error;
-    }
+  // Clear the input
+  input.value = '';
+}
+
+private async uploadImage(files: File[]): Promise<void> {
+  try {
+    const contractorUuid = this.apiService.getCookieValue('contractorId');
+    
+    // uploadImages now returns a Promise from Promise.all, not an Observable
+    await this.imageApiService.uploadImages(files, contractorUuid);
+    
+    console.log('Images uploaded successfully:', files.map(f => f.name).join(', '));
+  } catch (error) {
+    console.error('Failed to upload images:', files.map(f => f.name).join(', '), error);
+    throw error;
   }
+}
 
   private createImagePreviews() {
     // Clear existing previews
