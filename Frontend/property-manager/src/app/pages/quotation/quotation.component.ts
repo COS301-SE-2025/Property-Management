@@ -89,7 +89,7 @@ export class QuotationComponent implements OnInit{
   allocatedInventory: AllocatedInventoryItem[] = [];
 
   get isTaskApproved(): boolean {
-    return this.currentTask?.approvalStatus === 'APPROVED';
+    return this.currentTask?.status === 'APPROVED';
   }
 
   editingItems = new Map<string, boolean>();
@@ -115,7 +115,6 @@ export class QuotationComponent implements OnInit{
       const id = params.get('taskId');
       if (id) {
         this.taskId = id;
-        console.log(this.taskId);
         this.loadMaintenanceTaskAndInventory();
       }
     });
@@ -146,13 +145,13 @@ export class QuotationComponent implements OnInit{
 
         this.currentTask = task;
 
-        // Check approval status first
+        //check if task status is approved
         if (task.approvalStatus !== 'APPROVED') {
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'Task Not Approved',
-            detail: 'This task must be approved before creating a quotation.'
-          });
+          // this.messageService.add({
+          //   severity: 'warn',
+          //   summary: 'Task Not Approved',
+          //   detail: 'This task must be approved before creating a quotation.'
+          // });
           return;
         }
 
@@ -220,6 +219,7 @@ export class QuotationComponent implements OnInit{
   loadAllocatedInventory(): void {
     this.inventoryUsageService.getUsageRecordsByTaskId(this.taskId).subscribe({
       next: (usageRecords: InventoryUsage[]) => {
+        console.log(usageRecords);
         // For each usage record, get the inventory item details
         const inventoryPromises = usageRecords.map(usage => {
           return this.apiService.getInventory().toPromise().then(allInventory => {

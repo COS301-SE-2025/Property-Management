@@ -90,6 +90,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     const contractorId = this.task?.cuuid;
     if (typeof contractorId === 'string') {
       this.contractor = await this.contractorService.getContractorById(contractorId).toPromise();
+
+      //Get profile image
+      if(this.contractor?.img)
+      {
+        this.imageService.getImage(this.contractor.img).subscribe({
+          next: (url) => {
+            if (this.contractor) {
+              this.contractor.img = url;
+            }
+          }
+        })
+      }
     }
   }
   async getInventoryUsage()

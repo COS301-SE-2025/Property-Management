@@ -1,6 +1,6 @@
 
 <ion-content class="ion-padding font-lato dark:bg-gray-700">
-     <app-header/>
+  <app-header/>
   <!-- Title -->
   <div class="mb-6 mt-7">
     <h2 class="text-2xl font-lato dark:text-gray-200">Create Quotation</h2>
@@ -70,7 +70,7 @@
   </label>
 
   <!-- File name display -->
-  <p *ngIf="file" class="text-sm text-gray-700">{{ file.name }}</p>
+  <p *ngIf="file" class="text-sm p-4 text-gray-200">{{ file.name }}</p>
 
   <!-- Preview button -->
   <ion-button fill="clear" size="small" *ngIf="filePreviewUrl" (click)="openPreviewModal()">

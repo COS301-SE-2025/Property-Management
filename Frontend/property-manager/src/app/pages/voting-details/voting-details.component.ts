@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -206,15 +206,25 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
                             //get contractor details
                             this.contractorService.getContractorById(contractor.contractorUuid!).subscribe({
                               next: (c) => {
-
+                                console.log(c);
                                 if(!this.voteResult || this.awaitFinal)
                                 {
-                                  const contractorDetails: AssignedContractor = {
-                                    ...c,
-                                    quoteSubmitted: contractor.quoteSubmitted,
-                                    quoteUuid: contractor.quoteUuid
+                                  //get profile image
+                                  if(c.img)
+                                  {
+                                    this.imageService.getImage(c.img).subscribe({
+                                      next: (url) => {
+                                        const contractorDetails: AssignedContractor = {
+                                          ...c,
+                                          img: url,
+                                          quoteSubmitted: contractor.quoteSubmitted,
+                                          quoteUuid: contractor.quoteUuid
+                                        }
+                                        this.addToContractors(contractorDetails);
+
+                                      }
+                                    })
                                   }
-                                  this.addToContractors(contractorDetails);
                                 }
                                 else
                                 {
@@ -226,12 +236,22 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
                                       }
                                       this.contractors.set([]);
 
-                                      const contractorDetails: AssignedContractor = {
-                                        ...c,
-                                        quoteSubmitted: contractor.quoteSubmitted,
-                                        quoteUuid: contractor.quoteUuid
+                                      //get profile image
+                                      if(c.img)
+                                      {
+                                        this.imageService.getImage(c.img).subscribe({
+                                          next: (url) => {
+                                            const contractorDetails: AssignedContractor = {
+                                              ...c,
+                                              img: url,
+                                              quoteSubmitted: contractor.quoteSubmitted,
+                                              quoteUuid: contractor.quoteUuid
+                                            }
+                                            this.addToContractors(contractorDetails);
+
+                                          }
+                                        })
                                       }
-                                      this.addToContractors(contractorDetails);
                                     }
                                   })
                                 }
@@ -340,8 +360,8 @@ export class VotingDetailsComponent  implements OnInit, OnDestroy {
               });
 
               setTimeout(() => {
-                  window.location.reload();
-              }, 2500);
+                  this.router.navigate(['/voting']);
+              }, 1500);
             },
             error: (err) => {
               console.error('Failed to send notification:', err);
