@@ -13,10 +13,10 @@
   <div class="flex flex-col lg:flex-row gap-6 animate-item h-full items-start justify-center">
     
     <!-- Tables Section (Left Side) -->
-    <div class="flex-1 flex flex-col gap-6 min-h-96 max-w-lg w-full" *ngIf="isTaskApproved">
+    <div class="flex-1 flex flex-col gap-6 min-h-96 max-w-lg w-full">
       
       <!-- Available Inventory Table -->
-      <div class="bg-gray-400 rounded-xl">
+      <div class="bg-gray-400 rounded-xl" *ngIf="isTaskApproved">
         <div class="flex flex-col h-full">
           <p-card class="text-center rounded-xl p-4 h-full flex flex-col" 
                   [ngStyle]="{ 'background-color': 'var(--card-bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)' }">
@@ -95,7 +95,7 @@
       </div>
 
       <!-- Allocated Inventory Table -->
-      <div class="bg-gray-400 rounded-xl" *ngIf="isTaskApproved">
+      <div class="bg-gray-400 rounded-xl">
         <div class="flex flex-col h-full">
           <p-card class="text-center rounded-xl p-4 h-full flex flex-col" 
                   [ngStyle]="{ 'background-color': 'var(--card-bg-color)', 'color': 'var(--text-color)', 'border': '1px solid var(--border-color)' }">

@@ -38,14 +38,16 @@
                     </div>
                 </ng-template>
             </p-multiselect>
-            <app-inventory-card 
-                *ngIf="inventoryItemsUsed" 
-                [inventory]="inventoryItemsUsed" 
-                [showAddButton]="false"
-                [readOnly]="true"
-                [capOriginal]="true"
-                (quantitiesChanged)="onQuantitiesChanged($event)"
-            ></app-inventory-card>
+            <div class="p-4 mt-2">
+                <app-inventory-card 
+                    *ngIf="inventoryItemsUsed" 
+                    [inventory]="inventoryItemsUsed" 
+                    [showAddButton]="false"
+                    [readOnly]="true"
+                    [capOriginal]="true"
+                    (quantitiesChanged)="onQuantitiesChanged($event)"
+                ></app-inventory-card>
+            </div>
         </div>
         <div>
             <p-checkbox formControlName="allowContractor" [binary]="true"/>

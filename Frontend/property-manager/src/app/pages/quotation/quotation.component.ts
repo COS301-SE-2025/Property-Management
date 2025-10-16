@@ -91,7 +91,7 @@ export class QuotationComponent implements OnInit{
   allocatedInventory: AllocatedInventoryItem[] = [];
 
   get isTaskApproved(): boolean {
-    return this.currentTask?.status === 'normal';
+    return this.currentTask?.status === 'APPROVED';
   }
 
   // Properties for inventory management
@@ -118,7 +118,6 @@ export class QuotationComponent implements OnInit{
       const id = params.get('taskId');
       if (id) {
         this.taskId = id;
-        console.log(this.taskId);
         this.loadMaintenanceTaskAndInventory();
       }
     });
@@ -150,13 +149,12 @@ export class QuotationComponent implements OnInit{
         this.currentTask = task;
 
         //check if task status is approved
-        console.log(task);
         if (task.approvalStatus !== 'APPROVED') {
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'Task Not Approved',
-            detail: 'This task must be approved before creating a quotation.'
-          });
+          // this.messageService.add({
+          //   severity: 'warn',
+          //   summary: 'Task Not Approved',
+          //   detail: 'This task must be approved before creating a quotation.'
+          // });
           return;
         }
 
@@ -172,7 +170,6 @@ export class QuotationComponent implements OnInit{
 
         // Get the building UUID from the task
         this.buildingUuid = task.buuid || '';
-        console.log(this.buildingUuid);
         
         if (!this.buildingUuid) {
           this.messageService.add({
@@ -227,6 +224,7 @@ export class QuotationComponent implements OnInit{
   loadAllocatedInventory(): void {
     this.inventoryUsageService.getUsageRecordsByTaskId(this.taskId).subscribe({
       next: (usageRecords: InventoryUsage[]) => {
+        console.log(usageRecords);
         // For each usage record, get the inventory item details
         const inventoryPromises = usageRecords.map(usage => {
           return this.apiService.getInventory().toPromise().then(allInventory => {
