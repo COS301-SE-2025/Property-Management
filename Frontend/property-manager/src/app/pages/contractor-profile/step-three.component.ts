@@ -222,7 +222,7 @@ export class StepThreeComponent implements OnDestroy {
       }
 
       // Upload the file
-      await this.apiService.uploadPDF(file, contractorUuid, 'projectRecords');
+      await this.apiService.uploadPDF(file, contractorUuid, 'projectRecords', "");
       
       // Success
       this.uploadStates.projectRecords = { 
