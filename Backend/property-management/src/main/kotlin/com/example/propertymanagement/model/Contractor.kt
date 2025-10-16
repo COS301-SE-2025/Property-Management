@@ -1,9 +1,12 @@
 package com.example.propertymanagement.model
 
+import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
+import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.Table
 import java.util.UUID
 
@@ -26,6 +29,10 @@ data class Contractor(
     val reg_number: String? = null,
     val description: String? = null,
     val services: String? = null,
+    @ElementCollection
+    @CollectionTable(name = "contractor_services", joinColumns = [JoinColumn(name = "contractor_uuid")])
+    @Column(name = "service")
+    val specializations: MutableSet<String> = mutableSetOf(),
     @Column(name = "corporate_uuid")
     val corporateUuid: UUID? = null,
     @Column(name = "profile_image_uuid")

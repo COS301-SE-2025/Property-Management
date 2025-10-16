@@ -4,13 +4,12 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCookieValue, HousesService } from 'shared';
-import { FormatAmountPipe } from "shared";
 import { BuildingDetails } from 'shared';
 import { BudgetAddDialogComponent } from './budget-app-dialog/budget-add-dialog.component';
 
 @Component({
   selector: 'app-budget-card',
-  imports: [CardModule, CommonModule, ButtonModule, FormatAmountPipe, BudgetAddDialogComponent],
+  imports: [CardModule, CommonModule, ButtonModule,BudgetAddDialogComponent],
   templateUrl: './budget-card.component.html',
   styles: ``
 })

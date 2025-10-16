@@ -76,55 +76,60 @@ export class UpdateHouseDialogComponent extends DialogComponent implements OnIni
     }
   }
   async onSubmit() {
-    if(this.form.valid)
-    {
-      this.updateError = false;
-  
-      let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
-  
-      if(this.selectedFile)
-      {
-        try{
-          const upload = await this.imageService.uploadImage(this.selectedFile).toPromise();
-          if(upload?.imageId){
-            imageId = upload?.imageId;
-          }
+  if(this.form.valid) {
+    this.updateError = false;
+
+    let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
+    let defualt_uuid : string = "10000000-0000-0000-0000-000000000000";
+
+    if(this.selectedFile) {
+      try {
+        const imageIds = await this.imageService.uploadImages([this.selectedFile], defualt_uuid);
+        
+        if(imageIds && imageIds.length > 0) {
+          imageId = imageIds[0]; // Get the first (and only) image ID
         }
-        catch(err)
-        {
-          console.error("Image upload failed", err);
-  
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to upload image, please try again'
-          });
-        }
+      } catch(err) {
+        console.error("Image upload failed", err);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to upload image, please try again'
+        });
+        return;
       }
-  
-      const name = this.form.value.name;
-      const bcId = this.form.value.corporateUuid; 
-
-      this.buildingService.updateBuilding(this.houseId(), name, imageId,  bcId).subscribe({
-        next: () => {
-          this.form.reset();
-          this.closeDialog();
-  
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Building successfully updated'
-          });
-
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
-        },
-        error: (err) => {
-          console.error("Failed to update building", err);
-          this.updateError = true;
-        }
-      });
     }
-   }
+
+    const name = this.form.value.name;
+    const bcId = this.form.value.corporateUuid; 
+
+    this.buildingService.updateBuilding(this.houseId(), name, imageId, bcId).subscribe({
+      next: () => {
+        this.form.reset();
+        this.closeDialog();
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Building successfully updated'
+        });
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      },
+      error: (err) => {
+        console.error("Failed to update building", err);
+        this.updateError = true;
+        
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update building'
+        });
+      }
+    });
+  }
+}
 }

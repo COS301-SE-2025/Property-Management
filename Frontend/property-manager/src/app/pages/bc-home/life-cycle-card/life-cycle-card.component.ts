@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { AuthService } from 'shared';
-import { FormatAmountPipe } from "shared";
 import { AddCostDialogComponent } from "./add-cost-dialog/add-cost-dialog.component";
 import { LifecycleCostService, LifecycleCostResponse } from 'shared';
 
 @Component({
   selector: 'app-life-cycle-card',
-  imports: [CommonModule, CardModule, TableModule, FormatAmountPipe, AddCostDialogComponent],
+  imports: [CommonModule, CardModule, TableModule, AddCostDialogComponent],
   templateUrl: './life-cycle-card.component.html',
   styles: ``
 })
