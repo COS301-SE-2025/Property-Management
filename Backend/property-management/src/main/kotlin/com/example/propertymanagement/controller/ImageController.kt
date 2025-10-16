@@ -33,7 +33,7 @@ class ImageController(
         @PathVariable filename: String,
     ): ResponseEntity<Map<String, String>> {
         val id = UUID.randomUUID().toString()
-        val key = "uploads/$id-$filename"
+        val key = "uploads-$id-$filename"
 
         val putObjectRequest = PutObjectRequest.builder()
             .bucket(bucketName)

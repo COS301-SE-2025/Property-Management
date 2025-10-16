@@ -23,7 +23,7 @@ export class ImageApiService{
       return of(this.imageCache.get(imageId)!);
     }
     
-    return this.http.get(`${this.url}/presigned/${imageId}`, {
+    return this.http.get(`${this.url}/images/presigned/${imageId}`, {
       responseType: 'text',
     withCredentials: true 
     }).pipe(
@@ -43,7 +43,7 @@ async uploadImages(
   const uploadPromises = files.map(async (file) => {
     try {
       const presignResponse: any = await firstValueFrom(
-        this.http.get(`${this.url}/images/presigned-upload/${file.name}`, { withCredentials: true })
+        this.http.get(`${this.url}/images/presigned-upload/${encodeURIComponent(file.name)}`, { withCredentials: true })
       );
       const uploadUrl = presignResponse.uploadUrl;
       const key = presignResponse.fileKey;
@@ -52,11 +52,12 @@ async uploadImages(
       await firstValueFrom(
         this.http.put(uploadUrl, file, {
           headers: new HttpHeaders({ 'Content-Type': file.type }),
-          responseType: 'text'
+          responseType: 'text',
+          withCredentials: false
         })
       );
       
-      let notifyUrl = `${this.url}/images/notify-upload/${id}/${file.name}/${key}/${uuid}`;
+      let notifyUrl = `${this.url}/images/notify-upload/${id}/${encodeURIComponent(file.name)}/${key}/${uuid}`;
       if (task_uuid) {
         notifyUrl += `?taskUuid=${task_uuid}`;
       }
