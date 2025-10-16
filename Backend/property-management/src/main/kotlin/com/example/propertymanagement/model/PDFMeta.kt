@@ -17,4 +17,6 @@ data class PDFMeta(
     @Column(name = "contractor_uuid")
     val cUuid: UUID,
     val type: String,
+    @Column(name = "task_uuid")
+    val taskUuid: UUID?,
 )

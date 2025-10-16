@@ -92,7 +92,7 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
       if(this.selectedFile)
       {
         try{
-          const upload = await this.imageService.uploadImage(this.selectedFile).toPromise();
+          const upload = await this.imageService.uploadImages(this.selectedFile, ).toPromise();
           if(upload?.imageId){
             imageId = upload?.imageId;
           }

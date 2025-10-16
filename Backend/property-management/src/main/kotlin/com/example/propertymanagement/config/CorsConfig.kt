@@ -6,7 +6,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-@EnableWebMvc
 class CorsConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry
@@ -15,6 +14,7 @@ class CorsConfig : WebMvcConfigurer {
                 "http://localhost:4200",
                 "http://localhost:8100",
                 "http://localhost:9876",
+                "http://localhost:8080",
                 "https://localhost",
                 "https://staging.d19cit456z7grf.amplifyapp.com",
                 "https://*.property-management.live",

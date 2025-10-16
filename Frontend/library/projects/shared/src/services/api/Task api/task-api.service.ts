@@ -137,7 +137,7 @@ export class TaskApiService {
   }
 
   getTasksForTrustee(trusteeUuid: string): Observable<MaintenanceTask[]> {
-    return this.http.get<MaintenanceTask[]>(`/api/maintenance/trustee/${trusteeUuid}`,
+    return this.http.get<MaintenanceTask[]>(`${this.url}/api/maintenance/trustee/${trusteeUuid}`,
     { withCredentials: true });
   }
 }
