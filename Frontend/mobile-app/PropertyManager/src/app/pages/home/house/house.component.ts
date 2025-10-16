@@ -1,5 +1,4 @@
 import { Component, inject, input, OnInit, signal } from '@angular/core';
-import { IonItem} from "@ionic/angular/standalone";
 import { CommonModule } from '@angular/common';
 import { BodyCoporateService, HousesService } from 'shared';
 import { Property } from 'shared';
@@ -10,7 +9,7 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-house',
   templateUrl: './house.component.html',
   styles: ``,
-  imports: [IonItem, CommonModule],
+  imports: [CommonModule], 
 })
 export class HouseComponent implements OnInit {
 
@@ -22,24 +21,27 @@ export class HouseComponent implements OnInit {
   house = input.required<Property>();
   bcName = signal<string | null>(null);
 
-   async ngOnInit()
-  {
+  async ngOnInit() {
     const cId = this.house().coporateUuid;
-    if(cId)
-    {
-      try{
+    if(cId) {
+      try {
         const name = await firstValueFrom(this.bodyCorporateService.getBodyCorporateName(cId));
         this.bcName.set(name);
-      }
-      catch(err) 
-      {
+      } catch(err) {
         console.error('Failed to get body corporate name', err);
         this.bcName.set('Unknown');
       }
     }
   }
-  viewHouse(houseId: string)
-  {
+
+  viewHouse(houseId: string) {
     this.router.navigate(['view-house', houseId]);
+  }
+
+  
+  handleImageError(event: any) {
+    
+    event.target.src = 'assets/images/placeholder-property.jpg';
+    
   }
 }

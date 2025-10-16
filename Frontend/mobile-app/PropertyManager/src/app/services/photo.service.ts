@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { CameraResultType, CameraSource, Camera } from '@capacitor/camera';
 import { CameraWrapperService } from './camera-wrapper.service';
 import { CapacitorWrapperService } from './capacitor-wrapper.service';
+import { Plugin } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'

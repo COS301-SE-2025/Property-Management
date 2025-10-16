@@ -64,7 +64,10 @@ h2, .text-xl, .subheading {
 }
 ion-content {
   --background: #f5f5f5; 
-  --padding-bottom: 80px;
+  // --padding-bottom: [20rem];
+  // --padding-top: [20rem];
+  // padding-bottom: 20rem;
+  // padding-top: 20rem;
   height: 100%;
 }
 
@@ -103,15 +106,49 @@ app-tab {
   --background: var(--bg-color);
 }
 .dark {
-  --p-datatable-row-background: #212121 !important; /* dark row background */
+  --p-datatable-row-background: #212121 !important;
   --p-datatable-header-background: #333333;
   --p-datatable-header-cell-background: #000000 !important;
-  --p-datatable-row-color: #333333; /* text color */
+  --p-datatable-row-color: #333333;
 }
+
 .dark .p-paginator{
   background: var(--datatable-body-bg);
 }
 .dark .p-paginator-page.p-paginator-page-selected {
   background: var(--card-border);
+  color: #fff;
+}
+.dark .p-select-option{
+  color: #fff;
+  background: #3B3B3B;
+}
+.dark .p-select-list-container{
+  background: #3B3B3B;
+}
+.dark .p-select-option.p-select-option-selected{
+  background: var(--card-hover);
+  color: #fff;
+}
+.dark .p-select{
+  color: #ffffff;
+  background: #3B3B3B;
+}
+.dark .p-paginator{
+  background: var(--datatable-body-bg);
+}
+.dark .p-select-label{
+  color: #d1d5db !important;
+}
+.dark .p-paginator-page.p-paginator-page-selected {
+  background: var(--card-border);
   color: #9CA3AF;
+}
+app-tab {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+  height: 60px;
+  padding-bottom: env(safe-area-inset-bottom);
 }

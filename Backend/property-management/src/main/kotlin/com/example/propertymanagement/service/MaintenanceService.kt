@@ -13,6 +13,7 @@ import com.example.propertymanagement.repository.MaintenanceRepository
 import com.example.propertymanagement.repository.MaintenancetaskContractorRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.util.Date
 import java.util.NoSuchElementException
 import java.util.UUID
@@ -64,6 +65,7 @@ class MaintenanceService(
         tUuid: UUID,
         cUuid: UUID,
         priority: String,
+        maxBudget: BigDecimal? = null,
     ): Maintenance {
         val newTask =
             Maintenance(
@@ -78,6 +80,7 @@ class MaintenanceService(
                 tUuid = tUuid,
                 cUuid = cUuid,
                 priority = priority,
+                maxBudget = maxBudget,
             )
         return add(newTask)
     }
@@ -101,14 +104,13 @@ class MaintenanceService(
                 cUuid = newItem.cUuid,
                 approvalStatus = newItem.approvalStatus,
                 priority = newItem.priority,
+                maxBudget = newItem.maxBudget,
             )
         return repository.save(updated)
     }
 
     @Transactional
     fun deleteByUuid(uuid: UUID) = repository.deleteByUuid(uuid)
-
-    // fun delete(id: Int) = repository.deleteById(id)
 
     fun createTask(
         dto: MaintenanceTaskCreateDto,
@@ -153,6 +155,7 @@ class MaintenanceService(
                 cUuid = if (isOwner && building.coporateUuid == null) dto.contractorUuid else null,
                 approvalStatus = if (building.coporateUuid == null) "APPROVED" else "PENDING",
                 priority = dto.priority ?: "Low",
+                maxBudget = dto.maxBudget,
             )
 
         val savedTask = repository.save(task)
@@ -196,6 +199,8 @@ class MaintenanceService(
                 cUuid = if (dto.approvalStatus == "APPROVED") dto.contractorUuid ?: task.cUuid else task.cUuid,
                 img = imageUuid ?: task.img,
                 priority = dto.priority ?: task.priority,
+                status = dto.status ?: task.status,
+                maxBudget = dto.maxBudget ?: task.maxBudget,
             )
 
         val savedTask = repository.save(updatedTask)
@@ -314,5 +319,6 @@ class MaintenanceService(
             trusteeUuid = task.tUuid,
             contractorUuid = task.cUuid,
             priority = task.priority,
+            maxBudget = task.maxBudget,
         )
 }
