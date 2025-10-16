@@ -222,7 +222,7 @@ export class StepThreeComponent implements OnDestroy {
       }
 
       // Upload the file
-      await this.apiService.uploadPDF(file, contractorUuid, 'projectRecords');
+      await this.apiService.uploadPDF(file, contractorUuid, 'projectRecords', "");
       
       // Success
       this.uploadStates.projectRecords = { 
@@ -333,7 +333,7 @@ export class StepThreeComponent implements OnDestroy {
   private async uploadImage(file: File): Promise<void> {
     try {
       // Using your existing ImageApiService
-      const result = await this.imageApiService.uploadImage(file).toPromise();
+      const result = await this.imageApiService.uploadImages(file).toPromise();
       if (result && result.imageId) {
         console.log('Image uploaded successfully:', result.imageId);
       } else {
