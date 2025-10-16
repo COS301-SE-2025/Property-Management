@@ -35,6 +35,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   draftQuantities = new Map<string, number>();
   originalQuantities = new Map<string, number>();
 
+  rows = 5;
+
   @Output() itemUsage = new EventEmitter<{taskId: string, itemId: string, quantity: number}>();
   @Output() quantitiesChanged = new EventEmitter<Inventory[]>();
 
@@ -132,10 +134,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       })
       await toast.present();
       this.resetState();
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 2200);
     }
   }
   private async getAndUpdateBudget(overallPrice: number)

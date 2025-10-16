@@ -11,8 +11,14 @@ class CorsConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry
             .addMapping("/api/**")
-            .allowedOrigins("http://localhost:4200", "http://localhost:8100", "http://localhost:9876")
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
+            .allowedOrigins(
+                "http://localhost:4200",
+                "http://localhost:8100",
+                "http://localhost:9876",
+                "https://localhost",
+                "https://staging.d19cit456z7grf.amplifyapp.com",
+                "https://*.property-management.live",
+            ).allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
             .allowedHeaders("*")
             .allowCredentials(true)
     }

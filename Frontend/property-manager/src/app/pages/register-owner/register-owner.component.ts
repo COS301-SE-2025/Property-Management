@@ -10,7 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 interface FormErrors {
   email: string;
   contactNumber: string;
-  password: string;
+  password: string[];
   server: string;
 }
 
@@ -22,7 +22,7 @@ interface FormErrors {
   styles: ``,
 })
 export class RegisterOwnerComponent {
-   public email = '';
+  public email = '';
   public password = '';
   public contactNumber = '';
   public passwordVisible = false;
@@ -30,7 +30,7 @@ export class RegisterOwnerComponent {
   public errors: FormErrors = {
     email: '',
     contactNumber: '',
-    password: '',
+    password: [],
     server: ''
   };
 
@@ -53,12 +53,32 @@ export class RegisterOwnerComponent {
     return emailRegex.test(email);
   }
 
+  private getPasswordErrors(password: string): string[] {
+    const errors: string[] = [];
+    if (password.length < 8) {
+      errors.push('Password must be at least 8 characters.');
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.push('Password must contain an uppercase letter.');
+    }
+    if (!/[a-z]/.test(password)) {
+      errors.push('Password must contain a lowercase letter.');
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push('Password must contain a number.');
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\];'/+=~`]/.test(password)) {
+      errors.push('Password must contain a special character.');
+    }
+    return errors;
+  }
+
   async register(): Promise<void> {
     // Reset errors
     this.errors = {
       email: '',
       contactNumber: '',
-      password: '',
+      password: [],
       server: ''
     };
 
@@ -90,8 +110,16 @@ export class RegisterOwnerComponent {
 
     // Validate password
     if (!this.password) {
-      this.errors.password = 'Password is required.';
+      this.errors.password = ['Password is required.'];
       hasError = true;
+    } else {
+      const passwordErrors = this.getPasswordErrors(this.password);
+      if (passwordErrors.length > 0) {
+        this.errors.password = passwordErrors;
+        hasError = true;
+      }else {
+        this.errors.password = [];
+      }
     }
 
     if (hasError) {
@@ -123,50 +151,7 @@ export class RegisterOwnerComponent {
     }
   }
 
-// async register(): Promise<void> {
-//     if (!this.email || !this.contactNumber || !this.password) {
-//       this.emptyField = true;
-//       return;
-//     }
-
-//     this.userError = false;
-//     this.serverError = false;
-//     this.emptyField = false;
-
-//     try {
-//       const result = await this.authService.trusteeRegister(
-//         this.email,
-//         this.password,
-//         this.contactNumber
-//       );
-
-    
-//       sessionStorage.setItem('pendingUsername',result.username);
-//       sessionStorage.setItem('userType', 'trustee');
-//       console.log('Registration successful:', result);
-
-//       this.router.navigate(['/verifyEmail'], {
-//         state: {
-//           username: result.username
-//         }
-//       });
-//     } catch (error: unknown) {
-//       console.error('Registration error:', error);
-//       if (
-//         typeof error === 'object' &&
-//         error !== null &&
-//         ('status' in error || 'code' in error)
-//       ) {
-//         const err = error as { status?: number; code?: string };
-//         if (err.status === 400 || err.code === 'NotAuthorizedException') {
-//           this.userError = true;
-//         } else {
-//           this.serverError = true;
-//         }
-//       } else {
-//         this.serverError = true;
-//       }
-//       throw error;
-//     }
-//   }
+  isArray(val: any): boolean {
+    return Array.isArray(val);
+  }
 }

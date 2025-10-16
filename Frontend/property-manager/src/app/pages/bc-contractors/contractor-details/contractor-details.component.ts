@@ -2,23 +2,27 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { ListboxModule } from 'primeng/listbox';
 import { CommonModule } from '@angular/common';
+import { RatingModule } from 'primeng/rating';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { BodyCoporateService } from 'shared';
-// import { TaskDialogComponent } from '../../task-dialog/task-dialog.component';
-// import { MaintenanceTask } from '../../../models/maintenanceTask.model';
+import { FormsModule } from '@angular/forms';
+import { ApiService, BodyCoporateService } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContractorDetails } from 'shared';
-import { FormatPhoneNumberPipe } from "shared";
-import { getCookieValue } from 'shared';
-import { ContractorApiService } from 'shared';
-import { ImageApiService } from 'shared';
+import { ContractorDetails, FormatPhoneNumberPipe, getCookieValue, ContractorApiService, ImageApiService, FormatFileName } from 'shared';
+import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-contractor-details',
-  imports: [CommonModule, TableModule, ListboxModule, FormatPhoneNumberPipe, ToastModule],
+  imports: [CommonModule, TableModule, ListboxModule, FormatPhoneNumberPipe, ToastModule, FormatFileName, RatingModule, FormsModule],
   templateUrl: './contractor-details.component.html',
-  styles: ``,
+  styles: `
+    :host ::ng-deep .p-rating .p-rating-icon {
+      color: #facc15 !important; 
+    }
+    :host ::ng-deep .p-rating .p-rating-icon:hover {
+      color: #fbbf24 !important; 
+    }
+  `,
   providers: [MessageService]
 })
 export class ContractorDetailsComponent implements OnInit{
@@ -30,54 +34,104 @@ export class ContractorDetailsComponent implements OnInit{
   contractorDetails = this.bodyCoporateService.contractorDetails;
   currentContractor = signal<ContractorDetails | null>(null);
 
-  // maintenanceTasks = this.bodyCoporateService.pendingTasks();
-
   public publicContractor = true;
 
-  constructor(private route: ActivatedRoute, private router: Router, private messageService: MessageService){}
+  constructor(private route: ActivatedRoute, private router: Router, private messageService: MessageService, private apiService: ApiService){}
 
   ngOnInit(): void {
       const source = this.route.snapshot.paramMap.get('source');
       this.publicContractor = source === 'public';
 
       const contractorId = this.route.snapshot.paramMap.get('contractorId');
-      // console.log(contractorId);
 
       const foundContractor = this.contractorDetails().find(c => c.uuid === contractorId);
 
       if(foundContractor)
       {
-        this.currentContractor.set(foundContractor);
+        //Get pdfs
+        const pdfReq = [
+          this.apiService.getContractorPDF(contractorId!, 'certifications').pipe(catchError(() => of(null))),
+          this.apiService.getContractorPDF(contractorId!, 'licenses').pipe(catchError(() => of(null))),
+          this.apiService.getContractorPDF(contractorId!, 'ids').pipe(catchError(() => of(null))),
+          this.apiService.getContractorPDF(contractorId!, 'projectRecords').pipe(() => of(null)) 
+        ];
+
+        forkJoin(pdfReq).subscribe({
+          next: (res) => {
+            const [certifications, licenses, ids, projectRecords] = res;
+            foundContractor.certifications = certifications ?? undefined;
+            foundContractor.licenses = licenses ?? undefined;
+            foundContractor.ids = ids ?? undefined;
+            foundContractor.projectRecords = projectRecords ?? undefined;
+
+            this.contractorService.getAverageRating(contractorId!).subscribe({
+              next: (res) => {
+                foundContractor.averageRating = res;
+                this.currentContractor.set(foundContractor);
+              },
+              error: (err) => {
+                console.error("Error getting average rating", err);
+                foundContractor.averageRating = 0;
+                this.currentContractor.set(foundContractor);
+              }
+            })
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to load contractor details'
+            });
+          }
+        });
       }
       else{
         this.contractorService.getContractorById(contractorId!).subscribe(contractor => {
-          console.log(contractor);
-
           if (contractor) {
-            this.imageService.getImage(contractor.img ?? '').subscribe(i => {
-              this.currentContractor.set(contractor);
-              const curr = this.currentContractor();
-              if (curr) {
-                curr.img = i;
-                this.currentContractor.set(curr);
+            //Get pdfs
+            const pdfReq = [
+              this.apiService.getContractorPDF(contractorId!, 'certifications').pipe(catchError(() => of(null))),
+              this.apiService.getContractorPDF(contractorId!, 'licenses').pipe(catchError(() => of(null))),
+              this.apiService.getContractorPDF(contractorId!, 'ids').pipe(catchError(() => of(null))),
+              this.apiService.getContractorPDF(contractorId!, 'projectRecords').pipe(catchError(() => of(null)))
+            ];
+
+            forkJoin(pdfReq).subscribe({
+              next: (res) => {
+                const [certifications, licenses, ids, projectRecords] = res;
+                contractor.certifications = certifications ?? undefined;
+                contractor.licenses = licenses ?? undefined;
+                contractor.ids = ids ?? undefined;
+                contractor.projectRecords = projectRecords ?? undefined;
+
+                this.imageService.getImage(contractor.img ?? '').subscribe(i => {
+                  this.currentContractor.set(contractor);
+                  const curr = this.currentContractor();
+                  if (curr) {
+                    curr.img = i;
+
+                    this.contractorService.getAverageRating(contractorId!).subscribe({
+                      next: (res) => {
+                        curr.averageRating = res;
+                        this.currentContractor.set(curr);
+                      }
+                    })
+                  }
+                })
+              },
+              error: () => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Failed to load contractor details'
+                })
               }
             })
+
           }
         });
       }
   }
-
-  // @ViewChild('taskDialog') taskDialog!: TaskDialogComponent;
-
-  // getLengthOfTasks(): number
-  // {
-  //   return this.maintenanceTasks.length;
-  // }
-
-  // openTaskDialog(task: MaintenanceTask): void
-  // {
-  //   this.taskDialog.openDialog(task);
-  // }
 
   makePublicContractor(): void{
     this.publicContractor = true;

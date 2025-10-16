@@ -3,12 +3,12 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { AuthService } from './auth.service';
 import { AuthTokens, BodyCoporateRegisterResponse, contractorRegisterResponse, trusteeRegisterResponse } from '../models/Auth.model';
 import { TokenUtilService } from '../services/token-util.service';
+import { environmentMobile } from '../environment';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  let tokenUtil: TokenUtilService;
-  const apiUrl = '/api';
+  const apiUrl = environmentMobile.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -20,12 +20,12 @@ describe('AuthService', () => {
     });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
-    tokenUtil = TestBed.inject(TokenUtilService);
 
+    // Clear all cookies before each test
     document.cookie.split(';').forEach(cookie => {
       const eqPos = cookie.indexOf('=');
-      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+      const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
     });
   });
 
@@ -49,8 +49,10 @@ describe('AuthService', () => {
 
       const promise = service.bodyCoporateLogin('test@example.com', 'password');
       
-      const req = httpMock.expectOne(`${apiUrl}/body-corporates/login`);
-      expect(req.request.method).toBe('POST');
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/body-corporates/login` &&
+        request.method === 'POST'
+      );
       expect(req.request.body).toEqual({
         email: 'test@example.com',
         password: 'password'
@@ -66,7 +68,10 @@ describe('AuthService', () => {
     it('should reject on error', async () => {
       const promise = service.bodyCoporateLogin('test@example.com', 'wrongpassword');
       
-      const req = httpMock.expectOne(`${apiUrl}/body-corporates/login`);
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/body-corporates/login` &&
+        request.method === 'POST'
+      );
       req.error(new ErrorEvent('Unauthorized'), { status: 401 });
 
       await expectAsync(promise).toBeRejected();
@@ -91,8 +96,10 @@ describe('AuthService', () => {
         'password'
       );
       
-      const req = httpMock.expectOne(`${apiUrl}/body-corporates/register`);
-      expect(req.request.method).toBe('POST');
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/body-corporates/register` &&
+        request.method === 'POST'
+      );
       expect(req.request.body).toEqual({
         corporateName: 'Test Corp',
         contributionPerSqm: 10.5,
@@ -126,7 +133,10 @@ describe('AuthService', () => {
         '1234567890'
       );
       
-      const req = httpMock.expectOne(`${apiUrl}/body-corporates/register`);
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/body-corporates/register` &&
+        request.method === 'POST'
+      );
       expect(req.request.body).toEqual({
         corporateName: 'Test Corp',
         contributionPerSqm: 10.5,
@@ -146,8 +156,10 @@ describe('AuthService', () => {
     it('should confirm registration', async () => {
       const promise = service.confirmBodyCoporateRegistration('test@example.com', '123456');
       
-      const req = httpMock.expectOne(`${apiUrl}/body-corporates/confirm-registration`);
-      expect(req.request.method).toBe('POST');
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/body-corporates/confirm-registration` &&
+        request.method === 'POST'
+      );
       expect(req.request.body).toEqual({
         username: 'test@example.com',
         code: '123456'
@@ -171,13 +183,32 @@ describe('AuthService', () => {
 
       const promise = service.trusteeLogin('trustee@example.com', 'password');
       
-      const req = httpMock.expectOne(`${apiUrl}/trustee/auth/login`);
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/trustee/auth/login` &&
+        request.method === 'POST'
+      );
+      expect(req.request.body).toEqual({
+        email: 'trustee@example.com',
+        password: 'password'
+      });
       req.flush(mockResponse);
 
       const result = await promise;
       expect(result).toEqual(mockResponse);
       expect(document.cookie).toContain('idToken=trustee-token');
       expect(document.cookie).toContain('trusteeId=trustee-123');
+    });
+
+    it('should handle login errors', async () => {
+      const promise = service.trusteeLogin('trustee@example.com', 'wrongpassword');
+      
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/trustee/auth/login` &&
+        request.method === 'POST'
+      );
+      req.error(new ErrorEvent('Unauthorized'), { status: 401 });
+
+      await expectAsync(promise).toBeRejected();
     });
   });
 
@@ -195,7 +226,10 @@ describe('AuthService', () => {
         '1234567890'
       );
       
-      const req = httpMock.expectOne(`${apiUrl}/trustee/auth/register`);
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/trustee/auth/register` &&
+        request.method === 'POST'
+      );
       expect(req.request.body).toEqual({
         email: 'trustee@example.com',
         password: 'password',
@@ -206,17 +240,52 @@ describe('AuthService', () => {
       const result = await promise;
       expect(result).toEqual(mockResponse);
     });
+
+    it('should handle registration errors', async () => {
+      const promise = service.trusteeRegister(
+        'trustee@example.com',
+        'password',
+        '1234567890'
+      );
+      
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/trustee/auth/register` &&
+        request.method === 'POST'
+      );
+      req.error(new ErrorEvent('Registration failed'), { status: 400 });
+
+      await expectAsync(promise).toBeRejected();
+    });
   });
 
   describe('confirmTrusteeRegistration', () => {
     it('should confirm trustee registration', async () => {
       const promise = service.confirmTrusteeRegistration('trustee@example.com', '123456');
       
-      const req = httpMock.expectOne(`${apiUrl}/trustee/auth/confirm`);
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/trustee/auth/confirm` &&
+        request.method === 'POST'
+      );
+      expect(req.request.body).toEqual({
+        username: 'trustee@example.com',
+        code: '123456'
+      });
       req.flush({ message: 'Account confirmed.' });
 
       const result = await promise;
       expect(result).toEqual({ message: 'Account confirmed.' });
+    });
+
+    it('should handle confirmation errors', async () => {
+      const promise = service.confirmTrusteeRegistration('trustee@example.com', 'wrongcode');
+      
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/trustee/auth/confirm` &&
+        request.method === 'POST'
+      );
+      req.error(new ErrorEvent('Invalid code'), { status: 400 });
+
+      await expectAsync(promise).toBeRejected();
     });
   });
 
@@ -232,13 +301,32 @@ describe('AuthService', () => {
 
       const promise = service.contractorLogin('contractor@example.com', 'password');
       
-      const req = httpMock.expectOne(`${apiUrl}/contractor/auth/login`);
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/contractor/auth/login` &&
+        request.method === 'POST'
+      );
+      expect(req.request.body).toEqual({
+        email: 'contractor@example.com',
+        password: 'password'
+      });
       req.flush(mockResponse);
 
       const result = await promise;
       expect(result).toEqual(mockResponse);
       expect(document.cookie).toContain('idToken=contractor-token');
       expect(document.cookie).toContain('contractorId=contractor-123');
+    });
+
+    it('should handle login errors', async () => {
+      const promise = service.contractorLogin('contractor@example.com', 'wrongpassword');
+      
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/contractor/auth/login` &&
+        request.method === 'POST'
+      );
+      req.error(new ErrorEvent('Unauthorized'), { status: 401 });
+
+      await expectAsync(promise).toBeRejected();
     });
   });
 
@@ -254,7 +342,10 @@ describe('AuthService', () => {
         'password'
       );
       
-      const req = httpMock.expectOne(`${apiUrl}/contractor/auth/register`);
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/contractor/auth/register` &&
+        request.method === 'POST'
+      );
       expect(req.request.body).toEqual({
         email: 'contractor@example.com',
         password: 'password',
@@ -265,27 +356,88 @@ describe('AuthService', () => {
       const result = await promise;
       expect(result).toEqual(mockResponse);
     });
+
+    it('should register contractor with contact number', async () => {
+      const mockResponse: contractorRegisterResponse = {
+        email: 'contractor@example.com',
+        username: 'contractor@example.com'
+      };
+
+      const promise = service.contractorRegister(
+        'contractor@example.com',
+        'password',
+        '1234567890'
+      );
+      
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/contractor/auth/register` &&
+        request.method === 'POST'
+      );
+      expect(req.request.body).toEqual({
+        email: 'contractor@example.com',
+        password: 'password',
+        contactNumber: '1234567890'
+      });
+      req.flush(mockResponse);
+
+      const result = await promise;
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('should handle registration errors', async () => {
+      const promise = service.contractorRegister(
+        'contractor@example.com',
+        'password'
+      );
+      
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/contractor/auth/register` &&
+        request.method === 'POST'
+      );
+      req.error(new ErrorEvent('Registration failed'), { status: 400 });
+
+      await expectAsync(promise).toBeRejected();
+    });
   });
 
   describe('confirmContractorRegistration', () => {
     it('should confirm contractor registration', async () => {
       const promise = service.confirmContractorRegistration('contractor@example.com', '123456');
       
-      const req = httpMock.expectOne(`${apiUrl}/contractor/auth/confirm`);
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/contractor/auth/confirm` &&
+        request.method === 'POST'
+      );
+      expect(req.request.body).toEqual({
+        username: 'contractor@example.com',
+        code: '123456'
+      });
       req.flush({ message: 'Account confirmed.' });
 
       const result = await promise;
       expect(result).toEqual({ message: 'Account confirmed.' });
     });
+
+    it('should handle confirmation errors', async () => {
+      const promise = service.confirmContractorRegistration('contractor@example.com', 'wrongcode');
+      
+      const req = httpMock.expectOne((request) => 
+        request.url === `${apiUrl}/contractor/auth/confirm` &&
+        request.method === 'POST'
+      );
+      req.error(new ErrorEvent('Invalid code'), { status: 400 });
+
+      await expectAsync(promise).toBeRejected();
+    });
   });
 
   describe('cookie management', () => {
     afterEach(() => {
-        document.cookie.split(';').forEach(cookie => {
-            const eqPos = cookie.indexOf('=');
-            const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-        });
+      document.cookie.split(';').forEach(cookie => {
+        const eqPos = cookie.indexOf('=');
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+      });
     });
 
     it('should get cookie value', () => {
@@ -302,19 +454,19 @@ describe('AuthService', () => {
       expect(service.getIdTokenFromCookieOrStorage()).toBe('test-token');
     });
 
-     it('should determine trustee from cookies', () => {
-        document.cookie = 'trusteeId=trustee-123';
-        expect(service.getUserType()).toBe('trustee');
+    it('should determine trustee from cookies', () => {
+      document.cookie = 'trusteeId=trustee-123';
+      expect(service.getUserType()).toBe('trustee');
     });
 
     it('should determine body corporate from cookies', () => {
-        document.cookie = 'bodyCoporateId=corp-123';
-        expect(service.getUserType()).toBe('bodyCorporate');
+      document.cookie = 'bodyCoporateId=corp-123';
+      expect(service.getUserType()).toBe('bodyCorporate');
     });
 
     it('should determine contractor from cookies', () => {
-        document.cookie = 'contractorId=contractor-123';
-        expect(service.getUserType()).toBe('contractor');
+      document.cookie = 'contractorId=contractor-123';
+      expect(service.getUserType()).toBe('contractor');
     });
   });
 

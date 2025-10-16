@@ -108,6 +108,7 @@
 
           <button
             class="block text-yellow-500 w-full text-left px-3 py-1 hover:bg-gray-100 cursor-pointer"
+            (click)="changeFontSize()"
           >
             Change font size
           </button>
@@ -117,7 +118,7 @@
   </div>
 
   <!-- Breadcrumb -->
-  <div class="pl-5" [ngStyle]="{ 'background-color': 'var(--bg-color)' }">
+  <div class="pl-32 -mt-2" [ngStyle]="{ 'background-color': 'var(--bg-color)' }">
     <p-breadcrumb class="max-w-full" [model]="items">
       <ng-template #item let-item>
         <ng-container *ngIf="item.route && !item.active; else elseBlock">

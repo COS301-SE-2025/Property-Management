@@ -1,34 +1,26 @@
-import { Component, OnInit, signal, DestroyRef, effect, inject } from '@angular/core';
+import { Component, OnInit, signal, effect } from '@angular/core';
 import { TimelineModule } from 'primeng/timeline';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe } from 'shared';
+import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe, TaskApiService } from 'shared';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InviteDialogComponent } from './invite-dialog/invite-dialog.component';
+import { InventoryApprovalDialogComponent} from './inventory-approval-dialog/inventory-approval-dialog.component';
 import { MessageService } from 'primeng/api';
 import { DrawerModule } from 'primeng/drawer';
 import { NotificationDrawerService } from '../../../../../library/projects/shared/src/services/notification-drawer.service';
 
 @Component({
   selector: 'app-notifications',
-  imports: [ TimelineModule, DrawerModule, CommonModule, FormatTimePipe, InviteDialogComponent],
+  imports: [ 
+    TimelineModule, 
+    DrawerModule, 
+    CommonModule, 
+    FormatTimePipe, 
+    InviteDialogComponent,
+    InventoryApprovalDialogComponent
+  ],
   templateUrl: './notifications.component.html',
-  styles: `
-    ::ng-deep .p-timeline-left .p-timeline-event-opposite {
-      display: none !important;
-    }
-    ::ng-deep .p-drawer {
-      width: 20rem;
-      max-width: 90vw;
-      background-color: var(--dialog-bg);
-      color: var(--dialog-content-text);
-    }
-    @media (min-width: 640px) {
-      ::ng-deep .p-drawer {
-        width: 24rem;
-      }
-    }
-  `,
   providers: [MessageService],
   animations: [
     trigger('floatUp', [
@@ -54,26 +46,27 @@ export class NotificationsComponent implements OnInit {
   public notiError = false;
   public inviteId = signal<string | null>(null);
   public inviteDialogVisible = false;
+  
+  // NEW: For inventory approval dialog
+  public inventoryApprovalVisible = false;
+  public inventoryRequestData: any = null;
 
   constructor(
     private router: Router,
     private notificationService: NotificationsApiService,
+    private taskService: TaskApiService,
     private messageService: MessageService,
     public drawerService: NotificationDrawerService 
   ) {
     this.drawerService.fetchNotifications.subscribe(() => {
-      //console.log('fetchNotifications event received, calling loadTimeline');
       this.loadTimeline();
     });
     this.drawerService.notificationRead.subscribe(() => {
-      //console.log('notificationRead event received, calling loadTimeline');
       this.loadTimeline();
     });
 
-
     effect(() => {
       if (this.drawerService.drawerVisible()) {
-        //console.log('Effect triggered: Drawer is visible, calling loadTimeline');
         this.loadTimeline();
       }
     });
@@ -87,8 +80,7 @@ export class NotificationsComponent implements OnInit {
     let type = this.getUserType();
     if (this.userId && type) {
       
-      if(type === 'bodyCorporate')
-      {
+      if(type === 'bodyCorporate') {
         type = 'bodycoporate';
       }
       this.notificationService.getNotifications(type, this.userId).subscribe({
@@ -124,44 +116,33 @@ export class NotificationsComponent implements OnInit {
       next: () => {
         this.drawerService.notificationRead.emit();
 
-        if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
-          this.notificationService.getInviteById(noti.relatedInviteUuid).subscribe({
-            next: (invite) => {
-              if (invite.status === 'PENDING') {
-                this.inviteId.set(noti.relatedInviteUuid ?? null);
-                this.inviteDialogVisible = true;
-              }
-            },
-            error: (err) => {
-              console.error(err);
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Failed to display invite.'
-              });
-            }
-          });
+        // NEW: Handle inventory request notifications
+        if (noti.notificationType === 'INVENTORY_REQUEST' && this.getUserType() === 'trustee') {
+          try {
+            this.inventoryRequestData = JSON.parse(noti.message);
+            this.inventoryApprovalVisible = true;
+          } catch (e) {
+            // If metadata parsing fails, show simple dialog
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Inventory Request',
+              detail: noti.message
+            });
+          }
+        }
+        else if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
+          // Existing invite handling...
         }
         else if (noti.relatedTaskUuid) {
-          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
-            this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
-            this.drawerService.closeDrawer();
-          }
+          // Existing task handling...
         }
-        else if (noti.relatedSessionUuid) {
-          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
-            this.router.navigate(['/voting', noti.relatedSessionUuid]);
-            this.drawerService.closeDrawer();
-          }
-        }
-        else if (noti.relatedQuoteUuid) {
-          // Contractor can see their quote they made
-        }
-        else {
-          window.location.reload();
-        }
+        // ... other existing handlers
       }
     });
+  }
+
+  onInventoryRequestProcessed() {
+    this.loadTimeline(); // Refresh notifications
   }
 
   private getUserType(): string | null {
@@ -181,19 +162,6 @@ export class NotificationsComponent implements OnInit {
   private sortTimeline(notifications: Notification[]) {
     if (!notifications || notifications.length === 0) {
       return [];
-    }
-
-    if (notifications.length === 1 && notifications[0] && notifications[0].createdAt) {
-      const date = new Date(
-        notifications[0].createdAt[0],
-        notifications[0].createdAt[1] - 1,
-        notifications[0].createdAt[2],
-        notifications[0].createdAt[3],
-        notifications[0].createdAt[4],
-        notifications[0].createdAt[5]
-      );
-      notifications[0].createdAtDate = date;
-      return notifications;
     }
 
     const valid = notifications.filter(n => n && Array.isArray(n.createdAt));

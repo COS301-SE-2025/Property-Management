@@ -10,4 +10,9 @@ export interface ContractorDetails extends Contractor {
    img?: string;
    corporate_uuid?: string;
    project_history?: string;
+   certifications?: string;
+   licenses?: string;
+   ids?: string;
+   projectRecords?: string;
+   averageRating?: number;
 }

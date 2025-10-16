@@ -104,7 +104,7 @@ export class UpdateHouseDialogComponent extends DialogComponent implements OnIni
   
       const name = this.form.value.name;
       const bcId = this.form.value.corporateUuid; 
-  
+
       this.buildingService.updateBuilding(this.houseId(), name, imageId,  bcId).subscribe({
         next: () => {
           this.form.reset();
@@ -118,7 +118,7 @@ export class UpdateHouseDialogComponent extends DialogComponent implements OnIni
 
           setTimeout(() => {
             window.location.reload();
-          }, 150);
+          }, 1500);
         },
         error: (err) => {
           console.error("Failed to update building", err);

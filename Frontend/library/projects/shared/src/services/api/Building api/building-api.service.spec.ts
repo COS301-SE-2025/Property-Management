@@ -71,7 +71,8 @@ describe('BuildingApiService', () => {
           expect(response).toEqual(mockProperty);
           expect(httpClientSpy.post).toHaveBeenCalledWith(
             `${url}/buildings`,
-            expectedBody
+            expectedBody,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -122,7 +123,8 @@ describe('BuildingApiService', () => {
         next: (response) => {
           expect(response).toEqual(mockProperty);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${url}/buildings`
+            `${url}/buildings`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -163,7 +165,8 @@ describe('BuildingApiService', () => {
         next: (response) => {
           expect(response).toEqual(mockProperty);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${url}/buildings/1`
+            `${url}/buildings/1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -218,7 +221,8 @@ describe('BuildingApiService', () => {
           });
           expect(httpClientSpy.put).toHaveBeenCalledWith(
             `${url}/buildings/1`,
-            expectedBody
+            expectedBody,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -274,7 +278,8 @@ describe('BuildingApiService', () => {
         next: (response) => {
           expect(response).toEqual(mockProperty);
           expect(httpClientSpy.delete).toHaveBeenCalledWith(
-            `${url}/buildings/1`
+            `${url}/buildings/1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -319,7 +324,8 @@ describe('BuildingApiService', () => {
         next: (response) => {
           expect(response).toEqual(mockResponse);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${url}/buildings/trustee/1`
+            `${url}/buildings/trustee/1`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -363,7 +369,8 @@ describe('BuildingApiService', () => {
         next: (response) => {
           expect(response).toEqual(mockProperties);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${url}/buildings/search?name=Test`
+            `${url}/buildings/search?name=Test`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
@@ -406,7 +413,8 @@ describe('BuildingApiService', () => {
         next: (response) => {
           expect(response).toEqual(mockProperties);
           expect(httpClientSpy.get).toHaveBeenCalledWith(
-            `${url}/buildings/type/Commercial`
+            `${url}/buildings/type/Commercial`,
+            { withCredentials: true}
           );
         },
         error: () => fail('expected success but got error')
