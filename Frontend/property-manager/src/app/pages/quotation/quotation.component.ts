@@ -91,7 +91,7 @@ export class QuotationComponent implements OnInit{
   allocatedInventory: AllocatedInventoryItem[] = [];
 
   get isTaskApproved(): boolean {
-    return this.currentTask?.approvalStatus === 'APPROVED';
+    return this.currentTask?.status === 'normal';
   }
 
   // Properties for inventory management
