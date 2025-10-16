@@ -77,16 +77,14 @@ export class QuotationComponent implements OnInit{
   buildingUuid = '';
   currentTask: MaintenanceTask | null = null;
 
-  // Properties to fix the template errors
   showAddButton = false;
-  showPrice = true; // Set to true to show price column
-  bcUser = true; // Set to true to hide actions if needed
+  showPrice = true; 
+  bcUser = true; 
   readOnly = false;
   isEditing = false;
   hasChanges = false;
   rows = 5;
   
-  // Actual inventory data
   inventory: Inventory[] = [];
   allocatedInventory: AllocatedInventoryItem[] = [];
 
@@ -94,7 +92,6 @@ export class QuotationComponent implements OnInit{
     return this.currentTask?.approvalStatus === 'APPROVED';
   }
 
-  // Properties for inventory management
   editingItems = new Map<string, boolean>();
   draftQuantities = new Map<string, number>();
 
@@ -149,8 +146,7 @@ export class QuotationComponent implements OnInit{
 
         this.currentTask = task;
 
-        //check if task status is approved
-        console.log(task);
+        // Check approval status first
         if (task.approvalStatus !== 'APPROVED') {
           this.messageService.add({
             severity: 'warn',
@@ -160,19 +156,8 @@ export class QuotationComponent implements OnInit{
           return;
         }
 
-        // // Check if task is assigned to this contractor
-        // if (task.cuuid !== this.contractorId) {
-        //   this.messageService.add({
-        //     severity: 'warn',
-        //     summary: 'Invalid Task',
-        //     detail: 'Task not assigned to this contractor.'
-        //   });
-        //   return;
-        // }
-
         // Get the building UUID from the task
         this.buildingUuid = task.buuid || '';
-        console.log(this.buildingUuid);
         
         if (!this.buildingUuid) {
           this.messageService.add({
@@ -183,8 +168,16 @@ export class QuotationComponent implements OnInit{
           return;
         }
 
-        // Load inventory for the building
-        this.loadBuildingInventory(this.buildingUuid);
+        if (task.approvalStatus === 'APPROVED' && task.status === 'APPROVED') { 
+          this.loadBuildingInventory(this.buildingUuid);
+        } else {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Access Restricted',
+            detail: 'Access not allowed for buildings inventory'
+          });
+        }
+
         this.loadAllocatedInventory();
       },
       error: (err) => {
