@@ -128,10 +128,37 @@ export class NotificationsComponent implements OnInit {
           }
         }
         else if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
-
+          // Check if invite is pending before showing dialog
+          this.notificationService.getInviteById(noti.relatedInviteUuid).subscribe({
+          next: (invite) => {
+              if (invite.status === 'PENDING') {
+              this.inviteId.set(noti.relatedInviteUuid ?? null);
+              this.inviteDialogVisible = true;
+              }
+          },
+          error: (err) => {
+              console.error(err);
+              this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to display invite.'
+              })
+          }
+          });
         }
         else if (noti.relatedTaskUuid) {
-
+          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+            this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
+          }
+        }
+        else if(noti.relatedSessionUuid)
+        {
+          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+            this.router.navigate(['/voting', noti.relatedSessionUuid]);
+          }
+        }
+        else{
+          window.location.reload();
         }
       }
     });

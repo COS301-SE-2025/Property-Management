@@ -5,26 +5,26 @@
       <p class = "font-semibold text-lg dark:text-black">Property Manager</p>
     </div>
     <div class="w-4/6 propertyYellow-bg p-13 flex flex-col justify-center space-y-4">
-      <p class="text-center text-xl font-semibold">Register as Contractor</p>
+      <p class="text-center text-xl font-semibold text-black">Register as Contractor</p>
 
       <p-floatlabel variant="on">
         <img *ngIf="!email" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/mail.svg" alt="">
-        <input class="w-[34rem] border rounded ml-2 !bg-white" pInputText type="email" id="email" [(ngModel)]="email" autocomplete="off">
-        <label class="pl-6" for="email">Enter email address</label>
+        <input class="w-[28.2rem] border rounded ml-2 !bg-white" pInputText type="email" id="email" [(ngModel)]="email" autocomplete="off">
+        <label class="pl-7" for="email">Enter email address</label>
         <p *ngIf="errors.email" role="alert" class="text-red-500 text-sm pl-2">{{ errors.email }}</p>
       </p-floatlabel>
 
       <p-floatlabel variant="on">
         <img *ngIf="!contactNumber" class="absolute top-3 left-3 h-5 w-5 pointer-events-none" src="assets/icons/telephone.svg" alt="">
-        <input class="w-[34rem] border rounded ml-2 !bg-white" pInputText type="tel" id="number" [(ngModel)]="contactNumber" autocomplete="off">
-        <label class="pl-6" for="number">Enter Contact number</label>
+        <input class="w-[28.2rem] border rounded ml-2 mr-10 !bg-white" pInputText type="tel" id="number" [(ngModel)]="contactNumber" autocomplete="off">
+        <label class="pl-7" for="number">Enter Contact number</label>
         <p *ngIf="errors.contactNumber" role="alert" class="text-red-500 text-sm pl-2">{{ errors.contactNumber }}</p>
       </p-floatlabel>
 
-      <p-floatlabel variant="on">
+      <p-floatlabel variant="on" class="relative">
         <img *ngIf="!password" class="absolute top-3 left-2 h-5 w-5 pointer-events-none" src="assets/icons/key_vertical.svg" alt="">
         <input
-          class="w-[34rem] border rounded py-2 ml-2 !bg-white"
+          class="w-[28.2rem] border rounded ml-2 py-2 !bg-white"
           [type]="passwordVisible ? 'text' : 'password'"
           pInputText
           id="over_label"
@@ -32,7 +32,7 @@
           autocomplete="off"
         />
         <label class="pl-5" for="over_label">Enter password</label>
-        <button type="button" (click)="togglePassword()" class="absolute top-2.5 right-[4.5rem]">
+        <button type="button" (click)="togglePassword()" class="absolute top-2.5 right-6">
           <img
             class="h-5 w-5"
             [src]="passwordVisible ? 'assets/icons/visibility.svg' : 'assets/icons/visibility_off.svg'"

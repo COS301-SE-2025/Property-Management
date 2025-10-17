@@ -99,7 +99,7 @@ Our GitHub Project boards facilitate effective task management, progress trackin
       <code>UI/UX Design</code>
     </td>
     <td width="15%">
-      <a href="https://linkedin.com/in/member1">
+      <a href="https://www.linkedin.com/in/sean-maritz-87b53b307/">
         <img src="https://custom-icon-badges.demolab.com/badge/LinkedIn-0A66C2?logo=linkedin-white&logoColor=fff" alt="LinkedIn">
       </a>
     </td>
