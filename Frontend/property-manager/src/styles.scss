@@ -1,7 +1,8 @@
+@import "primeicons/primeicons.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "primeicons/primeicons.css";
+
 
 :root {
   --base-font-size: 16px;
@@ -98,6 +99,8 @@
   --dialog-mask-bg: rgba(0, 0, 0, 0.7);
 }
 
+
+
 :root, .dark-theme {
   transition: all 0.5s ease;
 }
@@ -120,13 +123,52 @@ p, .text, .font-normal {
   font-size: var(--text-font-size);
 }
 
-.dark-theme input, textarea{
-  color: #000000;
+/* Remove the conflicting rules and replace with: */
+
+input,
+textarea {
+  color: var(--text-color) !important; 
+  background-color: var(--bg-color) !important;
+  border: 1px solid var(--border-color) !important;
 }
 
+.dark-theme input,
+.dark-theme textarea {
+  color: var(--text-color) !important;
+  background-color: var(--dark-card-background) !important;
+  border-color: var(--card-border) !important;
+}
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-color) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg-color) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark-theme input:-webkit-autofill,
+.dark-theme input:-webkit-autofill:hover, 
+.dark-theme input:-webkit-autofill:focus,
+.dark-theme textarea:-webkit-autofill,
+.dark-theme textarea:-webkit-autofill:hover,
+.dark-theme textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-color) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--dark-card-background) inset !important;
+}
+
+ 
+.p-card {
+  background:#f9fafb !important ;
+  color: var(--text-color) !important;
+}
 .dark-theme .p-card{
-  background: #595964;
-  color: var(--text-color);
+  background: #595964!important;
+  color: var(--text-color)!important;
 }
 .dark-theme .bg-gray-50  {
   background: var(--card-hover);
@@ -465,3 +507,98 @@ option.custom-option {
   padding-bottom: 0 !important;
 }
 
+ .p-datatable{
+  background: var(--datatable-body-bg);
+  color: var(--datatable-body-text);
+}
+
+ .p-datatable .p-datatable-header {
+  background: var(--datatable-header-bg);
+  color: var(--datatable-header-text);
+}
+
+ .p-datatable .p-datatable-thead > tr > th {
+  background: var(--datatable-header-bg);
+  color: var(--datatable-header-text);
+  border-color: var(--datatable-border);
+}
+
+ .p-datatable .p-datatable-tbody > tr {
+  background: var(--datatable-body-bg);
+  color: var(--datatable-body-text);
+  border-color: var(--datatable-border);
+}
+
+ .p-datatable .p-datatable-tbody > tr:nth-child(even) {
+  background: var(--datatable-row-even-bg);
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background: var(--datatable-row-hover-bg);
+}
+
+.p-paginator{
+  background: var(--datatable-body-bg);
+}
+.dark-theme .p-paginator-page.p-paginator-page-selected {
+  background: var(--card-border);
+  color: #fff;
+}
+ .p-select-option{
+  color: #fff;
+  background: #000000;
+}
+ .p-select-list-container{
+  background: #000000;
+}
+ .p-select-option.p-select-option-selected.p-focus {
+  background: var(--card-hover);
+  color: #fff;
+}
+
+ 
+.p-select {
+  background: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.p-select-list-container {
+  background: var(--dialog-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.p-select-option {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.p-select-option.p-select-option-selected,
+.p-select-option.p-focus {
+  background: var(--property-yellow) !important;
+  color: #000 !important;
+}
+
+
+.dark-theme .p-select {
+  background: var(--dark-card-background) !important;
+  color: var(--text-color) !important;
+  border-color: var(--card-border) !important;
+}
+
+.dark-theme .p-select-list-container {
+  background: var(--dark-card-background) !important;
+  border-color: var(--card-border) !important;
+}
+
+.dark-theme .p-select-option {
+  color: var(--text-color) !important;
+  background: transparent !important;
+}
+
+.dark-theme .p-select-option.p-select-option-selected,
+.dark-theme .p-select-option.p-focus {
+  background: var(--card-hover) !important;
+  color: #fff !important;
+}
