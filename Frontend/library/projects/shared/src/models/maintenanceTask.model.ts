@@ -16,4 +16,5 @@ export interface MaintenanceTask{
     imageUuid?: string; 
     createdByUuid?: string | null;
     priority?: string;
+    maxBudget?: number;
 }

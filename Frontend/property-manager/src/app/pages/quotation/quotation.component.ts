@@ -271,6 +271,16 @@ export class QuotationComponent implements OnInit{
       });
       return;
     }
+
+    if (this.currentTask?.maxBudget && Number(this.totalAmount) > this.currentTask.maxBudget) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Budget Exceeded',
+        detail: `Total amount is over the allocated budget of R${this.currentTask.maxBudget}`
+      });
+      return;
+    }
+    
     const submittedDate = new Date();
 
     this.apiService.addQuote(this.taskId, this.contractorId, submittedDate, this.type, Number(this.totalAmount), this.quoteNo).subscribe({
@@ -299,7 +309,7 @@ export class QuotationComponent implements OnInit{
   }
 
   async onUpload(event: FileUploadEvent) {
-    const file = event.files[0]; // Assuming single file upload
+    const file = event.files[0]; 
     if (!file) return;
     try {
       await this.apiService.uploadPDF(file, this.contractorId, "Quote", this.taskId);

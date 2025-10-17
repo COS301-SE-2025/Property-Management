@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, scheduled,switchMap } from 'rxjs';
+import { map, max, Observable, scheduled,switchMap } from 'rxjs';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { Quote } from '../../../public-api';
 import { environmentMobile } from '../../../environment';
@@ -14,7 +14,7 @@ export class TaskApiService {
   private url = environmentMobile.apiUrl;
   constructor(private http: HttpClient) { }
 
-  createTask(title: string, des: string, scheduledDate: Date, buildingId: string, trusteeId: string, imgId: string, createdId: string, isOwner: boolean, isBodyCorporate: boolean, proirity: string): Observable<MaintenanceTask>
+  createTask(title: string, des: string, scheduledDate: Date, buildingId: string, trusteeId: string, imgId: string, createdId: string, isOwner: boolean, isBodyCorporate: boolean, proirity: string, maxBudget?: number): Observable<MaintenanceTask>
   {
     const localISO = (date: Date) => {
       const pad = (n: number) => n.toString().padStart(2, '0');
@@ -31,7 +31,8 @@ export class TaskApiService {
       imageUuid: imgId,
       createdByUuid: createdId,
       approvalStatus: "PENDING",
-      priority: proirity
+      priority: proirity,
+      maxBudget: maxBudget
     };
     console.log(req);
 

@@ -77,7 +77,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       description: ['', Validators.required],
       date: ['', Validators.required],
       priority: ['', Validators.required],
-      allowContractor: [false]
+      allowContractor: [false],
+      maxBudget: [null, [Validators.min(0)]]
     });
 
     //Get contractors
@@ -143,8 +144,9 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     const date = this.form.value.date;
     const proirity = this.form.value.priority.value;
     const allowContractor = this.form.value.allowContractor;
+    const maxBudget = this.form.value.maxBudget;
 
-    this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate, proirity).subscribe({
+    this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate, proirity, maxBudget).subscribe({
       next: (task) => {
         if (allowContractor) {
           this.taskApiService.updateTaskAllowContractor(task.uuid).subscribe({
