@@ -32,7 +32,7 @@
       
       <div>
         <ng-container [ngSwitch]="step">
-          <app-step-one *ngSwitchCase="1" (next)="onStepOneComplete($event)"></app-step-one>
+          <app-step-one *ngSwitchCase="1" [contractor]="contractor" (next)="onStepOneComplete($event)"></app-step-one>
           <app-step-two *ngSwitchCase="2" (back)="step = 1" (next)="onStepTwoComplete($event)"></app-step-two>
           <app-step-three *ngSwitchCase="3" (back)="step = 2" (done)="onStepThreeComplete($event)" (imagesSelected)="onStepThreeImagesSelected($event)"></app-step-three>
         </ng-container>

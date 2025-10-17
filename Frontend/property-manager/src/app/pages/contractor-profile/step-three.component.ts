@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ApiService } from 'shared'; // Adjust import path as needed
-import { ImageApiService } from 'shared'; // Adjust import path as needed
+import { ApiService } from 'shared'; 
+import { ImageApiService } from 'shared';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from "primeng/toast";
 

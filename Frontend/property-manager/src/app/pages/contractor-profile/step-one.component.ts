@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { AddressMapComponent } from "../../components/address-map/address-map.component";
 import { MultiSelectModule } from 'primeng/multiselect';
+import { Input } from '@angular/core';
+import { ContractorDetails } from 'shared';
 
 @Component({
   selector: 'app-step-one',
@@ -11,6 +13,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
   styleUrls: ['./step-one.component.scss']
 })
 export class StepOneComponent {
+  @Input() contractor!: ContractorDetails;
   @Output() next = new EventEmitter<{
     name: string;
     email: string;
@@ -60,6 +63,20 @@ export class StepOneComponent {
       specializations: this.fb.control<string[] | null>([], { nonNullable: false }),
       status: this.fb.control(false),
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['contractor'] && this.contractor) {
+      this.form.patchValue({
+        name: this.contractor.name || '',
+        email: this.contractor.email || '',
+        phone: this.contractor.phone || '',
+        address: this.contractor.address || '',
+        city: this.contractor.city || '',
+        postalCode: this.contractor.postal_code || '',
+        status: this.contractor.status || false
+      });
+    }
   }
 
   emitRelevantData() {
