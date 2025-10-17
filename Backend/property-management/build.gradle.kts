@@ -54,7 +54,6 @@ dependencies {
 	// implementation("org.springframework.security:spring-security-oauth2-resource-server")
 	// implementation("org.springframework.security:spring-security-oauth2-jose")
 	// implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
-
 }
 
 kotlin {

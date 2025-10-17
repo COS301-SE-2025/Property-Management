@@ -17,7 +17,7 @@ import {
 import { addIcons } from 'ionicons';
 import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline } from 'ionicons/icons';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 
 @Component({
@@ -42,7 +42,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class QuotationComponent implements OnInit {
   private api = inject(ApiService);
   private route = inject(ActivatedRoute);
+  private sanitizer = inject(DomSanitizer);
   t_uuid: string = '';
+  type = 'pending';
 
   IssueDate: Date = new Date();
   expirationDate: string="";
@@ -50,6 +52,7 @@ export class QuotationComponent implements OnInit {
   totalAmount: number=0;
   file: File | null = null;
   filePreviewUrl: string | null = null;
+  safeFilePreviewUrl: SafeResourceUrl | null = null;
   isImage: boolean = false;
   showIssueDate = false;
   showExpirationDate = false;
@@ -78,9 +81,11 @@ export class QuotationComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      this.file = file;
       const reader = new FileReader();
       reader.onload = () => {
         this.filePreviewUrl = reader.result as string;
+        this.safeFilePreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.filePreviewUrl);
         this.isImage = file.type.startsWith('image');
       };
       reader.readAsDataURL(file);
@@ -101,36 +106,42 @@ export class QuotationComponent implements OnInit {
       return;
     }
 
+    if(!this.file)
+    {
+      this.showToast('Please attach the quotation document.', 'danger');
+      return;
+    }
+
     try {
       this.loading = true;
-        await this.api.addQuote(
+
+      this.api.addQuote(
           this.t_uuid,
           this.contractorId,
-          this.IssueDate,
-          this.expirationDate,
-          this.totalAmount,
+          new Date(),
+          this.type,
+          Number(this.totalAmount),
           this.quoteNo
         ).subscribe({
-          next: () => {
-            this.showToast('Quotation submitted successfully!', 'success');
+          next: async() => {
+            // this.showToast('Quotation submitted successfully!', 'success');
             
             // Handle file upload if a file was selected
-            if (this.file) {
-              this.uploadFile();
-            } else {
-              setTimeout(() => {
-                this.router.navigate(['/contractor-home']);
-              }, 1500);
-            }
+            await this.uploadFile();
+            this.showToast("Quotation submitted successfully!", 'success');
+
+            setTimeout(() => {
+              this.router.navigate(['/contractor-home']);
+            }, 1500);
           },
           error: (err) => {
             console.error(err);
             this.showToast('Error submitting quotation.', 'danger');
           }
         });
-      
-    } catch (err) {
-      this.showToast(`Error submitting} quotation.`, 'danger');
+    }
+    catch (err) {
+      this.showToast(`Error submitting quotation.`, 'danger');
     } finally {
       this.loading = false;
     }
@@ -140,16 +151,15 @@ export class QuotationComponent implements OnInit {
     if (this.file) {
       try {
         await this.api.uploadPDF(this.file, this.contractorId, "Quote");
-        this.showToast('File uploaded successfully!', 'success');
       } catch (err) {
         console.error('File upload failed:', err);
         this.showToast('File upload failed.', 'danger');
       }
     }
     
-    setTimeout(() => {
-      this.router.navigate(['/contractor-home']);
-    }, 1500);
+    // setTimeout(() => {
+    //   this.router.navigate(['/contractor-home']);
+    // }, 1500);
   }
 
   showToast(message: string, color: 'success' | 'danger') {

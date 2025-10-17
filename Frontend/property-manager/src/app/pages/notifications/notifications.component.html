@@ -9,7 +9,7 @@
 >
   <div class="flex flex-col justify-start items-start">
     <h1 class="text-xl">All Notifications</h1>
-    <div class="w-[8.5rem] h-1 bg-yellow-300 mt-2"></div>
+    <div class="w-[11rem] h-1 bg-yellow-300 mt-2"></div>
 
     <div *ngIf="notiError">
       <p class="text-red-500">Error getting notifications, please try again</p>
@@ -38,7 +38,7 @@
           </ng-template>
           <ng-template #marker let-time>
             <div class="flex items-center justify-center w-4 h-4 rounded-full shadow-md bg-white-200">
-              <i class="pi pi-clock text-gray-800"></i>
+              <i class="pi pi-clock text-gray-800 dark:text-gray-200"></i>
             </div>
           </ng-template>
         </p-timeline>

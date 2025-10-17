@@ -3,7 +3,6 @@
       <ion-card-title class="dark:text-white">Maintenance budget</ion-card-title>
       <ion-card-subtitle>
         <div class="flex items-center justify-center gap-2">
-            <p class="font-semibold mt-2 dark:text-gray-200">Remaining Allocated budget: </p>
             <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ (budget().maintenanceBudget-budget().maintenanceSpent)| formatAmount}}</p>
         </div>
       </ion-card-subtitle>
@@ -12,7 +11,7 @@
     <ion-card-content>
       <div class="flex flex-col justify-center items-center">
 
-        <p class="pb-2 pt-8 pr-85 dark:text-gray-200">Maintenance expenditure</p>
+        <p class="pb-2 pr-85 dark:text-gray-200">Maintenance expenditure</p>
         <p-table [value]="completedTasks()" selectionMode="single" (onRowSelect)="showMaintenanceDetailsDialog($event.data)" [tableStyle]="{ 'min-width': '22rem' }">
             <ng-template #header>
             <tr>

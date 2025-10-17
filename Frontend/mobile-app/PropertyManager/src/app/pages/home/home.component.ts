@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import { IonItem, IonContent } from "@ionic/angular/standalone";
 import { HouseComponent } from './house/house.component';
 import { ThemeService } from 'src/app/services/theme.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -16,16 +17,15 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   templateUrl: './home.component.html',
   styles: ``
 })
-export class HomeComponent implements OnInit{
+export class HomeComponent implements OnInit, OnDestroy{
 
   private houseService = inject(HousesService);
   houses = this.houseService.houses;
   darkMode = false;
   loading = false;
+  private themeSubscription!: Subscription
 
-  constructor(private storage: StorageService, private router: Router, private theme: ThemeService) { 
-    
-  }
+  constructor(private storage: StorageService, private router: Router, private theme: ThemeService) { }
 
   async ngOnInit()
   {
@@ -36,6 +36,12 @@ export class HomeComponent implements OnInit{
 
     this.theme.darkMode$.subscribe(mode => this.darkMode = mode);
     this.loading = false;
+  }
+
+  ngOnDestroy(): void {
+      if(this.themeSubscription){
+        this.themeSubscription.unsubscribe();
+      }
   }
 
   RouteToCreateProperty()

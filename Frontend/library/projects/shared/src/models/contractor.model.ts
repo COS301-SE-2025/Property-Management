@@ -12,4 +12,5 @@ export interface Contractor {
   reg_number: string;
   description: string;
   services: string;
+  specializations: string[];
 }

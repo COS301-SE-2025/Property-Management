@@ -14,7 +14,6 @@ import { BudgetApiService } from 'shared';
 import { BuildingDetails } from 'shared';
 import { ActivatedRoute } from '@angular/router';
 import { InventoryAddDialogComponent } from "./inventory-add-dialog/inventory-add-dialog.component";
-// import { InventoryForecastComponent, ForecastResponse } from './inventory-forecast/inventory-forecast.component';
 import { InventoryForecastComponent } from './inventory-forecast/inventory-forecast.component';
 import { ForecastResponse } from 'shared';
 

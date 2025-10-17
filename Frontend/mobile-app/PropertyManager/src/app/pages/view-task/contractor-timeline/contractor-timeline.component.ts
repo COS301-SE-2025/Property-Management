@@ -5,7 +5,7 @@ import { FormatTimePipe } from "../../../../../../../library/projects/shared/src
 import { TableModule } from "primeng/table";
 import { CardModule } from "primeng/card";
 import { CommonModule } from '@angular/common';
-import { MaintenanceTask, InventoryUsage, TaskProgress, Inventory, TaskProgresApiService, ImageApiService, InventoryItemApiService, InventoryUsageApiService, StorageService } from 'shared';
+import { MaintenanceTask, InventoryUsage, TaskProgress, Inventory, TaskProgresApiService, ImageApiService, InventoryItemApiService, InventoryUsageApiService, StorageService, AuthMobileService } from 'shared';
 import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/module.d-CnjH8Dlt';
 import { ThemeService } from 'src/app/services/theme.service';
@@ -32,13 +32,14 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
       private imageService: ImageApiService,
       private inventoryUsageService: InventoryUsageApiService,
       private inventoryItemService: InventoryItemApiService,
-      private storageService: StorageService,
+      private authService: AuthMobileService,
       private themeService: ThemeService
   ) { }
 
   async ngOnInit() {
 
-    if(await this.storageService.get('contractorId'))
+    this.contractorUser = false;
+    if(await this.authService.getUserType() === 'contractor')
     {
         this.contractorUser = true;
     }

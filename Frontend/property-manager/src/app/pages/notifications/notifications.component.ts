@@ -47,7 +47,6 @@ export class NotificationsComponent implements OnInit {
   public inviteId = signal<string | null>(null);
   public inviteDialogVisible = false;
   
-  // NEW: For inventory approval dialog
   public inventoryApprovalVisible = false;
   public inventoryRequestData: any = null;
 
@@ -111,18 +110,16 @@ export class NotificationsComponent implements OnInit {
   }
 
   showDetails(noti: Notification) {
-    // Mark as read
     this.notificationService.markNotificationsAsRead(noti.notificationUuid!).subscribe({
       next: () => {
         this.drawerService.notificationRead.emit();
 
-        // NEW: Handle inventory request notifications
         if (noti.notificationType === 'INVENTORY_REQUEST' && this.getUserType() === 'trustee') {
           try {
             this.inventoryRequestData = JSON.parse(noti.message);
             this.inventoryApprovalVisible = true;
           } catch (e) {
-            // If metadata parsing fails, show simple dialog
+
             this.messageService.add({
               severity: 'info',
               summary: 'Inventory Request',
@@ -131,18 +128,17 @@ export class NotificationsComponent implements OnInit {
           }
         }
         else if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
-          // Existing invite handling...
+
         }
         else if (noti.relatedTaskUuid) {
-          // Existing task handling...
+
         }
-        // ... other existing handlers
       }
     });
   }
 
   onInventoryRequestProcessed() {
-    this.loadTimeline(); // Refresh notifications
+    this.loadTimeline(); 
   }
 
   private getUserType(): string | null {

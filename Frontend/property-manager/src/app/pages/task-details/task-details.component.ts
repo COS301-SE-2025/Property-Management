@@ -77,19 +77,31 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.breadCrumb.clearBreadCrumb();
   }
 
-  async getImages()
-  {
+  async getImages() {
     if (this.task?.img) {
-      this.imageUrl = await this.imageService.getTaskImages(this.task.img).toPromise();
+      this.imageUrl = await this.imageService.getImage(this.task.img).toPromise();
     } else {
       this.imageUrl = "assets/images/no_image.png";
     }
   }
+
   async getContractor()
   {
     const contractorId = this.task?.cuuid;
     if (typeof contractorId === 'string') {
       this.contractor = await this.contractorService.getContractorById(contractorId).toPromise();
+
+      //Get profile image
+      if(this.contractor?.img)
+      {
+        this.imageService.getImage(this.contractor.img).subscribe({
+          next: (url) => {
+            if (this.contractor) {
+              this.contractor.img = url;
+            }
+          }
+        })
+      }
     }
   }
   async getInventoryUsage()
