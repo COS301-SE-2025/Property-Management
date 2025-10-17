@@ -1,26 +1,40 @@
- <div class="card">
-    <form [formGroup]="form">
-        <h3>Enter Details Below:</h3>
-        <input type="text" formControlName="name" placeholder="Full Name / Company Name" />
-        <!-- <input type="text" formControlName="contact_info" placeholder="Contact Info" /> -->
-        <input type="email" formControlName="email" placeholder="Email Address" />
-        <input type="text" formControlName="phone" placeholder="Phone Number" />
-        <app-address-map [control]="form.controls.address"></app-address-map>
-        <div class="row">
-            <input type="text" formControlName="city" placeholder="City" />
-            <input type="text" formControlName="suburb" placeholder="Suburb" />
-        </div>
-        <input type="text" formControlName="postalCode" placeholder="Postal Code" />
-        <div class="flex gap-4 items-end justify-end w-full custom-btn-position">
-        <div class="flex gap-4 items-end">
-            <button
-                type="button"
-                class="text-sm px-12 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow"
-                (click)="emitRelevantData()"
-            >
-            Next
-            </button>
-        </div>
-        </div>
-    </form>
+<div class="bg-white dark:bg-gray-600  rounded-2xl shadow-md p-8 max-w-xl mx-auto">
+  <form [formGroup]="form" class="flex flex-col gap-5">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Enter Your Details</h3>
+
+    <input type="text" formControlName="name" placeholder="Full Name / Company Name" class="input" />
+    <input type="email" formControlName="email" placeholder="Email Address" class="input" />
+    <input type="text" formControlName="phone" placeholder="Phone Number" class="input" />
+
+    <app-address-map [control]="form.controls.address"></app-address-map>
+
+    <div class="flex gap-4">
+      <input type="text" formControlName="city" placeholder="City" class="input flex-1" />
+      <input type="text" formControlName="suburb" placeholder="Suburb" class="input flex-1" />
+    </div>
+
+    
+    <div class="flex gap-4 items-center">
+      <input type="text" formControlName="postalCode" placeholder="Postal Code" class="input flex-1" />
+
+      
+      <p-select
+        formControlName="profession"
+        [options]="professions"
+        optionLabel="label"
+        placeholder="Select Profession"
+        class="flex-1"
+      ></p-select>
+    </div>
+
+    <div class="flex justify-end mt-6">
+      <button
+        type="button"
+        (click)="emitRelevantData()"
+        class="btn-yellow"
+      >
+        Next
+      </button>
+    </div>
+  </form>
 </div>

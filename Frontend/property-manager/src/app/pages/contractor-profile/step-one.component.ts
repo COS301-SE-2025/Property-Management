@@ -1,24 +1,26 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { AddressMapComponent } from "../../components/address-map/address-map.component";
+import { DropdownModule } from 'primeng/dropdown'; 
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-step-one',
   standalone: true,
-  imports: [ReactiveFormsModule, AddressMapComponent],
+  imports: [ReactiveFormsModule, AddressMapComponent, DropdownModule, SelectModule],
   templateUrl: './step-one.component.html',
   styleUrls: ['./step-one.component.scss']
 })
 export class StepOneComponent {
   @Output() next = new EventEmitter<{
     name: string;
-    // contact_info: string;
     email: string;
     phone: string;
     address: string;
     city: string;
     suburb: string;
     postalCode: string;
+    profession: string;
     status: boolean;
   }>();
 
@@ -30,8 +32,22 @@ export class StepOneComponent {
     city: FormControl<string | null>;
     suburb: FormControl<string | null>;
     postalCode: FormControl<string | null>;
+    profession: FormControl<string | null>;
     status: FormControl<boolean | null>;
   }>;
+
+  professions = [
+    { label: 'Plumber', value: 'plumber' },
+    { label: 'Electrician', value: 'electrician' },
+    { label: 'Painter', value: 'painter' },
+    { label: 'Carpenter', value: 'carpenter' },
+    { label: 'Builder', value: 'builder' },
+    { label: 'Landscaper', value: 'landscaper' },
+    { label: 'Tiling and Flooring', value: 'Tiling and flooring' },
+    { label: 'masonry', value: 'masonry' },
+    { label: 'roofing', value: 'roofing' },
+    { label: 'drywall and plastering', value: 'drywall and plastering' },
+  ];
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -42,13 +58,13 @@ export class StepOneComponent {
       city: this.fb.control(''),
       suburb: this.fb.control(''),
       postalCode: this.fb.control(''),
+      profession: this.fb.control(''),
       status: this.fb.control(false)
     });
   }
 
   emitRelevantData() {
-
-    if(!this.form.valid){
+    if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
     }
@@ -61,6 +77,7 @@ export class StepOneComponent {
       city: this.form.value.city ?? '',
       suburb: this.form.value.suburb ?? '',
       postalCode: this.form.value.postalCode ?? '',
+      profession: this.form.value.profession ?? '',
       status: true
     });
   }
