@@ -99,7 +99,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             this.task.img,      // imageId
             taskUuid,           // task_uuid
             undefined,          // user_uuid
-            progressUuid,       // progress_uuid
+            undefined,       // progress_uuid
             undefined           // building_uuid
           )
         );

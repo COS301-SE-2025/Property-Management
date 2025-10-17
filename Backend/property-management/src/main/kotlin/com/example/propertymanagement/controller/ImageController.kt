@@ -25,19 +25,19 @@ class ImageController(
     @Value("\${aws.bucket-name:default-bucket}")
     lateinit var bucketName: String
 
+    data class ImageWithPresignedUrl(
+        val id: String,
+        val filename: String,
+        val presignedUrl: String,
+        val taskUuid: UUID?,
+        val userUuid: UUID?,
+        val progressUuid: UUID?,
+        val buildingUuid: UUID?
+    )
+
     /**
      * Generate presigned upload URL for a single image
      */
-
-     data class ImageWithPresignedUrl(
-    val id: String,
-    val filename: String,
-    val presignedUrl: String,
-    val taskUuid: UUID?,
-    val userUuid: UUID?,
-    val progressUuid: UUID?,
-    val buildingUuid: UUID?
-        )
     @GetMapping("/presigned-upload/{filename}")
     fun generatePresignedUploadUrl(
         @PathVariable filename: String,
@@ -99,19 +99,62 @@ class ImageController(
     ): ResponseEntity<String> {
         val url = "https://$bucketName.s3.amazonaws.com/$key"
         
-        val imageMeta = ImageMeta(
-            id = id,
-            filename = filename,
-            url = url,
-            task_uuid = taskUuid,
-            user_uuid = userUuid,
-            progress_uuid = progressUuid,
-            building_uuid = buildingUuid,
-        )
+        // Check if image already exists (for updates)
+        val existingImage = imageRepository.findById(id).orElse(null)
+        
+        val imageMeta = if (existingImage != null) {
+            // Update existing image
+            existingImage.copy(
+                task_uuid = taskUuid ?: existingImage.task_uuid,
+                user_uuid = userUuid ?: existingImage.user_uuid,
+                progress_uuid = progressUuid ?: existingImage.progress_uuid,
+                building_uuid = buildingUuid ?: existingImage.building_uuid
+            )
+        } else {
+            // Create new image
+            ImageMeta(
+                id = id,
+                filename = filename,
+                url = url,
+                task_uuid = taskUuid,
+                user_uuid = userUuid,
+                progress_uuid = progressUuid,
+                building_uuid = buildingUuid,
+            )
+        }
         
         imageRepository.save(imageMeta)
         
         return ResponseEntity.ok("Upload metadata saved.")
+    }
+
+    /**
+     * NEW: Update image associations without re-uploading
+     * PATCH /api/images/{imageId}/associations
+     */
+    @PatchMapping("/{imageId}/associations")
+    fun updateImageAssociations(
+        @PathVariable imageId: String,
+        @RequestParam("userUuid", required = false) userUuid: UUID?,
+        @RequestParam("taskUuid", required = false) taskUuid: UUID?,
+        @RequestParam("progressUuid", required = false) progressUuid: UUID?,
+        @RequestParam("buildingUuid", required = false) buildingUuid: UUID?
+    ): ResponseEntity<ImageMeta> {
+        val existingImage = imageRepository.findById(imageId).orElseThrow {
+            NoSuchElementException("Image not found with id $imageId")
+        }
+        
+        // Update only the provided UUIDs (keep existing ones if not provided)
+        val updatedImage = existingImage.copy(
+            task_uuid = taskUuid ?: existingImage.task_uuid,
+            user_uuid = userUuid ?: existingImage.user_uuid,
+            progress_uuid = progressUuid ?: existingImage.progress_uuid,
+            building_uuid = buildingUuid ?: existingImage.building_uuid
+        )
+        
+        imageRepository.save(updatedImage)
+        
+        return ResponseEntity.ok(updatedImage)
     }
 
     /**
@@ -131,7 +174,7 @@ class ImageController(
             .body(presignedUrl)
     }
 
-@GetMapping("/presigned")
+    @GetMapping("/presigned")
     fun getPresignedUrl(
         @RequestParam("userUuid", required = false) userUuid: UUID?,
         @RequestParam("taskUuid", required = false) taskUuid: UUID?,
