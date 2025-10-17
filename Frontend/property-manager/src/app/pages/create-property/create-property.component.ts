@@ -5,7 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
 import { Router } from '@angular/router';
-import { PropertyService, CreateBuildingPayload, ImageUploadResponse, getCookieValue } from 'shared';
+import { PropertyService, CreateBuildingPayload, getCookieValue } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -33,8 +33,8 @@ import { AddressMapComponent } from "../../components/address-map/address-map.co
 export class CreatePropertyComponent implements OnInit {
   form!: FormGroup;
 
-  selectedImageFile: File | null = null;
-  imagePreview: string | null = null;
+  selectedImageFiles: File[] = []; // Changed to array
+  imagePreviews: string[] = []; // Changed to array
 
   trusteeUuid: string | null = null;
   coporateUuid: string | null = null;
@@ -73,10 +73,9 @@ export class CreatePropertyComponent implements OnInit {
       city: [''],
       province: [''],
       type: ['', Validators.required],
-      // primaryContractor: ['', Validators.required],
       coporateUuid: [''],
       bodyCorporate: [''],
-      image: [null],
+      images: [null], // Changed to images
     });
   }
 
@@ -89,7 +88,6 @@ export class CreatePropertyComponent implements OnInit {
         this.submissionError = 'Authentication error: Please log in again.';
       }
     }
-    // this.loadContractors();
     this.loadBodyCorporates();
   }
 
@@ -123,18 +121,31 @@ export class CreatePropertyComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: Event): void {
+  onFilesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] ?? null;
-    if (file) {
-      this.selectedImageFile = file;
-      this.form.patchValue({image: file});
-      const reader = new FileReader();
-      reader.onload = () => this.imagePreview = reader.result as string;
-      reader.readAsDataURL(file);
+    const files = input.files;
+    
+    if (files && files.length > 0) {
+      this.selectedImageFiles = Array.from(files);
+      this.form.patchValue({images: this.selectedImageFiles});
+      
+      // Generate previews for all selected images
+      this.imagePreviews = [];
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.imagePreviews.push(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      });
     }
   }
 
+  removeImage(index: number): void {
+    this.selectedImageFiles.splice(index, 1);
+    this.imagePreviews.splice(index, 1);
+    this.form.patchValue({images: this.selectedImageFiles});
+}
   onAddressSelected(addressParts: { address: string, suburb: string, city: string, province: string }) {
     this.form.patchValue({
       address: addressParts.address,
@@ -165,28 +176,39 @@ export class CreatePropertyComponent implements OnInit {
     }
 
     const formValue = this.form.value;
-    // if (!formValue.primaryContractor) {
-    //   this.submissionError = 'Please select a Primary Contractor.';
-    //   return;
-    // }
 
     this.isSubmitting = true;
     this.submissionError = null;
 
-    let propertyImageId: string | null = null;
-    if (this.selectedImageFile) {
+    let propertyImageIds: string[] = [];
+    
+    // Get building UUID from form
+    const buildingUuid = formValue.coporateUuid || undefined;
+
+    if (this.selectedImageFiles.length > 0) {
       try {
-        const uploadResult = await this.propertyService.uploadImage(this.selectedImageFile).toPromise();
-        propertyImageId = (uploadResult as ImageUploadResponse).imageKey;
+        console.log(`Uploading ${this.selectedImageFiles.length} images with buildingUuid: ${buildingUuid}`);
+        
+        // Upload all images with ONLY building UUID (others are undefined/null)
+        const imageIds = await this.propertyService.uploadMultipleImages(
+          this.selectedImageFiles,
+          undefined,    // user_uuid
+          undefined,    // task_uuid
+          undefined,    // progress_uuid
+          buildingUuid  // building_uuid ONLY
+        ).toPromise();
+        
+        propertyImageIds = imageIds as string[];
+        console.log('All images uploaded successfully:', propertyImageIds);
       } catch (err: unknown) {
         console.error('Image upload failed:', err);
-        this.submissionError = 'Failed to upload image.';
+        this.submissionError = 'Failed to upload images.';
         this.isSubmitting = false;
         return;
       }
     }
 
-    // 2) Compose full address
+    // Compose full address
     const fullAddress = [
       formValue.address,
       formValue.suburb,
@@ -196,23 +218,23 @@ export class CreatePropertyComponent implements OnInit {
       .filter(part => part && part.trim())
       .join(', ');
 
-    // 3) Build payload
+    // Build payload - use first image as primary or null if no images
     const payload: CreateBuildingPayload = {
       name: formValue.name as string,
       address: fullAddress,
       type: formValue.type as string,
       propertyValue: Number(formValue.propertyValue),
-      // primaryContractor: formValue.primaryContractor,
       latestInspectionDate: new Date().toISOString().split('T')[0],
       trusteeUuid: this.trusteeUuid as string,
       coporateUuid: formValue.coporateUuid,
-      propertyImageId: propertyImageId,
+      propertyImageId: propertyImageIds.length > 0 ? propertyImageIds[0] : null,
       area: Number(formValue.area)
     };
 
     console.log('Payload:', payload);
+    console.log('Total images uploaded:', propertyImageIds.length);
 
-    // 4) Send request
+    // Send request
     this.propertyService.createProperty(payload).subscribe({
       next: () => {
         this.isSubmitting = false;
@@ -220,12 +242,12 @@ export class CreatePropertyComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Property Created',
-          detail: 'The property was created successfully.'
+          detail: `Property created successfully with ${propertyImageIds.length} image(s).`
         });
 
         setTimeout(() => {
-          this.router.navigate(['/home']).then(() => window.location.reload);
-        }, 2000)
+          this.router.navigate(['/home']).then(() => window.location.reload());
+        }, 2000);
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error creating property:', err);
@@ -238,11 +260,10 @@ export class CreatePropertyComponent implements OnInit {
 
         this.messageService.add({
           severity: 'error',
-          summary: 'Errpr',
+          summary: 'Error',
           detail: 'The property was unsuccessfully created.'
         });
       }
     });
-
   }
 }

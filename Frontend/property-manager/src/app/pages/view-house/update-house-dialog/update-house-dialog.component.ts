@@ -80,11 +80,10 @@ export class UpdateHouseDialogComponent extends DialogComponent implements OnIni
     this.updateError = false;
 
     let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
-    let defualt_uuid : string = "10000000-0000-0000-0000-000000000000";
 
     if(this.selectedFile) {
       try {
-        const imageIds = await this.imageService.uploadImages([this.selectedFile], defualt_uuid);
+        const imageIds = await this.imageService.uploadImages([this.selectedFile], "","","", this.houseId());
         
         if(imageIds && imageIds.length > 0) {
           imageId = imageIds[0]; // Get the first (and only) image ID
