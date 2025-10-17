@@ -111,7 +111,20 @@ button:hover {
   color: #78350f;
 }
 
+:host ::ng-deep .p-select-label,
+:host ::ng-deep .p-select-option {
+  color: #111827 !important; 
+  background-color: var(--input-bg-color, #f9fafb) !important;
+}
+
+
 /* Dark theme variants */
+:host-context(.dark-theme) ::ng-deep .p-select-label,
+:host-context(.dark-theme) ::ng-deep .p-select-option {
+  color: #f3f4f6 !important; 
+  background-color: #374151 !important;
+}
+
 :host-context(.dark-theme) .card {
   background-color: #1f2937;
   color: #f9fafb;
