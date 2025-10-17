@@ -171,6 +171,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
         this.addError = true;
       }
     }
+    
     onFileSelect(event: FileSelectEvent)
     {
     if(event.files && event.files.length > 0)

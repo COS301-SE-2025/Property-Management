@@ -34,11 +34,13 @@ class ImageController(
     ): ResponseEntity<Map<String, String>> {
         val id = UUID.randomUUID().toString()
         val key = "uploads-$id-$filename"
+        
+        val contentType = getContentTypeFromFilename(filename)
 
         val putObjectRequest = PutObjectRequest.builder()
             .bucket(bucketName)
             .key(key)
-            .contentType("image/jpeg")
+            .contentType(contentType)
             .build()
 
         val presignRequest = PutObjectPresignRequest.builder()
@@ -58,16 +60,32 @@ class ImageController(
         )
     }
 
+    private fun getContentTypeFromFilename(filename: String): String {
+        val extension = filename.substringAfterLast('.', "").lowercase()
+        return when (extension) {
+            "jpg", "jpeg" -> "image/jpeg"
+            "png" -> "image/png"
+            "gif" -> "image/gif"
+            "webp" -> "image/webp"
+            "bmp" -> "image/bmp"
+            "svg" -> "image/svg+xml"
+            "tiff", "tif" -> "image/tiff"
+            else -> throw IllegalArgumentException("Unsupported file type. Only image files are allowed.")
+        }
+    }
+
     /**
      * Notify that upload is complete and save metadata to database
      */
-    @PostMapping("/notify-upload/{id}/{filename}/{key}/{userUuid}")
+    @PostMapping("/notify-upload/{id}/{filename}/{key}")
     fun notifyUploadComplete(
         @PathVariable id: String,
         @PathVariable filename: String,
         @PathVariable key: String,
-        @PathVariable userUuid: UUID,
-        @RequestParam("taskUuid", required = false) taskUuid: UUID?
+        @RequestParam("userUuid", required = false) userUuid: UUID?,
+        @RequestParam("taskUuid", required = false) taskUuid: UUID?,
+        @RequestParam("progressUuid", required = false) progressUuid: UUID?,
+        @RequestParam("buildingUuid", required = false) buildingUuid: UUID?,
     ): ResponseEntity<String> {
         val url = "https://$bucketName.s3.amazonaws.com/$key"
         
@@ -76,7 +94,9 @@ class ImageController(
             filename = filename,
             url = url,
             task_uuid = taskUuid,
-            user_uuid = userUuid
+            user_uuid = userUuid,
+            progress_uuid = progressUuid,
+            building_uuid = buildingUuid,
         )
         
         imageRepository.save(imageMeta)
@@ -101,56 +121,26 @@ class ImageController(
             .body(presignedUrl)
     }
 
-    /**
-     * Get presigned URLs for all images linked to a given user.
-     */
-    @GetMapping("/presigned/user/{userUuid}")
-    fun getPresignedUrlsByUser(@PathVariable userUuid: UUID): ResponseEntity<List<String>> {
-        val images = imageRepository.findAll()
-            .filter { it.user_uuid == userUuid }
-
-        val urls = images.map { createPresignedUrl(it.url) }
-
-        return ResponseEntity.ok(urls)
-    }
-
-    /**
-     * Get presigned URLs for all images linked to a given task.
-     */
-    @GetMapping("/presigned/task/{taskUuid}")
-    fun getPresignedUrlsByTask(@PathVariable taskUuid: UUID): ResponseEntity<List<String>> {
-        val images = imageRepository.findAll()
-            .filter { it.task_uuid == taskUuid }
-
-        val urls = images.map { createPresignedUrl(it.url) }
-
-        return ResponseEntity.ok(urls)
-    }
-
-    /**
-     * Get all images by user UUID (similar to PDF controller pattern)
-     */
-    @GetMapping("/user/{userUuid}")
-    fun getByUserUuid(@PathVariable userUuid: UUID): ResponseEntity<List<ImageMeta>> {
-        return try {
-            val images = imageRepository.findAll().filter { it.user_uuid == userUuid }
-            ResponseEntity.ok(images)
-        } catch (e: NoSuchElementException) {
-            ResponseEntity.notFound().build()
+    @GetMapping("/presigned")
+    fun getPresignedUrl(
+        @RequestParam("userUuid", required = false) userUuid: UUID?,
+        @RequestParam("taskUuid", required = false) taskUuid: UUID?,
+        @RequestParam("progressUuid", required = false) progressUuid: UUID?,
+        @RequestParam("buildingUuid", required = false) buildingUuid: UUID?
+    ): ResponseEntity<List<String>> {
+        if (listOfNotNull(userUuid, taskUuid, progressUuid, buildingUuid).isEmpty()) {
+            throw IllegalArgumentException("At least one UUID parameter must be provided")
         }
-    }
-
-    /**
-     * Get all images by task UUID
-     */
-    @GetMapping("/task/{taskUuid}")
-    fun getByTaskUuid(@PathVariable taskUuid: UUID): ResponseEntity<List<ImageMeta>> {
-        return try {
-            val images = imageRepository.findAll().filter { it.task_uuid == taskUuid }
-            ResponseEntity.ok(images)
-        } catch (e: NoSuchElementException) {
-            ResponseEntity.notFound().build()
+        
+        val images = imageRepository.findByUuids(userUuid, taskUuid, progressUuid, buildingUuid)
+        
+        if (images.isEmpty()) {
+            throw NoSuchElementException("No images found with provided parameters")
         }
+        
+        val presignedUrls = images.map { createPresignedUrl(it.url) }
+        
+        return ResponseEntity.ok(presignedUrls)
     }
 
     /**

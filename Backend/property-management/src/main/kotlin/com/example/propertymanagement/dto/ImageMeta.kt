@@ -11,5 +11,7 @@ data class ImageMeta(
     val filename: String,
     val url: String,
     val task_uuid: UUID?,
-    val user_uuid: UUID,
+    val user_uuid: UUID?,
+    val progress_uuid: UUID?,
+    val building_uuid: UUID?,
 )
