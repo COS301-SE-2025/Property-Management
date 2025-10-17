@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Output, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Output, SimpleChanges, OnChanges, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { AddressMapComponent } from "../../components/address-map/address-map.component";
 import { MultiSelectModule } from 'primeng/multiselect';
-import { Input } from '@angular/core';
 import { ContractorDetails } from 'shared';
 
 @Component({
@@ -12,7 +11,7 @@ import { ContractorDetails } from 'shared';
   templateUrl: './step-one.component.html',
   styleUrls: ['./step-one.component.scss']
 })
-export class StepOneComponent {
+export class StepOneComponent implements OnChanges {
   @Input() contractor!: ContractorDetails;
   @Output() next = new EventEmitter<{
     name: string;
@@ -46,9 +45,9 @@ export class StepOneComponent {
     { label: 'Builder', value: 'builder' },
     { label: 'Landscaper', value: 'landscaper' },
     { label: 'Tiling and Flooring', value: 'Tiling and flooring' },
-    { label: 'masonry', value: 'masonry' },
-    { label: 'roofing', value: 'roofing' },
-    { label: 'drywall and plastering', value: 'drywall and plastering' },
+    { label: 'Masonry', value: 'masonry' },
+    { label: 'Roofing', value: 'roofing' },
+    { label: 'Drywall and Plastering', value: 'drywall and plastering' },
   ];
 
   constructor(private fb: FormBuilder) {
@@ -74,6 +73,7 @@ export class StepOneComponent {
         address: this.contractor.address || '',
         city: this.contractor.city || '',
         postalCode: this.contractor.postal_code || '',
+        specializations: this.contractor.specializations || [],
         status: this.contractor.status || false
       });
     }
@@ -96,13 +96,5 @@ export class StepOneComponent {
       specializations: this.form.value.specializations ?? [],
       status: true
     });
-  }
-
-  upload(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files && input.files[0];
-    if (file) {
-      console.log('Profile image:', file.name);
-    }
   }
 }

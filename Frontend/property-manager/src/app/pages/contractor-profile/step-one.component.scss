@@ -1,10 +1,4 @@
-/* ADD THESE TO THE END OF YOUR EXISTING SCSS FILE */
 
-/* ============================================
-   MULTISELECT STYLING - Match Input Fields
-   ============================================ */
-
-/* Main multiselect container */
 :host ::ng-deep .p-multiselect {
   width: 100%;
   background-color: var(--input-bg-color, #f9fafb);
@@ -16,7 +10,6 @@
   min-height: 2.75rem;
 }
 
-/* Label/Placeholder styling */
 :host ::ng-deep .p-multiselect .p-multiselect-label {
   padding: 0.75rem 1rem;
   color: var(--input-text-color, #111827);
@@ -26,12 +19,10 @@
   color: #9ca3af;
 }
 
-/* Trigger button */
 :host ::ng-deep .p-multiselect .p-multiselect-trigger {
   color: var(--input-text-color, #111827);
 }
 
-/* Hover state */
 :host ::ng-deep .p-multiselect:not(.p-disabled):hover {
   border-color: #facc15;
 }
