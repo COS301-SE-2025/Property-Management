@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -11,6 +11,8 @@ import { Contractor } from 'shared';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { AddressMapComponent } from "../../components/address-map/address-map.component";
+
 
 @Component({
   selector: 'app-create-property',
@@ -22,7 +24,7 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     FloatLabelModule,
     DropdownModule,
-    ToastModule
+    ToastModule, AddressMapComponent
   ],
   templateUrl: './create-property.component.html',
   styles: [],
@@ -43,6 +45,8 @@ export class CreatePropertyComponent implements OnInit {
   isDarkMode = false;
   isSubmitting = false;
   submissionError: string | null = null;
+  showAddressModal = false;
+
 
   provinces = [
     'Eastern Cape', 'Free State', 'Gauteng', 'KwaZulu-Natal', 'Limpopo',
@@ -141,6 +145,28 @@ export class CreatePropertyComponent implements OnInit {
     this.selectedImageFiles.splice(index, 1);
     this.imagePreviews.splice(index, 1);
     this.form.patchValue({images: this.selectedImageFiles});
+}
+  onAddressSelected(addressParts: { address: string, suburb: string, city: string, province: string }) {
+    this.form.patchValue({
+      address: addressParts.address,
+      suburb: addressParts.suburb,
+      city: addressParts.city,
+      province: addressParts.province
+    });
+  }
+
+  get addressControl(): FormControl {
+    return this.form.get('address') as FormControl;
+  }
+
+  onAddressSelectedModal(addressParts: { address: string, suburb: string, city: string, province: string }) {
+    this.form.patchValue({
+      address: addressParts.address,
+      suburb: addressParts.suburb,
+      city: addressParts.city,
+      province: addressParts.province
+    });
+    this.showAddressModal = false;
   }
 
   async onSubmit(): Promise<void> {

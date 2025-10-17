@@ -346,6 +346,10 @@ export class VotingService{
     {
         return this.votingApiService.updateQuoteStatus(quoteId, status);
     }
+    getSessionFromTaskId(taskId: string)
+    {
+        return this.votingApiService.getSessionFromTaskId(taskId);
+    }
     private addToPending(task: MaintenanceTask)
     {
         this.pendingTasks.set([...this.pendingTasks(), task])

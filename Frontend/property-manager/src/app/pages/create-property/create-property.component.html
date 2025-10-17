@@ -84,6 +84,17 @@
           </p-dropdown>
         </div>
 
+        <button type="button" class="bg-yellow-400 px-4 py-2 rounded font-semibold mb-4 w-[91%]" (click)="showAddressModal = true">
+          Pick Address
+        </button>
+
+        <div *ngIf="showAddressModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div class="bg-white rounded-lg p-6 shadow-lg w-full max-w-xl relative">
+            <button class="absolute top-2 right-2 text-gray-500" (click)="showAddressModal = false">&times;</button>
+            <app-address-map [control]="addressControl" (addressSelected)="onAddressSelectedModal($event)"></app-address-map>
+          </div>
+        </div>
+        
         <div class="mb-8">
           <div class="flex gap-4">
             <p-floatlabel class="w-full">
