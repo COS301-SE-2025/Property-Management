@@ -1,6 +1,6 @@
 import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaintenanceTask, ContractorDetails, ContractorApiService, ImageApiService, FormatDatePipe, InventoryItemApiService, InventoryUsageApiService, TaskApiService, InventoryUsage, Inventory, getCookieValue } from 'shared';
+import { MaintenanceTask, ContractorDetails, ContractorApiService, ImageApiService, FormatDatePipe, InventoryItemApiService, InventoryUsageApiService, TaskApiService, InventoryUsage, Inventory, getCookieValue, TaskProgresApiService } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
@@ -39,6 +39,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     private taskService: TaskApiService, 
     private route: ActivatedRoute,
     private breadCrumb: BreadCrumbService,
+    private taskProgressService: TaskProgresApiService,
     private router: Router
   ) { 
     effect(() => {
@@ -79,7 +80,33 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   async getImages() {
     if (this.task?.img) {
-      this.imageUrl = await this.imageService.getImage(this.task.img).toPromise();
+      try {
+        // First, get all task progress records for this task
+        const progressRecords = await lastValueFrom(
+          this.taskProgressService.getTaskProgressByTaskId(this.taskId!)
+        );
+        
+        // Get the first progress UUID if available
+        const progressUuid = progressRecords.length > 0 
+          ? progressRecords[0].progressUuid 
+          : undefined;
+        
+        const taskUuid = this.taskId ?? undefined;
+        
+        // Fetch image using both task UUID and progress UUID
+        this.imageUrl = await lastValueFrom(
+          this.imageService.getImage(
+            this.task.img,      // imageId
+            taskUuid,           // task_uuid
+            undefined,          // user_uuid
+            progressUuid,       // progress_uuid
+            undefined           // building_uuid
+          )
+        );
+      } catch (error) {
+        console.error('Error fetching image:', error);
+        this.imageUrl = "assets/images/no_image.png";
+      }
     } else {
       this.imageUrl = "assets/images/no_image.png";
     }

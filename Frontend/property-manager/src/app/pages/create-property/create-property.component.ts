@@ -5,7 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
 import { Router } from '@angular/router';
-import { PropertyService, CreateBuildingPayload, ImageUploadResponse, getCookieValue } from 'shared';
+import { PropertyService, CreateBuildingPayload, getCookieValue } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -138,19 +138,26 @@ export class CreatePropertyComponent implements OnInit {
     }
 
     const formValue = this.form.value;
-    // if (!formValue.primaryContractor) {
-    //   this.submissionError = 'Please select a Primary Contractor.';
-    //   return;
-    // }
 
     this.isSubmitting = true;
     this.submissionError = null;
 
     let propertyImageId: string | null = null;
+    
+    // Get building UUID if creating for a specific body corporate
+    const buildingUuid = formValue.coporateUuid || undefined;
+
     if (this.selectedImageFile) {
       try {
-        const uploadResult = await this.propertyService.uploadImage(this.selectedImageFile).toPromise();
-        propertyImageId = (uploadResult as ImageUploadResponse).imageKey;
+        // Use uploadImage with the new signature that includes UUIDs
+        const imageId = await this.propertyService.uploadImage(
+          this.selectedImageFile,
+          undefined, // user_uuid
+          undefined, // task_uuid
+          undefined, // progress_uuid
+          buildingUuid // building_uuid
+        ).toPromise();
+        propertyImageId = imageId as string;
       } catch (err: unknown) {
         console.error('Image upload failed:', err);
         this.submissionError = 'Failed to upload image.';
@@ -175,7 +182,6 @@ export class CreatePropertyComponent implements OnInit {
       address: fullAddress,
       type: formValue.type as string,
       propertyValue: Number(formValue.propertyValue),
-      // primaryContractor: formValue.primaryContractor,
       latestInspectionDate: new Date().toISOString().split('T')[0],
       trusteeUuid: this.trusteeUuid as string,
       coporateUuid: formValue.coporateUuid,
@@ -211,7 +217,7 @@ export class CreatePropertyComponent implements OnInit {
 
         this.messageService.add({
           severity: 'error',
-          summary: 'Errpr',
+          summary: 'Error',
           detail: 'The property was unsuccessfully created.'
         });
       }

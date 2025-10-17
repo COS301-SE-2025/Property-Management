@@ -28,6 +28,16 @@ class ImageController(
     /**
      * Generate presigned upload URL for a single image
      */
+
+     data class ImageWithPresignedUrl(
+    val id: String,
+    val filename: String,
+    val presignedUrl: String,
+    val taskUuid: UUID?,
+    val userUuid: UUID?,
+    val progressUuid: UUID?,
+    val buildingUuid: UUID?
+        )
     @GetMapping("/presigned-upload/{filename}")
     fun generatePresignedUploadUrl(
         @PathVariable filename: String,
@@ -121,13 +131,13 @@ class ImageController(
             .body(presignedUrl)
     }
 
-    @GetMapping("/presigned")
+@GetMapping("/presigned")
     fun getPresignedUrl(
         @RequestParam("userUuid", required = false) userUuid: UUID?,
         @RequestParam("taskUuid", required = false) taskUuid: UUID?,
         @RequestParam("progressUuid", required = false) progressUuid: UUID?,
         @RequestParam("buildingUuid", required = false) buildingUuid: UUID?
-    ): ResponseEntity<List<String>> {
+    ): ResponseEntity<List<ImageWithPresignedUrl>> {
         if (listOfNotNull(userUuid, taskUuid, progressUuid, buildingUuid).isEmpty()) {
             throw IllegalArgumentException("At least one UUID parameter must be provided")
         }
@@ -138,9 +148,19 @@ class ImageController(
             throw NoSuchElementException("No images found with provided parameters")
         }
         
-        val presignedUrls = images.map { createPresignedUrl(it.url) }
+        val imagesWithUrls = images.map { image ->
+            ImageWithPresignedUrl(
+                id = image.id,
+                filename = image.filename,
+                presignedUrl = createPresignedUrl(image.url),
+                taskUuid = image.task_uuid,
+                userUuid = image.user_uuid,
+                progressUuid = image.progress_uuid,
+                buildingUuid = image.building_uuid
+            )
+        }
         
-        return ResponseEntity.ok(presignedUrls)
+        return ResponseEntity.ok(imagesWithUrls)
     }
 
     /**

@@ -16,3 +16,5 @@ ALTER TABLE IF EXISTS public.image_meta
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
     NOT VALID;
+
+ALTER TABLE IF EXISTS public.image_meta DROP CONSTRAINT IF EXISTS "Building_uuid";
