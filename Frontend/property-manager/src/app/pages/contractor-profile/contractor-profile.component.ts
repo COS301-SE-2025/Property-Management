@@ -41,6 +41,7 @@ export class ContractorProfileComponent implements OnInit {
     services: '',
     project_history: '',
     img: '',
+    specializations: []
   };
 
   constructor(
