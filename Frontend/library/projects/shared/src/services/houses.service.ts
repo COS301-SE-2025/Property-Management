@@ -72,6 +72,19 @@ export class HousesService {
     });
   }
 
+  async getImagesForBuilding(buildingUuid: string): Promise<string[]> {
+    try {
+      const imageResponse = await firstValueFrom(
+        this.imageApiService.getImages('', '', '', buildingUuid)
+      );
+      const imageUrls = Array.isArray(imageResponse) ? imageResponse : imageResponse.split(',').map(url => url.trim());
+      return imageUrls.length > 0 ? imageUrls : ['assets/images/no_image.png'];
+    } catch (err) {
+      console.error('Error fetching images for building', err);
+      return ['assets/images/no_image.png'];
+    }
+  }
+
   async loadHouses(trusteeId: string) {
     this.houses.set([]);
     try {
