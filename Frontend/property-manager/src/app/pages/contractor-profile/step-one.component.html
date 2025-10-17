@@ -18,13 +18,13 @@
       <input type="text" formControlName="postalCode" placeholder="Postal Code" class="input flex-1" />
 
       
-      <p-select
-        formControlName="profession"
-        [options]="professions"
+      <p-multiselect
+        formControlName="specializations"
+        [options]="specializationOptions"
         optionLabel="label"
-        placeholder="Select Profession"
+        placeholder="Select Specializations"
         class="flex-1"
-      ></p-select>
+      ></p-multiselect>
     </div>
 
     <div class="flex justify-end mt-6">

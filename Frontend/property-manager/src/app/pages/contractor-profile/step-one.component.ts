@@ -1,13 +1,12 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { AddressMapComponent } from "../../components/address-map/address-map.component";
-import { DropdownModule } from 'primeng/dropdown'; 
-import { SelectModule } from 'primeng/select';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-step-one',
   standalone: true,
-  imports: [ReactiveFormsModule, AddressMapComponent, DropdownModule, SelectModule],
+  imports: [ReactiveFormsModule, AddressMapComponent, MultiSelectModule],
   templateUrl: './step-one.component.html',
   styleUrls: ['./step-one.component.scss']
 })
@@ -20,7 +19,7 @@ export class StepOneComponent {
     city: string;
     suburb: string;
     postalCode: string;
-    profession: string;
+    specializations: string[];
     status: boolean;
   }>();
 
@@ -32,11 +31,11 @@ export class StepOneComponent {
     city: FormControl<string | null>;
     suburb: FormControl<string | null>;
     postalCode: FormControl<string | null>;
-    profession: FormControl<string | null>;
+    specializations: FormControl<string[] | null>;
     status: FormControl<boolean | null>;
   }>;
 
-  professions = [
+  specializationOptions = [
     { label: 'Plumber', value: 'plumber' },
     { label: 'Electrician', value: 'electrician' },
     { label: 'Painter', value: 'painter' },
@@ -58,8 +57,8 @@ export class StepOneComponent {
       city: this.fb.control(''),
       suburb: this.fb.control(''),
       postalCode: this.fb.control(''),
-      profession: this.fb.control(''),
-      status: this.fb.control(false)
+      specializations: this.fb.control<string[] | null>([], { nonNullable: false }),
+      status: this.fb.control(false),
     });
   }
 
@@ -77,7 +76,7 @@ export class StepOneComponent {
       city: this.form.value.city ?? '',
       suburb: this.form.value.suburb ?? '',
       postalCode: this.form.value.postalCode ?? '',
-      profession: this.form.value.profession ?? '',
+      specializations: this.form.value.specializations ?? [],
       status: true
     });
   }
