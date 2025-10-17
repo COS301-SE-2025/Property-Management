@@ -77,14 +77,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.breadCrumb.clearBreadCrumb();
   }
 
-  async getImages()
-  {
+  async getImages() {
     if (this.task?.img) {
-      this.imageUrl = await this.imageService.getTaskImages(this.task.img).toPromise();
+      this.imageUrl = await this.imageService.getImage(this.task.img).toPromise();
     } else {
       this.imageUrl = "assets/images/no_image.png";
     }
   }
+
   async getContractor()
   {
     const contractorId = this.task?.cuuid;

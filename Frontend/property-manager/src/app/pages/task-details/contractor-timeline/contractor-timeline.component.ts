@@ -65,8 +65,15 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
     }
 
     private loadTimelineData() {
+        console.log('=== LOADING TIMELINE DATA ===');
+        console.log('Task UUID:', this.task().uuid);
+
         this.taskProgressService.getTaskProgressByTaskId(this.task().uuid).pipe(
             switchMap((progressItems: TaskProgress[]) => {
+
+                console.log('Progress items received:', progressItems.length);
+                console.log('Progress items raw data:', progressItems);
+
                 if (progressItems.length === 0) {
                     this.timeline.set([]);
                     return of([]);
@@ -78,37 +85,85 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
                     return dateA - dateB;
                 });
 
-                const timelineProcessing = progressItems.map(p => {
+                const timelineProcessing = progressItems.map((p, index) => {
+
+                    console.log(`\n--- Processing progress item ${index + 1} ---`);
+                    console.log('Progress UUID:', p.progressUuid);
+                    console.log('Original imageId:', p.imageId);
+                    console.log('Image ID type:', typeof p.imageId);
+                    console.log('Image ID is array?', Array.isArray(p.imageId));
 
                     p.imageId = p.imageId ? p.imageId : 'assets/images/no_image.png';
                     p.subDate = this.toDate(p.submissionDate);
 
-                    const imageRequest = p.imageId && p.imageId !== 'assets/images/no_image.png' 
+                    const shouldFetchImage = p.imageId && p.imageId !== 'assets/images/no_image.png';
+                    console.log('Should fetch image?', shouldFetchImage);
+                    console.log('Image ID to fetch:', p.imageId);
+
+                    // const imageRequest = p.imageId && p.imageId !== 'assets/images/no_image.png' 
+                    //     ? this.imageService.getImage(p.imageId).pipe(
+                    //         catchError(() => of('assets/images/no_image.png'))
+                    //     )
+                    //     : of(p.imageId);
+                    const imageRequest = shouldFetchImage
                         ? this.imageService.getImage(p.imageId).pipe(
-                            catchError(() => of('assets/images/no_image.png'))
+                            tap(image => {
+                                console.log(`Image URL received for ${p.imageId}:`, image);
+                                console.log('Image URL type:', typeof image);
+                                console.log('Image URL is array?', Array.isArray(image));
+                            }),
+                            catchError((err) => {
+                                console.error(`Error fetching image ${p.imageId}:`, err);
+                                return of('assets/images/no_image.png');
+                            })
                         )
                         : of(p.imageId);
 
+
+                    // return imageRequest.pipe(
+                    //     tap(image => p.imageId = image),
+                    //     switchMap(() => {
+                    //         if (p.inventoryUsageUuid) {
+                    //             return this.processInventoryUsage(p.inventoryUsageUuid, p.quantityUsed);
+                    //         }
+                    //         return of(null);
+                    //     }),
+                    //     tap(() => this.timeline.update(current => [...current, p]))
+                    // );
                     return imageRequest.pipe(
-                        tap(image => p.imageId = image),
+                        tap(image => {
+                            console.log(`Setting imageId for progress ${index + 1}:`, image);
+                            p.imageId = image;
+                        }),
                         switchMap(() => {
                             if (p.inventoryUsageUuid) {
+                                console.log('Processing inventory usage:', p.inventoryUsageUuid);
                                 return this.processInventoryUsage(p.inventoryUsageUuid, p.quantityUsed);
                             }
                             return of(null);
                         }),
-                        tap(() => this.timeline.update(current => [...current, p]))
+                        tap(() => {
+                            console.log(`Adding progress ${index + 1} to timeline`);
+                            this.timeline.update(current => [...current, p]);
+                        })
                     );
                 });
 
                 return forkJoin(timelineProcessing).pipe(
                     tap(() => {
+                        console.log('\n=== FINAL TIMELINE ===');
+                        console.log('Total items:', progressItems.length);
+                        progressItems.forEach((p, i) => {
+                            console.log(`Item ${i + 1} final imageId:`, p.imageId);
+                        });
                         this.timeline.set([...progressItems]);
                     })
                 );
             }),
             catchError((err: HttpErrorResponse) => {
+                console.error('Error loading timeline:', err);
                 if (err.status === 404) {
+                    console.log('No timeline data found (404)');
                     this.timeline.set([]);
                 } else {
                     this.messageService.add({
@@ -116,11 +171,13 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
                         summary: 'Error',
                         detail: 'Failed to load contractor timeline',
                     });
-                    console.error(err);
+                    console.error('Timeline error details:', err);
                 }
                 return of([]);
             })
         ).subscribe(() => {
+            console.log('=== TIMELINE LOADING COMPLETE ===');
+            console.log('Final timeline state:', this.timeline());
             this.trackQuantityUsed();
         });
     }
