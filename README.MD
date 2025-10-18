@@ -127,6 +127,9 @@ Our GitHub Project boards facilitate effective task management, progress trackin
     <td width="35%">
       I am an aspiring Software Engineer with a passion for solving complex problems through innovative and efficient solutions. I enjoy building systems that are not only functional but also scalable and maintainable. My primary interests lie in Backend Development, where I focus on creating robust APIs, managing databases, and optimizing server-side logic. I also have a growing appreciation for UI/UX design, and I enjoy exploring how thoughtful design can enhance user experience and product usability.
     </td>
+    <td>
+  🔗 <a href="docs/Project%20day/Tafara Hwata - CV.pdf">CV</a><br>
+    </td>
   </tr>
   <tr>
     <td width="25%">
