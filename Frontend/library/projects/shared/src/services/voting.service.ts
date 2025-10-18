@@ -8,10 +8,6 @@ import { catchError, firstValueFrom, map, throwError } from 'rxjs';
 })
 
 export class VotingService{
-    //Check if bc or trustee
-    //If bc get all trustees
-    //Get all tasks thats scheduled date is past now
-
     votingTasks = signal<Voting[]>([]); 
     assignedContractors = signal<AssignedContractor[]>([]);
     pendingTasks = signal<MaintenanceTask[]>([]);
@@ -30,6 +26,8 @@ export class VotingService{
     async getBodyCorporateVotingTasks()
     {
         const date = new Date();
+        date.setHours(0, 0, 0, 0); 
+        
         this.pendingTasks.set([]);
         this.votingTasks.set([]);
         this.approvedTasks.set([]);
@@ -41,9 +39,20 @@ export class VotingService{
         const tasks = this.bodyCorporateService.pendingTasks();
 
         tasks.forEach(task => {
-            if(task.approvalStatus === 'PENDING' && task.scheduled_date >= date)
+            const taskDate = new Date(task.scheduled_date);
+            taskDate.setHours(0, 0, 0, 0);
+
+            console.log('Processing task:', {
+                title: task.title,
+                approvalStatus: task.approvalStatus,
+                scheduled_date: task.scheduled_date,
+                taskDate: taskDate,
+                currentDate: date,
+                comparison: taskDate >= date
+            });
+
+            if(task.approvalStatus === 'PENDING' && taskDate >= date)
             {
-                //add to pending tasks tasks 
                 if(!task.img || task.img === '00000000-0000-0000-0000-000000000000')
                 {
                     task.img = "assets/images/no_image.png";
@@ -56,17 +65,17 @@ export class VotingService{
                         }
                     });
                 }
+                console.log('Adding to pending tasks:', task.title);
                 this.addToPending(task);
             }
-            else if(task.scheduled_date > date && task.approvalStatus !=='COMPLETED')
+            else if(taskDate > date && task.approvalStatus !== 'COMPLETED')
             {
-                //Get session data based on if the task has been approved and add to voting tasks
                 this.votingApiService.getSessionFromTaskId(task.uuid).subscribe({
                     next:(res) => {
 
                         if(!res)
                         {
-                            console.warn("Couldnt get session", task);
+                            console.warn("Couldn't get session", task);
                             return;
                         }
 
@@ -82,7 +91,7 @@ export class VotingService{
                             isActive: res.isActive
                         }
 
-                        //Get image
+                        // Get image
                         if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
                         {
                             votingRes.img = "assets/images/no_image.png";
@@ -95,19 +104,19 @@ export class VotingService{
                                 }
                             });
                         }
+                        console.log('Adding to voting tasks:', votingRes.title);
                         this.addToVoting(votingRes);
                     }
                 });
             }
             else if(!task.cuuid || task.cuuid === '')
             {
-                //Task approved by bc, give summary
                 this.votingApiService.getSessionFromTaskId(task.uuid).subscribe({
                     next:(res) => {
 
                         if(!res)
                         {
-                            console.warn("Couldnt get session", task);
+                            console.warn("Couldn't get session", task);
                             return;
                         }
 
@@ -123,7 +132,7 @@ export class VotingService{
                             isActive: res.isActive
                         }
 
-                        //Get image
+                        // Get image
                         if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
                         {
                             votingRes.img = "assets/images/no_image.png";
@@ -136,6 +145,7 @@ export class VotingService{
                                 }
                             });
                         }
+                        console.log('Adding to final approval:', votingRes.title);
                         this.addToFinalApproval(votingRes);
                     }
                 });
@@ -147,7 +157,7 @@ export class VotingService{
 
                         if(!res)
                         {
-                            console.warn("Couldnt get session", task);
+                            console.warn("Couldn't get session", task);
                             return;
                         }
 
@@ -163,7 +173,7 @@ export class VotingService{
                             isActive: res.isActive
                         }
 
-                        //Get image
+                        // Get image
                         if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
                         {
                             votingRes.img = "assets/images/no_image.png";
@@ -176,18 +186,21 @@ export class VotingService{
                                 }
                             });
                         }
+                        console.log('Adding to approved tasks:', votingRes.title);
                         this.addToApprovalTasks(votingRes);
                     }
                 });
             }
         })
     }
+
     async getTrusteeVotingTasks(trusteeId: string)
     {
         const date = new Date();
+        date.setHours(0, 0, 0, 0);
         this.votingTasks.set([]);
 
-        //Get buildings and body corp IDs for each house
+        // Get buildings and body corp IDs for each house
         await this.housesService.loadHouses(trusteeId);
         const houses = this.housesService.houses();
 
@@ -210,10 +223,15 @@ export class VotingService{
             this.processTasks(tasks, date);
         });
     }
+
     private processTasks(tasks: MaintenanceTask[], date: Date)
     {
         tasks.forEach(t => {
-            if(t.approvalStatus === 'APPROVED' && t.scheduled_date > date)
+            // Convert scheduled_date string to Date object
+            const taskDate = new Date(t.scheduled_date);
+            taskDate.setHours(0, 0, 0, 0);
+
+            if(t.approvalStatus === 'APPROVED' && taskDate > date)
             {
                 if(!t.img)
                 {
@@ -226,7 +244,6 @@ export class VotingService{
                         t.img = "assets/images/no_image.png";
                     }
 
-                    //TODO: Get session info
                     this.votingApiService.getSessionFromTaskId(t.uuid).subscribe({
                         next: (res) => {
                             const [year, month, day, hour, min] = res.votingEndsAt;
@@ -241,7 +258,7 @@ export class VotingService{
                                 isActive: res.isActive
                             }
 
-                            //Get image
+                            // Get image
                             if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
                             {
                                 votingRes.img = "assets/images/no_image.png";
@@ -261,6 +278,7 @@ export class VotingService{
             }
         });
     }
+
     castVote(sessionId: string, quoteId: string, voterId: string, isTrustee: boolean)
     {
         return this.votingApiService.castVote(sessionId, quoteId, voterId, isTrustee).pipe(
@@ -277,6 +295,7 @@ export class VotingService{
             })
         );
     }
+
     handleVotingError(error: any): string {
         if (error.status === 400) {
             try {
@@ -285,21 +304,23 @@ export class VotingService{
                     return "You've already voted for this quote";
                 }
             } catch (e) {
-            console.error(e);
+                console.error(e);
             }
         }
         return 'Failed to cast vote, please try again';
-    } 
+    }
+
     getAllVotes(sessionId: string)
     {
         return this.votingApiService.getVoteResults(sessionId);
     }
+
     async createVotingSession(contractors: string[], taskId: string, bcId: string)
     {
-        //Update approval and assign contractors
+        // Update approval and assign contractors
         this.taskApiService.updateTaskApproval("APPROVED", taskId, true).subscribe({
             next: () => {
-                //change scheduled date
+                // Change scheduled date
                 const now = new Date();
                 now.setHours(0, 0, 0, 0);
                 now.setDate(now.getDate() + 3);
@@ -311,7 +332,7 @@ export class VotingService{
                                 console.error(err);
                             }
                         });
-                        //Create session
+                        // Create session
                         this.votingApiService.createSession(taskId, bcId, now).subscribe({
                         });
                     },
@@ -322,46 +343,57 @@ export class VotingService{
             }
         });
     }
+
     getVotingTaskById(taskId: string)
     {
         return this.votingTasks().find(task => task.uuid === taskId);
     }
+
     getPendingTaskById(taskId: string)
     {
         return this.pendingTasks().find(task => task.uuid === taskId);
     }
+
     getTaskIdFromSessionId(sessionId: string)
     {
         return this.votingApiService.getTaskFromSessionId(sessionId);
     }
+
     getAssignedContractors(taskId: string)
     {
         return this.contractorService.getAssignedContractor(taskId);
     }
+
     getQuote(quoteId: string)
     {
         return this.votingApiService.getQuote(quoteId);
     }
+
     updateQuoteStatus(quoteId: string, status : string)
     {
         return this.votingApiService.updateQuoteStatus(quoteId, status);
     }
+
     getSessionFromTaskId(taskId: string)
     {
         return this.votingApiService.getSessionFromTaskId(taskId);
     }
+
     private addToPending(task: MaintenanceTask)
     {
         this.pendingTasks.set([...this.pendingTasks(), task])
     }
+
     private addToVoting(task: Voting)
     {
         this.votingTasks.set([...this.votingTasks(), task]);
     }
+
     private addToFinalApproval(task: Voting)
     {
         this.finalApproval.set([...this.finalApproval(), task]);
     }
+
     private addToApprovalTasks(task: Voting)
     {
         this.approvedTasks.set([...this.approvedTasks(), task]);
