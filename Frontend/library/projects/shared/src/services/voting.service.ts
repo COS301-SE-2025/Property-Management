@@ -40,9 +40,13 @@ export class VotingService{
         await this.bodyCorporateService.loadPendingTasks(bcId);
         const tasks = this.bodyCorporateService.pendingTasks();
 
+        console.log(tasks);
+
         tasks.forEach(task => {
+            task.scheduled_date = new Date(task.scheduled_date);
             if(task.approvalStatus === 'PENDING' && task.scheduled_date >= date)
             {
+                console.log(task);
                 //add to pending tasks tasks 
                 if(!task.img || task.img === '00000000-0000-0000-0000-000000000000')
                 {

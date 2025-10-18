@@ -22,7 +22,7 @@
                 </div>
                 @if(!house()?.coporateUuid)
                 {
-                    <button class="absolute top-5 -right-5 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="updateHouse.openDialog()">
+                    <button class="absolute top-7 right-80 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="updateHouse.openDialog()">
                         <img *ngIf="!house()?.coporateUuid" src="assets/icons/screwdriver.svg" class="w-5 h-5">
                     </button>
                     <app-update-house-dialog #updateHouse [houseId]="house()?.buildingUuid!"/>

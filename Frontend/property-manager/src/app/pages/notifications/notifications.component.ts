@@ -186,6 +186,10 @@ export class NotificationsComponent implements OnInit {
     if (!notifications || notifications.length === 0) {
       return [];
     }
+    else if(notifications.length === 1)
+    {
+      return notifications;
+    }
 
     const valid = notifications.filter(n => n && Array.isArray(n.createdAt));
     valid.forEach(n => {
