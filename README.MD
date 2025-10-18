@@ -106,8 +106,8 @@ Our GitHub Project boards facilitate effective task management, progress trackin
     <td width="35%">
       Hi, I'm Sean! I'm a third-year Computer Science student with a passion for coding, problem-solving, and exploring the ever-evolving world of technology. I enjoy learning about new programming paradigms and software development trends. Whether it's building building projects, optimizing server performance, or diving into the intricacies of programming languages themselves, I thrive on the challenges that come with software development.
     </td>
-    <td>
-      🔗 [CV](docs/Project%20day/CV.pdf) <br>
+    <<td>
+  🔗 <a href="docs/Project%20day/CV.pdf">CV</a><br>
     </td>
   </tr>
   <tr>
