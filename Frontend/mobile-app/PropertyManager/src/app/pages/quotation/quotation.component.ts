@@ -150,7 +150,7 @@ export class QuotationComponent implements OnInit {
   async uploadFile() {
     if (this.file) {
       try {
-        await this.api.uploadPDF(this.file, this.contractorId, "Quote");
+        await this.api.uploadPDF(this.file, this.contractorId, "Quote", this.t_uuid);
       } catch (err) {
         console.error('File upload failed:', err);
         this.showToast('File upload failed.', 'danger');

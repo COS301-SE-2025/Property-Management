@@ -21,7 +21,7 @@
               formControlName="name"
               class="dark:text-gray-200"
             ></ion-input>
-            <p class="text-red-500" *ngIf="form.get('name')?.hasError('required') && form.get('inventoryName')?.touched">Field is required</p>
+            <p class="text-red-500" *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">Field is required</p>
           </ion-item>
           <ion-item>
             <ion-input
@@ -30,7 +30,7 @@
               labelPlacement="stacked"
               formControlName="description"
             ></ion-input>
-            <p class="text-red-500" *ngIf="form.get('description')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
+            <p class="text-red-500" *ngIf="form.get('description')?.hasError('required') && form.get('description')?.touched">Field is required</p>
           </ion-item>
           <ion-item>
             <ion-select class="dark:text-white" placeholder="Assign inventory items" [multiple]="true" (ionChange)="updateInventoryItemsUsed($event)">
@@ -57,7 +57,7 @@
               formControlName="date"
               type="date"
             ></ion-input>
-            <p class="text-red-500" *ngIf="form.get('date')?.hasError('required') && form.get('itemPrice')?.touched">Field is required</p>
+            <p class="text-red-500" *ngIf="form.get('date')?.hasError('required') && form.get('date')?.touched">Field is required</p>
           </ion-item>
           <div class="px-5">
             <label for="priority" class="font-semibold block pb-3 dark:text-gray-300">Assign a priority</label>
@@ -74,20 +74,36 @@
             </ng-template>
             </p-select>
           </div>
-          <div class="pt-6 flex flex-col justify-center items-center">
-            <p class="dark:text-gray-200">Take image of the task</p>
+          
+          <!-- Multiple Photos Section -->
+          <div class="pt-6 flex flex-col justify-center items-center w-full px-4">
+            <p class="dark:text-gray-200 mb-2">Take images of the task</p>
             <ion-button (click)="capturePhoto()" fill="clear">
               <ion-icon name="camera-outline"></ion-icon>
+              <span class="ml-2">Add Photo ({{ capturedPhotos.length }})</span>
             </ion-button>
 
-            <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
-              <p class="mb-2 dark:text-gray-200">Preview</p>
-              <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
-              <ion-button (click)="deletePhoto()" fill="clear" color="dark">
-                <ion-icon name="trash-outline"></ion-icon>
-              </ion-button>
+            <!-- Photos Grid -->
+            <div *ngIf="capturedPhotos.length > 0" class="mt-4 w-full">
+              <p class="mb-3 dark:text-gray-200 text-center">Photos ({{ capturedPhotos.length }})</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div *ngFor="let photo of capturedPhotos; let i = index" class="relative">
+                  <img [src]="photo" alt="Photo {{ i + 1 }}" class="w-full h-32 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-600">
+                  <button 
+                    type="button"
+                    (click)="deletePhoto(i)" 
+                    class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-lg"
+                  >
+                    <ion-icon name="trash-outline" class="text-sm"></ion-icon>
+                  </button>
+                  <span class="absolute bottom-1 left-1 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+                    {{ i + 1 }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
+
           <div class="pt-5">
             <button type="submit" [disabled]="loading" class="bg-yellow-400 text-black px-3 py-1.5 rounded">
               <ng-container *ngIf="!loading; else loadingTemplate">

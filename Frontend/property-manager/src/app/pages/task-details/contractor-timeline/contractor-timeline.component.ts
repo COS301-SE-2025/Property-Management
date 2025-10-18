@@ -156,10 +156,20 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         }
 
         progressItems.sort((a, b) => {
-          const dateA = this.toDate(a.submissionDate).getTime();
-          const dateB = this.toDate(b.submissionDate).getTime();
-          return dateA - dateB;
-        });
+        const dateA = this.toDate(a.submissionDate);
+        const dateB = this.toDate(b.submissionDate);
+        
+        // Additional safety check
+        const timeA = dateA.getTime();
+        const timeB = dateB.getTime();
+        
+        if (isNaN(timeA) || isNaN(timeB)) {
+          console.error('Invalid date comparison:', { a: a.submissionDate, b: b.submissionDate });
+          return 0;
+        }
+        
+        return timeA - timeB;
+      });
 
         this.currentImageIndex.set(new Array(progressItems.length).fill(0));
 
@@ -292,9 +302,60 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
     this.router.navigate(['/ratings', taskId]);
   }
 
-  private toDate(arr: number[]): Date {
-    return new Date(arr[0], arr[1] - 1, arr[2], arr[3], arr[4]);
+    private toDate(dateInput: number[] | string | Date | undefined): Date {
+    // Handle undefined/null
+    if (!dateInput) {
+      console.warn('toDate received undefined/null date, using current date');
+      return new Date();
+    }
+
+    // If it's already a Date object
+    if (dateInput instanceof Date) {
+      return dateInput;
+    }
+
+    // If it's a string (PostgreSQL timestamp format like "2025-08-12 08:21:28.208033+00")
+    if (typeof dateInput === 'string') {
+      // PostgreSQL format can be parsed directly by JavaScript Date constructor
+      const parsed = new Date(dateInput);
+      if (!isNaN(parsed.getTime())) {
+        return parsed;
+      }
+      console.error('Invalid date string:', dateInput);
+      return new Date();
+    }
+
+    // If it's an array format [year, month, day, hour, minute, second?, millisecond?]
+    // (Keep this for backward compatibility if needed)
+    if (Array.isArray(dateInput)) {
+      if (dateInput.length < 3 || !dateInput.every(val => typeof val === 'number' && !isNaN(val))) {
+        console.error('Invalid date array format:', dateInput);
+        return new Date();
+      }
+
+      const date = new Date(
+        dateInput[0],           // year
+        dateInput[1] - 1,       // month (convert from 1-indexed to 0-indexed)
+        dateInput[2],           // day
+        dateInput[3] || 0,      // hour (default 0)
+        dateInput[4] || 0,      // minute (default 0)
+        dateInput[5] || 0,      // second (default 0)
+        dateInput[6] || 0       // millisecond (default 0)
+      );
+
+      if (isNaN(date.getTime())) {
+        console.error('Created invalid date from array:', dateInput);
+        return new Date();
+      }
+
+      return date;
+    }
+
+    // Fallback for unknown format
+    console.error('Unknown date format:', dateInput, 'Type:', typeof dateInput);
+    return new Date();
   }
+
 
   // Carousel navigation methods
   prevImage(timelineIndex: number) {
