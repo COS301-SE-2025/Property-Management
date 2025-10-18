@@ -8,7 +8,6 @@ import java.util.Optional
 import java.util.UUID
 
 interface PDFRepository : JpaRepository<PDFMeta, UUID> {
-
     @Query("SELECT p FROM PDFMeta p WHERE p.cUuid = :cUuid")
     fun findAllByCUuid(
         @Param("cUuid") cUuid: UUID,
@@ -20,8 +19,13 @@ interface PDFRepository : JpaRepository<PDFMeta, UUID> {
         @Param("taskUuid") taskUuid: UUID,
     ): Optional<PDFMeta>
 
-    fun findByCUuidAndType(cUuid: UUID, type: String): Optional<PDFMeta>
+    fun findByCUuidAndType(
+        cUuid: UUID,
+        type: String,
+    ): Optional<PDFMeta>
 
-    fun deleteByCUuidAndType(cUuid: UUID, type: String)
+    fun deleteByCUuidAndType(
+        cUuid: UUID,
+        type: String,
+    )
 }
-

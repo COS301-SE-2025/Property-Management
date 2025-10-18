@@ -4,8 +4,8 @@ import com.example.propertymanagement.model.PDFMeta
 import com.example.propertymanagement.repository.PDFRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -86,7 +86,7 @@ class PDFController(
         return ResponseEntity.ok("Upload metadata saved.")
     }
 
-        @PostMapping("/notify-upload-task/{id}/{filename}/{key}/{cUuid}/{taskUuid}")
+    @PostMapping("/notify-upload-task/{id}/{filename}/{key}/{cUuid}/{taskUuid}")
     fun notifyUploadComplete(
         @PathVariable id: String,
         @PathVariable filename: String,
@@ -108,7 +108,6 @@ class PDFController(
         PDFRepository.save(pdfMeta)
         return ResponseEntity.ok("Upload metadata saved.")
     }
-
 
     @GetMapping("/presigned/{cUuid}/{type}")
     fun getPresignedUrl(
@@ -191,7 +190,7 @@ class PDFController(
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }
-    
+
     @DeleteMapping("/presigned/{cUuid}/{type}")
     fun delete(
         @PathVariable cUuid: UUID,
