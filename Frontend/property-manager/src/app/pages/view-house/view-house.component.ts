@@ -40,13 +40,14 @@ export class ViewHouseComponent implements OnInit {
   constructor(private route: ActivatedRoute, public houseService: HousesService) {
     effect(() => {
       const h = this.house();
-      if (h) {
+      if (h && h.buildingUuid) {
         const noImage = 'assets/images/no_image.png';
-        const imgList: string[] = Array(5).fill(noImage);
-        if (h.propertyImage) {
-          imgList[0] = h.propertyImage;
-        }
-        this.images.set(imgList);
+        this.loadImages(h.buildingUuid).then(images => {
+          this.images.set(images.length > 0 ? images : [h.propertyImage || noImage]);
+        }).catch(err => {
+          console.error('Error loading images', err);
+          this.images.set([h.propertyImage || noImage]);
+        });
       }
     });
   }
@@ -88,5 +89,15 @@ export class ViewHouseComponent implements OnInit {
       this.houseService.loadBudget(this.houseId!),
       this.houseService.loadTasks(this.houseId!)
     ]);
+  }
+
+  private async loadImages(buildingUuid: string): Promise<string[]> {
+    try {
+      const imageUrls = await this.houseService.getImagesForBuilding(buildingUuid);
+      return imageUrls;
+    } catch (err) {
+      console.error('Failed to load images for building', err);
+      return [];
+    }
   }
 }

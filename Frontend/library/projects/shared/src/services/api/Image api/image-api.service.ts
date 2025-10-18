@@ -199,7 +199,7 @@ export class ImageApiService{
   }
 
   getImages(user_uuid: string, task_uuid: string, progress_uuid: string, building_uuid: string): Observable<string>{
-    let imageTypeUrl = `${this.url}/images/presigned/`;
+    let imageTypeUrl = `${this.url}/images/presigned`;
       if (task_uuid) {
         imageTypeUrl += `?taskUuid=${task_uuid}`;
       }

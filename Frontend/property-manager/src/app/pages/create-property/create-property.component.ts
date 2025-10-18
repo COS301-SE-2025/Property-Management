@@ -5,14 +5,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
 import { Router } from '@angular/router';
-import { PropertyService, CreateBuildingPayload, getCookieValue } from 'shared';
+import { PropertyService, CreateBuildingPayload, getCookieValue, ImageApiService } from 'shared';
 import { ContractorService } from 'shared';
 import { Contractor } from 'shared';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AddressMapComponent } from "../../components/address-map/address-map.component";
-
 
 @Component({
   selector: 'app-create-property',
@@ -24,7 +23,8 @@ import { AddressMapComponent } from "../../components/address-map/address-map.co
     InputTextModule,
     FloatLabelModule,
     DropdownModule,
-    ToastModule, AddressMapComponent
+    ToastModule, 
+    AddressMapComponent
   ],
   templateUrl: './create-property.component.html',
   styles: [],
@@ -33,8 +33,8 @@ import { AddressMapComponent } from "../../components/address-map/address-map.co
 export class CreatePropertyComponent implements OnInit {
   form!: FormGroup;
 
-  selectedImageFiles: File[] = []; // Changed to array
-  imagePreviews: string[] = []; // Changed to array
+  selectedImageFiles: File[] = [];
+  imagePreviews: string[] = [];
 
   trusteeUuid: string | null = null;
   coporateUuid: string | null = null;
@@ -46,7 +46,6 @@ export class CreatePropertyComponent implements OnInit {
   isSubmitting = false;
   submissionError: string | null = null;
   showAddressModal = false;
-
 
   provinces = [
     'Eastern Cape', 'Free State', 'Gauteng', 'KwaZulu-Natal', 'Limpopo',
@@ -62,7 +61,8 @@ export class CreatePropertyComponent implements OnInit {
     private propertyService: PropertyService,
     private contractorService: ContractorService,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private imageService: ImageApiService
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -75,7 +75,7 @@ export class CreatePropertyComponent implements OnInit {
       type: ['', Validators.required],
       coporateUuid: [''],
       bodyCorporate: [''],
-      images: [null], // Changed to images
+      images: [null],
     });
   }
 
@@ -145,7 +145,8 @@ export class CreatePropertyComponent implements OnInit {
     this.selectedImageFiles.splice(index, 1);
     this.imagePreviews.splice(index, 1);
     this.form.patchValue({images: this.selectedImageFiles});
-}
+  }
+
   onAddressSelected(addressParts: { address: string, suburb: string, city: string, province: string }) {
     this.form.patchValue({
       address: addressParts.address,
@@ -180,26 +181,28 @@ export class CreatePropertyComponent implements OnInit {
     this.isSubmitting = true;
     this.submissionError = null;
 
-    let propertyImageIds: string[] = [];
-    
-    // Get building UUID from form
-    const buildingUuid = formValue.coporateUuid || undefined;
+    // STEP 1: Upload images WITHOUT building UUID (initially)
+    let uploadedImageIds: string[] = [];
+    let primaryImageId: string | null = null;
 
     if (this.selectedImageFiles.length > 0) {
       try {
-        console.log(`Uploading ${this.selectedImageFiles.length} images with buildingUuid: ${buildingUuid}`);
+        console.log(`Uploading ${this.selectedImageFiles.length} images without building UUID...`);
         
-        // Upload all images with ONLY building UUID (others are undefined/null)
-        const imageIds = await this.propertyService.uploadMultipleImages(
+        // Upload all images without building UUID initially
+        uploadedImageIds = await this.imageService.uploadImages(
           this.selectedImageFiles,
           undefined,    // user_uuid
           undefined,    // task_uuid
           undefined,    // progress_uuid
-          buildingUuid  // building_uuid ONLY
-        ).toPromise();
+          undefined     // building_uuid - NOT YET AVAILABLE
+        );
         
-        propertyImageIds = imageIds as string[];
-        console.log('All images uploaded successfully:', propertyImageIds);
+        if (uploadedImageIds && uploadedImageIds.length > 0) {
+          primaryImageId = uploadedImageIds[0];
+          console.log('All images uploaded successfully:', uploadedImageIds);
+          console.log('Primary image ID:', primaryImageId);
+        }
       } catch (err: unknown) {
         console.error('Image upload failed:', err);
         this.submissionError = 'Failed to upload images.';
@@ -218,7 +221,7 @@ export class CreatePropertyComponent implements OnInit {
       .filter(part => part && part.trim())
       .join(', ');
 
-    // Build payload - use first image as primary or null if no images
+    // STEP 2: Build payload with primary image ID
     const payload: CreateBuildingPayload = {
       name: formValue.name as string,
       address: fullAddress,
@@ -227,22 +230,63 @@ export class CreatePropertyComponent implements OnInit {
       latestInspectionDate: new Date().toISOString().split('T')[0],
       trusteeUuid: this.trusteeUuid as string,
       coporateUuid: formValue.coporateUuid,
-      propertyImageId: propertyImageIds.length > 0 ? propertyImageIds[0] : null,
+      propertyImageId: primaryImageId,
       area: Number(formValue.area)
     };
 
-    console.log('Payload:', payload);
-    console.log('Total images uploaded:', propertyImageIds.length);
+    console.log('Creating property with payload:', payload);
 
-    // Send request
+    // STEP 3: Create property
     this.propertyService.createProperty(payload).subscribe({
-      next: () => {
+      next: async (propertyResponse: any) => {
+        console.log('Property created:', propertyResponse);
+        
+        // Extract building UUID from response
+        const buildingUuid = propertyResponse.buildingUuid || 
+                            propertyResponse.uuid || 
+                            propertyResponse.id ||
+                            propertyResponse.corporateUuid;
+        
+        console.log('Building UUID:', buildingUuid);
+
+        // STEP 4: Update ALL image associations with building UUID
+        if (uploadedImageIds.length > 0 && buildingUuid) {
+          try {
+            console.log(`Updating ${uploadedImageIds.length} image associations with building UUID...`);
+            
+            const updatePromises = uploadedImageIds.map(async (imageId, index) => {
+              console.log(`[${index + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
+              
+              try {
+                await this.imageService.updateImageAssociations(
+                  imageId,
+                  undefined,      // user_uuid
+                  undefined,      // task_uuid
+                  undefined,      // progress_uuid
+                  buildingUuid    // building_uuid - NOW AVAILABLE!
+                );
+                console.log(`✓ [${index + 1}/${uploadedImageIds.length}] Image ${imageId} updated`);
+              } catch (err) {
+                console.error(`✗ [${index + 1}/${uploadedImageIds.length}] Failed to update image ${imageId}:`, err);
+                throw err;
+              }
+            });
+            
+            await Promise.all(updatePromises);
+            console.log(`✓ All ${uploadedImageIds.length} images successfully updated with building UUID`);
+            
+          } catch (err) {
+            console.error('Failed to update some image associations:', err);
+            // Non-critical error - property is already created
+          }
+        }
+
         this.isSubmitting = false;
 
         this.messageService.add({
           severity: 'success',
           summary: 'Property Created',
-          detail: `Property created successfully with ${propertyImageIds.length} image(s).`
+          detail: `Property created successfully with ${uploadedImageIds.length} image(s).`
         });
 
         setTimeout(() => {
