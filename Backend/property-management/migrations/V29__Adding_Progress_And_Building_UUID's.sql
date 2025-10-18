@@ -18,5 +18,3 @@ ALTER TABLE IF EXISTS public.image_meta
     NOT VALID;
 
 ALTER TABLE IF EXISTS public.image_meta DROP CONSTRAINT IF EXISTS "Building_uuid";
-
-
