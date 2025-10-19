@@ -85,13 +85,13 @@ export class StepOneComponent implements OnChanges {
   }
 
   emitRelevantData() {
-    console.log('Attempting to emit data...');
-    console.log('Form valid:', this.form.valid);
-    console.log('Form value:', this.form.value);
-    console.log('Form errors:', this.getFormErrors());
+    //console.log('Attempting to emit data...');
+    //console.log('Form valid:', this.form.valid);
+    //console.log('Form value:', this.form.value);
+    //console.log('Form errors:', this.getFormErrors());
 
     if (!this.form.valid) {
-      console.log('Form is invalid, marking all fields as touched');
+      //console.log('Form is invalid, marking all fields as touched');
       this.form.markAllAsTouched();
       return;
     }
@@ -108,7 +108,7 @@ export class StepOneComponent implements OnChanges {
       status: true
     };
 
-    console.log('Emitting data:', emitData);
+    //console.log('Emitting data:', emitData);
     this.next.emit(emitData);
   }
 

@@ -165,7 +165,7 @@ export class RegisterBodyCorporateComponent {
         normalizedContactNumber
       );
 
-      console.log('Registration successful:', result);
+      //console.log('Registration successful:', result);
       sessionStorage.setItem('pendingUsername', result.username);
       sessionStorage.setItem('userType', 'bodyCorporate');
 

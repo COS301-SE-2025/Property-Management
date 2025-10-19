@@ -187,7 +187,7 @@ export class CreatePropertyComponent implements OnInit {
 
     if (this.selectedImageFiles.length > 0) {
       try {
-        console.log(`Uploading ${this.selectedImageFiles.length} images without building UUID...`);
+        ////console.log(`Uploading ${this.selectedImageFiles.length} images without building UUID...`);
         
         // Upload all images without building UUID initially
         uploadedImageIds = await this.imageService.uploadImages(
@@ -200,8 +200,8 @@ export class CreatePropertyComponent implements OnInit {
         
         if (uploadedImageIds && uploadedImageIds.length > 0) {
           primaryImageId = uploadedImageIds[0];
-          console.log('All images uploaded successfully:', uploadedImageIds);
-          console.log('Primary image ID:', primaryImageId);
+          ////console.log('All images uploaded successfully:', uploadedImageIds);
+          ////console.log('Primary image ID:', primaryImageId);
         }
       } catch (err: unknown) {
         console.error('Image upload failed:', err);
@@ -234,12 +234,12 @@ export class CreatePropertyComponent implements OnInit {
       area: Number(formValue.area)
     };
 
-    console.log('Creating property with payload:', payload);
+    ////console.log('Creating property with payload:', payload);
 
     // STEP 3: Create property
     this.propertyService.createProperty(payload).subscribe({
       next: async (propertyResponse: any) => {
-        console.log('Property created:', propertyResponse);
+        ////console.log('Property created:', propertyResponse);
         
         // Extract building UUID from response
         const buildingUuid = propertyResponse.buildingUuid || 
@@ -247,15 +247,15 @@ export class CreatePropertyComponent implements OnInit {
                             propertyResponse.id ||
                             propertyResponse.corporateUuid;
         
-        console.log('Building UUID:', buildingUuid);
+        ////console.log('Building UUID:', buildingUuid);
 
         // STEP 4: Update ALL image associations with building UUID
         if (uploadedImageIds.length > 0 && buildingUuid) {
           try {
-            console.log(`Updating ${uploadedImageIds.length} image associations with building UUID...`);
+            ////console.log(`Updating ${uploadedImageIds.length} image associations with building UUID...`);
             
             const updatePromises = uploadedImageIds.map(async (imageId, index) => {
-              console.log(`[${index + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
+              ////console.log(`[${index + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
               
               try {
                 await this.imageService.updateImageAssociations(
@@ -265,7 +265,7 @@ export class CreatePropertyComponent implements OnInit {
                   undefined,      // progress_uuid
                   buildingUuid    // building_uuid - NOW AVAILABLE!
                 );
-                console.log(`✓ [${index + 1}/${uploadedImageIds.length}] Image ${imageId} updated`);
+                ////console.log(`✓ [${index + 1}/${uploadedImageIds.length}] Image ${imageId} updated`);
               } catch (err) {
                 console.error(`✗ [${index + 1}/${uploadedImageIds.length}] Failed to update image ${imageId}:`, err);
                 throw err;
@@ -273,7 +273,7 @@ export class CreatePropertyComponent implements OnInit {
             });
             
             await Promise.all(updatePromises);
-            console.log(`✓ All ${uploadedImageIds.length} images successfully updated with building UUID`);
+            ////console.log(`✓ All ${uploadedImageIds.length} images successfully updated with building UUID`);
             
           } catch (err) {
             console.error('Failed to update some image associations:', err);

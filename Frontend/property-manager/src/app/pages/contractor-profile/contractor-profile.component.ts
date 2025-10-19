@@ -59,7 +59,7 @@ export class ContractorProfileComponent implements OnInit {
     if (contractorId) {
       this.contractorService.getContractorById(contractorId).subscribe({
         next: (contractor) => {
-          console.log(contractor);
+          //console.log(contractor);
           this.contractor = contractor;
           
           // Load image if available
@@ -88,7 +88,7 @@ export class ContractorProfileComponent implements OnInit {
       },
       error: (err) => {
         // If no image found, it's okay - user might not have uploaded one yet
-        console.log('No image found for contractor, this is expected for new profiles');
+        //console.log('No image found for contractor, this is expected for new profiles');
         this.imageError = false;
         this.imagePreviewUrl = null;
       }
@@ -207,7 +207,7 @@ export class ContractorProfileComponent implements OnInit {
       // Upload to server
       this.imageService.uploadImages([file], this.contractor.uuid, "", "", "")
         .then((response: any) => {
-          console.log("File successfully uploaded:", response);
+          //console.log("File successfully uploaded:", response);
           
           // Extract image ID from response
           const uploadedImageId = Array.isArray(response) ? response[0] : response.imageId;

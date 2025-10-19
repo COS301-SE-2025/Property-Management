@@ -101,7 +101,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
         let primaryImageId: string = "00000000-0000-0000-0000-000000000000";
 
         if(this.selectedFiles.length > 0) {
-          console.log('Uploading', this.selectedFiles.length, 'images without progress UUID...');
+          //console.log('Uploading', this.selectedFiles.length, 'images without progress UUID...');
           try {
             // Upload with taskUuid only, no progressUuid yet
             uploadedImageIds = await this.imageService.uploadImages(
@@ -112,14 +112,14 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
               undefined         // building_uuid
             );
 
-            console.log('Upload complete. Image IDs received:', uploadedImageIds);
+            //console.log('Upload complete. Image IDs received:', uploadedImageIds);
 
             if(uploadedImageIds && uploadedImageIds.length > 0) {
               primaryImageId = uploadedImageIds[0]; 
-              console.log('Using primary image ID:', primaryImageId);
-              console.log('Total images uploaded:', uploadedImageIds.length);
+              //console.log('Using primary image ID:', primaryImageId);
+              //console.log('Total images uploaded:', uploadedImageIds.length);
             } else {
-              console.log('No image IDs returned from upload.');
+              //console.log('No image IDs returned from upload.');
               this.messageService.add({
                 severity: 'warn',
                 summary: 'Warning',
@@ -136,16 +136,16 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
             return;
           }
         } else {
-          console.log('No images selected for upload.');
+          //console.log('No images selected for upload.');
         }
 
-        console.log('Creating progress with primary image ID:', primaryImageId);
+        //console.log('Creating progress with primary image ID:', primaryImageId);
 
         // STEP 2: Create progress with primary image ID
         this.taskProgressService.createProgress(id, this.taskId(), primaryImageId, des, progress).subscribe({
           next: async (progressResponse: any) => {
-            console.log('Progress created:', progressResponse);
-            console.log('Progress response keys:', Object.keys(progressResponse));
+            //console.log('Progress created:', progressResponse);
+            //console.log('Progress response keys:', Object.keys(progressResponse));
             
             // Extract progress UUID - check common field names
             const progressUuid = progressResponse.progressUuid || 
@@ -153,16 +153,16 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
                                 progressResponse.id ||
                                 progressResponse.progress_uuid;
             
-            console.log('Extracted progressUuid:', progressUuid);
+            //console.log('Extracted progressUuid:', progressUuid);
             
             // STEP 3: Update ALL image associations with progress UUID
             if (uploadedImageIds.length > 0 && progressUuid) {
               try {
-                console.log(`Updating ${uploadedImageIds.length} image associations with progress UUID:`, progressUuid);
+                //console.log(`Updating ${uploadedImageIds.length} image associations with progress UUID:`, progressUuid);
                 
                 // Update all images in parallel
                 const updatePromises = uploadedImageIds.map(async (imageId, index) => {
-                  console.log(`[${index + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
+                  //console.log(`[${index + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
                   
                   try {
                     await this.imageService.updateImageAssociations(
@@ -172,7 +172,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
                       progressUuid,     // progress_uuid - NOW AVAILABLE!
                       undefined         // building_uuid
                     );
-                    console.log(`✓ [${index + 1}/${uploadedImageIds.length}] Image ${imageId} updated`);
+                    //console.log(`✓ [${index + 1}/${uploadedImageIds.length}] Image ${imageId} updated`);
                   } catch (err) {
                     console.error(`✗ [${index + 1}/${uploadedImageIds.length}] Failed to update image ${imageId}:`, err);
                     throw err;
@@ -181,7 +181,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
                 
                 // Wait for all updates to complete
                 await Promise.all(updatePromises);
-                console.log(`✓ All ${uploadedImageIds.length} images successfully updated with progress UUID`);
+                //console.log(`✓ All ${uploadedImageIds.length} images successfully updated with progress UUID`);
                 
               } catch (err) {
                 console.error('Failed to update some image associations:', err);
@@ -260,18 +260,18 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
     }
 
     onFileSelect(event: FileSelectEvent){
-      console.log('FileSelectEvent received:', event);
-      console.log('event.files:', event.files);
-      console.log('event.currentFiles:', event.currentFiles);
+      //console.log('FileSelectEvent received:', event);
+      //console.log('event.files:', event.files);
+      //console.log('event.currentFiles:', event.currentFiles);
 
       if(event.currentFiles && event.currentFiles.length > 0){
         this.selectedFiles = Array.from(event.currentFiles);
-        console.log('Files selected (currentFiles):', this.selectedFiles.length, this.selectedFiles);
+        //console.log('Files selected (currentFiles):', this.selectedFiles.length, this.selectedFiles);
       } else if (event.files && event.files.length > 0) {
         this.selectedFiles = Array.from(event.files);
-        console.log('Files selected (files):', this.selectedFiles.length, this.selectedFiles);
+        //console.log('Files selected (files):', this.selectedFiles.length, this.selectedFiles);
       } else {
-        console.log('No files in selection event');
+        //console.log('No files in selection event');
         this.selectedFiles = [];
       }
     }

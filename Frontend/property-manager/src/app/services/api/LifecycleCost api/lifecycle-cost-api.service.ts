@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { LifeCycleCostResponse, CreateLifeCycleCostRequest } from '../../../models/lifeCycleCost.model';
+import { LifeCycleCostResponse, CreateLifeCycleCostRequest } from '../../../../../../library/projects/shared/src/models/lifeCycleCost.model';
 
 @Injectable({
   providedIn: 'root'

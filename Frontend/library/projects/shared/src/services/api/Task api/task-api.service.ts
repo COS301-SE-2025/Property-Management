@@ -34,7 +34,7 @@ export class TaskApiService {
       priority: proirity,
       maxBudget: maxBudget
     };
-    console.log(req);
+    //console.log(req);
 
     return this.http.post<MaintenanceTask>(`${this.url}/maintenance/create`, req, { headers , withCredentials: true }).pipe(map( res => ({
       ...res,

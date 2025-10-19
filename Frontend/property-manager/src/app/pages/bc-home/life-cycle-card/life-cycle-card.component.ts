@@ -65,7 +65,7 @@ export class LifeCycleCardComponent implements OnInit {
     if (confirm('Are you sure you want to delete this cost?')) {
       this.lifecycleCostService.delete(costUuid).subscribe({
         next: () => {
-          console.log('Cost deleted successfully');
+          //console.log('Cost deleted successfully');
           this.loadCosts(); 
         },
         error: (error: any) => {

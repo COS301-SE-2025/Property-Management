@@ -224,7 +224,7 @@ async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promi
           { withCredentials: true })
         ).catch(() => {
           // Ignore error if no existing PDF found
-          console.log('No existing PDF to delete or delete failed');
+          console.error('No existing PDF to delete or delete failed');
         });
 
         const presignResponse: any = await firstValueFrom(
@@ -264,7 +264,7 @@ async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promi
           { withCredentials: true })
         ).catch(() => {
           // Ignore error if no existing PDF found
-          console.log('No existing PDF to delete or delete failed');
+          //console.log('No existing PDF to delete or delete failed');
         });
 
         const presignResponse: any = await firstValueFrom(

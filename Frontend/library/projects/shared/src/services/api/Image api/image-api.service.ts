@@ -26,11 +26,11 @@ export class ImageApiService{
 
 getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid?: string, building_uuid?: string): Observable<string>
   {
-    console.log('\n=== GET IMAGE ===');
+    //console.log('\n=== GET IMAGE ===');
     
     // If UUIDs are provided, fetch the image ID first
     if (task_uuid || user_uuid || progress_uuid || building_uuid) {
-      console.log('Fetching image ID by UUIDs:', { task_uuid, user_uuid, progress_uuid, building_uuid });
+      //console.log('Fetching image ID by UUIDs:', { task_uuid, user_uuid, progress_uuid, building_uuid });
       
       const params = new URLSearchParams();
       if (user_uuid) params.append('userUuid', user_uuid);
@@ -48,7 +48,7 @@ getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid
           }
           // Get the first image's ID and fetch its presigned URL
           const fetchedImageId = images[0].id;
-          console.log('✓ Fetched image ID:', fetchedImageId);
+          //console.log('✓ Fetched image ID:', fetchedImageId);
           
           // Use the common logic with the fetched imageId
           return this.fetchPresignedUrl(fetchedImageId);
@@ -61,8 +61,8 @@ getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid
       throw new Error('Either imageId or UUID parameters must be provided');
     }
     
-    console.log('Requested image ID:', imageId);
-    console.log('Image ID type:', typeof imageId);
+    //console.log('Requested image ID:', imageId);
+    //console.log('Image ID type:', typeof imageId);
 
     return this.fetchPresignedUrl(imageId);
   }
@@ -71,12 +71,12 @@ getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid
   private fetchPresignedUrl(imageId: string): Observable<string> {
     // Check cache first
     if (this.imageCache.has(imageId)) {
-      console.log('✓ Found in cache:', this.imageCache.get(imageId));
+      //console.log('✓ Found in cache:', this.imageCache.get(imageId));
       return of(this.imageCache.get(imageId)!);
     }
 
     const url = `${this.url}/images/presigned/${imageId}`;
-    console.log('Fetching from URL:', url);
+    //console.log('Fetching from URL:', url);
     
     return this.http.get(url, {
       responseType: 'text',
@@ -95,18 +95,18 @@ getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid
     progress_uuid?: string,
     building_uuid?: string,
   ): Promise<string[]> {
-    console.log(`Starting upload of ${files.length} files`);
+    //console.log(`Starting upload of ${files.length} files`);
     const uploadResults: string[] = [];
     
     const uploadPromises = files.map(async (file, index) => {
       try {
-        console.log(`[${index + 1}/${files.length}] Processing ${file.name}`);
+        //console.log(`[${index + 1}/${files.length}] Processing ${file.name}`);
         
         const presignResponse: any = await firstValueFrom(
           this.http.get(`${this.url}/images/presigned-upload/${encodeURIComponent(file.name)}`, { withCredentials: true })
         );
 
-        console.log(`[${index + 1}] Presigned URL received:`, presignResponse);
+        //console.log(`[${index + 1}] Presigned URL received:`, presignResponse);
 
         const uploadUrl = presignResponse.uploadUrl;
         const key = presignResponse.fileKey;
@@ -120,7 +120,7 @@ getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid
           })
         );
 
-        console.log(`[${index + 1}] File uploaded to S3 successfully`);
+        //console.log(`[${index + 1}] File uploaded to S3 successfully`);
         
         // Build query parameters properly using URLSearchParams
         const params = new URLSearchParams();
@@ -132,13 +132,13 @@ getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid
         const queryString = params.toString();
         const notifyUrl = `${this.url}/images/notify-upload/${id}/${encodeURIComponent(file.name)}/${key}${queryString ? '?' + queryString : ''}`;
         
-        console.log(`[${index + 1}] Notify URL:`, notifyUrl);
+        //console.log(`[${index + 1}] Notify URL:`, notifyUrl);
         
         await firstValueFrom(
           this.http.post(notifyUrl, {}, { responseType: 'text', withCredentials: true })
         );
 
-        console.log(`[${index + 1}] Backend notified, image ID: ${id}`);
+        //console.log(`[${index + 1}] Backend notified, image ID: ${id}`);
         
         uploadResults.push(id);
       } catch (error) {
@@ -149,7 +149,7 @@ getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid
 
     try {
       await Promise.all(uploadPromises);
-      console.log('All uploads completed successfully:', uploadResults);
+      //console.log('All uploads completed successfully:', uploadResults);
       return uploadResults;
     } catch (error) {
       console.error('Upload process failed:', error);
@@ -168,7 +168,7 @@ getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid
     progress_uuid?: string,
     building_uuid?: string
   ): Promise<void> {
-    console.log(`Updating associations for image ${imageId}`);
+    //console.log(`Updating associations for image ${imageId}`);
     
     const params = new URLSearchParams();
     if (user_uuid) params.append('userUuid', user_uuid);
@@ -183,7 +183,7 @@ getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid
       this.http.patch(updateUrl, {}, { withCredentials: true })
     );
     
-    console.log('Image associations updated successfully');
+    //console.log('Image associations updated successfully');
   }
 
   getImages(user_uuid: string, task_uuid: string, progress_uuid: string, building_uuid: string): Observable<string>{

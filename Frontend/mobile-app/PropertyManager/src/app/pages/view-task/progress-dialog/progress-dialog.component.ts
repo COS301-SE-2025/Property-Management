@@ -103,7 +103,7 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
 
         if (this.selectedFile) {
           try {
-            console.log('Uploading progress image without progress UUID...');
+            //console.log('Uploading progress image without progress UUID...');
 
             const imageIds = await this.imageService.uploadImages(
               [this.selectedFile],  // Wrap single file in array
@@ -115,7 +115,7 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
 
             if (imageIds && imageIds.length > 0) {
               imageId = imageIds[0];
-              console.log('Image uploaded successfully:', imageId);
+              //console.log('Image uploaded successfully:', imageId);
             }
           } catch (uploadError) {
             console.error('Error uploading image:', uploadError);
@@ -125,7 +125,7 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
         }
 
         // STEP 2: Create progress with image ID
-        console.log('Creating progress with image ID:', imageId);
+        //console.log('Creating progress with image ID:', imageId);
 
         // Determine if we have inventory usage
         const progressObservable = itemsUsed
@@ -148,7 +148,7 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
 
         progressObservable.subscribe({
           next: async (progressResponse: any) => {
-            console.log('Progress created:', progressResponse);
+            //console.log('Progress created:', progressResponse);
 
             // Extract progress UUID
             const progressUuid = progressResponse.progressUuid || 
@@ -156,12 +156,12 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
                                 progressResponse.id ||
                                 progressResponse.progress_uuid;
 
-            console.log('Progress UUID:', progressUuid);
+            //console.log('Progress UUID:', progressUuid);
 
             // STEP 3: Update image association with progress UUID (if image was uploaded)
             if (imageId !== "00000000-0000-0000-0000-000000000000" && progressUuid) {
               try {
-                console.log('Updating image association with progress UUID:', progressUuid);
+                //console.log('Updating image association with progress UUID:', progressUuid);
 
                 await this.imageService.updateImageAssociations(
                   imageId,
@@ -171,7 +171,7 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
                   undefined         // building_uuid
                 );
 
-                console.log('✓ Image association updated successfully');
+                //console.log('✓ Image association updated successfully');
               } catch (updateError) {
                 console.error('Failed to update image association:', updateError);
                 // Non-critical error - progress is already created

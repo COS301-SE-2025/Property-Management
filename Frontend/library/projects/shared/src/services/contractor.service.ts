@@ -18,7 +18,7 @@ export class ContractorService {
   }
 
   getAllContractors(): Observable<Contractor[]> {
-    console.log('GET', this.apiUrl);
+    //console.log('GET', this.apiUrl);
     return this.http.get<Contractor[]>(this.apiUrl,
     { withCredentials: true });
   }

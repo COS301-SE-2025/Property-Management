@@ -122,7 +122,7 @@ export class UpdateHouseComponent extends ModalComponent implements OnInit {
       // STEP 1: Upload image WITHOUT building UUID (if new image is selected)
       if (this.selectedFile) {
         try {
-          console.log('Uploading new building image...');
+          //console.log('Uploading new building image...');
           
           const imageIds = await this.imageService.uploadImages(
             [this.selectedFile],  // Wrap single file in array
@@ -134,7 +134,7 @@ export class UpdateHouseComponent extends ModalComponent implements OnInit {
 
           if (imageIds && imageIds.length > 0) {
             imageId = imageIds[0];
-            console.log('Image uploaded successfully:', imageId);
+            //console.log('Image uploaded successfully:', imageId);
           }
         } catch (err) {
           console.error("Image upload failed", err);
@@ -149,16 +149,16 @@ export class UpdateHouseComponent extends ModalComponent implements OnInit {
       }
 
       // STEP 2: Update building with image ID
-      console.log('Updating building:', { houseId: this.houseId(), name, imageId, bcId });
+      //console.log('Updating building:', { houseId: this.houseId(), name, imageId, bcId });
 
       this.buildingService.updateBuilding(this.houseId(), name, imageId, bcId).subscribe({
         next: async (buildingResponse: any) => {
-          console.log('Building updated successfully:', buildingResponse);
+          //console.log('Building updated successfully:', buildingResponse);
 
           // STEP 3: Update image association with building UUID (if new image was uploaded)
           if (this.selectedFile && imageId !== "00000000-0000-0000-0000-000000000000") {
             try {
-              console.log('Updating image association with building UUID:', this.houseId());
+              //console.log('Updating image association with building UUID:', this.houseId());
 
               await this.imageService.updateImageAssociations(
                 imageId,
@@ -168,7 +168,7 @@ export class UpdateHouseComponent extends ModalComponent implements OnInit {
                 this.houseId()    // building_uuid - NOW AVAILABLE!
               );
 
-              console.log('✓ Image association updated successfully');
+              //console.log('✓ Image association updated successfully');
             } catch (updateError) {
               console.error('Failed to update image association:', updateError);
               // Non-critical error - building is already updated

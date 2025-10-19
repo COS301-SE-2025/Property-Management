@@ -334,7 +334,7 @@ private async uploadImage(files: File[]): Promise<void> {
     // uploadImages now returns a Promise from Promise.all, not an Observable
     await this.imageApiService.uploadImages(files, contractorUuid);
     
-    console.log('Images uploaded successfully:', files.map(f => f.name).join(', '));
+    //console.log('Images uploaded successfully:', files.map(f => f.name).join(', '));
   } catch (error) {
     console.error('Failed to upload images:', files.map(f => f.name).join(', '), error);
     throw error;

@@ -60,12 +60,12 @@ export class ContractorProfileComponent implements OnInit {
   async ngOnInit() {
     try {
       this.contractorId = await this.storageService.get('contractorId');
-      console.log('Contractor ID from storage:', this.contractorId);
+      //console.log('Contractor ID from storage:', this.contractorId);
       
       if (this.contractorId) {
         this.contractorService.getContractorById(this.contractorId).subscribe({
           next: (contractor: ContractorDetails) => {
-            console.log('Successfully loaded contractor:', contractor);
+            //console.log('Successfully loaded contractor:', contractor);
             this.form.patchValue(contractor);
             if (contractor.img) {
               this.loadImage(contractor.img);
@@ -116,7 +116,7 @@ export class ContractorProfileComponent implements OnInit {
 
     // Upload using new API
     try {
-      console.log('Uploading profile image for contractor:', this.contractorId);
+      //console.log('Uploading profile image for contractor:', this.contractorId);
       
       const imageIds = await this.imageService.uploadImages(
         [file],                 // Wrap single file in array
@@ -128,7 +128,7 @@ export class ContractorProfileComponent implements OnInit {
       
       if (imageIds && imageIds.length > 0) {
         const imageId = imageIds[0];
-        console.log('Profile image uploaded successfully:', imageId);
+        //console.log('Profile image uploaded successfully:', imageId);
         this.form.patchValue({ img: imageId });
         this.loadImage(imageId);
       }
@@ -205,7 +205,7 @@ export class ContractorProfileComponent implements OnInit {
       // Upload certifications (multiple files at once)
       if (this.certFiles.length > 0) {
         try {
-          console.log(`Uploading ${this.certFiles.length} certification files...`);
+          //console.log(`Uploading ${this.certFiles.length} certification files...`);
           const certIds = await this.imageService.uploadImages(
             this.certFiles,
             contractorId,
@@ -214,7 +214,7 @@ export class ContractorProfileComponent implements OnInit {
             undefined
           );
           payload.certifications = certIds;
-          console.log(`✓ Uploaded ${certIds.length} certifications`);
+          //console.log(`✓ Uploaded ${certIds.length} certifications`);
         } catch (uploadError) {
           console.error('Error uploading certifications:', uploadError);
           this.submissionError = 'Failed to upload certification files.';
@@ -226,7 +226,7 @@ export class ContractorProfileComponent implements OnInit {
       // Upload licenses (multiple files at once)
       if (this.licenseFiles.length > 0) {
         try {
-          console.log(`Uploading ${this.licenseFiles.length} license files...`);
+          //console.log(`Uploading ${this.licenseFiles.length} license files...`);
           const licenseIds = await this.imageService.uploadImages(
             this.licenseFiles,
             contractorId,
@@ -235,7 +235,7 @@ export class ContractorProfileComponent implements OnInit {
             undefined
           );
           payload.licenses = licenseIds;
-          console.log(`✓ Uploaded ${licenseIds.length} licenses`);
+          //console.log(`✓ Uploaded ${licenseIds.length} licenses`);
         } catch (uploadError) {
           console.error('Error uploading licenses:', uploadError);
           this.submissionError = 'Failed to upload license files.';
@@ -247,7 +247,7 @@ export class ContractorProfileComponent implements OnInit {
       // Upload IDs (multiple files at once)
       if (this.idFiles.length > 0) {
         try {
-          console.log(`Uploading ${this.idFiles.length} ID files...`);
+          //console.log(`Uploading ${this.idFiles.length} ID files...`);
           const idIds = await this.imageService.uploadImages(
             this.idFiles,
             contractorId,
@@ -256,7 +256,7 @@ export class ContractorProfileComponent implements OnInit {
             undefined
           );
           payload.ids = idIds;
-          console.log(`✓ Uploaded ${idIds.length} IDs`);
+          //console.log(`✓ Uploaded ${idIds.length} IDs`);
         } catch (uploadError) {
           console.error('Error uploading IDs:', uploadError);
           this.submissionError = 'Failed to upload ID files.';
@@ -268,7 +268,7 @@ export class ContractorProfileComponent implements OnInit {
       // Upload project records (multiple files at once)
       if (this.projectRecordFiles.length > 0) {
         try {
-          console.log(`Uploading ${this.projectRecordFiles.length} project record files...`);
+          //console.log(`Uploading ${this.projectRecordFiles.length} project record files...`);
           const recordIds = await this.imageService.uploadImages(
             this.projectRecordFiles,
             contractorId,
@@ -277,7 +277,7 @@ export class ContractorProfileComponent implements OnInit {
             undefined
           );
           payload.projectRecords = recordIds;
-          console.log(`✓ Uploaded ${recordIds.length} project records`);
+          //console.log(`✓ Uploaded ${recordIds.length} project records`);
         } catch (uploadError) {
           console.error('Error uploading project records:', uploadError);
           this.submissionError = 'Failed to upload project record files.';
@@ -289,7 +289,7 @@ export class ContractorProfileComponent implements OnInit {
       // Upload project images (multiple files at once)
       if (this.projectImageFiles.length > 0) {
         try {
-          console.log(`Uploading ${this.projectImageFiles.length} project image files...`);
+          //console.log(`Uploading ${this.projectImageFiles.length} project image files...`);
           const projectImageIds = await this.imageService.uploadImages(
             this.projectImageFiles,
             contractorId,
@@ -298,7 +298,7 @@ export class ContractorProfileComponent implements OnInit {
             undefined
           );
           payload.projectImages = projectImageIds;
-          console.log(`✓ Uploaded ${projectImageIds.length} project images`);
+          //console.log(`✓ Uploaded ${projectImageIds.length} project images`);
         } catch (uploadError) {
           console.error('Error uploading project images:', uploadError);
           this.submissionError = 'Failed to upload project image files.';
@@ -307,8 +307,8 @@ export class ContractorProfileComponent implements OnInit {
         }
       }
 
-      console.log('Updating contractor with payload:', payload);
-      console.log('Contractor ID:', contractorId);
+      //console.log('Updating contractor with payload:', payload);
+      //console.log('Contractor ID:', contractorId);
 
       await firstValueFrom(this.contractorService.updateContractor(contractorId, payload));
       

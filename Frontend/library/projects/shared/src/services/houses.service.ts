@@ -78,8 +78,8 @@ async getImagesForBuilding(buildingUuid: string): Promise<string[]> {
       this.imageApiService.getImages('', '', '', buildingUuid)
     );
     
-    console.log('Raw image response:', imageResponse);
-    console.log('Response type:', typeof imageResponse);
+    //console.log('Raw image response:', imageResponse);
+    //console.log('Response type:', typeof imageResponse);
     
     // Handle different response formats
     let imageUrls: string[] = [];
@@ -107,7 +107,7 @@ async getImagesForBuilding(buildingUuid: string): Promise<string[]> {
       }
     }
     
-    console.log('Processed image URLs:', imageUrls);
+    //console.log('Processed image URLs:', imageUrls);
     return imageUrls.length > 0 ? imageUrls : ['assets/images/no_image.png'];
   } catch (err) {
     console.error('Error fetching images for building', err);

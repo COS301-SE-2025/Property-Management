@@ -39,7 +39,7 @@ export class BudgetComponent  implements OnInit, OnDestroy{
     {
       return await this.houseService.isBudget(this.houseId);
     }
-    console.log('no budget');
+    //console.log('no budget');
     return false;
   }
 

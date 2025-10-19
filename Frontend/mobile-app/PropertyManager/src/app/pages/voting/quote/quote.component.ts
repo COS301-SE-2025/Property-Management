@@ -26,8 +26,8 @@ export class QuoteComponent extends ModalComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log(this.taskId());
-    console.log(this.contractorId());
+    //console.log(this.taskId());
+    //console.log(this.contractorId());
     if(this.taskId())
     {
       this.quoteError = false;

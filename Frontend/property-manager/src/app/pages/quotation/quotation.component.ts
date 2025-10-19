@@ -194,7 +194,7 @@ export class QuotationComponent implements OnInit{
     this.apiService.getInventoryByBuilding(buildingUuid).subscribe({
       next: (inventory: Inventory[]) => {
         this.inventory = inventory;
-        console.log(this.inventory);
+        //console.log(this.inventory);
         if (this.inventory.length === 0) {
           this.messageService.add({
             severity: 'info',
@@ -219,13 +219,13 @@ export class QuotationComponent implements OnInit{
   loadAllocatedInventory(): void {
     this.inventoryUsageService.getUsageRecordsByTaskId(this.taskId).subscribe({
       next: (usageRecords: InventoryUsage[]) => {
-        console.log(usageRecords);
+        //console.log(usageRecords);
         // For each usage record, get the inventory item details
         const inventoryPromises = usageRecords.map(usage => {
           return this.apiService.getInventory().toPromise().then(allInventory => {
             const inventoryItem = allInventory?.find(item => item.itemUuid === usage.itemUuid);
 
-            console.log(inventoryItem);
+            //console.log(inventoryItem);
             if (inventoryItem) {
               return {
                 name: inventoryItem.name,
@@ -239,7 +239,7 @@ export class QuotationComponent implements OnInit{
 
         Promise.all(inventoryPromises).then(results => {
           this.allocatedInventory = results.filter(item => item !== null) as AllocatedInventoryItem[];
-          console.log(this.allocatedInventory);
+          //console.log(this.allocatedInventory);
           
           if (this.allocatedInventory.length === 0) {
             this.messageService.add({

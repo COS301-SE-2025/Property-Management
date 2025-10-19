@@ -108,7 +108,7 @@ export class CreatePropertyComponent implements OnInit {
         const file = this.photoService.createFile(blob, `property_${Date.now()}.${photo.format}`, photo.format);
         this.selectedImageFiles.push(file); // Add to array
         
-        console.log(`Photo ${this.capturedPhotos.length} captured`);
+        //console.log(`Photo ${this.capturedPhotos.length} captured`);
       }
     } catch (err) {
       console.error("Error capturing photo", err);
@@ -120,7 +120,7 @@ export class CreatePropertyComponent implements OnInit {
   deletePhoto(index: number): void {
     this.capturedPhotos.splice(index, 1);
     this.selectedImageFiles.splice(index, 1);
-    console.log(`Photo ${index + 1} deleted. Remaining: ${this.capturedPhotos.length}`);
+    //console.log(`Photo ${index + 1} deleted. Remaining: ${this.capturedPhotos.length}`);
   }
 
   async onSubmit(): Promise<void> {
@@ -146,7 +146,7 @@ export class CreatePropertyComponent implements OnInit {
       let primaryImageId: string = '00000000-0000-0000-0000-000000000000';
 
       if (this.selectedImageFiles.length > 0) {
-        console.log(`Uploading ${this.selectedImageFiles.length} property images without building UUID...`);
+        //console.log(`Uploading ${this.selectedImageFiles.length} property images without building UUID...`);
         
         try {
           uploadedImageIds = await this.imageService.uploadImages(
@@ -159,8 +159,8 @@ export class CreatePropertyComponent implements OnInit {
           
           if (uploadedImageIds && uploadedImageIds.length > 0) {
             primaryImageId = uploadedImageIds[0];
-            console.log(`${uploadedImageIds.length} images uploaded successfully`);
-            console.log('Primary image ID:', primaryImageId);
+            //console.log(`${uploadedImageIds.length} images uploaded successfully`);
+            //console.log('Primary image ID:', primaryImageId);
           }
         } catch (uploadError) {
           console.error('Error uploading images:', uploadError);
@@ -183,13 +183,13 @@ export class CreatePropertyComponent implements OnInit {
         coporateUuid: formValue.coporateUuid
       };
 
-      console.log('Creating property with payload:', payload);
+      //console.log('Creating property with payload:', payload);
 
       const propertyResponse: any = await firstValueFrom(
         this.propertyService.createProperty(payload)
       );
 
-      console.log('Property created:', propertyResponse);
+      //console.log('Property created:', propertyResponse);
 
       // STEP 3: Update ALL image associations with building UUID (if images were uploaded)
       if (uploadedImageIds.length > 0 && propertyResponse) {
@@ -200,12 +200,12 @@ export class CreatePropertyComponent implements OnInit {
 
         if (buildingUuid) {
           try {
-            console.log(`Updating ${uploadedImageIds.length} image associations with building UUID:`, buildingUuid);
+            //console.log(`Updating ${uploadedImageIds.length} image associations with building UUID:`, buildingUuid);
             
             // Process all image updates sequentially
             for (let i = 0; i < uploadedImageIds.length; i++) {
               const imageId = uploadedImageIds[i];
-              console.log(`[${i + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
+              //console.log(`[${i + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
               
               try {
                 await this.imageService.updateImageAssociations(
@@ -215,14 +215,14 @@ export class CreatePropertyComponent implements OnInit {
                   undefined,      // progress_uuid
                   buildingUuid    // building_uuid - NOW AVAILABLE!
                 );
-                console.log(`✓ Image ${i + 1} updated successfully`);
+                //console.log(`✓ Image ${i + 1} updated successfully`);
               } catch (imageError) {
                 console.error(`Failed to update image ${imageId}:`, imageError);
                 // Continue with other images even if one fails
               }
             }
             
-            console.log(`✓ All ${uploadedImageIds.length} images processed`);
+            //console.log(`✓ All ${uploadedImageIds.length} images processed`);
           } catch (updateError) {
             console.error('Failed to update some image associations:', updateError);
             // Non-critical error - property is already created

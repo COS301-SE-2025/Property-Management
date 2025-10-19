@@ -115,7 +115,7 @@ export class AddTimelineComponent extends ModalComponent implements OnInit {
         const file = this.photoService.createFile(blob, `task_${Date.now()}.${photo.format}`, photo.format);
         this.selectedFiles.push(file);
 
-        console.log(`Photo ${this.capturedPhotos.length} captured`);
+        //console.log(`Photo ${this.capturedPhotos.length} captured`);
       }
     } catch (err) {
       console.error("Error capturing photo", err);
@@ -143,7 +143,7 @@ override async confirm() {
 
       if (this.selectedFiles.length > 0) {
         try {
-          console.log(`Uploading ${this.selectedFiles.length} task images without task UUID...`);
+          //console.log(`Uploading ${this.selectedFiles.length} task images without task UUID...`);
 
           uploadedImageIds = await this.imageService.uploadImages(
             this.selectedFiles,   // Array of files
@@ -155,8 +155,8 @@ override async confirm() {
 
           if (uploadedImageIds && uploadedImageIds.length > 0) {
             primaryImageId = uploadedImageIds[0];
-            console.log(`${uploadedImageIds.length} images uploaded successfully`);
-            console.log('Primary image ID:', primaryImageId);
+            //console.log(`${uploadedImageIds.length} images uploaded successfully`);
+            //console.log('Primary image ID:', primaryImageId);
           }
         } catch (uploadError) {
           console.error('Error uploading images:', uploadError);
@@ -167,7 +167,7 @@ override async confirm() {
       }
 
       // STEP 2: Create task with primary image ID
-      console.log('Creating task with primary image ID:', primaryImageId);
+      //console.log('Creating task with primary image ID:', primaryImageId);
 
       this.taskApiService.createTask(
         name, 
@@ -182,18 +182,18 @@ override async confirm() {
         priority
       ).subscribe({
         next: async (task) => {
-          console.log('Task created:', task);
+          //console.log('Task created:', task);
           const taskUuid = task.uuid;
 
           // STEP 3: Update ALL image associations with task UUID (if images were uploaded)
           if (uploadedImageIds.length > 0) {
             try {
-              console.log(`Updating ${uploadedImageIds.length} image associations with task UUID:`, taskUuid);
+              //console.log(`Updating ${uploadedImageIds.length} image associations with task UUID:`, taskUuid);
 
               // Process all image updates sequentially to avoid race conditions
               for (let i = 0; i < uploadedImageIds.length; i++) {
                 const imageId = uploadedImageIds[i];
-                console.log(`[${i + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
+                //console.log(`[${i + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
                 
                 try {
                   await this.imageService.updateImageAssociations(
@@ -203,14 +203,14 @@ override async confirm() {
                     undefined,      // progress_uuid
                     undefined       // building_uuid
                   );
-                  console.log(`✓ Image ${i + 1} updated successfully`);
+                  //console.log(`✓ Image ${i + 1} updated successfully`);
                 } catch (imageError) {
                   console.error(`Failed to update image ${imageId}:`, imageError);
                   // Continue with other images even if one fails
                 }
               }
 
-              console.log(`✓ All ${uploadedImageIds.length} images processed`);
+              //console.log(`✓ All ${uploadedImageIds.length} images processed`);
             } catch (updateError) {
               console.error('Failed to update some image associations:', updateError);
               // Non-critical error - task is already created
@@ -285,7 +285,7 @@ override async confirm() {
   deletePhoto(index: number) {
     this.capturedPhotos.splice(index, 1);
     this.selectedFiles.splice(index, 1);
-    console.log(`Photo ${index + 1} deleted. Remaining: ${this.capturedPhotos.length}`);
+    //console.log(`Photo ${index + 1} deleted. Remaining: ${this.capturedPhotos.length}`);
   }
 
   updateInventoryItemsUsed(event: CustomEvent<SelectChangeEventDetail<string[]>>) {

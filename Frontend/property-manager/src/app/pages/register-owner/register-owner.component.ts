@@ -136,7 +136,7 @@ export class RegisterOwnerComponent {
 
       sessionStorage.setItem('pendingUsername', result.username);
       sessionStorage.setItem('userType', 'trustee');
-      console.log('Registration successful:', result);
+      //console.log('Registration successful:', result);
 
       this.router.navigate(['/verifyEmail'], {
         state: { username: result.username }

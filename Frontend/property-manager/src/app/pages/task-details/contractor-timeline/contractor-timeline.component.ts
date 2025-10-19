@@ -106,8 +106,8 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         this.imageService.getImages('', '', progressUuid, '')
       );
 
-      console.log('Raw image response for progress:', progressUuid, imageResponse);
-      console.log('Response type:', typeof imageResponse);
+      //console.log('Raw image response for progress:', progressUuid, imageResponse);
+      //console.log('Response type:', typeof imageResponse);
 
       let imageUrls: string[] = [];
 
@@ -131,7 +131,7 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         }
       }
 
-      console.log('Processed image URLs for progress:', progressUuid, imageUrls);
+      //console.log('Processed image URLs for progress:', progressUuid, imageUrls);
       return imageUrls.length > 0 ? imageUrls : ['assets/images/no_image.png'];
     } catch (err) {
       console.error('Error fetching images for progress', progressUuid, err);
@@ -140,13 +140,13 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
   }
 
   private loadTimelineData() {
-    console.log('=== LOADING TIMELINE DATA ===');
-    console.log('Task UUID:', this.task().uuid);
+    //console.log('=== LOADING TIMELINE DATA ===');
+    //console.log('Task UUID:', this.task().uuid);
 
     this.taskProgressService.getTaskProgressByTaskId(this.task().uuid).pipe(
       switchMap((progressItems: TaskProgress[]) => {
-        console.log('Progress items received:', progressItems.length);
-        console.log('Progress items raw data:', progressItems);
+        //console.log('Progress items received:', progressItems.length);
+        //console.log('Progress items raw data:', progressItems);
 
         if (progressItems.length === 0) {
           this.timeline.set([]);
@@ -174,10 +174,10 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         this.currentImageIndex.set(new Array(progressItems.length).fill(0));
 
         const timelineProcessing = progressItems.map((p, index) => {
-          console.log(`\n--- Processing progress item ${index + 1} ---`);
-          console.log('Progress UUID:', p.progressUuid);
-          console.log('Original imageId:', p.imageId);
-          console.log('Image ID type:', typeof p.imageId);
+          //console.log(`\n--- Processing progress item ${index + 1} ---`);
+          //console.log('Progress UUID:', p.progressUuid);
+          //console.log('Original imageId:', p.imageId);
+          //console.log('Image ID type:', typeof p.imageId);
 
           p.imageId = p.imageId ? p.imageId : 'assets/images/no_image.png';
           p.subDate = this.toDate(p.submissionDate);
@@ -185,7 +185,7 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
           const imageRequest = p.progressUuid
             ? from(this.getImagesForProgress(p.progressUuid)).pipe(
                 tap(urls => {
-                  console.log(`URLs for progress ${p.progressUuid}:`, urls);
+                  //console.log(`URLs for progress ${p.progressUuid}:`, urls);
                   this.imageUrlsByProgress.update(current => {
                     const updated: Record<string, string[]> = { ...current };
                     updated[p.progressUuid!] = urls;
@@ -206,17 +206,17 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
 
           return imageRequest.pipe(
             tap(images => {
-              console.log(`Setting image URLs for progress ${index + 1}:`, images);
+              //console.log(`Setting image URLs for progress ${index + 1}:`, images);
             }),
             switchMap(() => {
               if (p.inventoryUsageUuid) {
-                console.log('Processing inventory usage:', p.inventoryUsageUuid);
+                //console.log('Processing inventory usage:', p.inventoryUsageUuid);
                 return this.processInventoryUsage(p.inventoryUsageUuid, p.quantityUsed);
               }
               return of(null);
             }),
             tap(() => {
-              console.log(`Adding progress ${index + 1} to timeline`);
+              //console.log(`Adding progress ${index + 1} to timeline`);
               this.timeline.update(current => [...current, p]);
             })
           );
@@ -224,10 +224,10 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
 
         return forkJoin(timelineProcessing).pipe(
           tap(() => {
-            console.log('\n=== FINAL TIMELINE ===');
-            console.log('Total items:', progressItems.length);
+            //console.log('\n=== FINAL TIMELINE ===');
+            //console.log('Total items:', progressItems.length);
             progressItems.forEach((p, i) => {
-              console.log(`Item ${i + 1} final image URLs:`, p.progressUuid ? this.imageUrlsByProgress()[p.progressUuid] : [p.imageId]);
+              //console.log(`Item ${i + 1} final image URLs:`, p.progressUuid ? this.imageUrlsByProgress()[p.progressUuid] : [p.imageId]);
             });
             this.timeline.set([...progressItems]);
           })
@@ -236,7 +236,7 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
       catchError((err: HttpErrorResponse) => {
         console.error('Error loading timeline:', err);
         if (err.status === 404) {
-          console.log('No timeline data found (404)');
+          //console.log('No timeline data found (404)');
           this.timeline.set([]);
           this.currentImageIndex.set([]);
           this.imageUrlsByProgress.set({});
@@ -251,9 +251,9 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         return of([]);
       })
     ).subscribe(() => {
-      console.log('=== TIMELINE LOADING COMPLETE ===');
-      console.log('Final timeline state:', this.timeline());
-      console.log('Final image URLs:', this.imageUrlsByProgress());
+      //console.log('=== TIMELINE LOADING COMPLETE ===');
+      //console.log('Final timeline state:', this.timeline());
+      //console.log('Final image URLs:', this.imageUrlsByProgress());
       this.trackQuantityUsed();
     });
   }

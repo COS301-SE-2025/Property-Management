@@ -61,7 +61,7 @@ export class DetailsComponent  implements OnInit {
   
       if(this.taskId && tasks.length > 0)
       {
-        console.log("getting task", this.taskId);
+        //console.log("getting task", this.taskId);
         let task = this.votingService.getPendingTaskById(this.taskId);
         
         if(!task)
