@@ -1,7 +1,7 @@
 # About me
 =====
 
-![Khomotjo Maluleke](./src/assets/images/team/khomotjo.jpg)
+![Khomotjo Maluleke](../Frontend/property-manager/src/assets/images/team/khomotjo.jpg)
 
 Hi, I'm Khomotjo! I'm a final-year Computer Science student at the University of Pretoria with a deep passion for backend development and building robust, scalable systems. 
 I thrive when designing RESTful APIs, working with databases, and exploring cloud and app development.I’m reliable, forward-thinking, and always eager to collaborate with others who share a love for technology and continuous learning.
