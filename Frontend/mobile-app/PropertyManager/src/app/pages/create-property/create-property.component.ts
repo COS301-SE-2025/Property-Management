@@ -257,7 +257,7 @@ export class CreatePropertyComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       this.selectedImageFiles.push(file);
-
+      
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.capturedPhotos.push(e.target.result);

@@ -73,7 +73,8 @@ describe('CreatePropertyComponent (Mobile)', () => {
       onload: null
     } as any);
     component.onFileSelected(event);
-    expect(component.form.value.image).toEqual(file);
+    expect(component.selectedImageFiles).toEqual([file]);
+    expect(component.capturedPhotos.length).toBeGreaterThan(0);
   });
 
   it('should load contractors on init', () => {
