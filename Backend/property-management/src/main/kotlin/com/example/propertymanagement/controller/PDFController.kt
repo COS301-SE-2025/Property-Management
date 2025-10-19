@@ -5,6 +5,7 @@ import com.example.propertymanagement.repository.PDFRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -17,7 +18,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
 import java.time.Duration
-import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @RestController
@@ -116,11 +116,11 @@ class PDFController(
         @PathVariable type: String,
     ): ResponseEntity<String> {
         val pdfs = PDFRepository.findAllByCUuidAndType(cUuid, type)
-        
+
         if (pdfs.isEmpty()) {
             throw NoSuchElementException("PDF not found with id $cUuid and type $type")
         }
-        
+
         // Get the first one (should only be one after duplicates are cleaned up)
         val pdf = pdfs.first()
 
@@ -204,22 +204,23 @@ class PDFController(
     ): ResponseEntity<Void> {
         // Find all PDFs with this cUuid and type
         val pdfs = PDFRepository.findAllByCUuidAndType(cUuid, type)
-        
+
         // Delete from S3 (optional but recommended)
         pdfs.forEach { pdf ->
             try {
-                val deleteObjectRequest = software.amazon.awssdk.services.s3.model.DeleteObjectRequest
-                    .builder()
-                    .bucket(bucketName)
-                    .key(extractKeyFromUrl(pdf.url))
-                    .build()
+                val deleteObjectRequest =
+                    software.amazon.awssdk.services.s3.model.DeleteObjectRequest
+                        .builder()
+                        .bucket(bucketName)
+                        .key(extractKeyFromUrl(pdf.url))
+                        .build()
                 s3Client.deleteObject(deleteObjectRequest)
             } catch (e: Exception) {
                 // Log error but continue
                 println("Failed to delete S3 object: ${pdf.key} - ${e.message}")
             }
         }
-        
+
         // Delete all from database
         PDFRepository.deleteByCUuidAndType(cUuid, type)
         return ResponseEntity.noContent().build()
