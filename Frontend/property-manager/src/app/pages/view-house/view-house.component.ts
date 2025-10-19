@@ -74,8 +74,6 @@ export class ViewHouseComponent implements OnInit {
     
     const house = await this.houseService.loadHouseById(this.houseId!);
 
-    console.log(house);
-
     if (!house) {
       throw new Error('House not found');
     }
