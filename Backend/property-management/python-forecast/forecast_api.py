@@ -32,7 +32,13 @@ origins = [
     "http://localhost:8080",
     "http://localhost:4200",
     "http://localhost:8100",
-    "https://localhost"
+    "https://localhost",
+
+    "https://property-management.live",
+    "https://www.property-management.live",
+    "https://app.property-management.live",
+    "https://staging.d19cit456z7grf.amplifyapp.com",
+    "capacitor://localhost"  
 ]
 
 app.add_middleware(

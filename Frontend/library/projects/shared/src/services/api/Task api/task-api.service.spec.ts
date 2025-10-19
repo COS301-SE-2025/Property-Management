@@ -295,7 +295,7 @@ describe('TaskApiService', () => {
         expect(tasks[0].tuuid).toBe('t1');
       });
 
-      const req = httpMock.expectOne(`/api/maintenance/trustee/trustee-123`);
+      const req = httpMock.expectOne(`${mockApiUrl}/maintenance/trustee/trustee-123`);
       expect(req.request.method).toBe('GET');
       req.flush(mockTasks);
     });

@@ -25,6 +25,7 @@ export class ContractorProfileComponent implements OnInit {
   imageError = false;
   isSubmitting = false;
   submissionError: string | null = null;
+  contractorId: string | null = null;
 
   certFiles: File[] = [];
   licenseFiles: File[] = [];
@@ -58,11 +59,11 @@ export class ContractorProfileComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      const contractorId = await this.storageService.get('contractorId');
-      console.log('Contractor ID from storage:', contractorId);
+      this.contractorId = await this.storageService.get('contractorId');
+      console.log('Contractor ID from storage:', this.contractorId);
       
-      if (contractorId) {
-        this.contractorService.getContractorById(contractorId).subscribe({
+      if (this.contractorId) {
+        this.contractorService.getContractorById(this.contractorId).subscribe({
           next: (contractor: ContractorDetails) => {
             console.log('Successfully loaded contractor:', contractor);
             this.form.patchValue(contractor);
@@ -78,7 +79,6 @@ export class ContractorProfileComponent implements OnInit {
       } else {
         console.error('No contractor ID found in storage');
         this.submissionError = 'Please log in to continue.';
-
       }
     } catch (error) {
       console.error('Error getting contractor ID from storage:', error);
@@ -89,38 +89,55 @@ export class ContractorProfileComponent implements OnInit {
   async onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files && input.files[0];
-    if (file) {
-      if (file.size > 3 * 1024 * 1024) {
-        this.imageError = true;
-        alert('File size exceeds 3MB limit. Please select a smaller file.');
-        return;
-      }
-      if (!file.type.startsWith('image/')) {
-        alert('Please upload an image file');
-        this.fileInput.nativeElement.value = '';
-        this.imageError = true;
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.imagePreviewUrl = e.target?.result as string;
-        this.imageError = false;
-      };
-      reader.readAsDataURL(file);
+    
+    if (!file) return;
 
-      this.imageService.uploadImage(file).subscribe({
-        next: (response) => {
-          this.form.patchValue({ img: response.imageId });
-          this.loadImage(response.imageId);
-        },
-        error: (err) => {
-          console.error('Error uploading image:', err);
-          this.imageError = true;
-          alert('Error uploading image. Please try again.');
-          this.imagePreviewUrl = null;
-          this.fileInput.nativeElement.value = '';
-        }
-      });
+    // Validation
+    if (file.size > 3 * 1024 * 1024) {
+      this.imageError = true;
+      alert('File size exceeds 3MB limit. Please select a smaller file.');
+      return;
+    }
+    
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      this.fileInput.nativeElement.value = '';
+      this.imageError = true;
+      return;
+    }
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.imagePreviewUrl = e.target?.result as string;
+      this.imageError = false;
+    };
+    reader.readAsDataURL(file);
+
+    // Upload using new API
+    try {
+      console.log('Uploading profile image for contractor:', this.contractorId);
+      
+      const imageIds = await this.imageService.uploadImages(
+        [file],                 // Wrap single file in array
+        this.contractorId || undefined,  // user_uuid (contractor UUID)
+        undefined,              // task_uuid
+        undefined,              // progress_uuid
+        undefined               // building_uuid
+      );
+      
+      if (imageIds && imageIds.length > 0) {
+        const imageId = imageIds[0];
+        console.log('Profile image uploaded successfully:', imageId);
+        this.form.patchValue({ img: imageId });
+        this.loadImage(imageId);
+      }
+    } catch (err) {
+      console.error('Error uploading image:', err);
+      this.imageError = true;
+      alert('Error uploading image. Please try again.');
+      this.imagePreviewUrl = null;
+      this.fileInput.nativeElement.value = '';
     }
   }
 
@@ -148,15 +165,19 @@ export class ContractorProfileComponent implements OnInit {
   onCertUpload(event: Event) {
     this.certFiles = Array.from((event.target as HTMLInputElement).files ?? []);
   }
+  
   onLicenseUpload(event: Event) {
     this.licenseFiles = Array.from((event.target as HTMLInputElement).files ?? []);
   }
+  
   onIdUpload(event: Event) {
     this.idFiles = Array.from((event.target as HTMLInputElement).files ?? []);
   }
+  
   onProjectRecordsUpload(event: Event) {
     this.projectRecordFiles = Array.from((event.target as HTMLInputElement).files ?? []);
   }
+  
   onProjectImagesUpload(event: Event) {
     this.projectImageFiles = Array.from((event.target as HTMLInputElement).files ?? []);
   }
@@ -181,75 +202,110 @@ export class ContractorProfileComponent implements OnInit {
 
       const payload = { ...this.form.value };
 
-      const certIds: string[] = [];
-      for (const file of this.certFiles) {
+      // Upload certifications (multiple files at once)
+      if (this.certFiles.length > 0) {
         try {
-          const res = await firstValueFrom(this.imageService.uploadImage(file));
-          certIds.push(res.imageId);
+          console.log(`Uploading ${this.certFiles.length} certification files...`);
+          const certIds = await this.imageService.uploadImages(
+            this.certFiles,
+            contractorId,
+            undefined,
+            undefined,
+            undefined
+          );
+          payload.certifications = certIds;
+          console.log(`✓ Uploaded ${certIds.length} certifications`);
         } catch (uploadError) {
-          console.error('Error uploading certification:', uploadError);
+          console.error('Error uploading certifications:', uploadError);
           this.submissionError = 'Failed to upload certification files.';
           this.isSubmitting = false;
           return;
         }
       }
-      payload.certifications = certIds;
 
-      const licenseIds: string[] = [];
-      for (const file of this.licenseFiles) {
+      // Upload licenses (multiple files at once)
+      if (this.licenseFiles.length > 0) {
         try {
-          const res = await firstValueFrom(this.imageService.uploadImage(file));
-          licenseIds.push(res.imageId);
+          console.log(`Uploading ${this.licenseFiles.length} license files...`);
+          const licenseIds = await this.imageService.uploadImages(
+            this.licenseFiles,
+            contractorId,
+            undefined,
+            undefined,
+            undefined
+          );
+          payload.licenses = licenseIds;
+          console.log(`✓ Uploaded ${licenseIds.length} licenses`);
         } catch (uploadError) {
-          console.error('Error uploading license:', uploadError);
+          console.error('Error uploading licenses:', uploadError);
           this.submissionError = 'Failed to upload license files.';
           this.isSubmitting = false;
           return;
         }
       }
-      payload.licenses = licenseIds;
 
-      const idIds: string[] = [];
-      for (const file of this.idFiles) {
+      // Upload IDs (multiple files at once)
+      if (this.idFiles.length > 0) {
         try {
-          const res = await firstValueFrom(this.imageService.uploadImage(file));
-          idIds.push(res.imageId);
+          console.log(`Uploading ${this.idFiles.length} ID files...`);
+          const idIds = await this.imageService.uploadImages(
+            this.idFiles,
+            contractorId,
+            undefined,
+            undefined,
+            undefined
+          );
+          payload.ids = idIds;
+          console.log(`✓ Uploaded ${idIds.length} IDs`);
         } catch (uploadError) {
-          console.error('Error uploading ID:', uploadError);
+          console.error('Error uploading IDs:', uploadError);
           this.submissionError = 'Failed to upload ID files.';
           this.isSubmitting = false;
           return;
         }
       }
-      payload.ids = idIds;
 
-      const recordIds: string[] = [];
-      for (const file of this.projectRecordFiles) {
+      // Upload project records (multiple files at once)
+      if (this.projectRecordFiles.length > 0) {
         try {
-          const res = await firstValueFrom(this.imageService.uploadImage(file));
-          recordIds.push(res.imageId);
+          console.log(`Uploading ${this.projectRecordFiles.length} project record files...`);
+          const recordIds = await this.imageService.uploadImages(
+            this.projectRecordFiles,
+            contractorId,
+            undefined,
+            undefined,
+            undefined
+          );
+          payload.projectRecords = recordIds;
+          console.log(`✓ Uploaded ${recordIds.length} project records`);
         } catch (uploadError) {
-          console.error('Error uploading project record:', uploadError);
+          console.error('Error uploading project records:', uploadError);
           this.submissionError = 'Failed to upload project record files.';
           this.isSubmitting = false;
           return;
         }
       }
-      payload.projectRecords = recordIds;
 
-      const projectImageIds: string[] = [];
-      for (const file of this.projectImageFiles) {
+      // Upload project images (multiple files at once)
+      if (this.projectImageFiles.length > 0) {
         try {
-          const res = await firstValueFrom(this.imageService.uploadImage(file));
-          projectImageIds.push(res.imageId);
+          console.log(`Uploading ${this.projectImageFiles.length} project image files...`);
+          const projectImageIds = await this.imageService.uploadImages(
+            this.projectImageFiles,
+            contractorId,
+            undefined,
+            undefined,
+            undefined
+          );
+          payload.projectImages = projectImageIds;
+          console.log(`✓ Uploaded ${projectImageIds.length} project images`);
         } catch (uploadError) {
-          console.error('Error uploading project image:', uploadError);
+          console.error('Error uploading project images:', uploadError);
           this.submissionError = 'Failed to upload project image files.';
           this.isSubmitting = false;
           return;
         }
       }
-      payload.projectImages = projectImageIds;
 
       console.log('Updating contractor with payload:', payload);
       console.log('Contractor ID:', contractorId);

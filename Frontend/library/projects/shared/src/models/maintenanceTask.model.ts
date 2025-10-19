@@ -4,6 +4,7 @@ export interface MaintenanceTask{
     taskUuid?: string;
     title: string;
     des: string;
+    description?: string;
     status: string;
     scheduled_date: Date;
     approved: boolean;
@@ -16,4 +17,5 @@ export interface MaintenanceTask{
     imageUuid?: string; 
     createdByUuid?: string | null;
     priority?: string;
+    maxBudget?: number;
 }

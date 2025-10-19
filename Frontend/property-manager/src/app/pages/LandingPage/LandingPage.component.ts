@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LandingheaderComponent } from './landingheader/landingheader.component';
 import { OurteamComponent } from './ourteam/ourteam.component';
@@ -12,6 +12,8 @@ import { LandingfooterComponent } from './landingfooter/landingfooter.component'
   styleUrls: ['./Landingpage.component.scss']
 })
 export class LandingPageComponent {
+  @ViewChild('streamlineSection') streamlineSection!: ElementRef;
+
   currentSlide = 0;
   animationKey = 0; 
   
@@ -54,5 +56,12 @@ export class LandingPageComponent {
     this.currentSlide =
       (this.currentSlide - 1 + this.slides.length) % this.slides.length;
     this.animationKey++; 
+  }
+
+  scrollToSection() {
+    this.streamlineSection.nativeElement.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
   }
 }

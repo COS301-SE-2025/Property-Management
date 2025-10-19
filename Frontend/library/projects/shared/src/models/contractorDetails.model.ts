@@ -15,4 +15,5 @@ export interface ContractorDetails extends Contractor {
    ids?: string;
    projectRecords?: string;
    averageRating?: number;
+   specializations: string[];
 }

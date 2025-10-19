@@ -19,6 +19,7 @@ export class ManageMembersComponent implements OnInit {
 
   trusteeEmail: string = '';
   inviteMessage: string = '';
+  inviteError = false;
   bodyCorporateUuid: string = '';
   showInviteModal = false;
 
@@ -34,10 +35,28 @@ export class ManageMembersComponent implements OnInit {
     const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
     this.bodyCorporateUuid = bcId;
 
-    this.propertyService.getInvitations().subscribe(data => {
-      this.invitations = data;
-      this.activeMembers = data.filter(invite => invite.status === 'ACCEPTED');
-    });
+    if (bcId) {
+      this.propertyService.getInvitesForBodyCorporate(bcId).subscribe({
+        next: (data) => {
+          this.invitations = data;
+          this.activeMembers = data.filter(invite => invite.status === 'ACCEPTED');
+        },
+        error: (error) => {
+          console.error('Error fetching invitations:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load invitations'
+          });
+        }
+      });
+    } else {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'No body corporate selected'
+      });
+    }
   }
 
   cancelInvite(invite: InviteWithTrustee) {
@@ -79,6 +98,7 @@ export class ManageMembersComponent implements OnInit {
   sendInviteToTrustee() {
     if (!this.trusteeEmail || !this.bodyCorporateUuid) {
       this.inviteMessage = 'Please enter a valid email address.';
+      this.inviteError = true;
       return;
     }
 
@@ -86,6 +106,7 @@ export class ManageMembersComponent implements OnInit {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(this.bodyCorporateUuid)) {
       this.inviteMessage = 'Invalid body corporate ID.';
+      this.inviteError = true;
       return;
     }
 
@@ -94,11 +115,13 @@ export class ManageMembersComponent implements OnInit {
         const trustee = trustees.find(t => t.email.toLowerCase() === this.trusteeEmail.toLowerCase());
         if (!trustee) {
           this.inviteMessage = 'No trustee found with this email address.';
+          this.inviteError = true;
           return;
         }
 
         if (!uuidRegex.test(trustee.trusteeUuid)) {
           this.inviteMessage = 'Invalid trustee ID.';
+          this.inviteError = true;
           return;
         }
 
@@ -123,11 +146,13 @@ export class ManageMembersComponent implements OnInit {
                 ? 'Invalid request. Please check the email and try again.'
                 : 'Failed to send invite. Please try again later.';
             this.inviteMessage = error.error?.message || errorMessage;
+            this.inviteError = true;
           }
         });
       },
       error: () => {
         this.inviteMessage = 'Error fetching trustee details.';
+        this.inviteError = true;
       }
     });
   }

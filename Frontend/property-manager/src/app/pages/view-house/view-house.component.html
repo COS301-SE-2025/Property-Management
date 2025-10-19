@@ -1,17 +1,28 @@
-<!-- <app-header/> -->
-
 <div class="flex flex-col items-center pt-10">
     
     <div *ngIf="!findHouse" class="pb-200">
         <p class="text-yellow-500 font-semibold">Could not load house. Please try again</p>
     </div>
-    <div class="space-y-8">
+    <div class="space-y-8 w-full">
         <div class="flex items-center justify-center">
-            <div class="relative inline-block">
-                <img [src]="house()?.propertyImage" class="w-[25rem] h-43 mx-auto object-cover mt-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow" alt="">
+            <div class="relative inline-block w-full">
+                <div class="w-full max-w-3xl mx-auto mt-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow overflow-hidden">
+                    <img [src]="images()[currentIndex()]" class="w-full h-96 object-cover" alt="Main house image">
+                    <div class="thumbnails flex justify-center gap-2 p-2 bg-gray-100 dark:bg-gray-800">
+                        @for (image of images(); let i = $index; track i) {
+                            <img [src]="image" class="w-20 h-12 object-cover rounded cursor-pointer transition-all" 
+                                 [class.border-2]="i === currentIndex()" 
+                                 [class.border-yellow-500]="i === currentIndex()" 
+                                 [class.opacity-100]="i === currentIndex()" 
+                                 [class.opacity-70]="i !== currentIndex()" 
+                                 (click)="currentIndex.set(i)" 
+                                 alt="Thumbnail {{i+1}}">
+                        }
+                    </div>
+                </div>
                 @if(!house()?.coporateUuid)
                 {
-                    <button class="absolute top-5 -right-5 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="updateHouse.openDialog()">
+                    <button class="absolute top-7 right-80 cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="updateHouse.openDialog()">
                         <img *ngIf="!house()?.coporateUuid" src="assets/icons/screwdriver.svg" class="w-5 h-5">
                     </button>
                     <app-update-house-dialog #updateHouse [houseId]="house()?.buildingUuid!"/>

@@ -39,7 +39,7 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'login'
+    redirectTo: 'landingPage'
   },
   {
     path: 'login',

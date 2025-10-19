@@ -57,8 +57,8 @@ describe('CreatePropertyComponent', () => {
     const event = {
       target: { files: [file] }
     } as unknown as Event;
-    component.onFileSelected(event);
-    expect(component.form.value.image).toEqual(file);
+    component.onFilesSelected(event);
+    expect(component.form.value.images).toEqual([file]);
   });
 
   it('should log form value on submit if form is valid', () => {
@@ -73,7 +73,7 @@ describe('CreatePropertyComponent', () => {
       coporateUuid: 'body-corporate-uuid'
     });
     component.onSubmit();
-    expect(console.log).toHaveBeenCalledWith('Payload:', jasmine.any(Object));
+    expect(console.log).toHaveBeenCalledWith('Creating property with payload:', jasmine.any(Object));
   });
 
   it('should not log form value on submit if form is invalid', () => {
