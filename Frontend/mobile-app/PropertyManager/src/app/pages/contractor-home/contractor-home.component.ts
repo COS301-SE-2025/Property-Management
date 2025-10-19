@@ -14,7 +14,7 @@ import {
   stagger
 } from '@angular/animations';
 import { MaintenanceTask } from 'shared';
-import { catchError, firstValueFrom, forkJoin, map, of } from 'rxjs';
+import { catchError, forkJoin, map, of } from 'rxjs';
 import { StorageService } from 'shared';
 
 @Component({
@@ -67,7 +67,6 @@ export class ContractorHomeComponent implements OnInit {
             img: 'assets/images/no_image.png'
           };
 
-          console.log(task.imageUuid);
           if(task.imageUuid)
           {
             return this.imageService.getImage(task.imageUuid).pipe(

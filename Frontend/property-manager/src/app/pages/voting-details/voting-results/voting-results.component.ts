@@ -3,7 +3,7 @@ import { MessageService } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { lastValueFrom } from 'rxjs';
-import { ContractorApiService, Notification, NotificationsApiService, Quote, TaskApiService, VotingResults, VotingService } from 'shared';
+import { ContractorApiService, getCookieValue, Notification, NotificationsApiService, Quote, TaskApiService, VotingResults, VotingService } from 'shared';
 import { Toast } from "primeng/toast";
 
 
@@ -29,6 +29,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
   public error = signal<string | null>(null);
   public votingEnded = false;
   public contractorHasBeenAssigned = false;
+  public bcUser = false;
   private taskId: string | null = null;
   private quoteId: string | null = null;
 
@@ -38,7 +39,12 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
     private taskService: TaskApiService, 
     private messageService: MessageService,
     private notificationService: NotificationsApiService
-  ) { }
+  ) {
+    if(getCookieValue(document.cookie, 'bodyCoporateId'))
+    {
+      this.bcUser = true;
+    }
+   }
 
   ngOnInit() {
     this.loadResults();
@@ -68,6 +74,7 @@ export class VotingResultsComponent  implements OnInit, OnChanges {
 
               this.taskService.getTaskById(task.taskUuid).subscribe({
                 next: (t) => {
+                  t.scheduled_date = new Date(t.scheduled_date);
                   if(t.scheduled_date < new Date() && (t.cuuid === '' || !t.cuuid))
                   {
                     this.votingEnded = true;

@@ -2,7 +2,7 @@ import { Component, OnInit, signal, effect } from '@angular/core';
 import { TimelineModule } from 'primeng/timeline';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe, TaskApiService } from 'shared';
+import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe } from 'shared';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InviteDialogComponent } from './invite-dialog/invite-dialog.component';
 import { InventoryApprovalDialogComponent} from './inventory-approval-dialog/inventory-approval-dialog.component';
@@ -53,7 +53,6 @@ export class NotificationsComponent implements OnInit {
   constructor(
     private router: Router,
     private notificationService: NotificationsApiService,
-    private taskService: TaskApiService,
     private messageService: MessageService,
     public drawerService: NotificationDrawerService 
   ) {
@@ -100,6 +99,7 @@ export class NotificationsComponent implements OnInit {
 
           this.timeline.set(sortedRead);
           this.unreadTimeline.set(sortUnRead);
+
         },
         error: (err) => {
           console.error(err);
@@ -186,35 +186,20 @@ export class NotificationsComponent implements OnInit {
     if (!notifications || notifications.length === 0) {
       return [];
     }
+    else if(notifications.length === 1)
+    {
+      if (notifications[0].createdAt) {
+        notifications[0].createdAtDate = new Date(notifications[0].createdAt);
+      }
+      return notifications;
+    }
 
     notifications.forEach(n => {
       if (n.createdAt) {
-
-        if (typeof n.createdAt === 'string') {
-          n.createdAtDate = new Date(n.createdAt);
-        }
-        else if (Array.isArray(n.createdAt) && n.createdAt.length >= 6) {
-          n.createdAtDate = new Date(
-            n.createdAt[0],
-            n.createdAt[1] - 1,
-            n.createdAt[2],
-            n.createdAt[3],
-            n.createdAt[4],
-            n.createdAt[5]
-          );
-        }
-        else {
-          n.createdAtDate = new Date();
-          console.warn('Unexpected createdAt format for notification:', n);
-        }
-      } else {
-        n.createdAtDate = new Date();
-        console.warn('Missing createdAt for notification:', n);
+        n.createdAtDate = new Date(n.createdAt);
       }
     });
 
-    return notifications.sort((a, b) => 
-      b.createdAtDate!.getTime() - a.createdAtDate!.getTime()
-    );
+    return notifications.sort((a, b) => b.createdAtDate!.getTime() - a.createdAtDate!.getTime());
   }
 }
