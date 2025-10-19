@@ -6,17 +6,18 @@
 
     <!-- Navigation Links -->
     <div class="flex gap-8 ml-12">
-      <ng-container *ngFor="let link of navLinks">
-        <a
-          *ngIf="link.show"
-          [routerLink]="link.route"
-          routerLinkActive="text-yellow-500"
-          class="text-gray-700 hover:text-yellow-500 font-semibold transition"
-        >
-          {{ link.label }}
-        </a>
-      </ng-container>
-    </div>
+  <ng-container *ngFor="let link of navLinks">
+    <a
+      *ngIf="link.show"
+      [routerLink]="link.route"
+      routerLinkActive="text-yellow-500 dark:text-yellow-400"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class=" hover:text-yellow-500 dark:hover:text-yellow-400 font-semibold transition-colors duration-200"
+    >
+      {{ link.label }}
+    </a>
+  </ng-container>
+</div>
 
     <!-- Notifications + Settings + Profile -->
     <div class="ml-auto flex items-center">

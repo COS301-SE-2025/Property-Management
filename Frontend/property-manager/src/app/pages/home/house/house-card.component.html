@@ -4,10 +4,9 @@
   [style]="{
     height: '18.5rem',
     width: '22rem',
-    overflow: 'hidden',
-     backgroundColor: '#f3f4f6'
+    overflow: 'hidden'
   }"
-  class="rounded-2xl shadow-md"
+  class="rounded-2xl shadow-md bg-gray-50 dark:bg-gray-600"
 >
   <ng-template pTemplate="header">
     <img
@@ -18,13 +17,13 @@
   </ng-template>
 
   <ng-template pTemplate="title">
-    <span class="text-black  font-semibold text-base dark:text-gray-100">
+    <span class="text-gray-900 dark:text-gray-100 font-semibold text-base">
       {{ house().name }}
     </span>
   </ng-template>
 
   <ng-template pTemplate="subtitle">
-    <span class="text-gray-600 text-sm block truncate dark:text-gray-300">
+    <span class="text-gray-600 dark:text-gray-300 text-sm block truncate">
       {{ house().address }}
     </span>
   </ng-template>
@@ -45,6 +44,5 @@
     </ng-template>
   </div>
 </p-card>
-
     </button>
 </div>

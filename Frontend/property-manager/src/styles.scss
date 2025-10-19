@@ -175,12 +175,25 @@ textarea:-webkit-autofill:focus {
 
  
 .p-card {
-  background:#f9fafb !important ;
-  color: var(--text-color) !important;
+  background: #f9fafb !important;
+  color: #111111 !important; 
 }
-.dark-theme .p-card{
-  background: #595964!important;
-  color: var(--text-color)!important;
+
+.dark-theme .p-card {
+  background: #595964 !important;
+  color: #FDFDFD !important; 
+}
+
+.dark-theme .p-card p,
+.dark-theme .p-card .text,
+.dark-theme .p-card .font-normal,
+.dark-theme .p-card h1,
+.dark-theme .p-card h2,
+.dark-theme .p-card h3,
+.dark-theme .p-card h4,
+.dark-theme .p-card h5,
+.dark-theme .p-card h6 {
+  color: #FDFDFD !important;
 }
 
 .dark-theme .bg-gray-50 {
@@ -553,13 +566,7 @@ option.custom-option {
   background: var(--datatable-row-hover-bg);
 }
 
-.p-paginator{
-  background: var(--datatable-body-bg);
-}
-.dark-theme .p-paginator-page.p-paginator-page-selected {
-  background: var(--card-border);
-  color: #fff;
-}
+
  .p-select-option{
   color: #fff;
   background: #000000;
@@ -618,3 +625,62 @@ option.custom-option {
   background: var(--card-hover) !important;
   color: #fff !important;
 }
+
+
+.p-paginator {
+  background: #f9fafb !important;
+  color: #111827 !important;
+  border-top: 1px solid #d1d5db !important;
+}
+
+.p-paginator .p-paginator-page {
+  background: transparent !important;
+  color: #111827 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px;
+}
+
+.p-paginator .p-paginator-page:hover {
+  background: #f3f4f6 !important;
+}
+
+.p-paginator .p-paginator-page.p-highlight {
+  background: #facc15 !important;
+  color: #000 !important;
+}
+
+.p-paginator .p-paginator-element {
+  color: #111827 !important;
+}
+
+
+body.dark-theme .p-paginator,
+html.dark-theme .p-paginator {
+  background: #1f2937 !important; 
+  color: #f9fafb !important;
+  border-top: 1px solid #374151 !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-page,
+html.dark-theme .p-paginator .p-paginator-page {
+  background: #111827 !important;
+  color: #f9fafb !important;
+  border: 1px solid #4b5563 !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-page:hover,
+html.dark-theme .p-paginator .p-paginator-page:hover {
+  background: #374151 !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-page.p-highlight,
+html.dark-theme .p-paginator .p-paginator-page.p-highlight {
+  background: #facc15 !important;
+  color: #000 !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-element,
+html.dark-theme .p-paginator .p-paginator-element {
+  color: #f3f4f6 !important;
+}
+
