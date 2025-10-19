@@ -47,7 +47,6 @@ export class NotificationsComponent implements OnInit {
   public inviteId = signal<string | null>(null);
   public inviteDialogVisible = false;
   
-  // NEW: For inventory approval dialog
   public inventoryApprovalVisible = false;
   public inventoryRequestData: any = null;
 
@@ -111,18 +110,16 @@ export class NotificationsComponent implements OnInit {
   }
 
   showDetails(noti: Notification) {
-    // Mark as read
     this.notificationService.markNotificationsAsRead(noti.notificationUuid!).subscribe({
       next: () => {
         this.drawerService.notificationRead.emit();
 
-        // NEW: Handle inventory request notifications
         if (noti.notificationType === 'INVENTORY_REQUEST' && this.getUserType() === 'trustee') {
           try {
             this.inventoryRequestData = JSON.parse(noti.message);
             this.inventoryApprovalVisible = true;
           } catch (e) {
-            // If metadata parsing fails, show simple dialog
+
             this.messageService.add({
               severity: 'info',
               summary: 'Inventory Request',
@@ -131,18 +128,44 @@ export class NotificationsComponent implements OnInit {
           }
         }
         else if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
-          // Existing invite handling...
+          // Check if invite is pending before showing dialog
+          this.notificationService.getInviteById(noti.relatedInviteUuid).subscribe({
+          next: (invite) => {
+              if (invite.status === 'PENDING') {
+              this.inviteId.set(noti.relatedInviteUuid ?? null);
+              this.inviteDialogVisible = true;
+              }
+          },
+          error: (err) => {
+              console.error(err);
+              this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to display invite.'
+              })
+          }
+          });
         }
         else if (noti.relatedTaskUuid) {
-          // Existing task handling...
+          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+            this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
+          }
         }
-        // ... other existing handlers
+        else if(noti.relatedSessionUuid)
+        {
+          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+            this.router.navigate(['/voting', noti.relatedSessionUuid]);
+          }
+        }
+        else{
+          window.location.reload();
+        }
       }
     });
   }
 
   onInventoryRequestProcessed() {
-    this.loadTimeline(); // Refresh notifications
+    this.loadTimeline(); 
   }
 
   private getUserType(): string | null {
@@ -162,6 +185,10 @@ export class NotificationsComponent implements OnInit {
   private sortTimeline(notifications: Notification[]) {
     if (!notifications || notifications.length === 0) {
       return [];
+    }
+    else if(notifications.length === 1)
+    {
+      return notifications;
     }
 
     const valid = notifications.filter(n => n && Array.isArray(n.createdAt));

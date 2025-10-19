@@ -4,15 +4,15 @@
         @if(hasBudget)
         {
             <p class="text-gray-700 dark:text-gray-200">Overall Allocated Budget</p>
-            <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ calculateTotalBudget() | formatAmount }}</p>
+            <p class="text-yellow-500 text-lg font-semibold mt-2">R {{ calculateTotalBudget() | number:'1.2-2' }}</p>
             <div class="flex flex-wrap justify-center gap-4 px-6 mt-4">
                 <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow text-center w-45">
                     <p class="font-medium text-sm text-gray-600 dark:text-gray-300 mb-1">Allocated Inventory budget</p>
-                    <p class="mt-1 text-gray-800 dark:text-gray-100">R {{ (budget().inventoryBudget-budget().inventorySpent) | formatAmount }}</p>
+                    <p class="mt-1 text-gray-800 dark:text-gray-100">R {{ (budget().inventoryBudget - budget().inventorySpent) | number:'1.2-2' }}</p>
                 </div>
                 <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow text-center w-45">
                     <p class="font-medium text-sm text-gray-600 dark:text-gray-300 mb-1">Allocated Maintenance Spent</p>
-                    <p class="mt-1 text-gray-800 dark:text-gray-100">R {{ (budget().maintenanceBudget-budget().maintenanceSpent) | formatAmount }}</p>
+                    <p class="mt-1 text-gray-800 dark:text-gray-100">R {{ (budget().maintenanceBudget - budget().maintenanceSpent) | number:'1.2-2' }}</p>
                 </div>
             </div>
             @if(!bcUser)

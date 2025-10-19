@@ -1,62 +1,81 @@
 <p-toast></p-toast>
-<div class="px-10 py-8" [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
-  <div class="mb-12 mt-8 ml-10 animate-item">
-      <h2 class="text-3xl font-semibold font-lato"
-          [ngStyle]="{ 'background-color': 'var(--input-bg-color)', 'color': 'var(--input-text-color)' }">
-        Contractor Profile
-      </h2>
-      <div class="w-60 h-1 bg-yellow-300 mt-2"></div>
-    </div>
 
-  <div class="flex justify-center mb-8 space-x-4">
-    <span class="w-4 h-4 rounded-full" [ngClass]="{ 'bg-yellow-400': step === 1, 'bg-gray-300': step !== 1 }"></span>
-    <span class="w-4 h-4 rounded-full" [ngClass]="{ 'bg-yellow-400': step === 2, 'bg-gray-300': step !== 2 }"></span>
-    <span class="w-4 h-4 rounded-full" [ngClass]="{ 'bg-yellow-400': step === 3, 'bg-gray-300': step !== 3 }"></span>
+<div class="px-10 py-8 min-h-screen" [ngStyle]="{ 'background-color': 'var(--bg-color)', 'color': 'var(--text-color)' }">
+
+  <!-- Title -->
+  <div class="mb-12 mt-8 ml-10 animate-item">
+    <h2 class="text-3xl font-semibold font-lato text-gray-900 dark:text-gray-100">
+      Contractor Profile
+    </h2>
+    <div class="w-60 h-1 bg-yellow-400 mt-2 rounded-full"></div>
   </div>
 
+  <!-- Step Indicators -->
+  <div class="flex justify-center mb-10 space-x-3">
+    <span
+      *ngFor="let i of [1,2,3]"
+      class="w-5 h-5 rounded-full transition-all"
+      [ngClass]="{
+        'bg-yellow-400 scale-110 shadow-md': step === i,
+        'bg-gray-300 dark:bg-gray-600': step !== i
+      }"
+    ></span>
+  </div>
+
+  <!-- Main Card -->
   <div
-    class="border rounded-lg p-12 shadow-sm max-w-6xl mx-auto"
+    class="border rounded-2xl p-10 shadow-lg max-w-6xl mx-auto dark:border-gray-500"
     [ngStyle]="{ 'background-color': 'var(--card-bg)', 'color': 'var(--text-color)' }"
   >
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+      
       <div>
         <ng-container [ngSwitch]="step">
-          <app-step-one *ngSwitchCase="1" (next)="onStepOneComplete($event)"></app-step-one>
+          <app-step-one *ngSwitchCase="1" [contractor]="contractor" (next)="onStepOneComplete($event)"></app-step-one>
           <app-step-two *ngSwitchCase="2" (back)="step = 1" (next)="onStepTwoComplete($event)"></app-step-two>
           <app-step-three *ngSwitchCase="3" (back)="step = 2" (done)="onStepThreeComplete($event)" (imagesSelected)="onStepThreeImagesSelected($event)"></app-step-three>
         </ng-container>
       </div>
+
+      
       <div *ngIf="step === 1" class="flex flex-col items-center justify-start gap-4 py-14">
-        <p class="font-semibold">Upload a Profile Image</p>
-        <div class="w-72 h-48 rounded-xl border flex items-center justify-center shadow-sm overflow-hidden"
-             [ngStyle]="{ 'background-color': 'var(--card-bg)' }">
+        <p class="font-semibold text-gray-800 dark:text-gray-200">Profile Image</p>
+
+        <div
+          class="w-80 h-80 rounded-full border-4 border-yellow-400 flex items-center justify-center shadow-md overflow-hidden bg-gray-100 dark:bg-gray-800"
+        >
           <ng-container *ngIf="imagePreviewUrl && !imageError; else placeholder">
             <img [src]="imagePreviewUrl" alt="Profile image" class="w-full h-full object-cover" />
           </ng-container>
+
           <ng-template #placeholder>
             <img src="https://img.icons8.com/ios/50/image.png" alt="upload icon" class="w-16 h-16 opacity-50" />
           </ng-template>
         </div>
-        <p *ngIf="imageError" class="text-red-500 py-1 font-semibold">Failed to load or upload image</p>
-        <div class="flex gap-2">
+
+        <p *ngIf="imageError" class="text-red-500 py-1 font-semibold">Failed to upload image</p>
+
+        <div class="flex gap-2 mt-2">
           <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
           <button
             type="button"
-            class="text-xs px-4 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow"
+            class="text-xs px-4 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow transition"
             (click)="fileInput.click()"
           >
-            Upload Image
+            Upload
           </button>
           <button
             *ngIf="imagePreviewUrl || contractor.img"
             type="button"
-            class="text-xs px-4 py-2 rounded bg-red-400 hover:bg-red-500 text-black font-semibold shadow"
+            class="text-xs px-4 py-2 rounded bg-red-400 hover:bg-red-500 text-black font-semibold shadow transition"
             (click)="resetImage()"
           >
-            Remove Image
+            Remove
           </button>
         </div>
       </div>
+
     </div>
   </div>
 </div>

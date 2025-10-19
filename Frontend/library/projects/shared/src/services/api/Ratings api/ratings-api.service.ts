@@ -15,7 +15,7 @@ export interface RatingPayload {
 
 @Injectable({ providedIn: 'root' })
 export class RatingService {
-private apiUrl = environmentMobile.apiUrl;
+private apiUrl = `${environmentMobile.apiUrl}/rating`;
 
   constructor(private http: HttpClient) {}
 

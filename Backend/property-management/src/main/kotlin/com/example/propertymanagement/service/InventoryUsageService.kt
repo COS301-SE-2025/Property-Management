@@ -5,6 +5,7 @@ import com.example.propertymanagement.dto.CreateInventoryUsageRequest
 import com.example.propertymanagement.dto.InventoryUsageResponse
 import com.example.propertymanagement.dto.UpdateInventoryUsageRequest
 import com.example.propertymanagement.model.InventoryUsage
+import com.example.propertymanagement.repository.BuildingRepository
 import com.example.propertymanagement.repository.InventoryItemRepository
 import com.example.propertymanagement.repository.InventoryUsageRepository
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -23,6 +24,7 @@ import java.util.concurrent.Executors
 class InventoryUsageService(
     private val inventoryUsageRepository: InventoryUsageRepository,
     private val inventoryItemRepository: InventoryItemRepository,
+    private val buildingRepository: BuildingRepository,
     private val objectMapper: ObjectMapper,
 ) {
     private val bgExecutor = Executors.newSingleThreadExecutor()
@@ -182,6 +184,13 @@ class InventoryUsageService(
         freq: String = "M",
     ): Map<String, Any> {
         val itemUuids = getItemsForBuilding(buildingUuid)
+
+        val buildingName =
+            buildingRepository
+                .findById(buildingUuid)
+                .orElse(null)
+                ?.name ?: "Unknown Building"
+
         if (itemUuids.isEmpty()) {
             return mapOf(
                 "building_uuid" to buildingUuid,
@@ -190,7 +199,7 @@ class InventoryUsageService(
                 "items_forecasts" to emptyList<Map<String, Any>>(),
                 "total_forecasted_usage" to 0,
                 "total_shortage" to 0,
-                "alert" to "No items found for building $buildingUuid",
+                "alert" to "No items found for building $buildingName",
             )
         }
 

@@ -5,6 +5,7 @@ import com.example.propertymanagement.repository.PDFRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -79,6 +80,30 @@ class PDFController(
                 url = url,
                 cUuid = cUuid,
                 type = type,
+                taskUuid = null,
+            )
+        PDFRepository.save(pdfMeta)
+        return ResponseEntity.ok("Upload metadata saved.")
+    }
+
+    @PostMapping("/notify-upload-task/{id}/{filename}/{key}/{cUuid}/{taskUuid}")
+    fun notifyUploadComplete(
+        @PathVariable id: String,
+        @PathVariable filename: String,
+        @PathVariable key: String,
+        @PathVariable cUuid: UUID,
+        @PathVariable taskUuid: UUID,
+    ): ResponseEntity<String> {
+        val url = "https://$bucketName.s3.amazonaws.com/$key"
+        val pdfMeta =
+            PDFMeta(
+                id = id,
+                filename = filename,
+                key = key,
+                url = url,
+                cUuid = cUuid,
+                type = "Quote",
+                taskUuid = taskUuid,
             )
         PDFRepository.save(pdfMeta)
         return ResponseEntity.ok("Upload metadata saved.")
@@ -92,6 +117,39 @@ class PDFController(
         val pdf =
             PDFRepository.findByCUuidAndType(cUuid, type).orElseThrow {
                 NoSuchElementException("PDF not found with id $cUuid and type $type")
+            }
+
+        val getObjectRequest =
+            GetObjectRequest
+                .builder()
+                .bucket(bucketName)
+                .key(extractKeyFromUrl(pdf.url))
+                .build()
+
+        val presignRequest =
+            GetObjectPresignRequest
+                .builder()
+                .getObjectRequest(getObjectRequest)
+                .signatureDuration(Duration.ofMinutes(10)) // valid for 10 minutes
+                .build()
+
+        val presignedRequest = s3Presigner.presignGetObject(presignRequest)
+        val presignedUrl = presignedRequest.url().toString()
+
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.TEXT_PLAIN)
+            .body(presignedUrl)
+    }
+
+    @GetMapping("/presigned-task/{cUuid}/{taskUuid}")
+    fun getPresignedUrlTask(
+        @PathVariable cUuid: UUID,
+        @PathVariable taskUuid: UUID,
+    ): ResponseEntity<String> {
+        val pdf =
+            PDFRepository.findByCUuidAndTaskUuid(cUuid, taskUuid).orElseThrow {
+                NoSuchElementException("PDF not found with id $cUuid and task id $taskUuid")
             }
 
         val getObjectRequest =
@@ -132,4 +190,13 @@ class PDFController(
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }
+
+    @DeleteMapping("/presigned/{cUuid}/{type}")
+    fun delete(
+        @PathVariable cUuid: UUID,
+        @PathVariable type: String,
+    ): ResponseEntity<Void> {
+        PDFRepository.deleteByCUuidAndType(cUuid, type)
+        return ResponseEntity.noContent().build()
+    }
 }

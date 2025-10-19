@@ -29,7 +29,7 @@
                         <span class="font-medium text-gray-700">Inventory Budget</span>
                     </div>
                     <div class="text-lg font-semibold text-yellow-500 mt-1">
-                        {{bcData().predictedInventoryBudget! | formatAmount}}
+                        {{bcData().predictedInventoryBudget! | number:'1.2-2' }}
                     </div>
                 </div>
                 
@@ -40,7 +40,7 @@
                         <span class="font-medium text-gray-700">Maintenance Budget</span>
                     </div>
                     <div class="text-lg font-semibold text-yellow-500 mt-1">
-                        {{bcData().predictedMaintenanceBudget! | formatAmount}}
+                        {{bcData().predictedMaintenanceBudget! | number:'1.2-2' }}
                     </div>
                 </div>
             </div>

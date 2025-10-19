@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IonContent, IonButton, IonItem, IonIcon, IonList, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { StorageService } from 'shared';
 import { TabComponent } from 'src/app/components/tab/tab.component';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 import { addIcons } from 'ionicons';
 import { moonOutline, sunnyOutline, textOutline, helpOutline, logOutOutline,documentTextOutline } from 'ionicons/icons';
 import { Router, RouterModule } from '@angular/router';
@@ -11,10 +12,14 @@ import { ThemeService } from 'src/app/services/theme.service';
   selector: 'app-profile',
   standalone: true,
   imports: [
-    IonIcon, IonItem, IonButton, TabComponent, IonContent, IonList, IonSelect, IonSelectOption,RouterModule
+    IonIcon, IonItem, IonButton, TabComponent, IonContent, IonList, IonSelect, IonSelectOption,RouterModule,HeaderComponent
   ],
   templateUrl: './profile.component.html',
-  styles: ``,
+  styles: `
+    ion-select{
+      color: rgb(229 231 235 / var(--tw-text-opacity, 1));
+    }
+  `,
 })
 export class ProfileComponent implements OnInit {
   public darkMode = false;

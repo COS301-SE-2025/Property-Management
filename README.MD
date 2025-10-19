@@ -61,11 +61,12 @@ Property Management simplifies the budgeting, scheduling and progress tracking o
 
 ##  Documentation
 
-🔗 [System Requirements Document (SRS)](docs/Demo%203%20Documentation/RequirementSpecification.md) <br>
-🔗 [Coding Standards](docs/Demo%203%20Documentation/CodingStandards.md) <br>
-🔗 [Technical Installation Manual](docs/Demo%203%20Documentation/InstallationManual.md) <br>
-🔗 [User Manual](docs/Demo%203%20Documentation/Property%20Manager%20User%20Manual.pdf) <br>
-🔗 [Architectural Requirements and design](docs/Demo%203%20Documentation/Architectural%20document.pdf) <br>
+🔗 [Architectural Requirement and design](docs/Demo%204%20Documentation/Architectural_Requirements.md) <br>
+🔗 [System Requirements Document (SRS)](docs/Demo%204%20Documentation/RequirementSpecification.md) <br>
+🔗 [Coding Standards](docs/Demo%204%20Documentation/CodingStandards.md) <br>
+🔗 [Technical Installation Manual](docs/Demo%204%20Documentation/InstallationManual.md) <br>
+🔗 [User Manual](docs/Demo%204%20Documentation/Property%20Manager%20User%20Manual.pdf) <br>
+🔗 [Architectural Document](docs/Demo%204%20Documentation/Architectural%20document.pdf) <br>
 🔗 [Presentation](https://www.canva.com/design/DAGolOVTNTE/soGa0R0ZWJJiebLWCDFrGA/edit) <br>
 
 
@@ -98,7 +99,7 @@ Our GitHub Project boards facilitate effective task management, progress trackin
       <code>UI/UX Design</code>
     </td>
     <td width="15%">
-      <a href="https://linkedin.com/in/member1">
+      <a href="https://www.linkedin.com/in/sean-maritz-87b53b307/">
         <img src="https://custom-icon-badges.demolab.com/badge/LinkedIn-0A66C2?logo=linkedin-white&logoColor=fff" alt="LinkedIn">
       </a>
     </td>

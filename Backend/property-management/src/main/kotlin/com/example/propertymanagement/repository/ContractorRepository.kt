@@ -14,8 +14,13 @@ interface ContractorRepository : JpaRepository<Contractor, UUID> {
 
     fun findByEmail(email: String): Optional<Contractor>
 
-    @Query("SELECT c FROM Contractor c WHERE c.corporateUuid =:corporateUuid")
+    @Query("SELECT c FROM Contractor c WHERE c.corporateUuid = :corporateUuid")
     fun findContractorsByCorporateUuid(
         @Param("corporateUuid") corporateUuid: UUID,
+    ): List<Contractor>
+
+    @Query("SELECT c FROM Contractor c JOIN c.specializations s WHERE s = :service")
+    fun findByService(
+        @Param("service") service: String,
     ): List<Contractor>
 }

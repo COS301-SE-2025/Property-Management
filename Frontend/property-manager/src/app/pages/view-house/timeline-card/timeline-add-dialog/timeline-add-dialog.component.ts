@@ -77,7 +77,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       description: ['', Validators.required],
       date: ['', Validators.required],
       priority: ['', Validators.required],
-      allowContractor: [false]
+      allowContractor: [false],
+      maxBudget: [null, [Validators.min(0)]]
     });
 
     //Get contractors
@@ -100,8 +101,8 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
   this.form.reset();
   this.selectedFile = null;
   this.inventoryItemsUsed = undefined;
-  // this.contractors = [];
  }
+ 
  onFileSelect(event: FileSelectEvent)
  {
   if(event.files && event.files.length > 0)
@@ -114,24 +115,6 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
   if (this.form.valid) {
     this.addError = false;
 
-    let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
-
-    if (this.selectedFile) {
-      try {
-        const upload = await this.imageService.uploadImage(this.selectedFile).toPromise();
-        if (upload?.imageId) {
-          imageId = upload.imageId;
-        }
-      } catch (err) {
-        console.error("Image upload failed", err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to upload image, please try again'
-        });
-      }
-    }
-
     const userId = getCookieValue(document.cookie, 'trusteeId');
     const isBodyCorporate = userId === '' ? true : false;
     const name = this.form.value.name;
@@ -139,29 +122,95 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     const date = this.form.value.date;
     const proirity = this.form.value.priority.value;
     const allowContractor = this.form.value.allowContractor;
+    const maxBudget = this.form.value.maxBudget;
 
-    this.taskApiService.createTask(name, des, date, this.houseId, userId, imageId, userId, !isBodyCorporate, isBodyCorporate, proirity).subscribe({
-      next: (task) => {
+    // STEP 1: Upload image WITHOUT task UUID (initially)
+    let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
+
+    if(this.selectedFile) {
+      try {
+        console.log('Uploading image without task UUID...');
+        // Upload image with undefined for all UUIDs initially
+        const imageIds = await this.imageService.uploadImages(
+          [this.selectedFile], 
+          undefined,    // user_uuid
+          undefined,    // task_uuid - NOT YET AVAILABLE
+          undefined,    // progress_uuid
+          undefined     // building_uuid
+        );
+        
+        if(imageIds && imageIds.length > 0) {
+          imageId = imageIds[0];
+          console.log('Image uploaded successfully with ID:', imageId);
+        }
+      } catch(err) {
+        console.error("Image upload failed", err);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to upload image, please try again'
+        });
+        return;
+      }
+    }
+
+    // STEP 2: Create task with the image ID
+    this.taskApiService.createTask(
+      name, 
+      des, 
+      date, 
+      this.houseId, 
+      userId, 
+      imageId, 
+      userId, 
+      !isBodyCorporate, 
+      isBodyCorporate, 
+      proirity, 
+      maxBudget
+    ).subscribe({
+      next: async (task) => {
+        const taskUuid = task.uuid;
+        console.log('Task created with UUID:', taskUuid);
+
+        // STEP 3: Update image association with task UUID (NO re-upload!)
+        if (imageId && imageId !== "00000000-0000-0000-0000-000000000000") {
+          try {
+            console.log('Updating image association with task UUID...');
+            await this.imageService.updateImageAssociations(
+              imageId,      // imageId
+              undefined,    // user_uuid
+              taskUuid,     // task_uuid - NOW AVAILABLE!
+              undefined,    // progress_uuid
+              undefined     // building_uuid
+            );
+            console.log('✓ Image association updated successfully');
+          } catch (err) {
+            console.error('Failed to update image association:', err);
+            // Non-critical error - task is already created with image ID
+          }
+        }
+
+        // Continue with the rest of your logic
         if (allowContractor) {
-          this.taskApiService.updateTaskAllowContractor(task.uuid).subscribe({
+          this.taskApiService.updateTaskAllowContractor(taskUuid).subscribe({
             next: () => {
-              console.log('Task status updated to allow');
+              console.log('Task status updated to allow contractors');
             },
             error: (err) => {
-              console.error('Failed to update task status to allow', err);
+              console.error('Failed to update task status:', err);
             }
           });
         }
 
         if (this.inventoryItemsUsed && this.inventoryItemsUsed.length > 0) {
-          this.handleInventoryUsage(task.uuid);
+          this.handleInventoryUsage(taskUuid);
         }
 
         this.form.reset();
         this.closeDialog();
 
         const house = this.housesService.getHouseById(this.houseId);
-
         const buildingId = String(this.route.snapshot.paramMap.get('houseId'));
 
         if (house?.coporateUuid) {
@@ -171,7 +220,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
             recipientUuid: house.coporateUuid!,
             recipientType: 'bodycoporate',
             isRead: false,
-            relatedTaskUuid: task.uuid
+            relatedTaskUuid: taskUuid
           };
           this.notificationService.createNotifications(noti).subscribe({
             next: () => {
@@ -195,6 +244,11 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       error: (err) => {
         console.error("Failed to create task", err);
         this.addError = true;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to create task'
+        });
       }
     });
   }
@@ -209,11 +263,11 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     selectedIds.includes(item.itemUuid)).map(item => ({...item})
   );
  }
+ 
  private handleInventoryUsage(taskId: string)
  {
   if(!this.inventoryItemsUsed) return;
 
-  
   this.inventoryItemsUsed.forEach(item => {
     this.inventoryCard.addItemToUsage(
       taskId,
@@ -221,24 +275,9 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
       item.quantityInStock,
       true
     );
-
-    // const org = this.inventoryItemsAvailable?.find(i => i.itemUuid === item.itemUuid);
-    // if(org)
-    // {
-    //   org.quantityInStock -= item.quantityInStock;
-    //   if(org.quantityInStock <= 0)
-    //   {
-    //     this.inventoryItemsAvailable = this.inventoryItemsAvailable?.filter(i => i.itemUuid != item.itemUuid);
-
-    //     this.housesService.deleteInvetoryItem(item);
-    //   }
-    //   else
-    //   {
-    //     this.housesService.updateInventory([org]);
-    //   }
-    // }
   });
  }
+ 
  onQuantitiesChanged(updated: Inventory[])
  {
   this.inventoryItemsUsed = updated;

@@ -1,44 +1,43 @@
 <ion-content id="main-content" class="ion-padding dark:bg-gray-700">
     <p class="text-l font-bold mb-2 dark:text-white">Create New Property</p>
     <hr class="yellow-line mb-4;" />
-    @if(!capturedPhoto)
-    {
-      <div 
-        class="border border-gray-300 dark:border-gray-700 dark:bg-gray-300 rounded-lg flex items-center justify-center mb-6 cursor-pointer image-upload-box"
-        style="height: 180px;"
-      >
-        <ion-button (click)="capturePhoto()" fill="clear">
-          <ion-icon name="camera-outline"></ion-icon>
-        </ion-button>
-        <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
-          <p class="mb-2 dark:text-white mt-2">Preview</p>
-          <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
-          <ion-button (click)="deletePhoto()" fill="clear" color="dark">
-            <ion-icon name="trash-outline"></ion-icon>
+    
+    <!-- Camera Button - Always visible -->
+    <div 
+      class="border border-gray-300 dark:border-gray-700 dark:bg-gray-300 rounded-lg flex items-center justify-center mb-2 cursor-pointer image-upload-box"
+      style="height: 60px;"
+    >
+      <ion-button (click)="capturePhoto()" fill="clear">
+        <ion-icon name="camera-outline" class="text-2xl"></ion-icon>
+        <span class="ml-2">Add Photo ({{ capturedPhotos.length }})</span>
+      </ion-button>
+    </div>
+
+    <!-- Photo Gallery - Shows all captured photos -->
+    <div *ngIf="capturedPhotos.length > 0" class="mb-4">
+      <p class="text-sm font-semibold mb-2 dark:text-white">Photos ({{ capturedPhotos.length }})</p>
+      <div class="grid grid-cols-2 gap-2">
+        <div *ngFor="let photo of capturedPhotos; let i = index" class="relative">
+          <img [src]="photo" alt="Property photo {{i + 1}}" class="w-full h-32 object-cover rounded-md border border-gray-300">
+          <ion-button 
+            (click)="deletePhoto(i)" 
+            fill="solid" 
+            color="danger" 
+            size="small"
+            class="absolute top-1 right-1"
+            style="--padding-start: 8px; --padding-end: 8px; height: 28px;"
+          >
+            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
           </ion-button>
+          <div *ngIf="i === 0" class="absolute bottom-1 left-1 bg-yellow-300 text-black text-xs px-2 py-1 rounded">
+            Primary
+          </div>
         </div>
       </div>
-    }
-    @else
-    {
-      <div 
-        class="flex items-center justify-center mb-6image-upload-box pt-4"
-        style="height: 180px;"
-      >
-        <ion-button (click)="capturePhoto()" fill="clear">
-          <ion-icon name="camera-outline"></ion-icon>
-        </ion-button>
-        <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
-          <p class="mb-2 dark:text-white mt-2">Preview</p>
-          <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
-          <ion-button (click)="deletePhoto()" fill="clear" color="dark">
-            <ion-icon name="trash-outline"></ion-icon>
-          </ion-button>
-        </div>
-      </div>
-    }
+    </div>
+
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
-      <ion-item class="rounded-lg border mt-12 border-gray-300 dark:border-gray-700 dark:bg-gray-300">
+      <ion-item class="rounded-lg border mt-4 border-gray-300 dark:border-gray-700 dark:bg-gray-300">
         <ion-input formControlName="name" placeholder="Property Name *"></ion-input>
       </ion-item>
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
@@ -50,7 +49,7 @@
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
         <ion-input formControlName="address" placeholder="Street Address *"></ion-input>
       </ion-item>
-      <ion-label class="font-semibold" style="display: block; padding-top: 5px; padding-left: 5px;">
+      <ion-label class="font-semibold dark:text-gray-200" style="display: block; padding-top: 5px; padding-left: 5px;">
         Assign to Body Corporate
       </ion-label>
       <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
@@ -74,22 +73,11 @@
           <ion-input formControlName="type" placeholder="Type *"></ion-input>
         </ion-item>
       </div>
-      <!-- <ion-label class="font-semibold" style="display: block; padding-top: 5px;">
-        Primary Contractors *
-      </ion-label>
-      <ion-item class="rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-300">
-        <ion-select formControlName="primaryContractor" interface="action-sheet" placeholder="Select contractor">
-          <ion-select-option *ngFor="let contractor of contractors" [value]="contractor.uuid">
-            {{ contractor.name }} - {{ contractor.services }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item> -->
-      <!-- <ion-item class="rounded-lg border border-gray-300">
-        <ion-input formControlName="bodyCorporate" placeholder="Invite members"></ion-input>
-      </ion-item> -->
+      
       <ion-item *ngIf="submissionError">
         <ion-text color="danger">{{ submissionError }}</ion-text>
       </ion-item>
+      
       <button ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting"
         class="bg-yellow-300 text-black px-14 py-2 rounded font-semibold hover:bg-gray-800 w-full flex items-center justify-center">
         <ion-spinner *ngIf="isSubmitting" name="dots"></ion-spinner>

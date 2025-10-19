@@ -1,24 +1,27 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, SimpleChanges, OnChanges, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { AddressMapComponent } from "../../components/address-map/address-map.component";
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ContractorDetails } from 'shared';
 
 @Component({
   selector: 'app-step-one',
   standalone: true,
-  imports: [ReactiveFormsModule, AddressMapComponent],
+  imports: [ReactiveFormsModule, AddressMapComponent, MultiSelectModule],
   templateUrl: './step-one.component.html',
   styleUrls: ['./step-one.component.scss']
 })
-export class StepOneComponent {
+export class StepOneComponent implements OnChanges {
+  @Input() contractor!: ContractorDetails;
   @Output() next = new EventEmitter<{
     name: string;
-    // contact_info: string;
     email: string;
     phone: string;
     address: string;
     city: string;
     suburb: string;
     postalCode: string;
+    specializations: string[];
     status: boolean;
   }>();
 
@@ -30,8 +33,22 @@ export class StepOneComponent {
     city: FormControl<string | null>;
     suburb: FormControl<string | null>;
     postalCode: FormControl<string | null>;
+    specializations: FormControl<string[] | null>;
     status: FormControl<boolean | null>;
   }>;
+
+  specializationOptions = [
+    { label: 'Plumber', value: 'plumber' },
+    { label: 'Electrician', value: 'electrician' },
+    { label: 'Painter', value: 'painter' },
+    { label: 'Carpenter', value: 'carpenter' },
+    { label: 'Builder', value: 'builder' },
+    { label: 'Landscaper', value: 'landscaper' },
+    { label: 'Tiling and Flooring', value: 'Tiling and flooring' },
+    { label: 'Masonry', value: 'masonry' },
+    { label: 'Roofing', value: 'roofing' },
+    { label: 'Drywall and Plastering', value: 'drywall and plastering' },
+  ];
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -42,13 +59,28 @@ export class StepOneComponent {
       city: this.fb.control(''),
       suburb: this.fb.control(''),
       postalCode: this.fb.control(''),
-      status: this.fb.control(false)
+      specializations: this.fb.control<string[] | null>([], { nonNullable: false }),
+      status: this.fb.control(false),
     });
   }
 
-  emitRelevantData() {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['contractor'] && this.contractor) {
+      this.form.patchValue({
+        name: this.contractor.name || '',
+        email: this.contractor.email || '',
+        phone: this.contractor.phone || '',
+        address: this.contractor.address || '',
+        city: this.contractor.city || '',
+        postalCode: this.contractor.postal_code || '',
+        specializations: this.contractor.specializations || [],
+        status: this.contractor.status || false
+      });
+    }
+  }
 
-    if(!this.form.valid){
+  emitRelevantData() {
+    if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
     }
@@ -61,15 +93,8 @@ export class StepOneComponent {
       city: this.form.value.city ?? '',
       suburb: this.form.value.suburb ?? '',
       postalCode: this.form.value.postalCode ?? '',
+      specializations: this.form.value.specializations ?? [],
       status: true
     });
-  }
-
-  upload(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files && input.files[0];
-    if (file) {
-      console.log('Profile image:', file.name);
-    }
   }
 }

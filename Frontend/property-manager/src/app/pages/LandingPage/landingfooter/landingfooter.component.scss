@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Accent bar color */
+.propertyYellow-bg {
+  background-color: #facc15; 
+}
+
+footer {
+  font-family: 'Inter', sans-serif;
+  color: #d1d5db;
+  line-height: 1.6;
+}
+
+.pi {
+  font-size: 1.2rem;
+}
+
+a {
+  transition: color 0.3s ease;
+}

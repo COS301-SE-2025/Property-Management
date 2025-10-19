@@ -1,7 +1,8 @@
+@import "primeicons/primeicons.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "primeicons/primeicons.css";
+
 
 :root {
   --base-font-size: 16px;
@@ -33,14 +34,9 @@
   right: 0;
 }
 
-
 .propertyYellow-bg {
   background-color: var(--property-yellow);
 }
-
-// ::ng-deep .p-drawer {
-//   background-color: #facc15 !important; 
-// }
 
 ::ng-deep .p-drawer {
   background-color: var(--dialog-bg);
@@ -73,23 +69,41 @@
   border: 1px solid black !important;
 }
 
+/* File upload choose button styling */
+::ng-deep .p-fileupload .p-button.p-fileupload-choose {
+  background-color: var(--property-yellow) !important;
+  color: #111111 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+::ng-deep .p-fileupload .p-button.p-fileupload-choose:hover {
+  background-color: #facc15 !important; /* Slightly darker yellow for hover */
+}
+
+/* Slider styling */
+::ng-deep .p-slider .p-slider-range {
+  background-color: var(--property-yellow) !important;
+}
+
+::ng-deep .p-slider .p-slider-handle {
+  background-color: var(--property-yellow) !important;
+  border-color: #facc15 !important; /* Slightly darker yellow for border */
+}
+
 .dark-theme {
   --bg-color: #3d444d;
   --text-color: #FDFDFD;
   --border-color: #000000;
-
   --dark-background: #3d444d;      
   --dark-card-background: #3d444d;        
   --text-color: #FDFDFD;          
   --card-border: #000000;  
   --card-hover: #4a5568;
-
   --datatable-header-bg: #2d2d2d;
   --datatable-header-text: #f0f0f0;
   --datatable-body-bg: #2d2d2d;
   --datatable-body-text: #f0f0f0;
   --datatable-border: #444;
-
   --dialog-bg: #2d2d2d;
   --dialog-header-bg: #333;
   --dialog-header-text: #f0f0f0;
@@ -97,6 +111,7 @@
   --dialog-border: #444;
   --dialog-mask-bg: rgba(0, 0, 0, 0.7);
 }
+
 
 :root, .dark-theme {
   transition: all 0.5s ease;
@@ -120,26 +135,68 @@ p, .text, .font-normal {
   font-size: var(--text-font-size);
 }
 
-.dark-theme input, textarea{
-  color: #000000;
+/* Remove the conflicting rules and replace with: */
+
+input,
+textarea {
+  color: var(--text-color) !important; 
+  background-color: var(--bg-color) !important;
+  border: 1px solid var(--border-color) !important;
 }
 
-.dark-theme .p-card{
-  background: #595964;
-  color: var(--text-color);
+.dark-theme input,
+.dark-theme textarea {
+  color: var(--text-color) !important;
+  background-color: var(--dark-card-background) !important;
+  border-color: var(--card-border) !important;
 }
-.dark-theme .bg-gray-50  {
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-color) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg-color) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark-theme input:-webkit-autofill,
+.dark-theme input:-webkit-autofill:hover, 
+.dark-theme input:-webkit-autofill:focus,
+.dark-theme textarea:-webkit-autofill,
+.dark-theme textarea:-webkit-autofill:hover,
+.dark-theme textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-color) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--dark-card-background) inset !important;
+}
+
+ 
+.p-card {
+  background:#f9fafb !important ;
+  color: var(--text-color) !important;
+}
+.dark-theme .p-card{
+  background: #595964!important;
+  color: var(--text-color)!important;
+}
+
+.dark-theme .bg-gray-50 {
   background: var(--card-hover);
   color: var(--text-color);
 }
-.dark-theme app-inventory-card .p-card{
+
+.dark-theme app-inventory-card .p-card {
   background: var(--dark-background);
 }
-.dark-theme .bg-gray-50  p{
+
+.dark-theme .bg-gray-50 p {
   color: var(--text-color);
 }
 
-.dark-theme .p-datatable{
+.dark-theme .p-datatable {
   background: var(--datatable-body-bg);
   color: var(--datatable-body-text);
 }
@@ -168,26 +225,31 @@ p, .text, .font-normal {
 .dark-theme .p-datatable .p-datatable-tbody > tr:hover {
   background: var(--datatable-row-hover-bg);
 }
-.dark-theme .p-paginator{
+
+.dark-theme .p-paginator {
   background: var(--datatable-body-bg);
 }
+
 .dark-theme .p-paginator-page.p-paginator-page-selected {
   background: var(--card-border);
   color: #fff;
 }
-.dark-theme .p-select-option{
+
+.dark-theme .p-select-option {
   color: #fff;
   background: #000000;
 }
-.dark-theme .p-select-list-container{
+
+.dark-theme .p-select-list-container {
   background: #000000;
 }
+
 .dark-theme .p-select-option.p-select-option-selected.p-focus {
   background: var(--card-hover);
   color: #fff;
 }
 
-.dark-theme .p-dropdown{
+.dark-theme .p-dropdown {
   background: #D3D3D3;
 }
 
@@ -213,10 +275,6 @@ p, .text, .font-normal {
   background: var(--dialog-bg);
 }
 
-.dark-theme .p-dialog-mask {
-  background-color: var(--dialog-mask-bg);
-}
-
 .dark-theme .p-dialog .p-float-label input {
   background: var(--input-bg-color);
   color: var(--text-color);
@@ -227,31 +285,35 @@ p, .text, .font-normal {
   color: var(--text-color-secondary);
 }
 
-.dark-theme .p-datepicker-panel{
+.dark-theme .p-datepicker-panel {
   background-color: var(--datatable-border);
 }
 
-.dark-theme .p-datepicker-header{
+.dark-theme .p-datepicker-header {
   background: var(--datatable-border);
 }
-.dark-theme .p-datepicker-day{
+
+.dark-theme .p-datepicker-day {
   color: var(--text-color);
 }
 
-.dark-theme .p-datepicker-month{
-  color: var(--text-color);
-}
-.dark-theme .p-datepicker-year{
+.dark-theme .p-datepicker-month {
   color: var(--text-color);
 }
 
-.dark-theme .p-datepicker-select-month{
+.dark-theme .p-datepicker-year {
   color: var(--text-color);
 }
-.dark-theme .p-datepicker-select-year{
+
+.dark-theme .p-datepicker-select-month {
   color: var(--text-color);
 }
-.dark-theme .p-datepicker-decade{
+
+.dark-theme .p-datepicker-select-year {
+  color: var(--text-color);
+}
+
+.dark-theme .p-datepicker-decade {
   color: var(--text-color);
 }
 
@@ -268,12 +330,12 @@ p, .text, .font-normal {
   background: #555;
 }
 
-.dark-theme .p-listbox{
+.dark-theme .p-listbox {
   background: var(--dark-background);
   color: var(--text-color);
 }
 
-.dark-theme .p-listbox-option{
+.dark-theme .p-listbox-option {
   background: var(--dialog-bg);
   color: var(--text-color);
 }
@@ -303,7 +365,6 @@ button.bg-yellow-500 {
 }
 
 .dark-theme .propertyYellow-bg button {
-  //background-color: var(--dialog-bg); 
   color: var(--text-color); 
   border-color: var(--border-color); 
 }
@@ -386,17 +447,15 @@ option.custom-option {
   border-color: #facc15;
 }
 
-/* Hide scrollbar for notification drawer */
 .p-drawer .p-drawer-content {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .p-drawer .p-drawer-content::-webkit-scrollbar {
-  display: none; /* WebKit browsers (Chrome, Safari, Edge) */
+  display: none;
 }
 
-/* Alternative approach - target the drawer more specifically */
 .p-drawer[data-pc-name="drawer"] .p-drawer-content {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -406,7 +465,6 @@ option.custom-option {
   display: none;
 }
 
-/* Notification item styling for better visual distinction */
 .notification-date {
   color: #facc15 !important;
   font-size: 0.875rem;
@@ -420,23 +478,143 @@ option.custom-option {
   line-height: 1.4;
 }
 
-/* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .notification-message {
     color: rgb(229, 231, 235);
   }
 }
 
-/* If you're using a dark mode class instead of media query */
 .dark .notification-message {
   color: rgb(229, 231, 235);
 }
 
-/* Read notification styling */
 .notification-message-read {
   color: rgb(75, 85, 99);
 }
 
 .dark .notification-message-read {
   color: rgb(209, 213, 219);
+}
+
+.p-breadcrumb,
+.p-breadcrumb .p-breadcrumb-nav,
+.p-breadcrumb .p-breadcrumb-list {
+  background-color: var(--bg-color) !important;
+}
+
+.p-breadcrumb .p-breadcrumb-list {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.p-breadcrumb .p-breadcrumb-item-link {
+  color: #111111;
+  font-weight: 500;
+}
+
+.p-breadcrumb .p-breadcrumb-item:last-child span {
+  color: #facc15 !important; 
+  font-weight: 600;
+}
+
+.p-breadcrumb {
+  margin: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+ .p-datatable{
+  background: var(--datatable-body-bg);
+  color: var(--datatable-body-text);
+}
+
+ .p-datatable .p-datatable-header {
+  background: var(--datatable-header-bg);
+  color: var(--datatable-header-text);
+}
+
+ .p-datatable .p-datatable-thead > tr > th {
+  background: var(--datatable-header-bg);
+  color: var(--datatable-header-text);
+  border-color: var(--datatable-border);
+}
+
+ .p-datatable .p-datatable-tbody > tr {
+  background: var(--datatable-body-bg);
+  color: var(--datatable-body-text);
+  border-color: var(--datatable-border);
+}
+
+ .p-datatable .p-datatable-tbody > tr:nth-child(even) {
+  background: var(--datatable-row-even-bg);
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background: var(--datatable-row-hover-bg);
+}
+
+.p-paginator{
+  background: var(--datatable-body-bg);
+}
+.dark-theme .p-paginator-page.p-paginator-page-selected {
+  background: var(--card-border);
+  color: #fff;
+}
+ .p-select-option{
+  color: #fff;
+  background: #000000;
+}
+ .p-select-list-container{
+  background: #000000;
+}
+ .p-select-option.p-select-option-selected.p-focus {
+  background: var(--card-hover);
+  color: #fff;
+}
+
+ 
+.p-select {
+  background: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.p-select-list-container {
+  background: var(--dialog-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.p-select-option {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.p-select-option.p-select-option-selected,
+.p-select-option.p-focus {
+  background: var(--property-yellow) !important;
+  color: #000 !important;
+}
+
+
+.dark-theme .p-select {
+  background: var(--dark-card-background) !important;
+  color: var(--text-color) !important;
+  border-color: var(--card-border) !important;
+}
+
+.dark-theme .p-select-list-container {
+  background: var(--dark-card-background) !important;
+  border-color: var(--card-border) !important;
+}
+
+.dark-theme .p-select-option {
+  color: var(--text-color) !important;
+  background: transparent !important;
+}
+
+.dark-theme .p-select-option.p-select-option-selected,
+.dark-theme .p-select-option.p-focus {
+  background: var(--card-hover) !important;
+  color: #fff !important;
 }

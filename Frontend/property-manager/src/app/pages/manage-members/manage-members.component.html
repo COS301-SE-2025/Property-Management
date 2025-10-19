@@ -102,7 +102,8 @@
     >
       Send Invite
     </button>
-    <p *ngIf="inviteMessage" class="mt-2 text-green-600 dark:text-green-400">{{ inviteMessage }}</p>
+    <p *ngIf="inviteMessage && !inviteError" class="mt-2 text-green-600 dark:text-green-400">{{ inviteMessage }}</p>
+    <p *ngIf="inviteMessage && inviteError" class="mt-2 text-red-600 dark:text-red-400">{{ inviteMessage }}</p>
   </div>
 </div>
 <p-toast/>

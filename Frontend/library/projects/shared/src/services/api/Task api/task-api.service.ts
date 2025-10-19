@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, scheduled,switchMap } from 'rxjs';
+import { map, max, Observable, scheduled,switchMap } from 'rxjs';
 import { MaintenanceTask } from '../../../models/maintenanceTask.model';
 import { Quote } from '../../../public-api';
 import { environmentMobile } from '../../../environment';
@@ -14,7 +14,7 @@ export class TaskApiService {
   private url = environmentMobile.apiUrl;
   constructor(private http: HttpClient) { }
 
-  createTask(title: string, des: string, scheduledDate: Date, buildingId: string, trusteeId: string, imgId: string, createdId: string, isOwner: boolean, isBodyCorporate: boolean, proirity: string): Observable<MaintenanceTask>
+  createTask(title: string, des: string, scheduledDate: Date, buildingId: string, trusteeId: string, imgId: string, createdId: string, isOwner: boolean, isBodyCorporate: boolean, proirity: string, maxBudget?: number): Observable<MaintenanceTask>
   {
     const localISO = (date: Date) => {
       const pad = (n: number) => n.toString().padStart(2, '0');
@@ -31,7 +31,8 @@ export class TaskApiService {
       imageUuid: imgId,
       createdByUuid: createdId,
       approvalStatus: "PENDING",
-      priority: proirity
+      priority: proirity,
+      maxBudget: maxBudget
     };
     console.log(req);
 
@@ -65,8 +66,11 @@ export class TaskApiService {
   }
 
   updateTaskAllowContractor(taskId: string): Observable<MaintenanceTask> {
-    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/${taskId}/approve`, null, {
-      withCredentials: true
+    const body = { status: 'APPROVED' };
+
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, body, {
+      withCredentials: true,
+      headers: { 'isBodyCorporate': 'true' }
     });
   }
 
@@ -134,7 +138,7 @@ export class TaskApiService {
   }
 
   getTasksForTrustee(trusteeUuid: string): Observable<MaintenanceTask[]> {
-    return this.http.get<MaintenanceTask[]>(`/api/maintenance/trustee/${trusteeUuid}`,
+    return this.http.get<MaintenanceTask[]>(`${this.url}/maintenance/trustee/${trusteeUuid}`,
     { withCredentials: true });
   }
 }

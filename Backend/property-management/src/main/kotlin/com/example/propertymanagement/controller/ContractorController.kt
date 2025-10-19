@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.NoSuchElementException
 import java.util.UUID
@@ -23,7 +24,6 @@ import java.util.UUID
 @RequestMapping("/api/contractor")
 class ContractorController(
     private val service: ContractorService,
-    private val contractorService: ContractorService,
     private val cognitoService: CognitoService,
 ) {
     @GetMapping()
@@ -53,14 +53,15 @@ class ContractorController(
         val reg_number: String,
         val description: String,
         val services: String,
+        val specializations: Set<String> = emptySet(),
         val corporateUuid: UUID? = null,
         val img: UUID,
     )
 
     @GetMapping("/corporate/{uuid}")
-    fun getTaskByTrustee(
-        @PathVariable Uuid: UUID,
-    ): ResponseEntity<List<Contractor>> = ResponseEntity.ok(service.getContractorsByCorporateUuid(Uuid))
+    fun getContractorsByCorporate(
+        @PathVariable uuid: UUID,
+    ): ResponseEntity<List<Contractor>> = ResponseEntity.ok(service.getContractorsByCorporateUuid(uuid))
 
     @PostMapping
     fun createUser(
@@ -79,6 +80,7 @@ class ContractorController(
             contractor.reg_number,
             contractor.description,
             contractor.services,
+            contractor.specializations,
             contractor.corporateUuid ?: UUID.randomUUID(),
             contractor.img,
         )
@@ -97,7 +99,10 @@ class ContractorController(
         return ResponseEntity.noContent().build()
     }
 
-    // Auth stuff
+    @GetMapping("/search")
+    fun searchByService(
+        @RequestParam serviceName: String,
+    ): List<Contractor> = service.findByService(serviceName)
 
     @PostMapping("/auth/register")
     fun register(
@@ -118,7 +123,7 @@ class ContractorController(
                     "given_name" to "owner",
                 ),
             )
-        contractorService.addUser(
+        service.addUser(
             name = username,
             contact_info = "N/A",
             status = false,
@@ -131,6 +136,7 @@ class ContractorController(
             reg_number = "N/A",
             description = "N/A",
             services = "N/A",
+            specializations = emptySet(),
             corporateUuid = UUID.randomUUID(),
             img = UUID.randomUUID(),
         )
@@ -155,7 +161,7 @@ class ContractorController(
         @RequestBody request: LoginRequest,
     ): ResponseEntity<LoginResponse> {
         val tokens = cognitoService.login(request.email, request.password)
-        val contractor = contractorService.getByEmail(request.email)
+        val contractor = service.getByEmail(request.email)
 
         return ResponseEntity.ok(
             LoginResponse(
@@ -168,7 +174,6 @@ class ContractorController(
         )
     }
 
-    // Optional: API key generator utility
     private fun generateApiKey(): String = UUID.randomUUID().toString().replace("-", "")
 
     data class PasswordResetRequest(

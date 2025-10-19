@@ -5,4 +5,5 @@ export interface AssignedContractor extends Contractor{
     contractorUuid?: string;
     quoteSubmitted?: boolean;
     quoteUuid?: string | null;
+    img?: string;
 }

@@ -41,6 +41,7 @@ export class VotingService{
         const tasks = this.bodyCorporateService.pendingTasks();
 
         tasks.forEach(task => {
+            task.scheduled_date = new Date(task.scheduled_date);
             if(task.approvalStatus === 'PENDING' && task.scheduled_date >= date)
             {
                 //add to pending tasks tasks 
@@ -345,6 +346,10 @@ export class VotingService{
     updateQuoteStatus(quoteId: string, status : string)
     {
         return this.votingApiService.updateQuoteStatus(quoteId, status);
+    }
+    getSessionFromTaskId(taskId: string)
+    {
+        return this.votingApiService.getSessionFromTaskId(taskId);
     }
     private addToPending(task: MaintenanceTask)
     {

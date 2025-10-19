@@ -94,7 +94,7 @@ export class BodyCoporateService {
             }
           });
         } catch (error) {
-          console.error(`Failed to load tasks for building ${uuid}`, error);
+          console.error(`Failed to load tasks for building ${uuid}, error`);
         }
       }));
     } catch (error) {

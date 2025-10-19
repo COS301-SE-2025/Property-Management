@@ -41,6 +41,7 @@ export class ContractorProfileComponent implements OnInit {
     services: '',
     project_history: '',
     img: '',
+    specializations: []
   };
 
   constructor(
@@ -66,8 +67,7 @@ export class ContractorProfileComponent implements OnInit {
                 this.imagePreviewUrl = imageUrl;
               },
               error: (err) => {
-                if(contractor.status === false)
-                {
+                if (contractor.status === false) {
                   this.resetImage();
                 } else {
                   console.error('Error loading image:', err);
@@ -89,7 +89,6 @@ export class ContractorProfileComponent implements OnInit {
 
     this.contractorService.updateContractor(contractorId, this.contractor).subscribe({
       next: () => {
-        // localStorage.setItem('contractorProfileComplete', 'true'); 
         this.messageService.add({
           severity: 'success',
           summary: 'Profile Complete',
@@ -223,13 +222,25 @@ export class ContractorProfileComponent implements OnInit {
     this.imageError = false;
   }
 
-  onStepOneComplete(data: { name: string; email: string; phone: string; address: string; city: string; suburb: string; postalCode: string; status: boolean }) {
+  onStepOneComplete(data: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    suburb: string;
+    postalCode: string;
+    specializations: string[];
+    status: boolean;
+  }) {
     this.contractor.name = data.name;
     this.contractor.email = data.email;
     this.contractor.phone = data.phone;
-    this.contractor.address = data.address.concat(', ', data.suburb, ', ', data.postalCode);
+    const addressParts = [data.address, data.suburb, data.postalCode].filter(part => part).join(', ');
+    this.contractor.address = addressParts || '';
     this.contractor.city = data.city;
     this.contractor.status = data.status;
+    this.contractor.specializations = data.specializations;
     this.step = 2;
     this.messageService.add({
       severity: 'success',
@@ -257,7 +268,6 @@ export class ContractorProfileComponent implements OnInit {
     this.submitProfile();
   }
 
-  
   onStepThreeImagesSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input?.files) {
