@@ -54,7 +54,9 @@ export class StepOneComponent implements OnChanges {
     this.form = this.fb.group({
       name: this.fb.control('', { validators: [Validators.required, Validators.minLength(2)] }),
       email: this.fb.control('', { validators: [Validators.required, Validators.email] }),
-      phone: this.fb.control('', { validators: [Validators.pattern('^[0-9]{4,10}$')] }),
+      phone: this.fb.control('', { 
+        validators: [Validators.pattern(/^(\+?\d{1,3}[-.\s]?)?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/)] 
+      }),
       address: this.fb.control(''),
       city: this.fb.control(''),
       suburb: this.fb.control(''),
@@ -66,13 +68,16 @@ export class StepOneComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['contractor'] && this.contractor) {
+      const addressParts = this.contractor.address?.split(',').map(part => part.trim()) || [];
+      
       this.form.patchValue({
         name: this.contractor.name || '',
         email: this.contractor.email || '',
         phone: this.contractor.phone || '',
-        address: this.contractor.address || '',
+        address: addressParts[0] || '',
+        suburb: addressParts[1] || '',
         city: this.contractor.city || '',
-        postalCode: this.contractor.postal_code || '',
+        postalCode: addressParts[2] || this.contractor.postal_code || '',
         specializations: this.contractor.specializations || [],
         status: this.contractor.status || false
       });
@@ -80,12 +85,18 @@ export class StepOneComponent implements OnChanges {
   }
 
   emitRelevantData() {
+    console.log('Attempting to emit data...');
+    console.log('Form valid:', this.form.valid);
+    console.log('Form value:', this.form.value);
+    console.log('Form errors:', this.getFormErrors());
+
     if (!this.form.valid) {
+      console.log('Form is invalid, marking all fields as touched');
       this.form.markAllAsTouched();
       return;
     }
 
-    this.next.emit({
+    const emitData = {
       name: this.form.value.name ?? '',
       email: this.form.value.email ?? '',
       phone: this.form.value.phone ?? '',
@@ -95,6 +106,20 @@ export class StepOneComponent implements OnChanges {
       postalCode: this.form.value.postalCode ?? '',
       specializations: this.form.value.specializations ?? [],
       status: true
+    };
+
+    console.log('Emitting data:', emitData);
+    this.next.emit(emitData);
+  }
+
+  getFormErrors() {
+    const errors: any = {};
+    Object.keys(this.form.controls).forEach(key => {
+      const control = this.form.get(key);
+      if (control && control.errors) {
+        errors[key] = control.errors;
+      }
     });
+    return errors;
   }
 }

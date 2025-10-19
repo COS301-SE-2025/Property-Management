@@ -5,6 +5,7 @@ import com.example.propertymanagement.repository.PDFRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -114,10 +115,14 @@ class PDFController(
         @PathVariable cUuid: UUID,
         @PathVariable type: String,
     ): ResponseEntity<String> {
-        val pdf =
-            PDFRepository.findByCUuidAndType(cUuid, type).orElseThrow {
-                NoSuchElementException("PDF not found with id $cUuid and type $type")
-            }
+        val pdfs = PDFRepository.findAllByCUuidAndType(cUuid, type)
+
+        if (pdfs.isEmpty()) {
+            throw NoSuchElementException("PDF not found with id $cUuid and type $type")
+        }
+
+        // Get the first one (should only be one after duplicates are cleaned up)
+        val pdf = pdfs.first()
 
         val getObjectRequest =
             GetObjectRequest
@@ -192,10 +197,31 @@ class PDFController(
         }
 
     @DeleteMapping("/presigned/{cUuid}/{type}")
+    @Transactional
     fun delete(
         @PathVariable cUuid: UUID,
         @PathVariable type: String,
     ): ResponseEntity<Void> {
+        // Find all PDFs with this cUuid and type
+        val pdfs = PDFRepository.findAllByCUuidAndType(cUuid, type)
+
+        // Delete from S3 (optional but recommended)
+        pdfs.forEach { pdf ->
+            try {
+                val deleteObjectRequest =
+                    software.amazon.awssdk.services.s3.model.DeleteObjectRequest
+                        .builder()
+                        .bucket(bucketName)
+                        .key(extractKeyFromUrl(pdf.url))
+                        .build()
+                s3Client.deleteObject(deleteObjectRequest)
+            } catch (e: Exception) {
+                // Log error but continue
+                println("Failed to delete S3 object: ${pdf.key} - ${e.message}")
+            }
+        }
+
+        // Delete all from database
         PDFRepository.deleteByCUuidAndType(cUuid, type)
         return ResponseEntity.noContent().build()
     }

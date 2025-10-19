@@ -24,7 +24,7 @@ export class ImageApiService{
 
   constructor(private http: HttpClient) { }
 
-  getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid?: string, building_uuid?: string): Observable<string>
+getImage(imageId?: string, task_uuid?: string, user_uuid?: string, progress_uuid?: string, building_uuid?: string): Observable<string>
   {
     console.log('\n=== GET IMAGE ===');
     
@@ -46,28 +46,12 @@ export class ImageApiService{
           if (images.length === 0) {
             throw new Error('No images found');
           }
-          // Get the first image's ID and use it in the rest of the logic
-          imageId = images[0].id;
-          console.log('✓ Fetched image ID:', imageId);
+          // Get the first image's ID and fetch its presigned URL
+          const fetchedImageId = images[0].id;
+          console.log('✓ Fetched image ID:', fetchedImageId);
           
-          // Now continue with the existing logic using this imageId
-          if (this.imageCache.has(imageId)) {
-            console.log('✓ Found in cache:', this.imageCache.get(imageId));
-            return of(this.imageCache.get(imageId)!);
-          }
-
-          const url = `${this.url}/images/presigned/${imageId}`;
-          console.log('Fetching from URL:', url);
-          
-          return this.http.get(url, {
-            responseType: 'text',
-            withCredentials: true 
-          }).pipe(
-            map(url => {
-              this.imageCache.set(imageId!, url);
-              return url;
-            })
-          );
+          // Use the common logic with the fetched imageId
+          return this.fetchPresignedUrl(fetchedImageId);
         })
       );
     }
@@ -80,8 +64,13 @@ export class ImageApiService{
     console.log('Requested image ID:', imageId);
     console.log('Image ID type:', typeof imageId);
 
-    if(this.imageCache.has(imageId))
-    {
+    return this.fetchPresignedUrl(imageId);
+  }
+
+  // Helper method to handle the common presigned URL fetching logic
+  private fetchPresignedUrl(imageId: string): Observable<string> {
+    // Check cache first
+    if (this.imageCache.has(imageId)) {
       console.log('✓ Found in cache:', this.imageCache.get(imageId));
       return of(this.imageCache.get(imageId)!);
     }
@@ -89,17 +78,16 @@ export class ImageApiService{
     const url = `${this.url}/images/presigned/${imageId}`;
     console.log('Fetching from URL:', url);
     
-    return this.http.get(`${this.url}/images/presigned/${imageId}`, {
+    return this.http.get(url, {
       responseType: 'text',
       withCredentials: true 
     }).pipe(
-      map(url => {
-        this.imageCache.set(imageId!, url);
-        return url
+      map(presignedUrl => {
+        this.imageCache.set(imageId, presignedUrl);
+        return presignedUrl;
       })
-    ); 
+    );
   }
-
   async uploadImages(
     files: File[],
     user_uuid?: string,

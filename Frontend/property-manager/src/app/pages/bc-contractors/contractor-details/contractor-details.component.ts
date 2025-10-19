@@ -53,10 +53,9 @@ export class ContractorDetailsComponent implements OnInit{
           this.apiService.getContractorPDF(contractorId!, 'certifications', "").pipe(catchError(() => of(null))),
           this.apiService.getContractorPDF(contractorId!, 'licenses', "").pipe(catchError(() => of(null))),
           this.apiService.getContractorPDF(contractorId!, 'ids', "").pipe(catchError(() => of(null))),
-          this.apiService.getContractorPDF(contractorId!, 'projectRecords', "").pipe(() => of(null)) 
+          this.apiService.getContractorPDF(contractorId!, 'projectRecords', "").pipe(catchError(() => of(null))) 
         ];
-
-        forkJoin(pdfReq).subscribe({
+          forkJoin(pdfReq).subscribe({
           next: (res) => {
             const [certifications, licenses, ids, projectRecords] = res;
             foundContractor.certifications = certifications ?? undefined;
