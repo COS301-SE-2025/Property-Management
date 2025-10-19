@@ -37,7 +37,7 @@ describe('AuthMobileService', () => {
   let service: AuthMobileService;
   let httpMock: HttpTestingController;
   let storageService: MockStorageService;
-  const mockApiUrl = environmentMobile.apiUrl;
+  const mockApiUrl = `${environmentMobile.apiUrl}`;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
@@ -81,7 +81,7 @@ describe('AuthMobileService', () => {
 
       const promise = service.trusteeLogin('trustee@example.com', 'password');
       
-      const req = httpMock.expectOne(`${mockApiUrl}/trustee/auth/login`);
+      const req = httpMock.expectOne(`${mockApiUrl}/auth/login`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({
         email: 'trustee@example.com',
@@ -99,7 +99,7 @@ describe('AuthMobileService', () => {
     it('should reject on error', async () => {
       const promise = service.trusteeLogin('trustee@example.com', 'wrongpassword');
       
-      const req = httpMock.expectOne(`${mockApiUrl}/trustee/auth/login`);
+      const req = httpMock.expectOne(`${mockApiUrl}/auth/login`);
       req.error(new ErrorEvent('Unauthorized'), { status: 401 });
 
       await expectAsync(promise).toBeRejected();

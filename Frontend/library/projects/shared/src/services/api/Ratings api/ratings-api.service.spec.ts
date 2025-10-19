@@ -7,7 +7,7 @@ import { environmentMobile } from '../../../environment';
 describe('RatingService', () => {
   let service: RatingService;
   let httpMock: HttpTestingController;
-  const apiUrl = environmentMobile.apiUrl;
+  const apiUrl = `${environmentMobile.apiUrl}/rating`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
