@@ -1,4 +1,4 @@
-  <ion-card class="p-4 dark:bg-gray-800 no-outline-card flex flex-col items-center">
+<ion-card class="p-4 dark:bg-gray-800 no-outline-card flex flex-col items-center">
     <div class="p-6">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -16,12 +16,12 @@
             <p class="text-gray-500 dark:text-gray-400">Contractors haven't provided any updates yet. Check back later.</p>
         </div>
     }
-    <div class="relative">
-        <div *ngFor="let time of timeline(); let i = index" class="mb-8 flex flex-col md:flex-row items-center">
-                <div class="flex-1 ml-4 md:ml-0 md:pl-4">
+    <div class="relative w-full">
+        <div *ngFor="let time of timeline(); let i = index" class="mb-8 flex flex-col items-center">
+                <div class="flex-1 w-full">
                     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
                         <div class="flex flex-col">
-                            <span class="text-sm font-medium mb-3">{{time.subDate! | formatTime }}</span>
+                            <span class="text-sm font-medium mb-3 dark:text-gray-200">{{time.subDate! | formatTime }}</span>
                             <div class="mb-3">
                                 @if(time.progressPercentage === 100) {
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
@@ -42,17 +42,55 @@
                             </div>
                         </div>
             
-                        @if(time.imageId) {
-                        <div class="mb-4 {{i % 2 !== 0 ? 'md:text-right' : ''}}">
-                            <img [src]="time.imageId" alt="Progress image" class="rounded-lg shadow-sm inline-block max-w-full h-auto">
-                        </div>
+                        <!-- Image Carousel -->
+                        @if(time.progressUuid && getImagesForTimeline(time.progressUuid).length > 0) {
+                          <div class="mb-4 relative">
+                            <div class="carousel relative overflow-hidden rounded-lg shadow-sm">
+                              <div class="carousel-inner flex transition-transform duration-300" 
+                                   [style.transform]="'translateX(-' + (currentImageIndex()[i] * 100) + '%)'">
+                                <img *ngFor="let image of getImagesForTimeline(time.progressUuid)" 
+                                     [src]="image" 
+                                     alt="Progress image" 
+                                     class="carousel-item w-full h-auto max-w-full flex-none object-cover rounded-lg">
+                              </div>
+                              @if(getImagesForTimeline(time.progressUuid).length > 1) {
+                                <button 
+                                  class="carousel-prev absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-r-md z-10" 
+                                  (click)="prevImage(i)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                  </svg>
+                                </button>
+                                <button 
+                                  class="carousel-next absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-l-md z-10" 
+                                  (click)="nextImage(i)">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                  </svg>
+                                </button>
+                              }
+                            </div>
+                            <!-- Carousel Indicators -->
+                            <div class="flex justify-center mt-2">
+                              <span *ngFor="let img of getImagesForTimeline(time.progressUuid); let imgIndex = index" 
+                                    class="h-2 w-2 mx-1 rounded-full cursor-pointer transition-all" 
+                                    [ngClass]="{'bg-yellow-500': imgIndex === currentImageIndex()[i], 'bg-gray-300 dark:bg-gray-600': imgIndex !== currentImageIndex()[i]}" 
+                                    (click)="goToImage(i, imgIndex)">
+                              </span>
+                            </div>
+                          </div>
+                        }
+                        @else if(time.imageId) {
+                          <div class="mb-4">
+                            <img [src]="time.imageId" alt="Progress image" class="rounded-lg shadow-sm w-full h-auto object-cover">
+                          </div>
                         }
             
-                        <p class="text-gray-700 dark:text-gray-300 mb-4 {{i % 2 !== 0 ? 'md:text-right' : ''}}">{{ time.workDescription }}</p>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">{{ time.workDescription }}</p>
             
                         @if(time.inventoryUsageUuid) {
-                        <div class="mt-4 {{i % 2 !== 0 ? 'md:text-right' : ''}}">
-                            <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center {{i % 2 !== 0 ? 'md:justify-end' : ''}}">
+                        <div class="mt-4">
+                            <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                             </svg>
@@ -87,12 +125,11 @@
     </div>
     @if(contractorUser)
     {
-        <div class = "mt-4 flex flex-col justify-center items-center">
+        <div class="mt-4 flex flex-col justify-center items-center">
             <button (click)="inventoryAddDialog.openModal()">
-                <img class = "h-8 w-8" [src]="darkMode ? 'assets/icons/add_circle_gray.svg' : 'assets/icons/add_circle.svg'" alt="add inventory">
+                <img class="h-8 w-8" [src]="darkMode ? 'assets/icons/add_circle_gray.svg' : 'assets/icons/add_circle.svg'" alt="add inventory">
             </button>
             <app-progress-dialog #inventoryAddDialog [taskId]="this.task.uuid" [inventoryItemsAvailable]="usageUsedByContractor"/>
         </div>
     }
-</ion-card> 
-  
+</ion-card>
