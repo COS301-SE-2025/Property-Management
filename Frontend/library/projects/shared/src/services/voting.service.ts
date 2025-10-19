@@ -187,6 +187,9 @@ export class VotingService{
     {
         const date = new Date();
         this.votingTasks.set([]);
+        this.pendingTasks.set([]);
+        this.finalApproval.set([]);
+        this.approvedTasks.set([]);
 
         //Get buildings and body corp IDs for each house
         await this.housesService.loadHouses(trusteeId);
@@ -214,7 +217,25 @@ export class VotingService{
     private processTasks(tasks: MaintenanceTask[], date: Date)
     {
         tasks.forEach(t => {
-            if(t.approvalStatus === 'APPROVED' && t.scheduled_date > date)
+            t.scheduled_date = new Date(t.scheduled_date);
+            if(t.approvalStatus === 'PENDING' && t.scheduled_date >= date)
+            {
+                //add to pending tasks tasks 
+                if(!t.img || t.img === '00000000-0000-0000-0000-000000000000')
+                {
+                    t.img = "assets/images/no_image.png";
+                }
+                else
+                {
+                    this.imageService.getImage(t.img).subscribe({
+                        next: (image) => {
+                            t.img = image;
+                        }
+                    });
+                }
+                this.addToPending(t);
+            }
+            else if(t.approvalStatus === 'APPROVED' && t.scheduled_date > date)
             {
                 if(!t.img)
                 {
@@ -230,35 +251,119 @@ export class VotingService{
                     //TODO: Get session info
                     this.votingApiService.getSessionFromTaskId(t.uuid).subscribe({
                         next: (res) => {
-                            const [year, month, day, hour, min] = res.votingEndsAt;
-                            const votingDate = new Date(year, month -1, day, hour, min);
-
-                            const votingRes: Voting = {
-                                ...t,
-                                sessionUuid: res.sessionUuid,
-                                corporateUuid: res.corporateUuid,
-                                votingEndsAt: res.votingEndsAt,
-                                votingEndsAtDate: votingDate,
-                                isActive: res.isActive
-                            }
-
-                            //Get image
-                            if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
+                            if(res)
                             {
-                                votingRes.img = "assets/images/no_image.png";
+                                const [year, month, day, hour, min] = res.votingEndsAt;
+                                const votingDate = new Date(year, month -1, day, hour, min);
+    
+                                const votingRes: Voting = {
+                                    ...t,
+                                    sessionUuid: res.sessionUuid,
+                                    corporateUuid: res.corporateUuid,
+                                    votingEndsAt: res.votingEndsAt,
+                                    votingEndsAtDate: votingDate,
+                                    isActive: res.isActive
+                                }
+    
+                                //Get image
+                                if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
+                                {
+                                    votingRes.img = "assets/images/no_image.png";
+                                }
+                                else
+                                {
+                                    this.imageService.getImage(votingRes.img).subscribe({
+                                        next: (image) => {
+                                            votingRes.img = image;
+                                        }
+                                    });
+                                }
+                                this.addToVoting(votingRes);
                             }
-                            else
-                            {
-                                this.imageService.getImage(votingRes.img).subscribe({
-                                    next: (image) => {
-                                        votingRes.img = image;
-                                    }
-                                });
-                            }
-                            this.addToVoting(votingRes);
                         }
                     })
                 }
+            }
+            else if(!t.cuuid || t.cuuid === '')
+            {
+                //Task approved by bc, give summary
+                this.votingApiService.getSessionFromTaskId(t.uuid).subscribe({
+                    next:(res) => {
+
+                        if(!res)
+                        {
+                            console.warn("Couldnt get session", t);
+                            return;
+                        }
+
+                        const [year, month, day, hour, min] = res.votingEndsAt;
+                        const votingDate = new Date(year, month -1, day, hour, min);
+
+                        const votingRes: Voting = {
+                            ...t,
+                            sessionUuid: res.sessionUuid,
+                            corporateUuid: res.corporateUuid,
+                            votingEndsAt: res.votingEndsAt,
+                            votingEndsAtDate: votingDate,
+                            isActive: res.isActive
+                        }
+
+                        //Get image
+                        if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
+                        {
+                            votingRes.img = "assets/images/no_image.png";
+                        }
+                        else
+                        {
+                            this.imageService.getImage(votingRes.img).subscribe({
+                                next: (image) => {
+                                    votingRes.img = image;
+                                }
+                            });
+                        }
+                        this.addToFinalApproval(votingRes);
+                    }
+                });
+            }
+             else
+            {
+                this.votingApiService.getSessionFromTaskId(t.uuid).subscribe({
+                    next:(res) => {
+
+                        if(!res)
+                        {
+                            console.warn("Couldnt get session", t);
+                            return;
+                        }
+
+                        const [year, month, day, hour, min] = res.votingEndsAt;
+                        const votingDate = new Date(year, month -1, day, hour, min);
+
+                        const votingRes: Voting = {
+                            ...t,
+                            sessionUuid: res.sessionUuid,
+                            corporateUuid: res.corporateUuid,
+                            votingEndsAt: res.votingEndsAt,
+                            votingEndsAtDate: votingDate,
+                            isActive: res.isActive
+                        }
+
+                        //Get image
+                        if(!votingRes.img || votingRes.img === '00000000-0000-0000-0000-000000000000')
+                        {
+                            votingRes.img = "assets/images/no_image.png";
+                        }
+                        else
+                        {
+                            this.imageService.getImage(votingRes.img).subscribe({
+                                next: (image) => {
+                                    votingRes.img = image;
+                                }
+                            });
+                        }
+                        this.addToApprovalTasks(votingRes);
+                    }
+                });
             }
         });
     }

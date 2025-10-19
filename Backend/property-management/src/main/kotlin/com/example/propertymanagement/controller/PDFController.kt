@@ -196,6 +196,25 @@ class PDFController(
         @PathVariable cUuid: UUID,
         @PathVariable type: String,
     ): ResponseEntity<Void> {
+        // Find all PDFs with this cUuid and type
+        val pdfs = PDFRepository.findAllByCUuidAndType(cUuid, type)
+        
+        // Delete from S3 (optional but recommended)
+        pdfs.forEach { pdf ->
+            try {
+                val deleteObjectRequest = software.amazon.awssdk.services.s3.model.DeleteObjectRequest
+                    .builder()
+                    .bucket(bucketName)
+                    .key(extractKeyFromUrl(pdf.url))
+                    .build()
+                s3Client.deleteObject(deleteObjectRequest)
+            } catch (e: Exception) {
+                // Log error but continue
+                println("Failed to delete S3 object: ${pdf.key} - ${e.message}")
+            }
+        }
+        
+        // Delete all from database
         PDFRepository.deleteByCUuidAndType(cUuid, type)
         return ResponseEntity.noContent().build()
     }

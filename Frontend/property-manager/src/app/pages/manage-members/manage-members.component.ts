@@ -35,10 +35,28 @@ export class ManageMembersComponent implements OnInit {
     const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
     this.bodyCorporateUuid = bcId;
 
-    this.propertyService.getInvitations().subscribe(data => {
-      this.invitations = data;
-      this.activeMembers = data.filter(invite => invite.status === 'ACCEPTED');
-    });
+    if (bcId) {
+      this.propertyService.getInvitesForBodyCorporate(bcId).subscribe({
+        next: (data) => {
+          this.invitations = data;
+          this.activeMembers = data.filter(invite => invite.status === 'ACCEPTED');
+        },
+        error: (error) => {
+          console.error('Error fetching invitations:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load invitations'
+          });
+        }
+      });
+    } else {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'No body corporate selected'
+      });
+    }
   }
 
   cancelInvite(invite: InviteWithTrustee) {

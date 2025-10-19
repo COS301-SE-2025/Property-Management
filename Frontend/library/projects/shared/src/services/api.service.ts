@@ -218,15 +218,22 @@ getContractorMaintenanceTasks(contractorUuid: string, isBodyCorporate: boolean =
 async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promise<void> {
     if(taskUuid == ""){
         try {
+        // Delete existing PDF of this type before uploading new one
+        await firstValueFrom(
+          this.http.delete(`${this.url}/upload/presigned/${uuid}/${type}`,
+          { withCredentials: true })
+        ).catch(() => {
+          // Ignore error if no existing PDF found
+          console.log('No existing PDF to delete or delete failed');
+        });
+
         const presignResponse: any = await firstValueFrom(
           this.http.get(`${this.url}/upload/presigned-upload/${file.name}`,
           { withCredentials: true })
         );
-
         const uploadUrl = presignResponse.uploadUrl; // S3 URL
         const key = presignResponse.fileKey;
         const id = presignResponse.id;
-
         await firstValueFrom(
           this.http.put(uploadUrl, file, {
             headers: new HttpHeaders({
@@ -235,8 +242,6 @@ async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promi
             responseType: 'text' // S3 PUT returns empty body
           })
         );
-
-
         await firstValueFrom(
           this.http.post(
             `${this.url}/upload/notify-upload/${id}/${file.name}/${key}/${uuid}/${type}`,
@@ -246,7 +251,6 @@ async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promi
             }
           )
         );
-
       } catch (error) {
         console.error('PDF upload failed:', error);
         throw error; // Let the component handle errors
@@ -254,15 +258,22 @@ async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promi
     }
     else{
         try {
+        // Delete existing PDF for this task before uploading new one
+        await firstValueFrom(
+          this.http.delete(`${this.url}/upload/presigned/${uuid}/${type}`,
+          { withCredentials: true })
+        ).catch(() => {
+          // Ignore error if no existing PDF found
+          console.log('No existing PDF to delete or delete failed');
+        });
+
         const presignResponse: any = await firstValueFrom(
           this.http.get(`${this.url}/upload/presigned-upload/${file.name}`,
           { withCredentials: true })
         );
-
         const uploadUrl = presignResponse.uploadUrl; // S3 URL
         const key = presignResponse.fileKey;
         const id = presignResponse.id;
-
         await firstValueFrom(
           this.http.put(uploadUrl, file, {
             headers: new HttpHeaders({
@@ -271,8 +282,6 @@ async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promi
             responseType: 'text' // S3 PUT returns empty body
           })
         );
-
-
         await firstValueFrom(
           this.http.post(
             `${this.url}/upload/notify-upload-task/${id}/${file.name}/${key}/${uuid}/${taskUuid}`,
@@ -282,14 +291,13 @@ async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promi
             }
           )
         );
-
       } catch (error) {
         console.error('PDF upload failed:', error);
         throw error; // Let the component handle errors
       }
     }
-    
-  }
+}
+
 
   getContractorPDF(contractorUuid: string, type: string, taskUuid: string): Observable<string>{
     if(taskUuid == ""){
