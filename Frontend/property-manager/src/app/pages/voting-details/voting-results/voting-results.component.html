@@ -44,7 +44,7 @@
           </table>
         </div>
     
-        @if(votingEnded && !contractorHasBeenAssigned)
+        @if(bcUser && votingEnded && !contractorHasBeenAssigned)
         {
           <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
             <p class="text-gray-600 dark:text-gray-400 mb-4">Voting has ended. Finalize the task assignment.</p>

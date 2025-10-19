@@ -90,6 +90,11 @@ export class PropertyService {
     );
   }
 
+  getInvitesForBodyCorporate(coporateUuid: string): Observable<InviteWithTrustee[]> {
+    return this.http.get<InviteWithTrustee[]>(`${this.inviteApiUrl}/invites/body-corporate/${coporateUuid}`,
+      { withCredentials: true });
+  }
+
   
   getInvitations(): Observable<InviteWithTrustee[]> {
     return this.http.get<InviteWithTrustee[]>(`${this.inviteApiUrl}/invites`,

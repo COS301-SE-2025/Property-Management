@@ -117,7 +117,11 @@ export class VotingComponent  implements OnInit {
     {
       this.router.navigate(['/voting', task.uuid, 'approval']);
     } 
-    else if (this.bcUser && 'uuid' in task) 
+    else if (!this.bcUser && taskType === 'Pending initial approval' && 'uuid' in task) 
+    {
+      return;
+    } 
+    else if ('uuid' in task) 
     {
       this.router.navigate(['/voting', task.sessionUuid]);
     }
