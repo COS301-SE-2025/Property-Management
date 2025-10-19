@@ -67,6 +67,7 @@ Property Management simplifies the budgeting, scheduling and progress tracking o
 🔗 [User Manual](docs/Demo%203%20Documentation/Property%20Manager%20User%20Manual.pdf) <br>
 🔗 [Architectural Requirements and design](docs/Demo%203%20Documentation/Architectural%20document.pdf) <br>
 🔗 [Presentation](https://www.canva.com/design/DAGolOVTNTE/soGa0R0ZWJJiebLWCDFrGA/edit) <br>
+🔗 [Demo Video](https://drive.google.com/file/d/1-wYhGD86xZV7Ww_W-ApJjImjOY_dfVx5/view?usp=drive_link) <br>
 
 
 ##  Project Board
@@ -106,7 +107,7 @@ Our GitHub Project boards facilitate effective task management, progress trackin
     <td width="35%">
       Hi, I'm Sean! I'm a third-year Computer Science student with a passion for coding, problem-solving, and exploring the ever-evolving world of technology. I enjoy learning about new programming paradigms and software development trends. Whether it's building building projects, optimizing server performance, or diving into the intricacies of programming languages themselves, I thrive on the challenges that come with software development.
     </td>
-    <<td>
+    <td>
   🔗 <a href="docs/Project%20day/CV.pdf">CV</a><br>
     </td>
   </tr>
