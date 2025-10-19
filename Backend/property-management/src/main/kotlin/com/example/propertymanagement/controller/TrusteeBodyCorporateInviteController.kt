@@ -45,4 +45,9 @@ class TrusteeBodyCorporateInviteController(
 
     @GetMapping
     fun getAllInvites(): List<InviteDTO> = inviteService.getAllInvitations()
+
+    @GetMapping("/body-corporate/{coporateUuid}")
+    fun getInvitesForBodyCorporate(
+        @PathVariable coporateUuid: UUID,
+    ): List<InviteDTO> = inviteService.getInvitesForBodyCorporate(coporateUuid)
 }
