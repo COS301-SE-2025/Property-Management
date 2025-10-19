@@ -258,15 +258,6 @@ async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promi
     }
     else{
         try {
-        // Delete existing PDF for this task before uploading new one
-        await firstValueFrom(
-          this.http.delete(`${this.url}/upload/presigned/${uuid}/${type}`,
-          { withCredentials: true })
-        ).catch(() => {
-          // Ignore error if no existing PDF found
-          //console.log('No existing PDF to delete or delete failed');
-        });
-
         const presignResponse: any = await firstValueFrom(
           this.http.get(`${this.url}/upload/presigned-upload/${file.name}`,
           { withCredentials: true })
