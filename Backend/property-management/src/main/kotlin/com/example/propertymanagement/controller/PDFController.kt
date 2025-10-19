@@ -17,6 +17,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
 import java.time.Duration
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @RestController
@@ -114,10 +115,14 @@ class PDFController(
         @PathVariable cUuid: UUID,
         @PathVariable type: String,
     ): ResponseEntity<String> {
-        val pdf =
-            PDFRepository.findByCUuidAndType(cUuid, type).orElseThrow {
-                NoSuchElementException("PDF not found with id $cUuid and type $type")
-            }
+        val pdfs = PDFRepository.findAllByCUuidAndType(cUuid, type)
+        
+        if (pdfs.isEmpty()) {
+            throw NoSuchElementException("PDF not found with id $cUuid and type $type")
+        }
+        
+        // Get the first one (should only be one after duplicates are cleaned up)
+        val pdf = pdfs.first()
 
         val getObjectRequest =
             GetObjectRequest
@@ -192,6 +197,7 @@ class PDFController(
         }
 
     @DeleteMapping("/presigned/{cUuid}/{type}")
+    @Transactional
     fun delete(
         @PathVariable cUuid: UUID,
         @PathVariable type: String,
