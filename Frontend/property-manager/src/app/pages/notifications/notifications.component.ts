@@ -186,25 +186,35 @@ export class NotificationsComponent implements OnInit {
     if (!notifications || notifications.length === 0) {
       return [];
     }
-    else if(notifications.length === 1)
-    {
-      return notifications;
-    }
 
-    const valid = notifications.filter(n => n && Array.isArray(n.createdAt));
-    valid.forEach(n => {
+    notifications.forEach(n => {
       if (n.createdAt) {
-        n.createdAtDate = new Date(
-          n.createdAt[0],
-          n.createdAt[1] - 1,
-          n.createdAt[2],
-          n.createdAt[3],
-          n.createdAt[4],
-          n.createdAt[5]
-        );
+
+        if (typeof n.createdAt === 'string') {
+          n.createdAtDate = new Date(n.createdAt);
+        }
+        else if (Array.isArray(n.createdAt) && n.createdAt.length >= 6) {
+          n.createdAtDate = new Date(
+            n.createdAt[0],
+            n.createdAt[1] - 1,
+            n.createdAt[2],
+            n.createdAt[3],
+            n.createdAt[4],
+            n.createdAt[5]
+          );
+        }
+        else {
+          n.createdAtDate = new Date();
+          console.warn('Unexpected createdAt format for notification:', n);
+        }
+      } else {
+        n.createdAtDate = new Date();
+        console.warn('Missing createdAt for notification:', n);
       }
     });
 
-    return valid.sort((a, b) => b.createdAtDate!.getTime() - a.createdAtDate!.getTime());
+    return notifications.sort((a, b) => 
+      b.createdAtDate!.getTime() - a.createdAtDate!.getTime()
+    );
   }
 }

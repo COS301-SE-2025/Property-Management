@@ -34,6 +34,9 @@ class TrusteeBodyCorporateInviteService(
 
     fun getInviteById(inviteUuid: UUID): InviteDTO? = inviteRepository.findById(inviteUuid).orElse(null)?.toDTO()
 
+    fun getInvitesForBodyCorporate(coporateUuid: UUID): List<InviteDTO> =
+        inviteRepository.findAllByCoporateUuid(coporateUuid).map { it.toDTOWithTrustee(trusteeRepository) }
+
     fun getInvitesForTrustee(trusteeUuid: UUID): List<InviteDTO> = inviteRepository.findAllByTrusteeUuid(trusteeUuid).map { it.toDTO() }
 
     fun getAcceptedTrusteesForBodyCorporate(coporateUuid: UUID): List<InviteDTO> =
