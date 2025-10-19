@@ -24,4 +24,6 @@ interface TrusteeBodyCorporateInviteRepository : JpaRepository<TrusteeBodyCorpor
         coporateUuid: UUID,
         status: String,
     ): Boolean
+
+    fun findAllByCoporateUuid(coporateUuid: UUID): List<TrusteeBodyCorporateInvite>
 }

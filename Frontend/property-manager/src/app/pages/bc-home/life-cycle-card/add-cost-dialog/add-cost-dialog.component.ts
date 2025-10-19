@@ -79,7 +79,7 @@ export class AddCostDialogComponent extends DialogComponent {
 
     this.lifecycleCostService.create(request).subscribe({
       next: (response) => {
-        console.log('Cost added successfully:', response);
+        //console.log('Cost added successfully:', response);
         this.costAdded.emit(); 
 
         this.messageService.add({

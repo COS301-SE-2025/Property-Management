@@ -1,114 +1,90 @@
-<div class="flex w-full flex-col sticky top-0 z-50 bg-white shadow-sm">
-  <!-- Header Container -->
-  <div class="flex flex-row items-center px-4 py-2">
-    <img src="assets/images/logo.png" class="w-16 h-12 ml-8" alt="logo">
-    <p class="font-medium font-lato text-xl">Property Manager</p>
-    <div class="flex flex-row items-center ml-auto">
-      <div class="relative">
-        <a [routerLink]="['/login']">
-          <button class="cursor-pointer w-24 h-8 mr-3 rounded-xl mb-2 font-lato text-md hover:bg-gray-200">
-            Login
-          </button>
-        </a>
-        <button class="cursor-pointer w-24 h-8 mr-3 bg-yellow-300 rounded-xl mb-2 font-lato text-md hover:bg-yellow-400"
-          (click)="dropDown()">
-          Register
-        </button>
-        <div *ngIf="dropDownOpen"
-          class="absolute right-1 top-14 bg-white border border-yellow-300 rounded-xl shadow-xl w-40 font-lato l-25 z-50 overflow-hidden">
-          <a [routerLink]="['/register-body-corporate']">
-            <button (click)="signOut()"
-              class="block text-gray-700 font-lato w-full text-left px-3 py-1 hover:bg-gray-200/50 cursor-pointer">
-              Register as Body Corporate
-            </button>
-          </a>
-          <a [routerLink]="['/register-owner']">
-            <button (click)="signOut()"
-              class="block text-gray-700 font-lato w-full text-left px-3 py-1 hover:bg-gray-200/50 cursor-pointer">
-              Register as Owner
-            </button>
-          </a>
-          <a [routerLink]="['/contractorRegister']">
-            <button (click)="signOut()"
-              class="block text-gray-700 font-lato w-full text-left px-3 py-1 hover:bg-gray-200/50 cursor-pointer">
-              Register as Contractor
-            </button>
-          </a>
-        </div>
+<app-landingheader></app-landingheader>
+
+<!-- Hero Carousel -->
+<div class="relative w-full h-[90vh] overflow-hidden">
+  <div
+    class="absolute inset-0 flex transition-all duration-700 ease-in-out"
+    [style.transform]="'translateX(-' + currentSlide * 100 + '%)'"
+  >
+    <div
+      *ngFor="let slide of slides; let i = index"
+      class="flex-shrink-0 w-full h-full relative"
+    >
+      <img
+        [src]="slide.image"
+        alt="carousel"
+        class="w-full h-full object-cover brightness-75"
+      />
+      <div
+        class="absolute inset-0 flex flex-col justify-center items-center text-center text-white"
+      >
+        <h2
+          *ngIf="currentSlide === i"
+          [attr.data-animation-key]="animationKey"
+          class="carousel-heading text-5xl font-bold uppercase tracking-wider animate-fade-in"
+          role="heading"
+          aria-live="polite"
+        >
+          {{ slide.text }}
+        </h2>
       </div>
     </div>
   </div>
-  <div class="propertyYellow-bg h-4 w-full"></div>
-</div>
 
-<!-- Main Content -->
-<div class="min-h-screen flex flex-col" [@fadeInStagger]>
-  <div class="flex-grow relative overflow-hidden">
-    <!-- Gradient Background -->
-    <div class="absolute inset-0 overflow-hidden">
-      <div
-        class="absolute -left-20 -top-20 w-96 h-96 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-morph-1">
-      </div>
-      <div
-        class="absolute -right-20 -bottom-20 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-morph-2">
-      </div>
-    </div>
+  <!-- Arrows -->
+  <button
+    (click)="prevSlide()"
+    class="absolute left-6 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-yellow-400 transition"
+  >
+    <i class="pi pi-chevron-left"></i>
+  </button>
+  <button
+    (click)="nextSlide()"
+    class="absolute right-6 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-yellow-400 transition"
+  >
+    <i class="pi pi-chevron-right"></i>
+  </button>
 
-    <!-- Original Background (fallback) -->
-    <div class="absolute inset-0 bg-[url('/assets/images/background.jpg')] bg-cover bg-center filter blur-md scale-110">
-    </div>
-
-    <!-- Main Content Container -->
-    <div class="relative z-10 h-full w-full px-12 py-12 flex flex-col">
-      <!-- Top Row: Images and Description -->
-      <div class="flex flex-col lg:flex-row items-center justify-between mb-16">
-        <!-- Floating Images - Enhanced -->
-        <div class="relative h-72 w-80 mb-8 lg:mb-0 animate-item">
-          <img src="/assets/images/pic2.png" alt="Property example"
-            class="absolute top-0 left-0 w-72 h-60 z-10 rounded-xl shadow-2xl transform transition-all duration-700 hover:-translate-y-2 hover:rotate-1" />
-          <img src="/assets/images/pic1.png" alt="Property example"
-            class="absolute top-16 left-16 w-72 h-60 z-20 rounded-xl shadow-2xl transform transition-all duration-700 hover:-translate-y-2 hover:-rotate-1" />
-        </div>
-
-        <!-- Center Description - Enhanced -->
-        <div class="max-w-2xl text-center lg:text-left px-4 animate-item">
-          <h2 class="text-3xl font-bold mb-6 text-white drop-shadow-md">
-            Streamline Your Property Management
-          </h2>
-          <p class="text-white/90 font-light leading-relaxed text-lg mb-6">
-            Our comprehensive solution simplifies maintenance operations for property managers and corporate bodies.
-            Addressing critical challenges in contractor coordination, inventory control, and maintenance planning
-            to enhance operational efficiency and financial oversight.
-          </p>
-          <a href="https://github.com/COS301-SE-2025/Property-Management/blob/main/docs/Demo%203%20Documentation/Property%20Manager%20User%20Manual.pdf"
-            class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-medium py-2 px-6 rounded-lg transition-colors duration-300 inline-block">
-            Learn More
-          </a>
-        </div>
-      </div>
-
-      <!-- Feature Cards Row -->
-      <div class="flex flex-col items-center">
-        <h3 class="text-2xl font-semibold text-white mb-8 text-center animate-item">
-          Key Features
-        </h3>
-        <div class="flex flex-wrap justify-center gap-8 animate-item">
-          <div *ngFor="let feature of features" class="group perspective-1000 w-64 h-64" (mouseenter)="tilt($event)"
-            (mouseleave)="resetTilt($event)">
-            <div class="relative preserve-3d group-hover:rotate-y-15 transition-all duration-500 h-full">
-              <div
-                class="backface-hidden bg-white/10 backdrop-blur-sm rounded-2xl p-6 flex flex-col items-center justify-center h-full border border-white/20 shadow-xl hover:shadow-2xl transition-shadow">
-                <div class="bg-yellow-400/20 p-3 rounded-full mb-4">
-                  <img [src]="feature.icon"
-                    class="w-12 h-12 group-hover:scale-110 transition-transform object-contain" />
-                </div>
-                <span class="text-center text-white font-bold text-lg mb-2">{{feature.title}}</span>
-                <p class="text-white/80 text-sm text-center">{{feature.description}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div
+    (click)="scrollToSection()"
+    class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-6 py-2 rounded-full text-sm flex items-center space-x-2 cursor-pointer"
+  >
+    <span>Scroll Down</span>
+    <i class="pi pi-arrow-down text-yellow-400"></i>
   </div>
 </div>
+
+<section #streamlineSection class="py-12 bg-white dark:bg-black text-center px-4">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl font-bold mb-4">Streamline Your Property Management</h2>
+    <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+      Our comprehensive solution simplifies maintenance operations for property managers and corporate bodies.
+      Addressing critical challenges in contractor coordination, inventory control, and maintenance planning to
+      enhance operational efficiency and financial oversight.
+    </p>
+  </div>
+</section>
+
+<section class="py-20 bg-gray-50 dark:bg-gray-900 text-center">
+  <h2 class="text-3xl font-bold mb-12 text-yellow-500">Key Features</h2>
+  <div class="flex flex-wrap justify-center gap-8 px-10">
+    <div
+      *ngFor="let feature of features"
+      class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 w-64 transform transition hover:-translate-y-2 hover:shadow-xl"
+    >
+      <img [src]="feature.icon" alt="{{ feature.title }}" class="w-12 mx-auto mb-4" />
+      <h3 class="font-bold text-lg text-gray-800 dark:text-yellow-400 mb-2">
+        {{ feature.title }}
+      </h3>
+      <p class="text-gray-600 dark:text-gray-300 text-sm">
+        {{ feature.description }}
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-white dark:bg-black">
+  <app-ourteam></app-ourteam>
+</section>
+
+<app-landingfooter></app-landingfooter>

@@ -2,7 +2,7 @@ import { Component, OnInit, signal, effect } from '@angular/core';
 import { TimelineModule } from 'primeng/timeline';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe, TaskApiService } from 'shared';
+import { getCookieValue, NotificationsApiService, Notification, FormatTimePipe } from 'shared';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InviteDialogComponent } from './invite-dialog/invite-dialog.component';
 import { InventoryApprovalDialogComponent} from './inventory-approval-dialog/inventory-approval-dialog.component';
@@ -47,14 +47,12 @@ export class NotificationsComponent implements OnInit {
   public inviteId = signal<string | null>(null);
   public inviteDialogVisible = false;
   
-  // NEW: For inventory approval dialog
   public inventoryApprovalVisible = false;
   public inventoryRequestData: any = null;
 
   constructor(
     private router: Router,
     private notificationService: NotificationsApiService,
-    private taskService: TaskApiService,
     private messageService: MessageService,
     public drawerService: NotificationDrawerService 
   ) {
@@ -101,6 +99,7 @@ export class NotificationsComponent implements OnInit {
 
           this.timeline.set(sortedRead);
           this.unreadTimeline.set(sortUnRead);
+
         },
         error: (err) => {
           console.error(err);
@@ -111,18 +110,16 @@ export class NotificationsComponent implements OnInit {
   }
 
   showDetails(noti: Notification) {
-    // Mark as read
     this.notificationService.markNotificationsAsRead(noti.notificationUuid!).subscribe({
       next: () => {
         this.drawerService.notificationRead.emit();
 
-        // NEW: Handle inventory request notifications
         if (noti.notificationType === 'INVENTORY_REQUEST' && this.getUserType() === 'trustee') {
           try {
             this.inventoryRequestData = JSON.parse(noti.message);
             this.inventoryApprovalVisible = true;
           } catch (e) {
-            // If metadata parsing fails, show simple dialog
+
             this.messageService.add({
               severity: 'info',
               summary: 'Inventory Request',
@@ -131,18 +128,44 @@ export class NotificationsComponent implements OnInit {
           }
         }
         else if (noti.relatedInviteUuid && this.getUserType() === 'trustee') {
-          // Existing invite handling...
+          // Check if invite is pending before showing dialog
+          this.notificationService.getInviteById(noti.relatedInviteUuid).subscribe({
+          next: (invite) => {
+              if (invite.status === 'PENDING') {
+              this.inviteId.set(noti.relatedInviteUuid ?? null);
+              this.inviteDialogVisible = true;
+              }
+          },
+          error: (err) => {
+              console.error(err);
+              this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to display invite.'
+              })
+          }
+          });
         }
         else if (noti.relatedTaskUuid) {
-          // Existing task handling...
+          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+            this.router.navigate(['/taskDetails', noti.relatedTaskUuid]);
+          }
         }
-        // ... other existing handlers
+        else if(noti.relatedSessionUuid)
+        {
+          if (this.getUserType() === 'trustee' || this.getUserType() === 'bodyCorporate') {
+            this.router.navigate(['/voting', noti.relatedSessionUuid]);
+          }
+        }
+        else{
+          window.location.reload();
+        }
       }
     });
   }
 
   onInventoryRequestProcessed() {
-    this.loadTimeline(); // Refresh notifications
+    this.loadTimeline(); 
   }
 
   private getUserType(): string | null {
@@ -163,21 +186,20 @@ export class NotificationsComponent implements OnInit {
     if (!notifications || notifications.length === 0) {
       return [];
     }
+    else if(notifications.length === 1)
+    {
+      if (notifications[0].createdAt) {
+        notifications[0].createdAtDate = new Date(notifications[0].createdAt);
+      }
+      return notifications;
+    }
 
-    const valid = notifications.filter(n => n && Array.isArray(n.createdAt));
-    valid.forEach(n => {
+    notifications.forEach(n => {
       if (n.createdAt) {
-        n.createdAtDate = new Date(
-          n.createdAt[0],
-          n.createdAt[1] - 1,
-          n.createdAt[2],
-          n.createdAt[3],
-          n.createdAt[4],
-          n.createdAt[5]
-        );
+        n.createdAtDate = new Date(n.createdAt);
       }
     });
 
-    return valid.sort((a, b) => b.createdAtDate!.getTime() - a.createdAtDate!.getTime());
+    return notifications.sort((a, b) => b.createdAtDate!.getTime() - a.createdAtDate!.getTime());
   }
 }

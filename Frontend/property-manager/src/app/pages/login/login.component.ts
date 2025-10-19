@@ -11,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-login',
   imports: [InputTextModule, FormsModule, CommonModule, FloatLabelModule],
   templateUrl: './login.component.html',
-  styles: ``,
+  styleUrls: ['./login.component.scss'],
 })
 
 export class LoginComponent {

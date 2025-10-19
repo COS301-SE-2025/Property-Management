@@ -4,22 +4,24 @@ import { Toast } from "primeng/toast";
 import { DialogModule } from "primeng/dialog";
 import { CommonModule } from "@angular/common";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import {  MultiSelectModule } from "primeng/multiselect";
+import { MultiSelectModule } from "primeng/multiselect";
+import { SliderModule } from "primeng/slider";
 import { getCookieValue, ImageApiService, Inventory, InventoryItemApiService, InventoryUsageApiService, Notification, NotificationsApiService, TaskApiService, TaskProgresApiService } from "shared";
 import { FileSelectEvent, FileUploadModule } from "primeng/fileupload";
 import { MessageService } from "primeng/api";
+import { ApiService } from 'shared';
 
 @Component({
   selector: 'app-add-progress-dialog',
   templateUrl: './add-progress-dialog.component.html',
   styles: ``,
-  imports: [Toast, DialogModule, ReactiveFormsModule, MultiSelectModule, CommonModule, FileUploadModule],
+  imports: [Toast, DialogModule, ReactiveFormsModule, MultiSelectModule, CommonModule, FileUploadModule, SliderModule],
   providers: [MessageService, NotificationsApiService]
 })
 export class AddProgressDialogComponent extends DialogComponent implements DoCheck{
     
     form!: FormGroup;
-    selectedFile: File | null = null;
+    selectedFiles: File[] = [];
     public taskId = input.required<string>();
     @Input() inventoryItemsAvailable! : Map<string, number>;
     public inventoryItems: Inventory[] = [];
@@ -33,7 +35,8 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
       private notificationService: NotificationsApiService,
       private taskProgressService: TaskProgresApiService,
       private inventoryUsageService: InventoryUsageApiService,
-      private taskService: TaskApiService 
+      private taskService: TaskApiService,
+      private apiService: ApiService
     ){
       super();
       this.form = this.fb.group({
@@ -81,41 +84,125 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
       if(this.form.valid)
       {
         this.addError = false;
-
-        let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
-
-        if(this.selectedFile)
-        {
-          try{
-            const upload = await this.imageService.uploadImage(this.selectedFile).toPromise();
-            if(upload?.imageId){
-              imageId = upload?.imageId;
-            }
-          }
-          catch(err)
-          {
-            console.error("Image upload failed", err);
-
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to upload image, please try again'
-            });
-          }
+      
+        const contractorUuid = this.apiService.getCookieValue('contractorId');
+        
+        if (!contractorUuid) {
+          throw new Error('Contractor UUID not found');
         }
 
-        const des = this.form.value.description
+        const des = this.form.value.description;
         const itemsUsed = this.getQuantities()[0];
         const progress = this.form.value.progress;
         const id = getCookieValue(document.cookie, 'contractorId');
 
-        // TODO change so that contractor can select multiple items in usage
-        this.taskProgressService.createProgress(id, this.taskId(), imageId, des, progress).subscribe({
-          next: () => {
-  
+        // STEP 1: Upload ALL images WITHOUT progress UUID (initially)
+        let uploadedImageIds: string[] = [];
+        let primaryImageId: string = "00000000-0000-0000-0000-000000000000";
+
+        if(this.selectedFiles.length > 0) {
+          //console.log('Uploading', this.selectedFiles.length, 'images without progress UUID...');
+          try {
+            // Upload with taskUuid only, no progressUuid yet
+            uploadedImageIds = await this.imageService.uploadImages(
+              this.selectedFiles, 
+              contractorUuid,   // user_uuid
+              this.taskId(),    // task_uuid
+              undefined,        // progress_uuid - NOT YET AVAILABLE
+              undefined         // building_uuid
+            );
+
+            //console.log('Upload complete. Image IDs received:', uploadedImageIds);
+
+            if(uploadedImageIds && uploadedImageIds.length > 0) {
+              primaryImageId = uploadedImageIds[0]; 
+              //console.log('Using primary image ID:', primaryImageId);
+              //console.log('Total images uploaded:', uploadedImageIds.length);
+            } else {
+              //console.log('No image IDs returned from upload.');
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Warning',
+                detail: 'Images may not have uploaded correctly'
+              });
+            }
+          } catch(err) {
+            console.error("Image upload failed", err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to upload images, please try again'
+            });
+            return;
+          }
+        } else {
+          //console.log('No images selected for upload.');
+        }
+
+        //console.log('Creating progress with primary image ID:', primaryImageId);
+
+        // STEP 2: Create progress with primary image ID
+        this.taskProgressService.createProgress(id, this.taskId(), primaryImageId, des, progress).subscribe({
+          next: async (progressResponse: any) => {
+            //console.log('Progress created:', progressResponse);
+            //console.log('Progress response keys:', Object.keys(progressResponse));
+            
+            // Extract progress UUID - check common field names
+            const progressUuid = progressResponse.progressUuid || 
+                                progressResponse.uuid || 
+                                progressResponse.id ||
+                                progressResponse.progress_uuid;
+            
+            //console.log('Extracted progressUuid:', progressUuid);
+            
+            // STEP 3: Update ALL image associations with progress UUID
+            if (uploadedImageIds.length > 0 && progressUuid) {
+              try {
+                //console.log(`Updating ${uploadedImageIds.length} image associations with progress UUID:`, progressUuid);
+                
+                // Update all images in parallel
+                const updatePromises = uploadedImageIds.map(async (imageId, index) => {
+                  //console.log(`[${index + 1}/${uploadedImageIds.length}] Updating image ${imageId}`);
+                  
+                  try {
+                    await this.imageService.updateImageAssociations(
+                      imageId,          // imageId
+                      contractorUuid,   // user_uuid
+                      this.taskId(),    // task_uuid
+                      progressUuid,     // progress_uuid - NOW AVAILABLE!
+                      undefined         // building_uuid
+                    );
+                    //console.log(`✓ [${index + 1}/${uploadedImageIds.length}] Image ${imageId} updated`);
+                  } catch (err) {
+                    console.error(`✗ [${index + 1}/${uploadedImageIds.length}] Failed to update image ${imageId}:`, err);
+                    throw err;
+                  }
+                });
+                
+                // Wait for all updates to complete
+                await Promise.all(updatePromises);
+                //console.log(`✓ All ${uploadedImageIds.length} images successfully updated with progress UUID`);
+                
+              } catch (err) {
+                console.error('Failed to update some image associations:', err);
+                // Non-critical error - progress is already created
+                this.messageService.add({
+                  severity: 'warn',
+                  summary: 'Warning',
+                  detail: 'Some images may not be fully associated'
+                });
+              }
+            } else {
+              console.warn('Could not update image associations:', {
+                imageCount: uploadedImageIds.length,
+                progressUuid,
+                hasFiles: this.selectedFiles.length > 0
+              });
+            }
+
+            // Continue with notifications
             this.taskService.getTaskById(this.taskId()).subscribe({
               next: (res) => {
-                
                 const noti: Notification = {
                   notificationType: "Task progress updated",
                   message: `Contractor has updated progress on ${res.title}`,
@@ -123,7 +210,8 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
                   recipientUuid: res.tuuid,
                   isRead: false,
                   relatedTaskUuid: this.taskId()
-                }
+                };
+                
                 this.notificationService.createNotifications(noti).subscribe({
                   next: () => {
                     this.messageService.add({
@@ -141,10 +229,10 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
                     this.messageService.add({
                       severity: 'error',
                       summary: 'Error',
-                      detail: 'Task progress unsuccessfully added'
+                      detail: 'Failed to send notification'
                     });
                   } 
-                })
+                });
               },
               error: () => {
                 this.messageService.add({
@@ -153,7 +241,15 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
                   detail: 'Task progress unsuccessfully added'
                 });
               }
-            })
+            });
+          },
+          error: (err) => {
+            console.error('Failed to create progress:', err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to create task progress'
+            });
           }
         });
       }
@@ -162,20 +258,32 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
         this.addError = true;
       }
     }
-    onFileSelect(event: FileSelectEvent)
-    {
-    if(event.files && event.files.length > 0)
-    {
-      this.selectedFile = event.files[0];
+
+    onFileSelect(event: FileSelectEvent){
+      //console.log('FileSelectEvent received:', event);
+      //console.log('event.files:', event.files);
+      //console.log('event.currentFiles:', event.currentFiles);
+
+      if(event.currentFiles && event.currentFiles.length > 0){
+        this.selectedFiles = Array.from(event.currentFiles);
+        //console.log('Files selected (currentFiles):', this.selectedFiles.length, this.selectedFiles);
+      } else if (event.files && event.files.length > 0) {
+        this.selectedFiles = Array.from(event.files);
+        //console.log('Files selected (files):', this.selectedFiles.length, this.selectedFiles);
+      } else {
+        //console.log('No files in selection event');
+        this.selectedFiles = [];
+      }
     }
-    }
+    
     override closeDialog(): void {
       this.inventoryItems = [];
-      this.form.get('inventoryItemsUsed')?.setValue([]);
+      this.selectedFiles = [];
+      this.form.reset();
       super.closeDialog();
     }
+
     onInventorySelectionChange(event: any) {
-      // Clear previous quantities
       const quantitiesGroup = this.form.get('inventoryQuantities') as FormGroup;
       Object.keys(quantitiesGroup.controls).forEach(key => {
           quantitiesGroup.removeControl(key);
@@ -189,6 +297,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
           ]));
       });
     }
+
     getQuantities(): {itemUuid: string, quantity: number}[] {
       const selectedItems = this.form.get('inventoryItemsUsed')?.value || [];
       const quantitiesGroup = this.form.get('inventoryQuantities') as FormGroup;
@@ -198,6 +307,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
           quantity: quantitiesGroup.get(itemUuid)?.value || 0
       }));
     }
+
     onQuantitiesChanged(updatedInventory: Inventory[]) {
       const quantitiesGroup = this.form.get('inventoryQuantities') as FormGroup;
 
@@ -207,6 +317,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
         }
       });
     }
+
     get inventoryItemsUsed(): Inventory[] {
       const selectedIds = this.form.get('inventoryItemsUsed')?.value || [];
       return this.inventoryItems.filter(item => selectedIds.includes(item.itemUuid));

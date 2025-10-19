@@ -53,10 +53,10 @@ export class VerifyEmailComponent implements OnInit{
 
       if(this.userType === 'trustee') {
         const result = await this.authService.confirmTrusteeRegistration(this.username, this.verificationCode);
-        console.log('Email verification successful:', result);
+        //console.log('Email verification successful:', result);
       } else if(this.userType === 'contractor') {
         const result = await this.authService.confirmContractorRegistration(this.username, this.verificationCode);
-        console.log('Email verification successful:', result);
+        //console.log('Email verification successful:', result);
       }else {
         console.error('Unknown user type:', this.userType);
         this.errorMessage = 'Invalid user type. Please register again.';

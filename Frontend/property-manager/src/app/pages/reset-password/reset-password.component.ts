@@ -49,7 +49,7 @@ export class ResetPasswordComponent {
     this.apiService.resetTrusteePasswordRequest(this.email).subscribe({
       next: (res) => {
         this.message = 'Reset code sent to your email.';
-        console.log("Reset request success:", res);
+        //console.log("Reset request success:", res);
         this.step = 2; // move to confirm step
       },
       error: (err) => {
@@ -67,7 +67,7 @@ export class ResetPasswordComponent {
     ).subscribe({
       next: (res) => {
         this.message = res.message || 'Password reset successful!';
-        console.log("Confirm success:", res);
+        //console.log("Confirm success:", res);
         this.router.navigate(['/login']);
       },
       error: (err) => {

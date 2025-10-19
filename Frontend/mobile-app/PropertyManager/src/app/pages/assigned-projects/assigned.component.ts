@@ -124,7 +124,7 @@ export class AssignedComponent implements OnInit {
   }
 
   goToQuotationPage(task: MaintenanceTask) {
-    console.log(task);
+    //console.log(task);
     this.router.navigate(['/view-task', task['uuid']]);
   }
 }

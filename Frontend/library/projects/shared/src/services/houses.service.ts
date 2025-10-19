@@ -72,6 +72,49 @@ export class HousesService {
     });
   }
 
+async getImagesForBuilding(buildingUuid: string): Promise<string[]> {
+  try {
+    const imageResponse = await firstValueFrom(
+      this.imageApiService.getImages('', '', '', buildingUuid)
+    );
+    
+    //console.log('Raw image response:', imageResponse);
+    //console.log('Response type:', typeof imageResponse);
+    
+    // Handle different response formats
+    let imageUrls: string[] = [];
+    
+    if (Array.isArray(imageResponse)) {
+      // If it's already an array of objects with presignedUrl
+      imageUrls = imageResponse
+        .map(img => img.presignedUrl)
+        .filter(url => url && url.trim() !== '');
+    } else if (typeof imageResponse === 'string') {
+      // If backend returns a string, try to parse it
+      try {
+        const parsed = JSON.parse(imageResponse);
+        if (Array.isArray(parsed)) {
+          imageUrls = parsed
+            .map(img => img.presignedUrl)
+            .filter(url => url && url.trim() !== '');
+        }
+      } catch {
+        // If it's a comma-separated string
+        imageUrls = imageResponse
+          .split(',')
+          .map(url => url.trim())
+          .filter(url => url !== '');
+      }
+    }
+    
+    //console.log('Processed image URLs:', imageUrls);
+    return imageUrls.length > 0 ? imageUrls : ['assets/images/no_image.png'];
+  } catch (err) {
+    console.error('Error fetching images for building', err);
+    return ['assets/images/no_image.png'];
+  }
+}
+
   async loadHouses(trusteeId: string) {
     this.houses.set([]);
     try {

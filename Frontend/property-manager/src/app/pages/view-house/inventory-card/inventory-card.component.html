@@ -1,6 +1,6 @@
-<div [ngClass]="showAddButton ? 'flex flex-col items-center justify-center pt-5 pb-3 bg-gray-300 dark:bg-gray-500 rounded-xl' : 'flex flex-col items-center justify-center pt-5'">
+<div [class]=" showAddButton ? 'flex flex-col pt-5 p-4 bg-gray-300 dark:bg-gray-500 rounded-xl shadow-md' : 'flex flex-col pt-5 p-4 rounded-xl'">
     <p-toast/>
-    <p-card class="text-center rounded-xl p-4">
+    <p-card class="text-center bg-gray-50 dark:bg-gray-500 rounded-xl shadow-md">
         <ng-template #title>Inventory</ng-template>
         <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '25rem', 'max-width':'30rem' }" [paginator]="true" [rows]="rows" [responsiveLayout]="'scroll'">
             <ng-template #header>
@@ -14,7 +14,7 @@
             <ng-template #body let-inventory let-rowIndex="rowIndex">
                 <tr>
                     <td>{{ inventory.name }}</td>
-                    <td>
+                    <td class="text-sm">
                         @if(editingItems.get(inventory.itemUuid))
                         {
                             <input type="number" [ngModel]="draftQuantities.get(inventory.itemUuid)" min="0" class="w-20 p-1 border rounded" (keydown)="preventNegative($event)" (input)="onManualInput(inventory, $event)">
@@ -23,7 +23,7 @@
                             {{ inventory.quantityInStock }}
                         }
                     </td>
-                    <td *ngIf="showPrice">R {{ inventory.price | number:'1.2-2' }}</td>
+                    <td *ngIf="showPrice" class="text-sm">R {{ inventory.price | number:'1.2-2' }}</td>
                     <td *ngIf="!bcUser">
                         @if(editingItems.get(inventory.itemUuid))
                         {

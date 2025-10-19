@@ -1,26 +1,50 @@
-<ion-content class="dark:bg-gray-800">
+<ion-content class="dark:bg-gray-700">
   <app-header/>
   
-  <div class= "flex flex-col items-center pt-1">
+  <div class="flex flex-col items-center pt-1 pb-[5rem]">
       
-      <div *ngIf = "!findHouse" class = "pb-200">
-          <p class = "text-yellow-500 font-semibold">Could not load house. Please try again</p>
+      <div *ngIf="!findHouse" class="pb-200">
+          <p class="text-yellow-500 font-semibold">Could not load house. Please try again</p>
       </div>
   
-      <div class="space-y-8">
-        <div class = "w-full mx-auto">
-            <img [src]="house()?.propertyImage" class="w-60 h-40 mx-auto object-scale-down mt-4 rounded-md" alt="">
-            <div class="relative inline-block">
-                <button class="absolute top-1 right-1" (click)="updateHouse.openModal()">
-                    <img *ngIf="!house()?.coporateUuid" src="assets/icons/screwdriver.svg" class="w-5 h-5">
-                </button>
-                <app-update-house #updateHouse [houseId]="house()?.buildingUuid!"/>
+      <div class="space-y-2 w-full px-4">
+        <!-- Image Carousel -->
+        <div class="w-full mx-auto">
+            <div class="relative inline-block w-full">
+                <div class="w-full max-w-md mx-auto mt-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow overflow-hidden">
+                    <img [src]="images()[currentIndex()]" class="w-full h-56 object-cover" alt="Main house image">
+                    <div class="thumbnails flex justify-center gap-2 p-2 bg-gray-100 dark:bg-gray-800 overflow-x-auto">
+                        @for (image of images(); let i = $index; track i) {
+                            <img [src]="image" 
+                                 class="w-16 h-10 object-cover rounded cursor-pointer transition-all flex-shrink-0" 
+                                 [class.border-2]="i === currentIndex()" 
+                                 [class.border-yellow-500]="i === currentIndex()" 
+                                 [class.opacity-100]="i === currentIndex()" 
+                                 [class.opacity-70]="i !== currentIndex()" 
+                                 (click)="currentIndex.set(i)" 
+                                 alt="Thumbnail {{i+1}}">
+                        }
+                    </div>
+                </div>
+                @if(!house()?.coporateUuid) {
+                    <button class="absolute top-6 right-2 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg cursor-pointer hover:scale-110 transition-transform duration-200" 
+                            (click)="updateHouse.openModal()">
+                        <img src="assets/icons/screwdriver.svg" class="w-5 h-5">
+                    </button>
+                    <app-update-house #updateHouse [houseId]="house()?.buildingUuid!"/>
+                }
             </div>
-            <p class = "text-center text-xl font-bold mt-4 dark:text-white"> {{ house()?.name }}</p>
+            
+            <div class="flex flex-col items-center mt-3">
+                <p class="text-center text-xl font-bold px-4 dark:text-white truncate w-full" 
+                   title="{{ house()?.name }}">
+                    {{ house()?.name }}
+                </p>
+                <div class="h-1 w-32 bg-yellow-400 mt-2"></div>
+            </div>
         </div>
     
-        <!-- 3 cards -->
-        <div [@floatUp] class = "grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"> 
+        <div [@floatUp] class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4"> 
             <app-budget [budget]="houseService.budgets()"/>
             <app-inventory [inventory]="houseService.inventory()"/>
             <app-timeline [timeline]="houseService.timeline()"/>

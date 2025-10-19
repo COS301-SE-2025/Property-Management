@@ -1,10 +1,10 @@
 <ion-content class="dark:bg-gray-700">
-  <div class="container mx-auto" [@fadeInStagger]>
+  <div class="container mx-auto pb-[5rem]" [@fadeInStagger]>
     <app-header />
 
     <div class="animate-item mt-5 ml-2">
       <h1 class="text-2xl font-bold dark:text-white">Available Projects</h1>
-      <div class="w-24 h-1 bg-yellow-300 mt-2"></div>
+      <div class="w-[17rem] h-1 bg-yellow-300 mt-2"></div>
     </div>
 
     <div *ngIf="tasks.length > 0; else noTasks" class="mt-6 flex flex-wrap justify-center gap-5 p-4">
@@ -20,7 +20,7 @@
 ></ion-img>
         <div class="p-3">
           <h3 class="text-black text-lg font-semibold">{{ task.title || 'Untitled Task' }}</h3>
-          <p class="text-sm text-gray-600 mt-2">{{ task.des || 'No description' }}</p>
+          <p class="text-sm text-gray-600 mt-2">{{ task.description || 'No description' }}</p>
         </div>
       </div>
     </div>

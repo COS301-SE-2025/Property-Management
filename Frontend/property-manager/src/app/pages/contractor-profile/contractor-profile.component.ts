@@ -41,6 +41,7 @@ export class ContractorProfileComponent implements OnInit {
     services: '',
     project_history: '',
     img: '',
+    specializations: []
   };
 
   constructor(
@@ -58,23 +59,15 @@ export class ContractorProfileComponent implements OnInit {
     if (contractorId) {
       this.contractorService.getContractorById(contractorId).subscribe({
         next: (contractor) => {
-          console.log(contractor);
+          //console.log(contractor);
           this.contractor = contractor;
+          
+          // Load image if available
           if (this.contractor.img) {
-            this.imageService.getImage(this.contractor.img).subscribe({
-              next: (imageUrl) => {
-                this.imagePreviewUrl = imageUrl;
-              },
-              error: (err) => {
-                if(contractor.status === false)
-                {
-                  this.resetImage();
-                } else {
-                  console.error('Error loading image:', err);
-                  this.imageError = true;
-                }
-              }
-            });
+            this.loadImage(this.contractor.img);
+          } else {
+            // Try loading by contractor UUID if no img field
+            this.loadImageByContractorUuid(contractorId);
           }
         },
         error: (err) => {
@@ -84,12 +77,67 @@ export class ContractorProfileComponent implements OnInit {
     }
   }
 
+  /**
+   * Load image by contractor UUID (fallback method)
+   */
+  loadImageByContractorUuid(contractorId: string) {
+    this.imageService.getImage(undefined, undefined, contractorId).subscribe({
+      next: (imageUrl) => {
+        this.imagePreviewUrl = imageUrl;
+        this.imageError = false;
+      },
+      error: (err) => {
+        // If no image found, it's okay - user might not have uploaded one yet
+        //console.log('No image found for contractor, this is expected for new profiles');
+        this.imageError = false;
+        this.imagePreviewUrl = null;
+      }
+    });
+  }
+
+  /**
+   * Load image by direct image ID
+   */
+  loadImage(imageId: string) {
+    this.imageService.getImage(imageId).subscribe({
+      next: (imageUrl) => {
+        this.imagePreviewUrl = imageUrl;
+        this.imageError = false;
+        
+        // Set up error handler to detect expired pre-signed URLs
+        const img = new Image();
+        img.src = imageUrl;
+        img.onerror = () => {
+          console.error('Pre-signed URL expired or invalid for image:', imageId);
+          this.imageError = true;
+          
+          // Retry fetching the image to get a fresh pre-signed URL
+          this.imageService.getImage(imageId).subscribe({
+            next: (newUrl) => {
+              this.imagePreviewUrl = newUrl;
+              this.imageError = false;
+            },
+            error: (retryErr) => {
+              console.error('Failed to reload image:', retryErr);
+              this.imagePreviewUrl = null;
+              this.imageError = true;
+            }
+          });
+        };
+      },
+      error: (err) => {
+        console.error('Error loading image:', err);
+        this.imageError = true;
+        this.imagePreviewUrl = null;
+      }
+    });
+  }
+
   submitProfile() {
     const contractorId = getCookieValue(document.cookie, 'contractorId');
 
     this.contractorService.updateContractor(contractorId, this.contractor).subscribe({
       next: () => {
-        // localStorage.setItem('contractorProfileComplete', 'true'); 
         this.messageService.add({
           severity: 'success',
           summary: 'Profile Complete',
@@ -116,6 +164,7 @@ export class ContractorProfileComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files && input.files[0];
     if (file) {
+      // Validate file size
       if (file.size > 3 * 1024 * 1024) {
         this.imageError = true;
         this.messageService.add({
@@ -130,6 +179,7 @@ export class ContractorProfileComponent implements OnInit {
         return;
       }
 
+      // Validate file type
       if (!file.type.startsWith('image/')) {
         this.messageService.add({
           severity: 'error',
@@ -144,6 +194,7 @@ export class ContractorProfileComponent implements OnInit {
         return;
       }
 
+      // Show preview for non-step-three uploads
       if (!isStepThree) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -154,10 +205,19 @@ export class ContractorProfileComponent implements OnInit {
       }
 
       // Upload to server
-      this.imageService.uploadImage(file).subscribe({
-        next: (response) => {
-          this.contractor.img = response.imageId;
-          this.loadImage(response.imageId);
+      this.imageService.uploadImages([file], this.contractor.uuid, "", "", "")
+        .then((response: any) => {
+          //console.log("File successfully uploaded:", response);
+          
+          // Extract image ID from response
+          const uploadedImageId = Array.isArray(response) ? response[0] : response.imageId;
+          
+          // Update contractor img field
+          this.contractor.img = uploadedImageId;
+          
+          // Load the newly uploaded image
+          this.loadImage(uploadedImageId);
+          
           if (isStepThree) {
             this.messageService.add({
               severity: 'success',
@@ -166,8 +226,8 @@ export class ContractorProfileComponent implements OnInit {
               life: 3000
             });
           }
-        },
-        error: (err) => {
+        })
+        .catch((err) => {
           console.error('Error uploading image:', err);
           this.imageError = true;
           this.messageService.add({
@@ -180,40 +240,8 @@ export class ContractorProfileComponent implements OnInit {
           if (!isStepThree) {
             this.fileInput.nativeElement.value = '';
           }
-        }
-      });
+        });
     }
-  }
-
-  loadImage(imageId: string) {
-    this.imageService.getImage(imageId).subscribe({
-      next: (imageUrl) => {
-        this.imagePreviewUrl = imageUrl;
-        this.imageError = false;
-        const img = new Image();
-        img.src = imageUrl;
-        img.onerror = () => {
-          console.error('Pre-signed URL expired or invalid for image:', imageId);
-          this.imageError = true;
-          this.imageService.getImage(imageId).subscribe({
-            next: (newUrl) => {
-              this.imagePreviewUrl = newUrl;
-              this.imageError = false;
-            },
-            error: (retryErr) => {
-              console.error('Failed to reload image:', retryErr);
-              this.imagePreviewUrl = null;
-              this.imageError = true;
-            }
-          });
-        };
-      },
-      error: (err) => {
-        console.error('Error loading image:', err);
-        this.imageError = true;
-        this.imagePreviewUrl = null;
-      }
-    });
   }
 
   resetImage() {
@@ -223,13 +251,25 @@ export class ContractorProfileComponent implements OnInit {
     this.imageError = false;
   }
 
-  onStepOneComplete(data: { name: string; email: string; phone: string; address: string; city: string; suburb: string; postalCode: string; status: boolean }) {
+  onStepOneComplete(data: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    suburb: string;
+    postalCode: string;
+    specializations: string[];
+    status: boolean;
+  }) {
     this.contractor.name = data.name;
     this.contractor.email = data.email;
     this.contractor.phone = data.phone;
-    this.contractor.address = data.address.concat(', ', data.suburb, ', ', data.postalCode);
+    const addressParts = [data.address, data.suburb, data.postalCode].filter(part => part).join(', ');
+    this.contractor.address = addressParts || '';
     this.contractor.city = data.city;
     this.contractor.status = data.status;
+    this.contractor.specializations = data.specializations;
     this.step = 2;
     this.messageService.add({
       severity: 'success',
@@ -257,11 +297,11 @@ export class ContractorProfileComponent implements OnInit {
     this.submitProfile();
   }
 
-  
   onStepThreeImagesSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input?.files) {
       const files: FileList = input.files;
+      // Handle step three images if needed
     }
   }
 }

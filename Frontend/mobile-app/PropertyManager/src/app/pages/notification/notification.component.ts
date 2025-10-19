@@ -127,33 +127,17 @@ private sortTimeline(notifications: Notification[])
   }
 
   if (notifications.length === 1 && notifications[0] && notifications[0].createdAt) {
-    const date = new Date(
-      notifications[0].createdAt[0],
-      notifications[0].createdAt[1] - 1,
-      notifications[0].createdAt[2],
-      notifications[0].createdAt[3],
-      notifications[0].createdAt[4],
-      notifications[0].createdAt[5]
-    );
-    notifications[0].createdAtDate = date;
+    notifications[0].createdAtDate = new Date(notifications[0].createdAt);
     return notifications;
   }
 
-  const valid = notifications.filter(n => n && Array.isArray(n.createdAt));
-  valid.forEach(n => {
+  notifications.forEach(n => {
     if (n.createdAt) {
-      n.createdAtDate = new Date(
-        n.createdAt[0],
-        n.createdAt[1] - 1,
-        n.createdAt[2],
-        n.createdAt[3],
-        n.createdAt[4],
-        n.createdAt[5]
-      );
+      n.createdAtDate = new Date(n.createdAt);
     }
   });
 
-  return valid.sort((a, b) => b.createdAtDate!.getTime() - a.createdAtDate!.getTime());
+  return notifications.sort((a, b) => b.createdAtDate!.getTime() - a.createdAtDate!.getTime());
 }
  private async getUserType(): Promise<string | null> {
     if (await this.storage.get('trusteeId')) {

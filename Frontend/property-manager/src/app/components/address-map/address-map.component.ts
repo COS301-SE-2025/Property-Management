@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
 import * as L from 'leaflet';
@@ -46,6 +46,8 @@ interface result {
 export class AddressMapComponent  implements AfterViewInit, OnDestroy {
 
   @Input() control!: FormControl;
+  @Output() addressSelected = new EventEmitter<{ address: string, suburb: string, city: string, province: string }>();
+
   
   private map!: L.Map;
   private marker!: L.Marker;
@@ -88,6 +90,14 @@ export class AddressMapComponent  implements AfterViewInit, OnDestroy {
     this.marker = L.marker([lat, lon]).addTo(this.map).bindPopup(`<b>${suggestion.display_name}</b>`).openPopup();
 
     this.control.setValue(suggestion.display_name);
+
+    const parts = suggestion.display_name.split(',');
+    const address = parts[0]?.trim() || '';
+    const suburb = parts[1]?.trim() || '';
+    const city = parts[2]?.trim() || '';
+    const province = parts[3]?.trim() || '';
+
+    this.addressSelected.emit({ address, suburb, city, province });
   }
   findAddress()
   {
@@ -124,42 +134,53 @@ export class AddressMapComponent  implements AfterViewInit, OnDestroy {
     .finally(() => this.isLoading = false);
   }
 
-  enableLiveLocation()
-  {
-    if(!navigator.geolocation)
-    {
-      console.error("Geolocation not supported")
-      return;
+  enableLiveLocation() {
+  if (!navigator.geolocation) {
+    console.error("Geolocation not supported");
+    return;
+  }
+
+  this.isLoading = true;
+
+  this.watchId = navigator.geolocation.watchPosition(async (pos) => {
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
+
+    this.map.setView([lat, lon], 16);
+
+    if (this.liveMarker) {
+      this.liveMarker.remove();
     }
 
-    this.isLoading = true;
+    this.liveMarker = L.marker([lat, lon], {
+      icon: L.icon({
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+      })
+    }).addTo(this.map).bindPopup('You are here').openPopup();
 
-    this.watchId = navigator.geolocation.watchPosition((pos) => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+      const data = await res.json();
+      const addressObj = data.address || {};
+      const address = addressObj.road || addressObj.pedestrian || addressObj.house_number || '';
+      const suburb = addressObj.suburb || addressObj.neighbourhood || '';
+      const city = addressObj.city || addressObj.town || addressObj.village || '';
+      const province = addressObj.state || '';
 
-      this.map.setView([lat, lon], 16);
+      this.control.setValue(data.display_name || '');
+      this.addressSelected.emit({ address, suburb, city, province });
+    } catch (err) {
+      console.error("Reverse geocoding failed:", err);
+    }
 
-      if(this.liveMarker)
-      {
-        this.liveMarker.remove();
-      }
-
-      this.liveMarker = L.marker([lat, lon], {
-        icon: L.icon({
-          iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-          iconSize: [30, 30],
-          iconAnchor: [15, 30]
-        })
-      }).addTo(this.map).bindPopup('You are here').openPopup();
-
-      this.isLoading = false;
-    },
-    (err) => {
-      console.error("Geolocation error:", err);
-      this.isLoading = false;
-    },
-    { enableHighAccuracy: true}
-    );
-  }
+    this.isLoading = false;
+  },
+  (err) => {
+    console.error("Geolocation error:", err);
+    this.isLoading = false;
+  },
+  { enableHighAccuracy: true });
+}
 }

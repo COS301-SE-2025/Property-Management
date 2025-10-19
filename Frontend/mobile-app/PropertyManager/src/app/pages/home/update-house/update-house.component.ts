@@ -86,61 +86,98 @@ export class UpdateHouseComponent extends ModalComponent implements OnInit {
         corporateUuid: [null]
     });
   }
-  async capturePhoto(){
-    try{
+
+  async capturePhoto() {
+    try {
       const photo = await this.photoService.takePhoto();
-      if(photo.base64String)
-      {
+      if (photo.base64String) {
         this.capturedPhoto = `data:image/${photo.format};base64,${photo.base64String}`;
 
-        const blob = this.photoService.base64ToBlob(photo.base64String, `image/$(photo.format)`);
+        const blob = this.photoService.base64ToBlob(photo.base64String, `image/${photo.format}`);
         this.selectedFile = this.photoService.createFile(blob, `captured_${Date.now()}.${photo.format}`, photo.format);
       }
-    }
-    catch(err){
+    } catch (err) {
       console.error("Error capturing photo", err);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to capture photo'
+      });
     }
   }
-  deletePhoto()
-  {
+
+  deletePhoto() {
     this.capturedPhoto = null;
     this.selectedFile = null;
   }
+
   async onSubmit() {
-    if(this.form.valid)
-    {
+    if (this.form.valid) {
       this.updateError = false;
-  
-      let imageId: string | undefined = "00000000-0000-0000-0000-000000000000";
-  
-      if(this.selectedFile)
-      {
-        try{
-          const upload = await this.imageService.uploadImage(this.selectedFile).toPromise();
-          if(upload?.imageId){
-            imageId = upload?.imageId;
+
+      const name = this.form.value.name;
+      const bcId = this.form.value.corporateUuid;
+      let imageId: string = "00000000-0000-0000-0000-000000000000";
+
+      // STEP 1: Upload image WITHOUT building UUID (if new image is selected)
+      if (this.selectedFile) {
+        try {
+          //console.log('Uploading new building image...');
+          
+          const imageIds = await this.imageService.uploadImages(
+            [this.selectedFile],  // Wrap single file in array
+            undefined,            // user_uuid
+            undefined,            // task_uuid
+            undefined,            // progress_uuid
+            undefined             // building_uuid - NOT YET AVAILABLE
+          );
+
+          if (imageIds && imageIds.length > 0) {
+            imageId = imageIds[0];
+            //console.log('Image uploaded successfully:', imageId);
           }
-        }
-        catch(err)
-        {
+        } catch (err) {
           console.error("Image upload failed", err);
-  
+
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: 'Failed to upload image, please try again'
           });
+          return; // Stop if image upload fails
         }
       }
-  
-      const name = this.form.value.name;
-      const bcId = this.form.value.corporateUuid; 
-  
-      this.buildingService.updateBuilding(this.houseId(), name, imageId,  bcId).subscribe({
-        next: () => {
+
+      // STEP 2: Update building with image ID
+      //console.log('Updating building:', { houseId: this.houseId(), name, imageId, bcId });
+
+      this.buildingService.updateBuilding(this.houseId(), name, imageId, bcId).subscribe({
+        next: async (buildingResponse: any) => {
+          //console.log('Building updated successfully:', buildingResponse);
+
+          // STEP 3: Update image association with building UUID (if new image was uploaded)
+          if (this.selectedFile && imageId !== "00000000-0000-0000-0000-000000000000") {
+            try {
+              //console.log('Updating image association with building UUID:', this.houseId());
+
+              await this.imageService.updateImageAssociations(
+                imageId,
+                undefined,        // user_uuid
+                undefined,        // task_uuid
+                undefined,        // progress_uuid
+                this.houseId()    // building_uuid - NOW AVAILABLE!
+              );
+
+              //console.log('✓ Image association updated successfully');
+            } catch (updateError) {
+              console.error('Failed to update image association:', updateError);
+              // Non-critical error - building is already updated
+            }
+          }
+
           this.form.reset();
           this.closeModal();
-  
+
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -154,8 +191,14 @@ export class UpdateHouseComponent extends ModalComponent implements OnInit {
         error: (err) => {
           console.error("Failed to update building", err);
           this.updateError = true;
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update building'
+          });
         }
       });
     }
-   }
+  }
 }

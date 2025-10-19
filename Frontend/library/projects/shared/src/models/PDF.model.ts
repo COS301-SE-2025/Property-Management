@@ -4,5 +4,6 @@ export interface PDFupload{
     key: string,
     id: string,
     contractor_uuid: string,
-    type: string
+    type: string,
+    task_uuid: string,
 }

@@ -4,11 +4,11 @@
   <div class="ion-padding" [@fadeInStagger]>
     <div class="animate-item">
       <h1 class="text-2xl font-bold dark:text-white">Submitted Quotations</h1>
-      <div class="w-24 h-1 bg-yellow-300 mt-2"></div>
+      <div class="w-30 h-1 bg-yellow-300 mt-2"></div>
     </div>
 
-    <ion-list *ngIf="quotes.length > 0; else noQuotes" class="mt-6 bg-gray-100 dark:bg-gray-700">
-      <ion-card *ngFor="let quote of quotes; let i = index" class="animate-item rounded-xl w-[18rem] h-[18rem] bg-gray-100 shadow-md dark:bg-gray-800">
+    <ion-list *ngIf="quotes.length > 0; else noQuotes" class="mt-6 flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-700">
+      <ion-card *ngFor="let quote of quotes; let i = index" class="animate-item rounded-xl w-[22rem] h-[22rem] bg-gray-100 shadow-md dark:bg-gray-800">
         <ion-card-header class="rounded-t-xl">
           <ion-card-title class="text-center">
             Quote #{{ i + 1 }}

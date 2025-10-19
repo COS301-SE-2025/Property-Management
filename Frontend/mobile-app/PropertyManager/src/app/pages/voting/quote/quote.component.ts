@@ -26,8 +26,8 @@ export class QuoteComponent extends ModalComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log(this.taskId());
-    console.log(this.contractorId());
+    //console.log(this.taskId());
+    //console.log(this.contractorId());
     if(this.taskId())
     {
       this.quoteError = false;
@@ -74,7 +74,7 @@ export class QuoteComponent extends ModalComponent implements OnInit {
     const quote = this.quote();
     if (!quote) return;
 
-    this.apiService.getContractorPDF(this.contractorId(), "Quote").subscribe({
+    this.apiService.getContractorPDF(this.contractorId(), "Quote", this.taskId()).subscribe({
       next: (presignedUrl: string) => {
         window.open(presignedUrl, '_blank');
       },

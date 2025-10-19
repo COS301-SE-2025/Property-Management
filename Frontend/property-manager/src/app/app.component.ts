@@ -20,7 +20,7 @@ import { filter } from 'rxjs';
 })
 export class AppComponent implements OnInit {
   hideHeader = false;
-  private noHeaderRoutes = ['/login', '/register', '/landingPage', '/registerHub', '/contractorRegister', '/register-owner', '/register-body-corporate', '/verifyEmail', '/reset-password'];
+  private noHeaderRoutes = ['/login', '/register', '/landingPage', '/registerHub', '/contractorRegister', '/register-owner', '/register-body-corporate', '/verifyEmail', '/reset-password', '/landing-header', '/landing-footer', '/our-team'];
 
   constructor(private router: Router) {}
 

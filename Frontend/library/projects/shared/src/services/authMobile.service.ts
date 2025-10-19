@@ -18,17 +18,41 @@ export class AuthMobileService {
 
   constructor(){}
 
+  async login(email: string, password: string): Promise<AuthTokens> {
+    return new Promise((resolve, reject) => {
+      const req = { email, password };
+
+      this.http.post<AuthTokens>(`${this.url}/auth/login`, req, { withCredentials: true })
+        .subscribe({
+          next: async(result) => {
+            
+            switch(result.userType) {
+              case 'contractor':
+                await this.storage.set('userType', 'contractor');
+                await this.storage.set('contractorId', result.userId);
+                break;
+              case 'trustee':
+                await this.storage.set('userType', 'trustee');
+                await this.storage.set('trusteeId', result.userId);
+                break;
+            }
+            resolve(result);
+          },
+          error: (error) => reject(error)
+        });
+    });
+  }
   trusteeLogin(email: string, password: string): Promise<AuthTokens>
   {
     return new Promise((resolve, reject) => {
       this.trusteeLoginRequest(email, password).subscribe({
-        next: (result) => {
+        next: async(result) => {
           const idToken = result.idToken;
           const trusteeId = result.userId;
 
-          this.storage.set('idToken', idToken);
-          this.storage.set('trusteeId', trusteeId);
-          this.storage.set('userType', 'trustee');
+          await this.storage.set('idToken', idToken);
+          await this.storage.set('trusteeId', trusteeId);
+          await this.storage.set('userType', 'trustee');
 
           resolve(result);
         },
@@ -46,7 +70,7 @@ export class AuthMobileService {
       password
     };
 
-    return this.http.post<AuthTokens>(`${this.url}/trustee/auth/login`, req,
+    return this.http.post<AuthTokens>(`${this.url}/auth/login`, req,
     { withCredentials: true });
   }
 
@@ -99,12 +123,12 @@ export class AuthMobileService {
   {
     return new Promise((resolve, reject) => {
       this.contractorLoginRequest(email, password).subscribe({
-        next: (result) => {
+        next: async(result) => {
          const contractorId = result.userId;
           
-         this.storage.set('contractorId', contractorId);
-         this.storage.set('idToken', result.idToken);
-         this.storage.set('userType', 'contractor');
+         await this.storage.set('contractorId', contractorId);
+         await this.storage.set('idToken', result.idToken);
+         await this.storage.set('userType', 'contractor');
           resolve(result);
         },
         error: (error) => {

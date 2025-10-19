@@ -1,117 +1,137 @@
 <div class="bg-white dark:bg-[#2d2d2d] rounded-xl shadow-md overflow-hidden">
-    <div class="p-6">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+  <div class="p-6">
+    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      Contractor Timeline
+    </h2>
+
+    @if(timeline().length === 0 && !contractorUser) {
+      <div class="flex flex-col items-center justify-center py-10 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-yellow-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        Contractor Timeline
-        </h2>
-    
-        @if(timeline().length === 0 && !contractorUser) {
-            <div class="flex flex-col items-center justify-center py-10 text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-yellow-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No updates yet</h3>
-                <p class="text-gray-500 dark:text-gray-400">Contractors haven't provided any updates yet. Check back later.</p>
+        <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No updates yet</h3>
+        <p class="text-gray-500 dark:text-gray-400">Contractors haven't provided any updates yet. Check back later.</p>
+      </div>
+    }
+
+    <div class="relative">
+      <div *ngFor="let time of timeline(); let i = index" class="mb-8 flex flex-col md:flex-row items-center">
+        <div class="flex-1 ml-4 md:ml-0 md:pl-4">
+          <div class="bg-gray-50 dark:bg-[#444] rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div class="flex flex-col">
+              <span class="text-sm font-medium mb-3">{{time.subDate! | formatTime }}</span>
+              <div class="mb-3">
+                @if(time.progressPercentage === 100) {
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Task Completed
+                  </span>
+                }
+                @else {
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    In Progress
+                  </span>
+                }
+              </div>
             </div>
-        }
-        
-        <div class="relative">
-            <div *ngFor="let time of timeline(); let i = index" class="mb-8 flex flex-col md:flex-row items-center">
-                <div class="flex-1 ml-4 md:ml-0 md:pl-4">
-                    <div class="bg-gray-50 dark:bg-[#444] rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-medium mb-3">{{time.subDate! | formatTime }}</span>
-                            <div class="mb-3">
-                                @if(time.progressPercentage === 100) {
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                    Task Completed
-                                </span>
-                                }
-                                @else {
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    In Progress
-                                </span>
-                                }
-                            </div>
-                        </div>
-            
-                        @if(time.imageId) {
-                        <div class="mb-4 {{i % 2 !== 0 ? 'md:text-right' : ''}}">
-                            <img [src]="time.imageId" alt="Progress image" class="rounded-lg shadow-sm inline-block max-w-full h-auto">
-                        </div>
-                        }
-            
-                        <p class="text-gray-700 dark:text-gray-300 mb-4 {{i % 2 !== 0 ? 'md:text-right' : ''}}">{{ time.workDescription }}</p>
-            
-                        @if(time.inventoryUsageUuid) {
-                        <div class="mt-4 {{i % 2 !== 0 ? '' : ''}}">
-                            <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center {{i % 2 !== 0 ? 'md:justify-end' : ''}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                            Inventory Used
-                            </h4>
-                            
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead>
-                                    <tr>
-                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
-                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                    <tr *ngFor="let inventory of inventoryUsageContractor()">
-                                        <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{{ inventory.name }}</td>
-                                        <td class="px-4 py-2">
-                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-xs">
-                                            {{ inventory.quantityInStock }}
-                                        </span>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        }
-            
-                    @if(time.progressPercentage === 100 && !contractorUser && trusteeUser) {
-                    <div class="mt-4 {{i % 2 !== 0 ? 'md:text-right' : ''}}">
-                        <button 
-                        class="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
-                        (click)="navigateToReview('write', time.taskUuid)">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Write Review
-                        </button>
-                    </div>
-                    }
+
+            @if(time.progressUuid && getImagesForTimeline(time.progressUuid).length > 0) {
+              <div class="mb-4 {{i % 2 !== 0 ? 'md:text-right' : ''}} relative">
+                <div class="carousel relative overflow-hidden rounded-lg shadow-sm">
+                  <div class="carousel-inner flex transition-transform duration-300" [style.transform]="'translateX(-' + (currentImageIndex()[i] * 100) + '%)'">
+                    <img *ngFor="let image of getImagesForTimeline(time.progressUuid)" [src]="image" alt="Progress image" class="carousel-item w-full h-auto max-w-full flex-none">
+                  </div>
+                  @if(getImagesForTimeline(time.progressUuid).length > 1) {
+                    <button class="carousel-prev absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-r-md" (click)="prevImage(i)">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button class="carousel-next absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-l-md" (click)="nextImage(i)">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  }
                 </div>
-            </div>
+                <div class="flex justify-center mt-2">
+                  <span *ngFor="let img of getImagesForTimeline(time.progressUuid); let imgIndex = index" class="h-2 w-2 mx-1 rounded-full cursor-pointer" [ngClass]="{'bg-yellow-500': imgIndex === currentImageIndex()[i], 'bg-gray-300': imgIndex !== currentImageIndex()[i]}" (click)="goToImage(i, imgIndex)"></span>
+                </div>
+              </div>
+            }
+            @else if(time.imageId) {
+              <div class="mb-4 {{i % 2 !== 0 ? 'md:text-right' : ''}}">
+                <img [src]="time.imageId" alt="Progress image" class="rounded-lg shadow-sm inline-block max-w-full h-auto">
+              </div>
+            }
+
+            <p class="text-gray-700 dark:text-gray-300 mb-4 {{i % 2 !== 0 ? 'md:text-right' : ''}}">{{ time.workDescription }}</p>
+
+            @if(time.inventoryUsageUuid) {
+              <div class="mt-4 {{i % 2 !== 0 ? '' : ''}}">
+                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center {{i % 2 !== 0 ? 'md:justify-end' : ''}}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  Inventory Used
+                </h4>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead>
+                      <tr>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                      <tr *ngFor="let inventory of inventoryUsageContractor()">
+                        <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{{ inventory.name }}</td>
+                        <td class="px-4 py-2">
+                          <span class="px-2 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-xs">
+                            {{ inventory.quantityInStock }}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            }
+
+            @if(time.progressPercentage === 100 && !contractorUser && trusteeUser) {
+              <div class="mt-4 {{i % 2 !== 0 ? 'md:text-right' : ''}}">
+                <button class="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500" (click)="navigateToReview('write', time.taskUuid)">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Write Review
+                </button>
+              </div>
+            }
+          </div>
         </div>
+      </div>
     </div>
-    
+
     @if(contractorUser) {
-    <div class="mt-6 flex justify-center">
-        <button 
-        class="flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors duration-200"
-        (click)="inventoryAddDialog.openDialog()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="mt-6 flex justify-center">
+        <button class="flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors duration-200" (click)="inventoryAddDialog.openDialog()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        Add Progress Update
+          </svg>
+          Add Progress Update
         </button>
         <app-add-progress-dialog #inventoryAddDialog [taskId]="this.task().uuid" [inventoryItemsAvailable]="usageUsedByContractor"/>
-    </div>
+      </div>
     }
+  </div>
+  <p-toast/>
 </div>
-<p-toast/>

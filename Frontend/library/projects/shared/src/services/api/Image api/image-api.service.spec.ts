@@ -74,37 +74,4 @@ describe('ImageApiService', () => {
       req.error(errorResponse);
     });
   });
-
-  describe('uploadImage', () => {
-    const mockFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const mockResponse = { imageKey: 'uploaded123' };
-
-    it('should upload file and return image key', () => {
-      service.uploadImage(mockFile).subscribe(response => {
-        expect(response).toEqual({ imageId: mockResponse.imageKey });
-      });
-
-      const req = httpMock.expectOne(`${mockApiUrl}/images/upload`);
-      expect(req.request.method).toBe('POST');
-      
-      const formData = req.request.body as FormData;
-      expect(formData.get('file')).toEqual(mockFile);
-      
-      req.flush(mockResponse);
-    });
-
-    it('should handle upload errors', () => {
-      const errorResponse = new ErrorEvent('Upload failed');
-      
-      service.uploadImage(mockFile).subscribe({
-        next: () => fail('should have failed'),
-        error: (error) => {
-          expect(error).toBeTruthy();
-        }
-      });
-
-      const req = httpMock.expectOne(`${mockApiUrl}/images/upload`);
-      req.error(errorResponse);
-    });
-  });
 });

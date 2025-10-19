@@ -138,7 +138,7 @@ export class ContractorRegisterComponent {
 
         sessionStorage.setItem('pendingUsername', result.username);
         sessionStorage.setItem('userType', 'contractor');
-        console.log('Registration successful:', result);
+        //console.log('Registration successful:', result);
 
         this.router.navigate(['/verifyEmail'], {
           state: { username: result.username }

@@ -5,6 +5,8 @@ import com.example.propertymanagement.repository.PDFRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -79,6 +81,30 @@ class PDFController(
                 url = url,
                 cUuid = cUuid,
                 type = type,
+                taskUuid = null,
+            )
+        PDFRepository.save(pdfMeta)
+        return ResponseEntity.ok("Upload metadata saved.")
+    }
+
+    @PostMapping("/notify-upload-task/{id}/{filename}/{key}/{cUuid}/{taskUuid}")
+    fun notifyUploadComplete(
+        @PathVariable id: String,
+        @PathVariable filename: String,
+        @PathVariable key: String,
+        @PathVariable cUuid: UUID,
+        @PathVariable taskUuid: UUID,
+    ): ResponseEntity<String> {
+        val url = "https://$bucketName.s3.amazonaws.com/$key"
+        val pdfMeta =
+            PDFMeta(
+                id = id,
+                filename = filename,
+                key = key,
+                url = url,
+                cUuid = cUuid,
+                type = "Quote",
+                taskUuid = taskUuid,
             )
         PDFRepository.save(pdfMeta)
         return ResponseEntity.ok("Upload metadata saved.")
@@ -89,9 +115,46 @@ class PDFController(
         @PathVariable cUuid: UUID,
         @PathVariable type: String,
     ): ResponseEntity<String> {
+        val pdfs = PDFRepository.findAllByCUuidAndType(cUuid, type)
+
+        if (pdfs.isEmpty()) {
+            throw NoSuchElementException("PDF not found with id $cUuid and type $type")
+        }
+
+        // Get the first one (should only be one after duplicates are cleaned up)
+        val pdf = pdfs.first()
+
+        val getObjectRequest =
+            GetObjectRequest
+                .builder()
+                .bucket(bucketName)
+                .key(extractKeyFromUrl(pdf.url))
+                .build()
+
+        val presignRequest =
+            GetObjectPresignRequest
+                .builder()
+                .getObjectRequest(getObjectRequest)
+                .signatureDuration(Duration.ofMinutes(10)) // valid for 10 minutes
+                .build()
+
+        val presignedRequest = s3Presigner.presignGetObject(presignRequest)
+        val presignedUrl = presignedRequest.url().toString()
+
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.TEXT_PLAIN)
+            .body(presignedUrl)
+    }
+
+    @GetMapping("/presigned-task/{cUuid}/{taskUuid}")
+    fun getPresignedUrlTask(
+        @PathVariable cUuid: UUID,
+        @PathVariable taskUuid: UUID,
+    ): ResponseEntity<String> {
         val pdf =
-            PDFRepository.findByCUuidAndType(cUuid, type).orElseThrow {
-                NoSuchElementException("PDF not found with id $cUuid and type $type")
+            PDFRepository.findByCUuidAndTaskUuid(cUuid, taskUuid).orElseThrow {
+                NoSuchElementException("PDF not found with id $cUuid and task id $taskUuid")
             }
 
         val getObjectRequest =
@@ -132,4 +195,34 @@ class PDFController(
         } catch (e: NoSuchElementException) {
             ResponseEntity.notFound().build()
         }
+
+    @DeleteMapping("/presigned/{cUuid}/{type}")
+    @Transactional
+    fun delete(
+        @PathVariable cUuid: UUID,
+        @PathVariable type: String,
+    ): ResponseEntity<Void> {
+        // Find all PDFs with this cUuid and type
+        val pdfs = PDFRepository.findAllByCUuidAndType(cUuid, type)
+
+        // Delete from S3 (optional but recommended)
+        pdfs.forEach { pdf ->
+            try {
+                val deleteObjectRequest =
+                    software.amazon.awssdk.services.s3.model.DeleteObjectRequest
+                        .builder()
+                        .bucket(bucketName)
+                        .key(extractKeyFromUrl(pdf.url))
+                        .build()
+                s3Client.deleteObject(deleteObjectRequest)
+            } catch (e: Exception) {
+                // Log error but continue
+                println("Failed to delete S3 object: ${pdf.key} - ${e.message}")
+            }
+        }
+
+        // Delete all from database
+        PDFRepository.deleteByCUuidAndType(cUuid, type)
+        return ResponseEntity.noContent().build()
+    }
 }

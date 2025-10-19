@@ -6,81 +6,244 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.multipart.MultipartFile
-import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest
 import java.time.Duration
 import java.util.UUID
 
 @RestController
 @RequestMapping("/api/images")
 class ImageController(
-    val s3Client: S3Client,
-    val s3Presigner: S3Presigner,
-    val imageRepository: ImageRepository,
+    private val s3Client: S3Client,
+    private val s3Presigner: S3Presigner,
+    private val imageRepository: ImageRepository,
 ) {
     @Value("\${aws.bucket-name:default-bucket}")
     lateinit var bucketName: String
 
-    @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun upload(
-        @RequestParam("file") file: MultipartFile,
+    data class ImageWithPresignedUrl(
+        val id: String,
+        val filename: String,
+        val presignedUrl: String,
+        val taskUuid: UUID?,
+        val userUuid: UUID?,
+        val progressUuid: UUID?,
+        val buildingUuid: UUID?,
+    )
+
+    /**
+     * Generate presigned upload URL for a single image
+     */
+    @GetMapping("/presigned-upload/{filename}")
+    fun generatePresignedUploadUrl(
+        @PathVariable filename: String,
     ): ResponseEntity<Map<String, String>> {
         val id = UUID.randomUUID().toString()
-        val key = "uploads/$id-${file.originalFilename}"
+        val key = "uploads-$id-$filename"
 
-        s3Client.putObject(
+        val contentType = getContentTypeFromFilename(filename)
+
+        val putObjectRequest =
             PutObjectRequest
                 .builder()
                 .bucket(bucketName)
                 .key(key)
-                .contentType(file.contentType)
-                .build(),
-            RequestBody.fromBytes(file.bytes),
+                .contentType(contentType)
+                .build()
+
+        val presignRequest =
+            PutObjectPresignRequest
+                .builder()
+                .putObjectRequest(putObjectRequest)
+                .signatureDuration(Duration.ofMinutes(15))
+                .build()
+
+        val presignedRequest = s3Presigner.presignPutObject(presignRequest)
+        val uploadUrl = presignedRequest.url().toString()
+
+        return ResponseEntity.ok(
+            mapOf(
+                "uploadUrl" to uploadUrl,
+                "fileKey" to key,
+                "id" to id,
+            ),
         )
-
-        val imageUrl = "https://$bucketName.s3.amazonaws.com/$key"
-        imageRepository.save(ImageMeta(id = id, filename = file.originalFilename ?: "unknown", url = imageUrl))
-
-        return ResponseEntity.ok(mapOf("imageKey" to id))
     }
 
+    private fun getContentTypeFromFilename(filename: String): String {
+        val extension = filename.substringAfterLast('.', "").lowercase()
+        return when (extension) {
+            "jpg", "jpeg" -> "image/jpeg"
+            "png" -> "image/png"
+            "gif" -> "image/gif"
+            "webp" -> "image/webp"
+            "bmp" -> "image/bmp"
+            "svg" -> "image/svg+xml"
+            "tiff", "tif" -> "image/tiff"
+            else -> throw IllegalArgumentException("Unsupported file type. Only image files are allowed.")
+        }
+    }
+
+    /**
+     * Notify that upload is complete and save metadata to database
+     */
+    @PostMapping("/notify-upload/{id}/{filename}/{key}")
+    fun notifyUploadComplete(
+        @PathVariable id: String,
+        @PathVariable filename: String,
+        @PathVariable key: String,
+        @RequestParam("userUuid", required = false) userUuid: UUID?,
+        @RequestParam("taskUuid", required = false) taskUuid: UUID?,
+        @RequestParam("progressUuid", required = false) progressUuid: UUID?,
+        @RequestParam("buildingUuid", required = false) buildingUuid: UUID?,
+    ): ResponseEntity<String> {
+        val url = "https://$bucketName.s3.amazonaws.com/$key"
+
+        // Check if image already exists (for updates)
+        val existingImage = imageRepository.findById(id).orElse(null)
+
+        val imageMeta =
+            if (existingImage != null) {
+                // Update existing image
+                existingImage.copy(
+                    task_uuid = taskUuid ?: existingImage.task_uuid,
+                    user_uuid = userUuid ?: existingImage.user_uuid,
+                    progress_uuid = progressUuid ?: existingImage.progress_uuid,
+                    building_uuid = buildingUuid ?: existingImage.building_uuid,
+                )
+            } else {
+                // Create new image
+                ImageMeta(
+                    id = id,
+                    filename = filename,
+                    url = url,
+                    task_uuid = taskUuid,
+                    user_uuid = userUuid,
+                    progress_uuid = progressUuid,
+                    building_uuid = buildingUuid,
+                )
+            }
+
+        imageRepository.save(imageMeta)
+
+        return ResponseEntity.ok("Upload metadata saved.")
+    }
+
+    /**
+     * NEW: Update image associations without re-uploading
+     * PATCH /api/images/{imageId}/associations
+     */
+    @PatchMapping("/{imageId}/associations")
+    fun updateImageAssociations(
+        @PathVariable imageId: String,
+        @RequestParam("userUuid", required = false) userUuid: UUID?,
+        @RequestParam("taskUuid", required = false) taskUuid: UUID?,
+        @RequestParam("progressUuid", required = false) progressUuid: UUID?,
+        @RequestParam("buildingUuid", required = false) buildingUuid: UUID?,
+    ): ResponseEntity<ImageMeta> {
+        val existingImage =
+            imageRepository.findById(imageId).orElseThrow {
+                NoSuchElementException("Image not found with id $imageId")
+            }
+
+        // Update only the provided UUIDs (keep existing ones if not provided)
+        val updatedImage =
+            existingImage.copy(
+                task_uuid = taskUuid ?: existingImage.task_uuid,
+                user_uuid = userUuid ?: existingImage.user_uuid,
+                progress_uuid = progressUuid ?: existingImage.progress_uuid,
+                building_uuid = buildingUuid ?: existingImage.building_uuid,
+            )
+
+        imageRepository.save(updatedImage)
+
+        return ResponseEntity.ok(updatedImage)
+    }
+
+    /**
+     * Get presigned URL for a single image by ID.
+     */
     @GetMapping("/presigned/{id}")
-    fun getPresignedUrl(
+    fun getPresignedUrlById(
         @PathVariable id: String,
     ): ResponseEntity<String> {
-        val image = imageRepository.findById(id).orElseThrow()
+        val image =
+            imageRepository.findById(id).orElseThrow {
+                NoSuchElementException("Image not found with id $id")
+            }
+
+        val presignedUrl = createPresignedUrl(image.url)
+
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.TEXT_PLAIN)
+            .body(presignedUrl)
+    }
+
+    @GetMapping("/presigned")
+    fun getPresignedUrl(
+        @RequestParam("userUuid", required = false) userUuid: UUID?,
+        @RequestParam("taskUuid", required = false) taskUuid: UUID?,
+        @RequestParam("progressUuid", required = false) progressUuid: UUID?,
+        @RequestParam("buildingUuid", required = false) buildingUuid: UUID?,
+    ): ResponseEntity<List<ImageWithPresignedUrl>> {
+        if (listOfNotNull(userUuid, taskUuid, progressUuid, buildingUuid).isEmpty()) {
+            throw IllegalArgumentException("At least one UUID parameter must be provided")
+        }
+
+        val images = imageRepository.findByUuids(userUuid, taskUuid, progressUuid, buildingUuid)
+
+        if (images.isEmpty()) {
+            throw NoSuchElementException("No images found with provided parameters")
+        }
+
+        val imagesWithUrls =
+            images.map { image ->
+                ImageWithPresignedUrl(
+                    id = image.id,
+                    filename = image.filename,
+                    presignedUrl = createPresignedUrl(image.url),
+                    taskUuid = image.task_uuid,
+                    userUuid = image.user_uuid,
+                    progressUuid = image.progress_uuid,
+                    buildingUuid = image.building_uuid,
+                )
+            }
+
+        return ResponseEntity.ok(imagesWithUrls)
+    }
+
+    /**
+     * Helper: create presigned URL from stored S3 URL.
+     */
+    private fun createPresignedUrl(storedUrl: String): String {
+        val key = extractKeyFromUrl(storedUrl)
 
         val getObjectRequest =
             GetObjectRequest
                 .builder()
                 .bucket(bucketName)
-                .key(extractKeyFromUrl(image.url))
+                .key(key)
                 .build()
 
         val presignRequest =
             GetObjectPresignRequest
                 .builder()
                 .getObjectRequest(getObjectRequest)
-                .signatureDuration(Duration.ofMinutes(10)) // valid for 10 minutes
+                .signatureDuration(Duration.ofMinutes(10))
                 .build()
 
-        val presignedRequest = s3Presigner.presignGetObject(presignRequest)
-        val presignedUrl = presignedRequest.url().toString()
-
-        return ResponseEntity
-            .ok()
-            .contentType(MediaType.TEXT_PLAIN)
-            .body(presignedUrl)
+        return s3Presigner.presignGetObject(presignRequest).url().toString()
     }
 
     private fun extractKeyFromUrl(url: String): String {

@@ -70,16 +70,16 @@ services:
     networks:
       - app-network
 
-  frontend:
-    build: ./Frontend
-    container_name: frontend
-    ports:
-      - "4200:4200"
-    depends_on:
-      - backend
-      - forecast-api
-    networks:
-      - app-network
+  # frontend:
+  #   build: ./Frontend
+  #   container_name: frontend
+  #   ports:
+  #     - "4200:4200"
+  #   depends_on:
+  #     - backend
+  #     - forecast-api
+  #   networks:
+  #     - app-network
 
   prometheus:
     image: prom/prometheus

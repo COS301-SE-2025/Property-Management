@@ -11,9 +11,9 @@ export class NotificationService {
   async requestPermissions() {
     const result = await LocalNotifications.requestPermissions();
     if (result.display === 'granted') {
-      console.log('Permission granted');
+      //console.log('Permission granted');
     } else {
-      console.log('Permission denied');
+      //console.log('Permission denied');
     }
   }
   async scheduleNotification() {

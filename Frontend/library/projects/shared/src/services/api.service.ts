@@ -215,48 +215,103 @@ getContractorMaintenanceTasks(contractorUuid: string, isBodyCorporate: boolean =
   );
 }
 
-async uploadPDF(file: File, uuid: string, type: string): Promise<void> {
-    try {
-      const presignResponse: any = await firstValueFrom(
-        this.http.get(`${this.url}/upload/presigned-upload/${file.name}`,
-        { withCredentials: true })
-      );
+async uploadPDF(file: File, uuid: string, type: string, taskUuid: string): Promise<void> {
+    if(taskUuid == ""){
+        try {
+        // Delete existing PDF of this type before uploading new one
+        await firstValueFrom(
+          this.http.delete(`${this.url}/upload/presigned/${uuid}/${type}`,
+          { withCredentials: true })
+        ).catch(() => {
+          // Ignore error if no existing PDF found
+          console.error('No existing PDF to delete or delete failed');
+        });
 
-      const uploadUrl = presignResponse.uploadUrl; // S3 URL
-      const key = presignResponse.fileKey;
-      const id = presignResponse.id;
-
-      await firstValueFrom(
-        this.http.put(uploadUrl, file, {
-          headers: new HttpHeaders({
-            'Content-Type': 'application/pdf'
-          }),
-          responseType: 'text' // S3 PUT returns empty body
-        })
-      );
-
-
-      await firstValueFrom(
-        this.http.post(
-          `${this.url}/upload/notify-upload/${id}/${file.name}/${key}/${uuid}/${type}`,
-          {},
-          { responseType: 'text',
-            withCredentials: true
-           }
-        )
-      );
-
-    } catch (error) {
-      console.error('PDF upload failed:', error);
-      throw error; // Let the component handle errors
+        const presignResponse: any = await firstValueFrom(
+          this.http.get(`${this.url}/upload/presigned-upload/${file.name}`,
+          { withCredentials: true })
+        );
+        const uploadUrl = presignResponse.uploadUrl; // S3 URL
+        const key = presignResponse.fileKey;
+        const id = presignResponse.id;
+        await firstValueFrom(
+          this.http.put(uploadUrl, file, {
+            headers: new HttpHeaders({
+              'Content-Type': 'application/pdf'
+            }),
+            responseType: 'text' // S3 PUT returns empty body
+          })
+        );
+        await firstValueFrom(
+          this.http.post(
+            `${this.url}/upload/notify-upload/${id}/${file.name}/${key}/${uuid}/${type}`,
+            {},
+            { responseType: 'text',
+              withCredentials: true
+            }
+          )
+        );
+      } catch (error) {
+        console.error('PDF upload failed:', error);
+        throw error; // Let the component handle errors
+      }
     }
-  }
+    else{
+        try {
+        // Delete existing PDF for this task before uploading new one
+        await firstValueFrom(
+          this.http.delete(`${this.url}/upload/presigned/${uuid}/${type}`,
+          { withCredentials: true })
+        ).catch(() => {
+          // Ignore error if no existing PDF found
+          //console.log('No existing PDF to delete or delete failed');
+        });
 
-  getContractorPDF(contractorUuid: string, type: string): Observable<string>{
-    return this.http.get(`${this.url}/upload/presigned/${contractorUuid}/${type}`, {
-      responseType: 'text',
-      withCredentials: true
-    });
+        const presignResponse: any = await firstValueFrom(
+          this.http.get(`${this.url}/upload/presigned-upload/${file.name}`,
+          { withCredentials: true })
+        );
+        const uploadUrl = presignResponse.uploadUrl; // S3 URL
+        const key = presignResponse.fileKey;
+        const id = presignResponse.id;
+        await firstValueFrom(
+          this.http.put(uploadUrl, file, {
+            headers: new HttpHeaders({
+              'Content-Type': 'application/pdf'
+            }),
+            responseType: 'text' // S3 PUT returns empty body
+          })
+        );
+        await firstValueFrom(
+          this.http.post(
+            `${this.url}/upload/notify-upload-task/${id}/${file.name}/${key}/${uuid}/${taskUuid}`,
+            {},
+            { responseType: 'text',
+              withCredentials: true
+            }
+          )
+        );
+      } catch (error) {
+        console.error('PDF upload failed:', error);
+        throw error; // Let the component handle errors
+      }
+    }
+}
+
+
+  getContractorPDF(contractorUuid: string, type: string, taskUuid: string): Observable<string>{
+    if(taskUuid == ""){
+        return this.http.get(`${this.url}/upload/presigned/${contractorUuid}/${type}`, {
+        responseType: 'text',
+        withCredentials: true
+      });
+    }
+    else{
+        return this.http.get(`${this.url}/upload/presigned-task/${contractorUuid}/${taskUuid}`, {
+        responseType: 'text',
+        withCredentials: true
+      });
+    }
   }
   resetTrusteePasswordRequest(email: string): Observable<any> {
   const body = { email: email };
