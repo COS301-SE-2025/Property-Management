@@ -345,7 +345,7 @@ We implement a robust GitFlow branching strategy ensuring code quality and colla
 - Academic Year: 2025
 
 **Project Links:**
-- [Live Demo](https://property-management-demo.aws.com)
+- [Live Demo](https://drive.google.com/file/d/1-wYhGD86xZV7Ww_W-ApJjImjOY_dfVx5/view?usp=drive_link)
 - [Project Board](https://github.com/orgs/COS301-SE-2025/projects/111)
 - [Documentation](https://property-management-docs.gitbook.io)
 - [Report Issues](https://github.com/COS301-SE-2025/Property-Management/issues)
