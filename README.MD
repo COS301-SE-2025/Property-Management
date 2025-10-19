@@ -186,6 +186,9 @@ Our GitHub Project boards facilitate effective task management, progress trackin
     <td width="35%">
       Thabiso is a final year Computer Science with a lot of experience in programming. His ability to create a very seamless and user-friendly UI/UX will enhance this project’s usability. As a tutor at the University of Pretoria, he has learned very valuable insights on how to make people work efficiently in a team. He has completed successful projects, ranging from creating a movie database, a city simulator, and a NoSQL database, and is most proficient in the following languages:
     </td>
+    <td>
+  🔗 <a href="https://drive.google.com/file/d/1-RjLGDy6FWiLp6Bb0mmD5k7P7ZDoGqoX/view?usp=sharing">CV</a><br>
+    </td>
   </tr>
 </table>
 
