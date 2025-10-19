@@ -18,26 +18,16 @@
       <ion-label class="dark:text-gray-300">Expiration Date</ion-label>
       <ion-note slot="end" class="dark:text-gray-300">{{ expirationDate || 'Select date' }}</ion-note>
     </ion-item>
-    <ion-modal [isOpen]="showExpirationDate" (didDismiss)="showExpirationDate = false">
+    <ion-popover [isOpen]="showExpirationDate" (didDismiss)="showExpirationDate = false">
       <ng-template>
-        <ion-header class="bg-white dark:bg-gray-700">
-          <ion-toolbar>
-            <ion-title class="dark:text-gray-200">Select Expiration Date</ion-title>
-            <ion-buttons slot="end">
-              <ion-button (click)="showExpirationDate = false" class="dark:text-gray-200" >Close</ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
-        <ion-content class="ion-padding bg-white dark:bg-gray-700">
-          <ion-datetime
-            presentation="date"
-            [(ngModel)]="expirationDate"
-            name="expirationDate"
-            (ionChange)="showExpirationDate = false"
-          ></ion-datetime>
-        </ion-content>
+        <ion-datetime
+          presentation="date"
+          [(ngModel)]="expirationDate"
+          name = "expirationDate"
+          (ionChange)="showExpirationDate = false"
+        ></ion-datetime>
       </ng-template>
-    </ion-modal>
+    </ion-popover>
 
     <!-- Quote Number -->
     <ion-item fill="outline" lines="inset" class=" bg-grey-100"> 
@@ -107,23 +97,15 @@
   <!-- Loading Spinner -->
   <ion-loading [isOpen]="loading" message="Submitting..." spinner="crescent"></ion-loading>
 
-  <!-- File Preview Modal -->
-  <ion-modal [isOpen]="previewOpen" (didDismiss)="closePreviewModal()">
-    <ng-template>
-      <ion-header class="bg-white dark:bg-gray-700">
-        <ion-toolbar>
-          <ion-title>File Preview</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="closePreviewModal()" class="dark:text-gray-200">Close</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding bg-white dark:bg-gray-700">
-        <img *ngIf="isImage" [src]="filePreviewUrl" class="w-full rounded" />
-        <iframe *ngIf="!isImage" [src]="safeFilePreviewUrl" class="w-full h-96"></iframe>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+  <!-- File Preview popover -->
+  <ion-popover [isOpen]="previewOpen" (didDismiss)="closePreviewModal()">
+  <ng-template>
+    <ion-content class="ion-padding bg-white dark:bg-gray-700">
+      <img *ngIf="isImage" [src]="filePreviewUrl" class="w-full rounded" />
+      <iframe *ngIf="!isImage" [src]="safeFilePreviewUrl" class="w-full h-96"></iframe>
+    </ion-content>
+  </ng-template>
+</ion-popover>
    
 </ion-content>
 <app-tab/>
