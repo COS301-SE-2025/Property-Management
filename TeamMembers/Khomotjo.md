@@ -12,4 +12,4 @@ Currently based in Pretoria, I’m excited to share my journey from discovering 
 **Github**: [https://github.com/Khomotjo246](https://github.com/Khomotjo246)  
 **LinkedIn**: [https://www.linkedin.com/in/khomotjo-maluleke-4181a929b/](https://www.linkedin.com/in/khomotjo-maluleke-4181a929b/)  
 **Email**: khoomotjomaluleke@gmail.com
-
+**CV**: https://1drv.ms/b/c/effcc2da7affd3f6/EXzS-KV0rxxApT_s9BnR-J4BCi-_3EoI4PoriFhPOGcAAQ?e=bVeJ2d
