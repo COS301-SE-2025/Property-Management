@@ -1,5 +1,5 @@
 import { Component, DoCheck, Input, input } from '@angular/core';
-import { IonHeader, IonContent, IonToolbar, IonIcon, IonButton, IonButtons, IonModal, ToastController, IonSpinner } from "@ionic/angular/standalone";
+import { IonHeader, IonContent, IonToolbar, IonIcon, IonButton, IonButtons, IonModal, ToastController } from "@ionic/angular/standalone";
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { addIcons } from 'ionicons';
 import { CommonModule } from '@angular/common';
@@ -14,19 +14,17 @@ import { ImageApiService, Notification, Inventory, InventoryItemApiService, Inve
   selector: 'app-progress-dialog',
   templateUrl: './progress-dialog.component.html',
   styles: ``,
-  imports: [IonHeader, MultiSelectModule, IonIcon, IonContent, IonToolbar, IonButton, IonButtons, IonModal, ReactiveFormsModule, CommonModule, IonSpinner],
+  imports: [IonHeader, MultiSelectModule, IonIcon, IonContent, IonToolbar, IonButton, IonButtons, IonModal, ReactiveFormsModule, CommonModule],
 })
 export class ProgressDialogComponent extends ModalComponent implements DoCheck {
 
   form!: FormGroup;
-  selectedFile: File | null = null;
   public taskId = input.required<string>();
   @Input() inventoryItemsAvailable!: Map<string, number>;
   @Input() isDone!: boolean;
   public inventoryItems: Inventory[] = [];
   public addError = false;
   public isSubmitting = false;
-  public capturedPhoto: string | null = null;
 
   public capturedPhotos: string[] = [];
   public selectedFiles: File[] = [];
@@ -50,6 +48,8 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
       inventoryQuantities: this.fb.group({}),
       progress: ['', [Validators.required, Validators.min(0), Validators.max(100)]]
     });
+
+    addIcons({ cameraOutline, trashOutline });
 
   }
 
@@ -89,6 +89,7 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
   override async confirm() {
     if (this.form.valid) {
       this.addError = false;
+      this.isSubmitting = true;
 
       try {
         const contractorId = await this.storageService.get('contractorId');
@@ -104,12 +105,13 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
 
         // STEP 1: Upload image WITHOUT progress UUID (initially)
         let imageId: string = "00000000-0000-0000-0000-000000000000";
+        let uploadedImageIds: string[] = [];
 
         if (this.selectedFiles.length > 0) {
           try {
             //console.log('Uploading progress image without progress UUID...');
 
-            const imageIds = await this.imageService.uploadImages(
+            uploadedImageIds = await this.imageService.uploadImages(
               this.selectedFiles,  // Wrap single file in array
               contractorId,         // user_uuid (contractor)
               this.taskId(),        // task_uuid
@@ -117,8 +119,8 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
               undefined             // building_uuid
             );
 
-            if (imageIds && imageIds.length > 0) {
-              imageId = imageIds[0];
+            if (uploadedImageIds && uploadedImageIds.length > 0) {
+              imageId = uploadedImageIds[0];
               //console.log('Image uploaded successfully:', imageId);
             }
           } catch (uploadError) {
@@ -163,23 +165,43 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
             //console.log('Progress UUID:', progressUuid);
 
             // STEP 3: Update image association with progress UUID (if image was uploaded)
-            if (imageId !== "00000000-0000-0000-0000-000000000000" && progressUuid) {
+            if (uploadedImageIds.length > 0 && progressUuid) {
               try {
                 //console.log('Updating image association with progress UUID:', progressUuid);
 
-                await this.imageService.updateImageAssociations(
-                  imageId,
-                  contractorId,     // user_uuid
-                  this.taskId(),    // task_uuid
-                  progressUuid,     // progress_uuid - NOW AVAILABLE!
-                  undefined         // building_uuid
-                );
+                const updatePromises = uploadedImageIds.map(async (imageId, index) => {
+
+                  try{
+                    await this.imageService.updateImageAssociations(
+                      imageId,
+                      contractorId,     // user_uuid
+                      this.taskId(),    // task_uuid
+                      progressUuid,     // progress_uuid - NOW AVAILABLE!
+                      undefined         // building_uuid
+                    );
+                  }
+                  catch(err){
+                    console.error(`${index + 1}/${uploadedImageIds.length}`);
+                    throw err;
+                  }
+                });
+
+                await Promise.all(updatePromises);
 
                 //console.log('✓ Image association updated successfully');
               } catch (updateError) {
                 console.error('Failed to update image association:', updateError);
+                this.isSubmitting = false;
                 // Non-critical error - progress is already created
+                this.presentToast('Some images may have not uploaded', "warning");
               }
+            }
+            else{
+              console.warn('Could not update image associations:', {
+                imageCount: uploadedImageIds.length,
+                progressUuid,
+                hasFiles: this.selectedFiles.length > 0
+              });
             }
 
             // Send notification
@@ -197,27 +219,31 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
                 this.notificationService.createNotifications(noti).subscribe({
                   next: async () => {
                     await this.presentToast('Task progress successfully added', "success");
+                    this.isSubmitting = false;
 
-                    this.closeModal();
                     setTimeout(() => {
+                      this.closeModal();
                       window.location.reload();
                     }, 2000);
                   },
                   error: async () => {
                     await this.presentToast('Progress saved but notification failed', "warning");
+                    this.isSubmitting = false;
                     this.closeModal();
                   }
                 });
               },
               error: async () => {
                 await this.presentToast('Progress saved but notification failed', "warning");
+                this.isSubmitting = false;
                 this.closeModal();
               }
             });
           },
           error: async (err) => {
             console.error('Failed to create progress:', err);
-            await this.presentToast('Task progress unsuccessfully recorded', "danger");
+            this.isSubmitting = false;
+            await this.presentToast('Task progress unsuccessfully recorded, please add a progress picture', "danger");
           }
         });
 
@@ -232,15 +258,23 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
 
   override closeModal(): void {
     this.inventoryItems = [];
-    this.selectedFile = null;
-    this.capturedPhoto = null;
+    this.selectedFiles = [];
+    this.capturedPhotos = [];
     this.form.get('inventoryItemsUsed')?.setValue([]);
     super.closeModal();
   }
 
   onFileSelect(event: FileSelectEvent) {
-    if (event.files && event.files.length > 0) {
-      this.selectedFile = event.files[0];
+    if (event.currentFiles && event.currentFiles.length > 0) {
+      this.selectedFiles = Array.from(event.currentFiles);
+    }
+    else if(event.files && event.files.length > 0)
+    {
+      this.selectedFiles = Array.from(event.files);
+    }
+    else
+    {
+      this.selectedFiles = [];
     }
   }
 

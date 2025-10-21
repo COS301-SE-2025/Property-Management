@@ -78,13 +78,12 @@
                 <input id="progress-number" type="number" class = "border rounded px-2" formControlName = "progress" required>
             </div>
             <div class = "flex justify-end mt-3">
-                <button ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting || isDone" 
-                    class = "px-3 py-2 rounded cursor-pointer"
+                <button type="submit" [disabled]="form.invalid || isSubmitting || isDone" 
+                    class = "px-3 py-2 rounded flex items-center justify-center gap-2"
                     [class.bg-black]="form.valid"
                     [class.bg-gray-200]="!form.valid"
                     [class.text-white]="form.valid"
                     [disabled]="!form.valid">
-                    <ion-spinner *ngIf="isSubmitting" name="dots"></ion-spinner>
                     {{ isSubmitting ? 'Submitting...' : 'Add progress' }}
                 </button>
             </div>
