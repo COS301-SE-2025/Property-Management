@@ -26,6 +26,14 @@ export class VotingComponent implements OnInit {
     this.loading = true;
     const id = await this.storage.get('trusteeId');
     await this.votingService.getTrusteeVotingTasks(id);
+
+    const start = Date.now();
+    while(this.votingTasks().length === 0 && Date.now() - start < 4000)
+    {
+      await new Promise(res => setTimeout(res, 100));
+    }
+
+    await new Promise(res => setTimeout(res, 4000));
     this.loading = false;
   }
 }

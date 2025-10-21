@@ -1,5 +1,5 @@
 import { Component, DoCheck, Input, input } from '@angular/core';
-import { IonHeader, IonContent, IonToolbar, IonIcon, IonButton, IonButtons, IonModal, ToastController } from "@ionic/angular/standalone";
+import { IonHeader, IonContent, IonToolbar, IonIcon, IonButton, IonButtons, IonModal, ToastController, IonSpinner } from "@ionic/angular/standalone";
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { addIcons } from 'ionicons';
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,7 @@ import { ImageApiService, Notification, Inventory, InventoryItemApiService, Inve
   selector: 'app-progress-dialog',
   templateUrl: './progress-dialog.component.html',
   styles: ``,
-  imports: [IonHeader, MultiSelectModule, IonIcon, IonContent, IonToolbar, IonButton, IonButtons, IonModal, ReactiveFormsModule, CommonModule],
+  imports: [IonHeader, MultiSelectModule, IonIcon, IonContent, IonToolbar, IonButton, IonButtons, IonModal, ReactiveFormsModule, CommonModule, IonSpinner],
 })
 export class ProgressDialogComponent extends ModalComponent implements DoCheck {
 
@@ -22,9 +22,14 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
   selectedFile: File | null = null;
   public taskId = input.required<string>();
   @Input() inventoryItemsAvailable!: Map<string, number>;
+  @Input() isDone!: boolean;
   public inventoryItems: Inventory[] = [];
   public addError = false;
+  public isSubmitting = false;
   public capturedPhoto: string | null = null;
+
+  public capturedPhotos: string[] = [];
+  public selectedFiles: File[] = [];
   
   constructor(
     private fb: FormBuilder, 
@@ -46,7 +51,6 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
       progress: ['', [Validators.required, Validators.min(0), Validators.max(100)]]
     });
 
-    addIcons({ cameraOutline, trashOutline });
   }
 
   ngDoCheck() {
@@ -101,12 +105,12 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
         // STEP 1: Upload image WITHOUT progress UUID (initially)
         let imageId: string = "00000000-0000-0000-0000-000000000000";
 
-        if (this.selectedFile) {
+        if (this.selectedFiles.length > 0) {
           try {
             //console.log('Uploading progress image without progress UUID...');
 
             const imageIds = await this.imageService.uploadImages(
-              [this.selectedFile],  // Wrap single file in array
+              this.selectedFiles,  // Wrap single file in array
               contractorId,         // user_uuid (contractor)
               this.taskId(),        // task_uuid
               undefined,            // progress_uuid - NOT YET AVAILABLE
@@ -285,10 +289,12 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
     try {
       const photo = await this.photoService.takePhoto();
       if (photo.base64String) {
-        this.capturedPhoto = `data:image/${photo.format};base64,${photo.base64String}`;
+        const photoUrl = `data:image/${photo.format};base64,${photo.base64String}`;
+        this.capturedPhotos.push(photoUrl);
 
         const blob = this.photoService.base64ToBlob(photo.base64String, `image/${photo.format}`);
-        this.selectedFile = this.photoService.createFile(blob, `captured_${Date.now()}.${photo.format}`, photo.format);
+        const file = this.photoService.createFile(blob, `captured_${Date.now()}.${photo.format}`, photo.format);
+        this.selectedFiles.push(file);
       }
     } catch (err) {
       console.error("Error capturing photo", err);
@@ -296,9 +302,9 @@ export class ProgressDialogComponent extends ModalComponent implements DoCheck {
     }
   }
 
-  deletePhoto() {
-    this.capturedPhoto = null;
-    this.selectedFile = null;
+  deletePhoto(index: number) {
+    this.capturedPhotos.splice(index, 1);
+    this.selectedFiles.splice(index, 1);
   }
 
   private async presentToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {

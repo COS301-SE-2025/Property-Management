@@ -13,21 +13,11 @@
     
 
     <!-- Expiration Date (popup) -->
-    <ion-item fill="outline" lines="none" button detail="false" (click)="showExpirationDate = true">
+    <ion-item fill="outline" lines="none" button detail="false" (click)="openDatePopover($event)">
        <ion-icon name="calendar-outline" slot="start"></ion-icon>
       <ion-label class="dark:text-gray-300">Expiration Date</ion-label>
       <ion-note slot="end" class="dark:text-gray-300">{{ expirationDate || 'Select date' }}</ion-note>
     </ion-item>
-    <ion-popover [isOpen]="showExpirationDate" (didDismiss)="showExpirationDate = false">
-      <ng-template>
-        <ion-datetime
-          presentation="date"
-          [(ngModel)]="expirationDate"
-          name = "expirationDate"
-          (ionChange)="showExpirationDate = false"
-        ></ion-datetime>
-      </ng-template>
-    </ion-popover>
 
     <!-- Quote Number -->
     <ion-item fill="outline" lines="inset" class=" bg-grey-100"> 
@@ -61,51 +51,16 @@
 
   <!-- File name display -->
   <p *ngIf="file" class="text-sm p-4 text-gray-200">{{ file.name }}</p>
-
-  <!-- Preview button -->
-  <ion-button fill="clear" size="small" *ngIf="filePreviewUrl" (click)="openPreviewModal()">
-    Preview Upload
-  </ion-button>
 </div>
 
     <!-- Submit Button -->
     <div class="mt-6 text-center">
-      <ion-button
-        expand="block"
-        color="warning"
-        shape="round"
-        size="medium"
-        [disabled]="quoteForm.invalid"
-        type="submit"
-      >
-        Submit Quote
-      </ion-button>
+      <button ion-button expand="block" type="submit" [disabled]="loading"
+        class="bg-yellow-300 text-black px-14 py-2 rounded font-semibold hover:bg-gray-800 w-full flex items-center justify-center">
+        <ion-spinner *ngIf="loading" name="dots"></ion-spinner>
+        {{ loading ? 'Submitting...' : 'Submit Quote' }}
+      </button>
     </div>
-
-  </form>
-
-  <!-- Toast -->
-  <ion-toast
-    [isOpen]="toastOpen"
-    [message]="toastMsg"
-    [color]="toastColor"
-    duration="2000"
-    (didDismiss)="toastOpen = false"
-  ></ion-toast>
-  
-
-  <!-- Loading Spinner -->
-  <ion-loading [isOpen]="loading" message="Submitting..." spinner="crescent"></ion-loading>
-
-  <!-- File Preview popover -->
-  <ion-popover [isOpen]="previewOpen" (didDismiss)="closePreviewModal()">
-  <ng-template>
-    <ion-content class="ion-padding bg-white dark:bg-gray-700">
-      <img *ngIf="isImage" [src]="filePreviewUrl" class="w-full rounded" />
-      <iframe *ngIf="!isImage" [src]="safeFilePreviewUrl" class="w-full h-96"></iframe>
-    </ion-content>
-  </ng-template>
-</ion-popover>
-   
+  </form>  
 </ion-content>
 <app-tab/>

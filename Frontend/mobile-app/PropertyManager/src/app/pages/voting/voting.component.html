@@ -6,7 +6,8 @@
       <p-progressSpinner></p-progressSpinner>
     </div>
 
-    <div class = "mt-5 ml-5" *ngIf="votingTasks().length <= 0 && !loading">
+    <div class = "mt-5 ml-5 flex flex-col justify-center items-center" *ngIf="votingTasks().length <= 0 && !loading">
+      <img src="/assets/icons/empty-folder.svg" alt="No tasks" class="w-12 h-12 mb-4 opacity-60" />
       <p class = "text-md font-normal flex flex-col justify-center items-center pr-12 text-yellow-300">No tasks open for voting. Come back later</p>
     </div>
 

@@ -18,7 +18,12 @@ import { addIcons } from 'ionicons';
 import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline } from 'ionicons/icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
+import { PopoverController } from '@ionic/angular';
+import { DatePopoverComponent } from './date-popover/date-popover.component';
+import { Filesystem, Directory, WriteFileResult } from '@capacitor/filesystem';
+import { FileOpener } from '@capacitor-community/file-opener';
+import { Capacitor } from '@capacitor/core';
+import { ToastController } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-quotation',
@@ -64,7 +69,7 @@ export class QuotationComponent implements OnInit {
   previewOpen = false;
   contractorId: string = "";
 
-  constructor(private storageService: StorageService, private router: Router){}
+  constructor(private storageService: StorageService, private router: Router, private popover: PopoverController, private toastController: ToastController){}
 
   async ngOnInit() {
     addIcons({
@@ -76,6 +81,22 @@ export class QuotationComponent implements OnInit {
     });
     this.contractorId =  await this.storageService.get('contractorId');
     this.t_uuid = this.route.snapshot.paramMap.get('t_uuid') ?? '';
+  }
+
+  async openDatePopover(ev: any)
+  {
+    const popover = await this.popover.create({
+      component: DatePopoverComponent,
+      event: ev,
+      translucent: true
+    });
+    await popover.present();
+
+    const { data } = await popover.onDidDismiss();
+    if(data)
+    {
+      this.expirationDate = data;
+    }
   }
 
   onFileSelected(event: any) {
@@ -90,14 +111,6 @@ export class QuotationComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
-  }
-
-  openPreviewModal() {
-    this.previewOpen = true;
-  }
-
-  closePreviewModal() {
-    this.previewOpen = false;
   }
 
   async submitQuote() {
@@ -123,15 +136,14 @@ export class QuotationComponent implements OnInit {
           Number(this.totalAmount),
           this.quoteNo
         ).subscribe({
-          next: async() => {
-            // this.showToast('Quotation submitted successfully!', 'success');
+            next: async() => {
             
             // Handle file upload if a file was selected
             await this.uploadFile();
             this.showToast("Quotation submitted successfully!", 'success');
 
             setTimeout(() => {
-              this.router.navigate(['/contractor-home']);
+              this.router.navigate(['/contractor-home']).then(() => window.location.reload());
             }, 1500);
           },
           error: (err) => {
@@ -162,9 +174,13 @@ export class QuotationComponent implements OnInit {
     // }, 1500);
   }
 
-  showToast(message: string, color: 'success' | 'danger') {
-    this.toastMsg = message;
-    this.toastColor = color;
-    this.toastOpen = true;
+  private async showToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,      
+      position: 'top'
+    });
+    await toast.present();
   }
 }

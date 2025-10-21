@@ -123,13 +123,13 @@
             </div>
         </div>
     </div>
-    @if(contractorUser)
+    @if(contractorUser && !isDone)
     {
         <div class="mt-4 flex flex-col justify-center items-center">
-            <button (click)="inventoryAddDialog.openModal()">
-                <img class="h-8 w-8" [src]="darkMode ? 'assets/icons/add_circle_gray.svg' : 'assets/icons/add_circle.svg'" alt="add inventory">
+            <button (click)="inventoryAddDialog.openModal()" class="bg-yellow-400 text-black px-14 py-2 rounded font-semibold w-full flex items-center justify-center">
+                Add Progress
             </button>
-            <app-progress-dialog #inventoryAddDialog [taskId]="this.task.uuid" [inventoryItemsAvailable]="usageUsedByContractor"/>
+            <app-progress-dialog [isDone]="isDone" #inventoryAddDialog [taskId]="this.task.uuid" [inventoryItemsAvailable]="usageUsedByContractor"/>
         </div>
     }
 </ion-card>

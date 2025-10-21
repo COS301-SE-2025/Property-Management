@@ -72,6 +72,8 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
   public currentImageIndex = signal<number[]>([]);
   public imageUrlsByProgress = signal<Record<string, string[]>>({});
 
+  public isDone = false;
+
   constructor(
     private taskProgressService: TaskProgresApiService,
     private messageService: MessageService,
@@ -142,7 +144,7 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
   private loadTimelineData() {
     //console.log('=== LOADING TIMELINE DATA ===');
     //console.log('Task UUID:', this.task().uuid);
-
+    this.isDone = false;
     this.taskProgressService.getTaskProgressByTaskId(this.task().uuid).pipe(
       switchMap((progressItems: TaskProgress[]) => {
         //console.log('Progress items received:', progressItems.length);
@@ -170,6 +172,13 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
         
         return timeA - timeB;
       });
+
+      progressItems.forEach(i => {
+        if(i.progressPercentage === 100)
+        {
+          this.isDone = true;
+        }
+      })
 
         this.currentImageIndex.set(new Array(progressItems.length).fill(0));
 
