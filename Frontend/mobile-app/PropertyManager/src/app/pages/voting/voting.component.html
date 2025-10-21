@@ -12,8 +12,9 @@
     </div>
 
     <div *ngIf="!loading">
-      <div class = "mt-5 ml-5" *ngIf="votingTasks().length > 0">
-        <p class = "text-lg font-normal dark:text-white">Tasks open for voting</p>
+      <div class = "mt-5 ml-5 pb-2" *ngIf="votingTasks().length > 0">
+        <p class = "text-xl font-bold dark:text-white">Tasks open for voting</p>
+        <div class="w-[13rem] h-1 bg-yellow-300 mt-2"></div>
       </div>
   
       <div class="flex flex-wrap justify-center gap-4 p-6">

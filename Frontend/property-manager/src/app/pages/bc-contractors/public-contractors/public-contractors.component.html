@@ -1,9 +1,22 @@
 <!-- <app-header/> -->
-<div class = "mt-5 ml-10">
-    <p class = "text-xl font-normal">Public Contractors ready for work</p>
+
+<div class="mb-12 mt-8 ml-10 animate-item">
+  <h2 class="text-2xl font-bold">
+    Public Contractors ready for work
+  </h2>
+  <div class="w-[32rem] h-1 bg-yellow-300 mt-2"></div>
 </div>
 
-<div class="flex flex-wrap justify-center gap-8 p-8">
+<div class="flex justify-center items-center mt-10" *ngIf="loading">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div class = "mt-5 ml-5 flex flex-col justify-center items-center" *ngIf="publicContractors().length <= 0 && !loading">
+    <img src="/assets/icons/empty-folder.svg" alt="No tasks" class="w-12 h-12 mb-4 opacity-60" />
+    <p class = "text-md font-normal flex flex-col justify-center items-center pr-12 text-black dark:text-white">No public contractors are available. Come back later</p>
+</div>
+
+<div class="flex flex-wrap justify-center gap-8 p-8" *ngIf="!loading">
     @for (contractor of publicContractors(); track contractor.uuid) 
     {
         <app-contractor-card [contractor]="contractor"/>

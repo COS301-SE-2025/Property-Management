@@ -89,6 +89,14 @@ export class VotingComponent  implements OnInit {
     {
       await this.votingService.getBodyCorporateVotingTasks();
     }
+
+    const start = Date.now();
+    while(this.votingTasks().length === 0 && Date.now() - start < 3000)
+    {
+      await new Promise(res => setTimeout(res, 100));
+    }
+
+    await new Promise(res => setTimeout(res, 3000)); 
     this.loading = false;
   }
 
