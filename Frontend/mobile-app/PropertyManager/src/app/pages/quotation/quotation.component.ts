@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { ApiService, StorageService } from 'shared';
+import { ApiService, BodyCoporateApiService, BuildingApiService, MaintenanceTask, StorageService, TaskApiService } from 'shared';
 import { MessageService } from 'primeng/api';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { TabComponent } from "src/app/components/tab/tab.component";
@@ -15,14 +15,11 @@ import {
   stagger
 } from '@angular/animations';
 import { addIcons } from 'ionicons';
-import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline } from 'ionicons/icons';
+import { calendarOutline,newspaperOutline,walletOutline,cloudUploadOutline, documentOutline, cashOutline } from 'ionicons/icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
 import { DatePopoverComponent } from './date-popover/date-popover.component';
-import { Filesystem, Directory, WriteFileResult } from '@capacitor/filesystem';
-import { FileOpener } from '@capacitor-community/file-opener';
-import { Capacitor } from '@capacitor/core';
 import { ToastController } from '@ionic/angular/standalone';
 
 @Component({
@@ -69,18 +66,70 @@ export class QuotationComponent implements OnInit {
   previewOpen = false;
   contractorId: string = "";
 
-  constructor(private storageService: StorageService, private router: Router, private popover: PopoverController, private toastController: ToastController){}
+  task: MaintenanceTask | null = null;
+  bcName: string | null =  null;
+
+  constructor(
+    private storageService: StorageService, 
+    private router: Router, 
+    private popover: PopoverController, 
+    private toastController: ToastController, 
+    private taskApiService: TaskApiService,
+    private apiService: ApiService,
+    private buildingService: BuildingApiService,
+    private bodyCorporateService: BodyCoporateApiService 
+  ){}
 
   async ngOnInit() {
     addIcons({
       'calendar-outline': calendarOutline,
       'newspaper-outline': newspaperOutline,
       'wallet-outline': walletOutline,
-      'cloud-upload-outline': cloudUploadOutline
+      'cloud-upload-outline': cloudUploadOutline,
+      'document-outline': documentOutline,
+      'cash-outline': cashOutline
     
     });
     this.contractorId =  await this.storageService.get('contractorId');
     this.t_uuid = this.route.snapshot.paramMap.get('t_uuid') ?? '';
+    
+    //Get task image 
+    this.taskApiService.getTaskById(this.t_uuid).subscribe({
+      next: (task) => {
+        this.task = task;
+        if(this.task.img)
+        {
+          this.apiService.getPresignedImageUrl(this.task.img).subscribe({
+            next: (url) => {
+              this.task!.img = url;
+            },
+            error: (err) => {
+              console.warn("Couldnt get image", err);
+              this.task!.img = 'assets/images/no_image.png'
+            }
+          })
+        }
+        else
+        {
+          this.task!.img = 'assets/images/no_image.png'
+        }
+
+        //Get body corporate name
+        this.buildingService.getBuildingById(this.task.buuid).subscribe({
+          next: (res) => {
+            if(res.coporateUuid)
+            {
+              this.bodyCorporateService.getBodyCoporate(res.coporateUuid).subscribe({
+                next: (bc) => {
+                  this.bcName = bc.corporateName;
+                }
+              })
+            }
+          }
+        })
+      }
+    })
+
   }
 
   async openDatePopover(ev: any)

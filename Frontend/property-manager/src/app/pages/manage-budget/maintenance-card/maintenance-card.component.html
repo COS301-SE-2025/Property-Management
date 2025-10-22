@@ -18,7 +18,7 @@
             <ng-template #header>
             <tr>
                 <th pSortableColumn="description">
-                    Description <p-sortIcon field="description"/>
+                    Title <p-sortIcon field="description"/>
                 </th>
                 <th pSortableColumn="cost">
                     Cost <p-sortIcon field="cost"/>
@@ -33,7 +33,7 @@
             </ng-template>
             <ng-template #body let-maintain>
             <tr [pSelectableRow]="maintain">
-                <td>{{ maintain.des }}</td>
+                <td>{{ maintain.title }}</td>
                 <td>R {{ maintain.amount }}</td>
                 <td>{{ maintain.doneBy }}</td>
                 <td>{{ maintain.submitted_on | formatDate }}</td>
@@ -41,8 +41,8 @@
             </ng-template>
         </p-table>
         <p class = "font-semibold pt-3">Total: R {{ getMaintenanceTotal() }}</p>
-        <button class = "cursor-pointer pt-6" (click)="editBudgetDialog.openDialog()">
-            <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
+        <button class = "bg-yellow-400 px-3 py-1.5 mt-5 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="editBudgetDialog.openDialog()">
+            Edit Maintenance Budget
         </button>
         <app-edit-budget-dialog #editBudgetDialog [budgetType]="'maintainence'" [oldBudgetAmount]="budget().maintenanceBudget" [budget]="budget()"></app-edit-budget-dialog>
     </p-card>

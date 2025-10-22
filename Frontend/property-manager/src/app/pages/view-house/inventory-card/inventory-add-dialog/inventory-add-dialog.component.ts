@@ -57,6 +57,9 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
   override closeDialog(): void {
     super.closeDialog();
     this.form.reset();
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
   }
 
   async onSubmit() {
@@ -205,7 +208,7 @@ export class InventoryAddDialogComponent extends DialogComponent implements OnIn
 
   private async getAndUpdateBudget(overallPrice: number, buildingId?: string) {
     const targetBuildingId = buildingId || this.houseId;
-    
+
     if (!targetBuildingId) {
       console.error("No building ID available for budget update");
       return;

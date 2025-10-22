@@ -1,63 +1,107 @@
-
 <ion-content class="ion-padding font-lato dark:bg-gray-700">
   <app-header/>
   <!-- Title -->
-  <div class="mb-6 mt-7">
-    <h2 class="text-2xl font-lato dark:text-gray-200">Create Quotation</h2>
-    <div class="w-[16rem] h-1 propertyYellow-bg mt-2"></div>
+  <div class="mb-4 mt-5">
+    <h2 class="text-xl font-lato dark:text-gray-200">Create Quotation</h2>
+    <div class="w-48 h-1 propertyYellow-bg mt-1"></div>
   </div>
 
+  <!-- Task Details Card -->
+  <div class="mb-6 dark:bg-gray-800 bg-white rounded-2xl shadow-md p-4 border border-gray-200 dark:border-gray-600">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+
+      <!-- Task Image -->
+      <div class="flex-shrink-0 self-center sm:self-start">
+        <img [src]="task?.img"
+            alt="Task image"
+            class="w-[12rem] h-[12rem] sm:w-36 sm:h-36 object-cover rounded-lg shadow-md border border-gray-300 dark:border-gray-600">
+      </div>
+
+      <!-- Task Information -->
+      <div class="flex-1 space-y-4">
+        <!-- Description -->
+        <div class="flex items-start gap-3">
+          <ion-icon name="document-outline" class="text-yellow-500 mt-0.5 text-xl"></ion-icon>
+          <div>
+            <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200 mb-1">Description</h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              {{ task?.des || 'No description provided.' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Budget & Assigned By -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Maximum Budget -->
+          <div *ngIf="task?.maxBudget" class="flex items-start gap-3">
+            <ion-icon name="cash-outline" class="text-yellow-500 mt-0.5 text-xl"></ion-icon>
+            <div>
+              <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200 mb-1">Maximum Budget</h4>
+              <p class="text-sm text-yellow-600 font-semibold">R{{ task?.maxBudget }}</p>
+            </div>
+          </div>
+
+          <!-- Assigned By -->
+          <div *ngIf="bcName" class="flex items-start gap-3">
+            <ion-icon name="person-outline" class="text-yellow-500 mt-0.5 text-xl"></ion-icon>
+            <div>
+              <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200 mb-1">Assigned By</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">{{ bcName }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Quotation Form -->
-  <form #quoteForm="ngForm" (ngSubmit)="submitQuote()"  novalidate>
-
-    
-
+  <form #quoteForm="ngForm" (ngSubmit)="submitQuote()" novalidate>
     <!-- Expiration Date (popup) -->
-    <ion-item fill="outline" lines="none" button detail="false" (click)="openDatePopover($event)">
-       <ion-icon name="calendar-outline" slot="start"></ion-icon>
+    <ion-item fill="outline" lines="none" button detail="false" (click)="openDatePopover($event)" class="mb-3">
+      <ion-icon name="calendar-outline" slot="start"></ion-icon>
       <ion-label class="dark:text-gray-300">Expiration Date</ion-label>
       <ion-note slot="end" class="dark:text-gray-300">{{ expirationDate || 'Select date' }}</ion-note>
     </ion-item>
 
     <!-- Quote Number -->
-    <ion-item fill="outline" lines="inset" class=" bg-grey-100"> 
+    <ion-item fill="outline" lines="inset" class="mb-3 bg-grey-100"> 
       <ion-icon name="newspaper-outline" slot="start"></ion-icon>
       <ion-label position="stacked" class="dark:text-gray-300">Quote Number</ion-label>
-      <ion-input class="dark:text-gray-200" [(ngModel)]="quoteNo" name="quoteNo"  required></ion-input>
+      <ion-input class="dark:text-gray-200" [(ngModel)]="quoteNo" name="quoteNo" required></ion-input>
     </ion-item>
 
     <!-- Total Amount -->
-    <ion-item fill="outline" lines="inset">
+    <ion-item fill="outline" lines="inset" class="mb-4">
       <ion-icon name="wallet-outline" slot="start"></ion-icon>
       <ion-label position="stacked" class="dark:text-gray-300">Total Amount</ion-label>
       <ion-input type="number" class="dark:text-gray-300" [(ngModel)]="totalAmount" name="totalAmount" required></ion-input>
     </ion-item>
 
-   <div class="mt-4 flex flex-col items-center space-y-2">
-  <label class="block text-sm text-gray-600 dark:text-gray-300 mb-2">Upload File (PDF/Image)</label>
+    <!-- File Upload -->
+    <div class="mt-4 flex flex-col items-center space-y-2 mb-4">
+      <label class="block text-sm text-gray-600 dark:text-gray-300 mb-2">Upload File (PDF/Image)</label>
 
-  <!-- Styled Upload Button -->
-  <label class="inline-flex items-center px-4 py-2 bg-black text-white rounded-lg cursor-pointer hover:bg-blue-600 transition">
-    <ion-icon name="cloud-upload-outline" class="mr-2 text-xl"></ion-icon>
-    Choose File
-    <input
-      type="file"
-      accept=".pdf,image/*"
-      (change)="onFileSelected($event)"
-      class="hidden"
-      required
-    />
-  </label>
+      <!-- Styled Upload Button -->
+      <label class="inline-flex items-center px-4 py-2 bg-black text-white rounded-lg cursor-pointer hover:bg-blue-600 transition">
+        <ion-icon name="cloud-upload-outline" class="mr-2 text-xl"></ion-icon>
+        Choose File
+        <input
+          type="file"
+          accept=".pdf,image/*"
+          (change)="onFileSelected($event)"
+          class="hidden"
+          required
+        />
+      </label>
 
-  <!-- File name display -->
-  <p *ngIf="file" class="text-sm p-4 text-gray-200">{{ file.name }}</p>
-</div>
+      <!-- File name display -->
+      <p *ngIf="file" class="text-sm p-2 text-gray-600 dark:text-gray-300 text-center">{{ file.name }}</p>
+    </div>
 
     <!-- Submit Button -->
-    <div class="mt-6 text-center">
+    <div class="mt-4 text-center pb-[4.5rem]">
       <button ion-button expand="block" type="submit" [disabled]="loading"
-        class="bg-yellow-300 text-black px-14 py-2 rounded font-semibold hover:bg-gray-800 w-full flex items-center justify-center">
-        <ion-spinner *ngIf="loading" name="dots"></ion-spinner>
+        class="bg-yellow-300 text-black px-8 py-3 rounded font-semibold hover:bg-gray-800 w-full flex items-center justify-center">
+        <ion-spinner *ngIf="loading" name="dots" class="mr-2"></ion-spinner>
         {{ loading ? 'Submitting...' : 'Submit Quote' }}
       </button>
     </div>

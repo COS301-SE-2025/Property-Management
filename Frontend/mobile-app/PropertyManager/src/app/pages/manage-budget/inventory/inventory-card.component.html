@@ -22,8 +22,8 @@
                 <th pSortableColumn="quantityInStock" class="dark:text-gray-200">
                     Quantity <p-sortIcon field="quantityInStock"/>
                 </th>
-                <th pSortableColumn="contractorName" class="dark:text-gray-200">
-                    Used by contractor <p-sortIcon field="contractorName"/>
+                <th pSortableColumn="approvalDate" class="dark:text-gray-200">
+                    Approval Date <p-sortIcon field="approvalDate"/>
                 </th>
             </tr>
             </ng-template>
@@ -31,7 +31,7 @@
             <tr class="dark:text-gray-400">
                 <td>{{ usage.itemName }}</td>
                 <td>{{ usage.quantityUsed }}</td>
-                <td>{{ usage.contractorName }}</td>
+                <td>{{ usage.approvalDate | formatDate }}</td>
             </tr>
             </ng-template>
         </p-table>

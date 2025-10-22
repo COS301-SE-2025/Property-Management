@@ -1,6 +1,6 @@
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from "@ionic/angular/standalone";
-import { BuildingDetails, HousesService, Inventory, FormatAmountPipe, InventoryUsageApiService, ContractorApiService, InventoryUsage } from 'shared';
+import { BuildingDetails, HousesService, Inventory, FormatAmountPipe, InventoryUsageApiService, ContractorApiService, InventoryUsage, FormatDatePipe } from 'shared';
 import { TableModule } from 'primeng/table';
 import { EditBudgetComponent } from '../edit-budget/edit-budget.component';
 
@@ -9,6 +9,7 @@ interface InventoryUsageDisplay{
   quantityUsed: number;
   contractorName: string;
   contractorUuid: string;
+  approvalDate: Date;
 };
 
 @Component({
@@ -19,7 +20,7 @@ interface InventoryUsageDisplay{
       background: #000000;         
     }
   `,
-  imports: [IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, TableModule, IonCard, FormatAmountPipe, EditBudgetComponent],
+  imports: [IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, TableModule, IonCard, FormatAmountPipe, EditBudgetComponent, FormatDatePipe],
 })
 export class InventoryCardComponent implements OnInit{
   houseService = inject(HousesService);
@@ -50,7 +51,8 @@ export class InventoryCardComponent implements OnInit{
           itemName: name,
           quantityUsed: inventoryUsage.quantityUsed,
           contractorName: c.name,
-          contractorUuid: inventoryUsage.contractorUuid!
+          contractorUuid: inventoryUsage.contractorUuid!,
+          approvalDate: inventoryUsage.approvalDate!
          };
 
          this.inventoryUsage.update(curr => {
@@ -68,7 +70,8 @@ export class InventoryCardComponent implements OnInit{
         itemName: name,
         quantityUsed: inventoryUsage.quantityUsed,
         contractorName: 'N/A',
-        contractorUuid: ''
+        contractorUuid: '',
+        approvalDate: inventoryUsage.approvalDate!
       };
 
       this.inventoryUsage.update(curr => [...curr, display]);

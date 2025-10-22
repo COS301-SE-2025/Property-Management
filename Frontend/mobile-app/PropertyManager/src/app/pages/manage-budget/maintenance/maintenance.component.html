@@ -16,7 +16,7 @@
             <ng-template #header>
             <tr>
                 <th pSortableColumn="description" class="dark:text-gray-200">
-                    Description <p-sortIcon field="description"/>
+                    Title <p-sortIcon field="description"/>
                 </th>
                 <th pSortableColumn="cost" class="dark:text-gray-200">
                     Cost <p-sortIcon field="cost"/>
@@ -31,10 +31,10 @@
             </ng-template>
             <ng-template #body let-maintain>
             <tr [pSelectableRow]="maintain" class="dark:text-gray-300">
-                <td>{{ maintain.des }}</td>
-                <td>R {{ maintain.amount }}</td>
-                <td>{{ maintain.doneBy }}</td>
-                <td>{{ maintain.submitted_on | formatDate }}</td>
+                <td class="text-sm">{{ maintain.title }}</td>
+                <td class="text-xs">R {{ maintain.amount }}</td>
+                <td class="text-sm">{{ maintain.doneBy }}</td>
+                <td class="text-sm">{{ maintain.submitted_on | formatDate }}</td>
             </tr>
             </ng-template>
         </p-table>

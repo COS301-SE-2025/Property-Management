@@ -18,7 +18,7 @@ import java.util.UUID
 class BudgetService(
     private val budgetRepository: BudgetRepository,
 ) {
-    @CacheEvict(value = ["apiCache"], allEntries = true)
+    // @CacheEvict(value = ["apiCache"], allEntries = true)
     fun createBudget(createDto: BudgetCreateDto): BudgetResponseDto {
         val budget =
             Budget(
@@ -35,7 +35,7 @@ class BudgetService(
         return mapToResponseDto(savedBudget)
     }
 
-    @Cacheable(value = ["apiCache"], key = "#budgetUuid")
+    // @Cacheable(value = ["apiCache"], key = "#budgetUuid")
     fun getBudgetByUuid(budgetUuid: UUID): BudgetResponseDto {
         val budget =
             budgetRepository
@@ -44,7 +44,7 @@ class BudgetService(
         return mapToResponseDto(budget)
     }
 
-    @Cacheable(value = ["apiCache"], key = "'building_'+#buildingUuid")
+    // @Cacheable(value = ["apiCache"], key = "'building_'+#buildingUuid")
     fun getBudgetsByBuildingUuid(buildingUuid: UUID): List<BudgetResponseDto> {
         val budgets = budgetRepository.findByBuildingUuid(buildingUuid)
         return budgets.map { mapToResponseDto(it) }
@@ -56,7 +56,7 @@ class BudgetService(
         return budgets.map { mapToResponseDto(it) }
     }
 
-    @CacheEvict(value = ["apiCache"], key = "#budgetUuid")
+    // @CacheEvict(value = ["apiCache"], key = "#budgetUuid")
     fun updateBudget(
         budgetUuid: UUID,
         updateDto: BudgetUpdateDto,
@@ -83,7 +83,7 @@ class BudgetService(
         return mapToResponseDto(savedBudget)
     }
 
-    @CacheEvict(value = ["apiCache"], key = "#budgetUuid")
+    // @CacheEvict(value = ["apiCache"], key = "#budgetUuid")
     fun deleteBudget(budgetUuid: UUID) {
         if (!budgetRepository.existsById(budgetUuid)) {
             throw RestException(HttpStatus.NOT_FOUND, "Budget not found with UUID: $budgetUuid")
@@ -91,13 +91,13 @@ class BudgetService(
         budgetRepository.deleteById(budgetUuid)
     }
 
-    @Cacheable(value = ["apiCache"], key = "'year_'+#year")
+    // @Cacheable(value = ["apiCache"], key = "'year_'+#year")
     fun getBudgetsByYear(year: Int): List<BudgetResponseDto> {
         val budgets = budgetRepository.findByYear(year)
         return budgets.map { mapToResponseDto(it) }
     }
 
-    @Cacheable(value = ["apiCache"], key = "'building_'+#buildingUuid+'_year_'+#year")
+    // @Cacheable(value = ["apiCache"], key = "'building_'+#buildingUuid+'_year_'+#year")
     fun getBudgetByBuildingAndYear(
         buildingUuid: UUID,
         year: Int,
