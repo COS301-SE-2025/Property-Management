@@ -6,8 +6,6 @@ import com.example.propertymanagement.dto.BudgetUpdateDto
 import com.example.propertymanagement.exception.RestException
 import com.example.propertymanagement.model.Budget
 import com.example.propertymanagement.repository.BudgetRepository
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

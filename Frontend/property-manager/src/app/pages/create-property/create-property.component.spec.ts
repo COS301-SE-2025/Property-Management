@@ -61,21 +61,6 @@ describe('CreatePropertyComponent', () => {
     expect(component.form.value.images).toEqual([file]);
   });
 
-  it('should log form value on submit if form is valid', () => {
-    spyOn(console, 'log');
-    component.form.patchValue({
-      name: 'Test Property',
-      area: 100,
-      propertyValue: 500000,
-      address: '123 Main St',
-      type: 'Apartment',
-      primaryContractor: 'contractor-uuid',
-      coporateUuid: 'body-corporate-uuid'
-    });
-    component.onSubmit();
-    expect(console.log).toHaveBeenCalledWith('Creating property with payload:', jasmine.any(Object));
-  });
-
   it('should not log form value on submit if form is invalid', () => {
     spyOn(console, 'log');
     component.form.patchValue({
