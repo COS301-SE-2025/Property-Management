@@ -129,7 +129,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
 
     if(this.selectedFile) {
       try {
-        console.log('Uploading image without task UUID...');
+        // console.log('Uploading image without task UUID...');
         // Upload image with undefined for all UUIDs initially
         const imageIds = await this.imageService.uploadImages(
           [this.selectedFile], 
@@ -141,7 +141,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
         
         if(imageIds && imageIds.length > 0) {
           imageId = imageIds[0];
-          console.log('Image uploaded successfully with ID:', imageId);
+          // console.log('Image uploaded successfully with ID:', imageId);
         }
       } catch(err) {
         console.error("Image upload failed", err);
@@ -171,12 +171,12 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
     ).subscribe({
       next: async (task) => {
         const taskUuid = task.uuid;
-        console.log('Task created with UUID:', taskUuid);
+        // console.log('Task created with UUID:', taskUuid);
 
         // STEP 3: Update image association with task UUID (NO re-upload!)
         if (imageId && imageId !== "00000000-0000-0000-0000-000000000000") {
           try {
-            console.log('Updating image association with task UUID...');
+            // console.log('Updating image association with task UUID...');
             await this.imageService.updateImageAssociations(
               imageId,      // imageId
               undefined,    // user_uuid
@@ -184,7 +184,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
               undefined,    // progress_uuid
               undefined     // building_uuid
             );
-            console.log('✓ Image association updated successfully');
+            // console.log('✓ Image association updated successfully');
           } catch (err) {
             console.error('Failed to update image association:', err);
             // Non-critical error - task is already created with image ID
@@ -195,7 +195,7 @@ export class TimelineAddDialogComponent extends DialogComponent implements OnIni
         if (allowContractor) {
           this.taskApiService.updateTaskAllowContractor(taskUuid).subscribe({
             next: () => {
-              console.log('Task status updated to allow contractors');
+              // console.log('Task status updated to allow contractors');
             },
             error: (err) => {
               console.error('Failed to update task status:', err);
