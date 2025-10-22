@@ -68,6 +68,7 @@ Property Management simplifies the budgeting, scheduling and progress tracking o
 🔗 [User Manual](docs/Demo%204%20Documentation/Property%20Manager%20User%20Manual.pdf) <br>
 🔗 [Architectural Document](docs/Demo%204%20Documentation/Architectural%20document.pdf) <br>
 🔗 [Presentation](https://www.canva.com/design/DAGolOVTNTE/soGa0R0ZWJJiebLWCDFrGA/edit) <br>
+🔗 [Demo Video](https://drive.google.com/file/d/1-wYhGD86xZV7Ww_W-ApJjImjOY_dfVx5/view?usp=drive_link) <br>
 
 
 ##  Project Board
@@ -84,6 +85,7 @@ Our GitHub Project boards facilitate effective task management, progress trackin
     <th width="25%">Role & Specialization</th>
     <th width="15%">LinkedIn</th>
     <th width="35%">Description</th>
+    <th width="15%">CVs</th>
   </tr>
   <tr>
         <img src="docs\images\teampic.jpg" width="700" height="350">
@@ -106,6 +108,9 @@ Our GitHub Project boards facilitate effective task management, progress trackin
     <td width="35%">
       Hi, I'm Sean! I'm a third-year Computer Science student with a passion for coding, problem-solving, and exploring the ever-evolving world of technology. I enjoy learning about new programming paradigms and software development trends. Whether it's building building projects, optimizing server performance, or diving into the intricacies of programming languages themselves, I thrive on the challenges that come with software development.
     </td>
+    <td>
+  🔗 <a href="docs/Project%20day/CV.pdf">CV</a><br>
+    </td>
   </tr>
   <tr>
     <td width="25%">
@@ -123,6 +128,9 @@ Our GitHub Project boards facilitate effective task management, progress trackin
     </td>
     <td width="35%">
       I am an aspiring Software Engineer with a passion for solving complex problems through innovative and efficient solutions. I enjoy building systems that are not only functional but also scalable and maintainable. My primary interests lie in Backend Development, where I focus on creating robust APIs, managing databases, and optimizing server-side logic. I also have a growing appreciation for UI/UX design, and I enjoy exploring how thoughtful design can enhance user experience and product usability.
+    </td>
+    <td>
+  🔗 <a href="docs/Project%20day/Tafara Hwata - CV.pdf">CV</a><br>
     </td>
   </tr>
   <tr>
@@ -176,7 +184,10 @@ Our GitHub Project boards facilitate effective task management, progress trackin
       </a>
     </td>
     <td width="35%">
-      Thabiso is a final year Computer Science with a lot of experience in programming. His ability to create a very seamless and user-friendly UI/UX will enhance this project’s usability. As a tutor at the University of Pretoria, he has learned very valuable insights on how to make people work efficiently in a team. He has completed successful projects, ranging from creating a movie database, a city simulator, and a NoSQL database, and is most proficient in the following languages:
+      Thabiso is a final year Computer Science with a lot of experience in programming. His ability to create a very seamless and user-friendly UI/UX will enhance this project’s usability. As a tutor at the University of Pretoria, he has learned very valuable insights on how to make people work efficiently in a team. He has completed successful projects, ranging from creating a movie database, a city simulator, and a NoSQL database.
+    </td>
+    <td>
+  🔗 <a href="https://drive.google.com/file/d/1-RjLGDy6FWiLp6Bb0mmD5k7P7ZDoGqoX/view?usp=sharing">CV</a><br>
     </td>
   </tr>
 </table>
@@ -239,6 +250,15 @@ property-management/
 
 ##  Getting Started
 
+## How to install our mobile app (Android only)
+
+1. Go to our Itch.io page: https://seanmp13.itch.io/301-property-manager
+2. Click on the download button
+3. Once downloaded click on the downloaded apk file
+4. It will install locally and show up as property manager
+5. Freely use the app
+
+## Local Development/Contributions
 ### Prerequisites
 
 - **Node.js** (v18+) and npm
@@ -325,7 +345,7 @@ We implement a robust GitFlow branching strategy ensuring code quality and colla
 - Academic Year: 2025
 
 **Project Links:**
-- [Live Demo](https://property-management-demo.aws.com)
+- [Live Demo](https://drive.google.com/file/d/1-wYhGD86xZV7Ww_W-ApJjImjOY_dfVx5/view?usp=drive_link)
 - [Project Board](https://github.com/orgs/COS301-SE-2025/projects/111)
 - [Documentation](https://property-management-docs.gitbook.io)
 - [Report Issues](https://github.com/COS301-SE-2025/Property-Management/issues)
