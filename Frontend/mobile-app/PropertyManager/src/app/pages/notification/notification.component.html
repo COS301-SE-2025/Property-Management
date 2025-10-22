@@ -2,15 +2,19 @@
   <div class="container mx-auto px-0 pb-[5rem]">
     <app-header/>
 
-    <div class="flex flex-col justify-start items-start ml-5 my-4">
-    <div class="animate-item mt-5 ml-2">
-      <h1 class="text-2xl font-bold dark:text-white">Notifications</h1>
-      <div class="w-[13rem] h-1 bg-yellow-300 mt-2"></div>
+    <div class="flex justify-center items-center mt-5" *ngIf="loading">
+        <p-progressSpinner></p-progressSpinner>
     </div>
 
-      <div *ngIf="notiError">
-          <p class="text-red-500">Error getting notifications, please try again</p>
-      </div>
+    <div class="flex flex-col justify-start items-start ml-5 my-4" *ngIf="!loading">
+        <div class="animate-item mt-5 ml-2">
+            <h1 class="text-2xl font-bold dark:text-white">Notifications</h1>
+            <div class="w-[13rem] h-1 bg-yellow-300 mt-2"></div>
+        </div>
+
+        <div *ngIf="notiError">
+            <p class="text-red-500">Error getting notifications, please try again</p>
+        </div>
 
         <div [@floatUp] *ngIf="!notiError" class="mt-5">
             <div class="space-y-2">

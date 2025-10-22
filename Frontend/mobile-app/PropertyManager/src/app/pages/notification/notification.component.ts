@@ -9,6 +9,7 @@ import { NotificationsApiService, Notification, StorageService } from 'shared';
 import { Router } from '@angular/router';
 import { TimelineModule } from 'primeng/timeline';
 import { InviteModalComponent } from './invite-modal/invite-modal.component';
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
   selector: 'app-notification',
@@ -18,7 +19,7 @@ import { InviteModalComponent } from './invite-modal/invite-modal.component';
       display: none; 
     } 
   `,
-  imports: [IonContent, HeaderComponent, TabComponent, FormatTimePipe, TimelineModule, CommonModule, InviteModalComponent],
+  imports: [IonContent, HeaderComponent, TabComponent, FormatTimePipe, TimelineModule, CommonModule, InviteModalComponent, ProgressSpinnerModule],
   animations: [
     trigger('floatUp', [
       state('void', style({
@@ -43,11 +44,22 @@ export class NotificationComponent  implements OnInit {
   public inviteId = signal<string | null>(null);
   public inviteDialogVisible = false;
   public bodyCorporateMessage = signal<string | null>(null);
+  loading = true;
   
   constructor(private router: Router, private notificationService: NotificationsApiService, private storage: StorageService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.loading = true;
     this.loadTimeline();
+
+    const start = Date.now();
+    while(this.timeline().length === 0 && Date.now() - start < 2000)
+    {
+      await new Promise(res => setTimeout(res, 100));
+    }
+
+    await new Promise(res => setTimeout(res, 2000)); 
+    this.loading = false;
   }
   async loadTimeline()
   {

@@ -10,12 +10,27 @@ import { HouseComponent } from './house/house.component';
 import { ThemeService } from 'src/app/services/theme.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { Subscription } from 'rxjs';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-home',
   imports: [IonItem, HeaderComponent, TabComponent, CommonModule, FormsModule, HouseComponent, IonContent, ProgressSpinnerModule],
   templateUrl: './home.component.html',
-  styles: ``
+  styles: ``,
+  animations: [
+    trigger('floatUp', [
+      state('void', style({
+        transform: 'translateY(20%)',
+        opacity: 0
+      })),
+      transition(':enter', [
+        animate('600ms ease-out', style({
+          transform: 'translateY(0)',
+          opacity: 1
+        }))
+      ])
+    ])
+  ]
 })
 export class HomeComponent implements OnInit, OnDestroy{
 
@@ -33,6 +48,14 @@ export class HomeComponent implements OnInit, OnDestroy{
     const id = await this.storage.get('trusteeId');
     // await this.storage.set("trusteeId", id);
     this.houseService.loadHouses(id);
+
+    const start = Date.now();
+    while(this.houseService.houses().length === 0 && Date.now() - start < 2000)
+    {
+      await new Promise(res => setTimeout(res, 100));
+    }
+
+    await new Promise(res => setTimeout(res, 2000)); 
 
     this.theme.darkMode$.subscribe(mode => this.darkMode = mode);
     this.loading = false;

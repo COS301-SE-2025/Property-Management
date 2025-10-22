@@ -17,7 +17,7 @@ import { ThemeService } from 'src/app/services/theme.service';
   templateUrl: './profile.component.html',
   styles: `
     ion-select{
-      color: rgb(229 231 235 / var(--tw-text-opacity, 1));
+      color: rgb(107 114 128);
     }
   `,
 })
