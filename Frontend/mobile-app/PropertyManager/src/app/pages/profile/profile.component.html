@@ -10,14 +10,14 @@
         @if(darkMode) 
         {
           <ion-button color="light" fill="clear" (click)="changeTheme()">
-            <ion-icon slot="start" name="moon-outline" class="text-gray-200"></ion-icon>
-            <label class="text-gray-200">Dark Mode</label>
+            <ion-icon slot="start" name="moon-outline" class="text-gray-500 dark:text-gray-200"></ion-icon>
+            <label class="text-gray-500 dark:text-gray-200">Dark Mode</label>
           </ion-button>
         }
         @else{
           <ion-button color="dark" fill="clear" (click)="changeTheme()">
             <ion-icon slot="start" name="sunny-outline"></ion-icon>
-            <label class="text-gray-200">Light Mode</label>
+            <label class="text-gray-500 dark:text-gray-200">Light Mode</label>
           </ion-button>
         }
       </ion-item>
@@ -25,31 +25,31 @@
       <ion-item style="--border-width: 0; --inner-border-width: 0;">
         <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/contractor-profile">
           <ion-icon slot="start" src="assets/icons/settings_gray.svg"></ion-icon>
-          <label class="text-gray-200">Edit Contractor Profile</label>
+          <label class="text-gray-500 dark:text-gray-200">Edit Contractor Profile</label>
         </ion-button>
       </ion-item>
       <ion-item style="--border-width: 0; --inner-border-width: 0;">
         <ion-button [color]="darkMode ? 'light' : 'dark'" fill="clear" routerLink="/submitted-quotations">
           <ion-icon slot="start" name="document-text-outline" class="text-gray-200"></ion-icon>
-          <label class="text-gray-200">Submitted Quotations</label> 
+          <label class="text-gray-500 dark:text-gray-200">Submitted Quotations</label> 
         </ion-button>
       </ion-item>
     }
         
-      <ion-item style="--border-width: 0; --inner-border-width: 0;" class="text-gray-200">
-        <ion-button [color]="darkMode? 'light': 'dark'" class="text-gray-200" fill="clear">
-            <ion-icon slot="start" name="text-outline" class="text-gray-200"></ion-icon>
-            <ion-select class="text-gray-200" [value]="fontSize" (ionChange)="changeFontSize($event.detail.value)">
-            <ion-select-option class="text-gray-200" value="small">Small</ion-select-option>
-            <ion-select-option class="text-gray-200" value="normal">Normal</ion-select-option>
-            <ion-select-option class="text-gray-200" value="large">Large</ion-select-option>
+      <ion-item style="--border-width: 0; --inner-border-width: 0;" class="text-gray-500 dark:text-gray-200">
+        <ion-button [color]="darkMode? 'light': 'dark'" class="text-gray-500 dark:text-gray-200" fill="clear">
+            <ion-icon slot="start" name="text-outline" class="text-gray-500 dark:text-gray-200"></ion-icon>
+            <ion-select class="text-gray-500 dark:text-gray-200" [value]="fontSize" (ionChange)="changeFontSize($event.detail.value)">
+            <ion-select-option class="text-gray-500 dark:text-gray-200" value="small">Small</ion-select-option>
+            <ion-select-option class="text-gray-500 dark:text-gray-200" value="normal">Normal</ion-select-option>
+            <ion-select-option class="text-gray-500 dark:text-gray-200" value="large">Large</ion-select-option>
     </ion-select>
         </ion-button>
       </ion-item>
       <ion-item style="--border-width: 0; --inner-border-width: 0;">
         <ion-button [color]="darkMode? 'light': 'dark'" fill="clear" routerLink="/help">
-            <ion-icon slot="start" name="help-outline" class="text-gray-200"></ion-icon>
-            <label class="text-gray-200">Help</label>
+            <ion-icon slot="start" name="help-outline" class="text-gray-500 dark:text-gray-200"></ion-icon>
+            <label class="text-gray-500 dark:text-gray-200">Help</label>
           </ion-button>
       </ion-item>
       <ion-item style="--border-width: 0; --inner-border-width: 0;">
