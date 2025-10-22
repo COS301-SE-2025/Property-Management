@@ -55,14 +55,16 @@ export class TaskApiService {
     { withCredentials: true });
   }
 
-  updateTaskStatus(status: 'pending' | 'done', taskId: string)
+  updateTaskStatus(status: 'pending' | 'done', taskId: string, isBodyCorporate: boolean)
   {
     const req = {
       status: status
     }
 
-    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/${taskId}`, req,
-    { withCredentials: true });
+    return this.http.put<MaintenanceTask>(`${this.url}/maintenance/update/${taskId}`, req, { 
+      withCredentials: true,
+      headers: { 'isBodyCorporate' : `${isBodyCorporate}`}
+    });
   }
 
   updateTaskAllowContractor(taskId: string): Observable<MaintenanceTask> {

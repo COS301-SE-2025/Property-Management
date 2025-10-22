@@ -4,10 +4,11 @@ import { HouseCardComponent } from "./house/house-card.component";
 import { BodyCoporateService, getCookieValue, HousesService, Property } from 'shared';
 import { Router } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
   selector: 'app-home',
-  imports: [HouseCardComponent, CommonModule],
+  imports: [HouseCardComponent, CommonModule, ProgressSpinnerModule],
   templateUrl: './home.component.html',
   styles: ``,
   animations: [
@@ -31,10 +32,12 @@ export class HomeComponent implements OnInit{
   private houseService = inject(HousesService);
   private bodyCoporateService = inject(BodyCoporateService);
   bcUser = false;
+  loading = true;
   
   constructor(private router: Router) {}
 
   async ngOnInit(){
+    this.loading = true;
     let id = getCookieValue(document.cookie, 'trusteeId');
 
     if(!id)
@@ -43,12 +46,30 @@ export class HomeComponent implements OnInit{
       this.bcUser = true;
       await this.bodyCoporateService.loadHouses(id);
       this.houses.set(this.bodyCoporateService.buildings());
+
+      const start = Date.now();
+      while(this.bodyCoporateService.buildings().length === 0 && Date.now() - start < 2000)
+      {
+        await new Promise(res => setTimeout(res, 100));
+      }
+
+      await new Promise(res => setTimeout(res, 2000)); 
+      this.loading = false;
     }
     else
     {
       this.bcUser = false;
       await this.houseService.loadHouses(id);
       this.houses.set(this.houseService.houses());
+
+      const start = Date.now();
+      while(this.houseService.houses().length === 0 && Date.now() - start < 2000)
+      {
+        await new Promise(res => setTimeout(res, 100));
+      }
+
+      await new Promise(res => setTimeout(res, 2000)); 
+      this.loading = false;
     }
   }
 

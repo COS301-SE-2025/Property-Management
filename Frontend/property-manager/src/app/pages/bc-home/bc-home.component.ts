@@ -13,6 +13,7 @@ import { ApiService } from 'shared';
 import { MessageService } from 'primeng/api';
 import { Toast } from "primeng/toast";
 import { InventoryAnomalyCardComponent } from "./inventory-anomaly-card/inventory-anomaly-card.component";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
   selector: 'app-bc-home',
@@ -25,7 +26,8 @@ import { InventoryAnomalyCardComponent } from "./inventory-anomaly-card/inventor
     CommonModule,
     FormsModule,
     Toast,
-    InventoryAnomalyCardComponent
+    InventoryAnomalyCardComponent,
+    ProgressSpinnerModule
 ],
   providers: [MessageService],
   templateUrl: './bc-home.component.html',
@@ -50,6 +52,7 @@ export class BcHomeComponent implements OnInit {
   inviteMessage: string = '';
   bodyCorporateUuid: string = '';
   showInviteModal = false;
+  loading = true;
 
   constructor(
     public bodyCoporateService: BodyCoporateService, 
@@ -59,6 +62,7 @@ export class BcHomeComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.loading = true;
     const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
     this.bodyCorporateUuid = bcId;
 
@@ -69,12 +73,25 @@ export class BcHomeComponent implements OnInit {
         this.bodyCoporateService.loadGraph(bcId),
         this.bodyCoporateService.loadAnomalies(bcId)
       ]);
+
+      const start = Date.now();
+      while(this.bodyCoporateService.fundContribution().length === 0 && 
+            this.bodyCoporateService.pendingTasks().length === 0 && 
+            this.bodyCoporateService.anomalies().length === 0 && 
+            Date.now() - start < 3000)
+      {
+        await new Promise(res => setTimeout(res, 100));
+      }
+      await new Promise(res => setTimeout(res, 2000));
     } catch (error) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
         detail: 'Failed to load body corporate data. Please try again',
       });
+    }
+    finally{
+      this.loading = false;
     }
   }
 

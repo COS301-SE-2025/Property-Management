@@ -31,7 +31,7 @@ export class MaintenanceComponent implements OnInit {
   async ngOnInit()
   {
     this.maintenance().forEach(m => {
-    if(m.approvalStatus === 'COMPLETED')
+    if(m.approvalStatus === 'COMPLETED' || m.status === 'done')
     {
       this.completedTasks.set([...this.completedTasks(), m]);
     }

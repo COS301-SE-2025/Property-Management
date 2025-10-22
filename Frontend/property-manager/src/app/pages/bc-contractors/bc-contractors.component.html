@@ -1,10 +1,22 @@
 <!-- <app-header/> -->
 
-<div class = "mt-4 ml-10">
-    <p class = "text-xl font-normal">Your trusted contractors</p>
+<div class="mb-12 mt-8 ml-10 animate-item">
+  <h2 class="text-2xl font-bold">
+    Your Trusted Contractors
+  </h2>
+  <div class="w-[24rem] h-1 bg-yellow-300 mt-2"></div>
 </div>
 
-<div class="flex flex-wrap justify-center gap-8 p-8">
+<div class="flex justify-center items-center mt-10" *ngIf="loading">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div class = "mt-5 ml-5 flex flex-col justify-center items-center" *ngIf="contractors().length <= 0 && !loading">
+    <img src="/assets/icons/empty-folder.svg" alt="No tasks" class="w-12 h-12 mb-4 opacity-60" />
+    <p class = "text-md font-normal flex flex-col justify-center items-center pr-12 text-black dark:text-white">No trusted contractors have been added. Add one now</p>
+</div>
+
+<div class="flex flex-wrap justify-center gap-8 p-8" *ngIf="!loading">
     @for (contractor of contractors(); track contractor.uuid) 
     {
         <app-contractor-card [contractor]="contractor"/>

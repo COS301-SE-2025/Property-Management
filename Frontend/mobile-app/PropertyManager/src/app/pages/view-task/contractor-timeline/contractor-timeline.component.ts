@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Output, signal, SimpleChanges } from '@angular/core';
 import { IonCard } from "@ionic/angular/standalone";
 import { TimelineModule } from "primeng/timeline";
 import { FormatTimePipe } from "../../../../../../../library/projects/shared/src/pipes/format-date-time.pipe";
@@ -66,6 +66,8 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
     public darkMode = false;
     public currentImageIndex = signal<number[]>([]);
     public imageUrlsByProgress = signal<Record<string, string[]>>({});
+
+    public isDone = false;
     
   constructor(
      private taskProgressService: TaskProgresApiService, 
@@ -133,7 +135,7 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
   }
 
   private loadTimelineData() {
-
+    this.isDone = false;
     this.taskProgressService.getTaskProgressByTaskId(this.task.uuid).pipe(
       switchMap((progressItems: TaskProgress[]) => {
 
@@ -143,6 +145,13 @@ export class ContractorTimelineComponent implements OnInit, OnChanges {
           this.imageUrlsByProgress.set({});
           return of([]);
         }
+
+        progressItems.forEach(i => {
+          if(i.progressPercentage === 100)
+          {
+            this.isDone = true;
+          }
+        })
 
         progressItems.sort((a, b) => {
           const dateA = this.toDate(a.submissionDate);

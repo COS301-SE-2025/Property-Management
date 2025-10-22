@@ -130,11 +130,11 @@ describe('TaskApiService', () => {
         tuuid: 'trustee-123'
       };
 
-      service.updateTaskStatus('done', 'task-123').subscribe(task => {
+      service.updateTaskStatus('done', 'task-123', false).subscribe(task => {
         expect(task.status).toBe('done');
       });
 
-      const req = httpMock.expectOne(`${mockApiUrl}/maintenance/task-123`);
+      const req = httpMock.expectOne(`${mockApiUrl}/maintenance/update/task-123`);
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual({ status: 'done' });
       req.flush(mockTask);

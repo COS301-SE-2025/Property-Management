@@ -163,6 +163,11 @@ export class InventoryCardComponent implements OnInit{
     });
     
     await this.loadForecastData();
+    await this.houseService.loadBudget(this.houseId);
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 1500);
    }
    this.resetState();
   }

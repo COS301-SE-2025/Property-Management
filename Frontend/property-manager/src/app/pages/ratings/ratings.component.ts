@@ -82,12 +82,14 @@ export class RatingsComponent implements OnInit {
                   this.selectedTask!.contractor.name = contractor.name;
                   this.contractorName = contractor.name;
                   this.contractors = [{ uuid: contractor.uuid, name: contractor.name }];
+                  this.loadTasks();
                   this.loadRatingsHistory();
                 },
                 error: () => {
                   this.selectedTask!.contractor.name = 'N/A';
                   this.contractorName = 'N/A';
                   this.contractors = [{ uuid: task.cuuid ?? '', name: 'N/A' }];
+                  this.loadTasks();
                   this.loadRatingsHistory();
                 }
               });
@@ -95,6 +97,7 @@ export class RatingsComponent implements OnInit {
               this.selectedTask.contractor.name = 'N/A';
               this.contractorName = 'N/A';
               this.contractors = [];
+              this.loadTasks();
               this.loadRatingsHistory();
             }
           },

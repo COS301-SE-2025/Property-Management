@@ -2,7 +2,7 @@ import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
-import { ContractorService, Inventory, InventoryUsage, InventoryUsageApiService } from 'shared';
+import { ContractorService, Inventory, InventoryUsage, InventoryUsageApiService, FormatDatePipe } from 'shared';
 import { FormatAmountPipe } from "shared";
 import { EditBudgetDialogComponent } from "../edit-budget-dialog/edit-budget-dialog.component";
 import { HousesService } from 'shared';
@@ -13,11 +13,12 @@ interface InventoryUsageDisplay{
   quantityUsed: number;
   contractorName: string;
   contractorUuid: string;
+  approvalDate: Date;
 };
 
 @Component({
   selector: 'app-inventory-budget-card',
-  imports: [CardModule, TableModule, FormatAmountPipe, EditBudgetDialogComponent, CommonModule],
+  imports: [CardModule, TableModule, FormatAmountPipe, EditBudgetDialogComponent, CommonModule, FormatDatePipe],
   templateUrl: './inventory-budget-card.component.html',
   styles: ``
 })
@@ -55,7 +56,8 @@ export class InventoryBudgetCardComponent  implements OnInit{
           itemName: name,
           quantityUsed: inventoryUsage.quantityUsed,
           contractorName: c.name,
-          contractorUuid: inventoryUsage.contractorUuid!
+          contractorUuid: inventoryUsage.contractorUuid!,
+          approvalDate: inventoryUsage.approvalDate!
          };
 
          this.inventoryUsage.update(curr => {
@@ -73,7 +75,8 @@ export class InventoryBudgetCardComponent  implements OnInit{
         itemName: name,
         quantityUsed: inventoryUsage.quantityUsed,
         contractorName: 'N/A',
-        contractorUuid: ''
+        contractorUuid: '',
+        approvalDate: inventoryUsage.approvalDate!
       };
 
       this.inventoryUsage.update(curr => [...curr, display]);

@@ -6,7 +6,7 @@ import { CommonModule } from "@angular/common";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MultiSelectModule } from "primeng/multiselect";
 import { SliderModule } from "primeng/slider";
-import { getCookieValue, ImageApiService, Inventory, InventoryItemApiService, InventoryUsageApiService, Notification, NotificationsApiService, TaskApiService, TaskProgresApiService } from "shared";
+import { BudgetApiService, BuildingDetails, getCookieValue, ImageApiService, Inventory, InventoryItemApiService, InventoryUsageApiService, Notification, NotificationsApiService, TaskApiService, TaskProgresApiService } from "shared";
 import { FileSelectEvent, FileUploadModule } from "primeng/fileupload";
 import { MessageService } from "primeng/api";
 import { ApiService } from 'shared';
@@ -26,6 +26,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
     @Input() inventoryItemsAvailable! : Map<string, number>;
     public inventoryItems: Inventory[] = [];
     public addError = false;
+    isDone = false;
     
     constructor(
       private fb: FormBuilder, 
@@ -36,7 +37,8 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
       private taskProgressService: TaskProgresApiService,
       private inventoryUsageService: InventoryUsageApiService,
       private taskService: TaskApiService,
-      private apiService: ApiService
+      private apiService: ApiService,
+      private budgetService: BudgetApiService
     ){
       super();
       this.form = this.fb.group({
@@ -81,6 +83,7 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
     async onSubmit()
     {
       this.form.markAllAsTouched();
+      this.isDone = false;
       if(this.form.valid)
       {
         this.addError = false;
@@ -152,8 +155,67 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
                                 progressResponse.uuid || 
                                 progressResponse.id ||
                                 progressResponse.progress_uuid;
-            
-            //console.log('Extracted progressUuid:', progressUuid);
+
+            //Update trustee budget if task progres == 100%
+            if(progress === 100 )
+            {
+              this.isDone = true;
+              //Get building id
+              this.taskService.getTaskById(this.taskId()).subscribe({
+                next: (res) => {
+                  this.budgetService.getBudgetsByBuildingId(res.buuid).subscribe({
+                    next: (b) => {
+                      //Get latest budget 
+                      let latestBudget: BuildingDetails;
+
+                      if(b.length === 1)
+                      {
+                        latestBudget = b[0];
+                      }
+                      else
+                      {
+                        latestBudget = b.sort((a,b) => {
+                          a.approvalDate = new Date(a.approvalDate);
+                          b.approvalDate = new Date(b.approvalDate);
+
+                          return b.approvalDate!.getDate() - a.approvalDate.getDate();
+                        })[0]
+                      }
+
+                      //Get quote amount
+                      this.taskService.getQuoteFromTaskId(res.uuid).subscribe({
+                        next: (quote) => {
+                          const filteredQuote = quote.filter(q => q.status === 'APPROVED')[0];
+
+                          latestBudget.maintenanceBudget = latestBudget.maintenanceBudget - filteredQuote.amount;
+                          latestBudget.approvalDate = new Date();
+
+                          // Update maintenance budget
+                          this.budgetService.updateBudget(latestBudget.budgetUuid, latestBudget).subscribe({
+                            next: (ub) => {
+                              //Send notification that the task has been completed
+                              const noti: Notification = {
+                                notificationType: "Task has been completed",
+                                message: `Contractor has completed task ${res.title} and R${filteredQuote.amount} has been deducted from the budget`,
+                                recipientType: 'trustee',
+                                recipientUuid: res.tuuid,
+                                isRead: false,
+                                relatedTaskUuid: this.taskId()
+                              };
+
+                              this.notificationService.createNotifications(noti).subscribe();
+                            }
+                          });
+
+                          //update status of task
+                          this.taskService.updateTaskStatus("done", this.taskId(), false).subscribe();
+                        }
+                      });
+                    }
+                  })
+                }
+              })
+            }
             
             // STEP 3: Update ALL image associations with progress UUID
             if (uploadedImageIds.length > 0 && progressUuid) {
@@ -201,47 +263,50 @@ export class AddProgressDialogComponent extends DialogComponent implements DoChe
             }
 
             // Continue with notifications
-            this.taskService.getTaskById(this.taskId()).subscribe({
-              next: (res) => {
-                const noti: Notification = {
-                  notificationType: "Task progress updated",
-                  message: `Contractor has updated progress on ${res.title}`,
-                  recipientType: 'trustee',
-                  recipientUuid: res.tuuid,
-                  isRead: false,
-                  relatedTaskUuid: this.taskId()
-                };
-                
-                this.notificationService.createNotifications(noti).subscribe({
-                  next: () => {
-                    this.messageService.add({
-                      severity: 'success',
-                      summary: 'Success',
-                      detail: 'Task progress successfully added'
-                    });
-  
-                    this.closeDialog();
-                    setTimeout(() => {
-                      window.location.reload();
-                    }, 2000);
-                  },
-                  error: () => {
-                    this.messageService.add({
-                      severity: 'error',
-                      summary: 'Error',
-                      detail: 'Failed to send notification'
-                    });
-                  } 
-                });
-              },
-              error: () => {
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Task progress unsuccessfully added'
-                });
-              }
-            });
+            if(!this.isDone)
+            {
+              this.taskService.getTaskById(this.taskId()).subscribe({
+                next: (res) => {
+                  const noti: Notification = {
+                    notificationType: "Task progress updated",
+                    message: `Contractor has updated progress on ${res.title}`,
+                    recipientType: 'trustee',
+                    recipientUuid: res.tuuid,
+                    isRead: false,
+                    relatedTaskUuid: this.taskId()
+                  };
+                  
+                  this.notificationService.createNotifications(noti).subscribe({
+                    next: () => {
+                      this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'Task progress successfully added'
+                      });
+    
+                      this.closeDialog();
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 2000);
+                    },
+                    error: () => {
+                      this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Failed to send notification'
+                      });
+                    } 
+                  });
+                },
+                error: () => {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Task progress unsuccessfully added'
+                  });
+                }
+              });
+            }
           },
           error: (err) => {
             console.error('Failed to create progress:', err);

@@ -23,8 +23,8 @@
             <th pSortableColumn="quantityInStock">
                 Quantity Used <p-sortIcon field="quantityInStock"/>
             </th>
-            <th pSortableColumn="contractorName">
-                Used by contractor <p-sortIcon field="contractorName"/>
+            <th pSortableColumn="approvalDate">
+                Approval Date <p-sortIcon field="approvalDate"/>
             </th>
         </tr>
         </ng-template>
@@ -32,13 +32,13 @@
         <tr>
             <td>{{ usage.itemName }}</td>
             <td>{{ usage.quantityUsed }}</td>
-            <td>{{ usage.contractorName }}</td>
+            <td>{{ usage.approvalDate | formatDate }}</td>
         </tr>
         </ng-template>
     </p-table>
 
-    <button class = "cursor-pointer pt-6" (click)="editBudgetDialog.openDialog()">
-        <img src = "assets/icons/edit.svg" alt="edit maintainence budget">
+    <button class = "bg-yellow-400 px-3 py-1.5 mt-5 rounded cursor-pointer hover:translate-y-1 transition-transform duration-200" (click)="editBudgetDialog.openDialog()">
+        Edit Inventory Budget
     </button>
     <app-edit-budget-dialog #editBudgetDialog [budgetType]="'inventory'" [oldBudgetAmount]="budget().inventoryBudget" [budget]="budget()"></app-edit-budget-dialog>
     </p-card>

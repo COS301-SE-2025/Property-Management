@@ -6,13 +6,15 @@
       <p-progressSpinner></p-progressSpinner>
     </div>
 
-    <div class = "mt-5 ml-5" *ngIf="votingTasks().length <= 0 && !loading">
+    <div class = "mt-5 ml-5 flex flex-col justify-center items-center" *ngIf="votingTasks().length <= 0 && !loading">
+      <img src="/assets/icons/empty-folder.svg" alt="No tasks" class="w-12 h-12 mb-4 opacity-60" />
       <p class = "text-md font-normal flex flex-col justify-center items-center pr-12 text-yellow-300">No tasks open for voting. Come back later</p>
     </div>
 
     <div *ngIf="!loading">
-      <div class = "mt-5 ml-5" *ngIf="votingTasks().length > 0">
-        <p class = "text-lg font-normal dark:text-white">Tasks open for voting</p>
+      <div class = "mt-5 ml-5 pb-2" *ngIf="votingTasks().length > 0">
+        <p class = "text-xl font-bold dark:text-white">Tasks open for voting</p>
+        <div class="w-[13rem] h-1 bg-yellow-300 mt-2"></div>
       </div>
   
       <div class="flex flex-wrap justify-center gap-4 p-6">

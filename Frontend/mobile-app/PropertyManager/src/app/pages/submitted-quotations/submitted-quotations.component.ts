@@ -26,6 +26,7 @@ import {
   query,
   stagger
 } from '@angular/animations';
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
   selector: 'app-submitted-quotations',
@@ -44,8 +45,9 @@ import {
     IonList,
     IonItem,
     IonIcon,
-    TabComponent
-  ],
+    TabComponent,
+    ProgressSpinnerModule
+],
   animations: [
     trigger('fadeInStagger', [
       transition(':enter', [
@@ -54,22 +56,33 @@ import {
           stagger(100, [
             animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
           ])
-        ])
+        ], {optional: true})
       ])
     ]) 
   ]
 })
 export class SubmittedQuotationsComponent implements OnInit {
   quotes: Quote[] = [];
+  loading = true;
  
   constructor(private apiService: ApiService, private storageService: StorageService) {
     addIcons({ folderOpenOutline });
   }
 
   async ngOnInit() {
+    this.loading = true;
     const contractorId = this.getContractorIdFromLocalStorage();
     if (contractorId) {
       this.loadQuotes(await contractorId);
+
+      const start = Date.now();
+      while(this.quotes.length === 0 && Date.now() - start < 2500)
+      {
+        await new Promise(res => setTimeout(res, 100));
+      }
+
+      await new Promise(res => setTimeout(res, 2000));
+      this.loading = false;
     }
   }
 

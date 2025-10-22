@@ -9,13 +9,14 @@ import { InventoryUsageComponent } from '../../components/inventory-usage/invent
 import { lastValueFrom } from 'rxjs';
 import { ContractorTimelineComponent } from "./contractor-timeline/contractor-timeline.component";
 import { ContractorInventoryRequestComponent } from '../contractor-inventory-request/contractor-inventory-request.component';
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 
 @Component({
   selector: 'app-timeline-details',
   templateUrl: './task-details.component.html',
   styles: ``,
-  imports: [FormatDatePipe, CommonModule, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent, ContractorInventoryRequestComponent],
+  imports: [FormatDatePipe, CommonModule, CardModule, TableModule, InventoryUsageComponent, ContractorTimelineComponent, ContractorInventoryRequestComponent, ProgressSpinnerModule],
 })
 export class TaskDetailsComponent implements OnInit, OnDestroy {
 
@@ -27,6 +28,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   taskId: string | null = null;
   contractorUser = false;
+  loading = true;
 
   get isTaskApproved(): boolean {
     return this.task?.status === 'APPROVED';
@@ -51,28 +53,40 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-   this.taskId = this.route.snapshot.paramMap.get('taskId');
-   this.contractorUser = false;
+    this.loading = true;
+    this.taskId = this.route.snapshot.paramMap.get('taskId');
+    this.contractorUser = false;
 
-   if(this.taskId)
-   {
-     this.taskService.getTaskById(this.taskId).subscribe({
-      next: (res) => {
-        this.task = res;
-        this.getImages();
-        this.getContractor();
-        this.getInventoryUsage();
-      },
-      error: (err) => {
-        console.error(err)
-      }
-     });
-   }
+    if(this.taskId)
+    {
+      this.taskService.getTaskById(this.taskId).subscribe({
+        next: async (res) => {
+          this.task = res;
+          this.getImages();
+          this.getContractor();
+          this.getInventoryUsage();
 
-   if(getCookieValue(document.cookie, 'contractorId'))
-   {
-    this.contractorUser = true;
-   }
+
+          const start = Date.now();
+          while(this.imageUrl === undefined && this.contractor === undefined && Date.now() - start < 2000)
+          {
+            await new Promise(res => setTimeout(res, 100));
+          }
+
+          await new Promise(res => setTimeout(res, 2000));
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error(err);
+          this.loading = false;
+        }
+      });
+    }
+
+    if(getCookieValue(document.cookie, 'contractorId'))
+    {
+      this.contractorUser = true;
+    }
   }
   ngOnDestroy(): void {
     this.breadCrumb.clearBreadCrumb();
