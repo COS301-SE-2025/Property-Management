@@ -1,6 +1,6 @@
 <p-card>
-    <div class="flex flex-col items-center justify-center">
-        <div>
+    <div class="flex flex-col items-center justify-center h-full shadow-md">
+        <div class="h-full w-full overflow-auto">
             <p class="text-2xl font-semibold ml-82 pb-5">Life-cycle cost analysis</p>
             
             <!-- Loading state -->
@@ -20,7 +20,7 @@
             <p-table 
                 *ngIf="!isLoading() && !loadError()" 
                 [value]="costs()" 
-                [tableStyle]="{ 'min-width': '30rem'}">
+                [tableStyle]="{ 'min-width': '30rem'}" [paginator]="true" [rows]="5" [responsiveLayout]="'scroll'">
                 <ng-template #header>
                     <tr>
                         <th pSortableColumn="type">

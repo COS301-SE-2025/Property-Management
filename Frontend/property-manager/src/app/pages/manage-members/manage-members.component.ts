@@ -5,11 +5,12 @@ import { PropertyService, InviteWithTrustee, ApiService, getCookieValue, Buildin
 import { NotificationsApiService, Notification } from 'shared';
 import { MessageService } from 'primeng/api';
 import { Toast } from "primeng/toast";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
   selector: 'app-manage-members',
   standalone: true,
-  imports: [CommonModule, Toast, FormsModule],
+  imports: [CommonModule, Toast, FormsModule, ProgressSpinnerModule],
   providers: [MessageService],
   templateUrl: './manage-members.component.html'
 })
@@ -22,6 +23,7 @@ export class ManageMembersComponent implements OnInit {
   inviteError = false;
   bodyCorporateUuid: string = '';
   showInviteModal = false;
+  loading = true;
 
   constructor(
     private propertyService: PropertyService,
@@ -31,7 +33,8 @@ export class ManageMembersComponent implements OnInit {
     private buildingService: BuildingApiService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.loading = true;
     const bcId = getCookieValue(document.cookie, 'bodyCoporateId');
     this.bodyCorporateUuid = bcId;
 
@@ -50,12 +53,23 @@ export class ManageMembersComponent implements OnInit {
           });
         }
       });
+
+      const start = Date.now();
+      while(this.invitations.length === 0 && this.activeMembers.length === 0 && Date.now() - start < 1500)
+      {
+        await new Promise(res => setTimeout(res, 100));
+      }
+
+      await new Promise(res => setTimeout(res, 1500)); 
+      this.loading = false;
+
     } else {
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
         detail: 'No body corporate selected'
       });
+      this.loading = false;
     }
   }
 

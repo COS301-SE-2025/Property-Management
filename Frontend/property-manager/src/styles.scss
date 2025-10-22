@@ -670,7 +670,7 @@ html.dark-theme .p-paginator .p-paginator-page {
 
 body.dark-theme .p-paginator .p-paginator-page:hover,
 html.dark-theme .p-paginator .p-paginator-page:hover {
-  background: #374151 !important;
+  background: #000000 !important;
 }
 
 body.dark-theme .p-paginator .p-paginator-page.p-highlight,
@@ -683,4 +683,11 @@ body.dark-theme .p-paginator .p-paginator-element,
 html.dark-theme .p-paginator .p-paginator-element {
   color: #f3f4f6 !important;
 }
-
+body.dark-theme .p-select-label,
+html.dark-theme .p-select-label
+{
+  color: #ffffff;
+}
+.dark-theme .p-button-outlined.p-button-secondary{
+  color: #ffffff;
+}

@@ -79,7 +79,7 @@
       </ion-item>
       
       <button ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting"
-        class="bg-yellow-300 text-black px-14 py-2 rounded font-semibold hover:bg-gray-800 w-full flex items-center justify-center">
+        class="bg-yellow-300 text-black px-14 py-2 rounded font-semibold w-full flex items-center justify-center">
         <ion-spinner *ngIf="isSubmitting" name="dots"></ion-spinner>
         {{ isSubmitting ? 'Creating...' : 'Create Property' }}
       </button>

@@ -1,13 +1,23 @@
 <ion-content class="dark:bg-gray-700">
   <app-header></app-header>
 
-  <div class="ion-padding" [@fadeInStagger]>
-    <div class="animate-item">
-      <h1 class="text-2xl font-bold dark:text-white">Submitted Quotations</h1>
-      <div class="w-30 h-1 bg-yellow-300 mt-2"></div>
-    </div>
+  <div class="animate-item ion-padding mt-3">
+    <h1 class="text-2xl font-bold dark:text-white">Submitted Quotations</h1>
+    <div class="w-30 h-1 bg-yellow-300 mt-2"></div>
+  </div>
 
-    <ion-list *ngIf="quotes.length > 0; else noQuotes" class="mt-6 flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-700">
+  <div class="flex justify-center items-center mt-5" *ngIf="loading">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+
+  <div class="flex flex-col items-center justify-center mt-20 text-center text-gray-400 animate-item" *ngIf="!loading && quotes.length <= 0">
+    <ion-icon name="folder-open-outline" class="w-24 h-24 mb-4 opacity-60"></ion-icon>
+    <p class="text-xl font-semibold mb-2">No Quotes available</p>
+    <p class="text-sm">You have not submitted any quotes</p>
+  </div>
+
+  <div class="ion-padding" [@fadeInStagger] *ngIf="!loading">
+    <ion-list *ngIf="!loading && quotes.length > 0" class="mt-6 flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-700">
       <ion-card *ngFor="let quote of quotes; let i = index" class="animate-item rounded-xl w-[22rem] h-[22rem] bg-gray-100 shadow-md dark:bg-gray-800">
         <ion-card-header class="rounded-t-xl">
           <ion-card-title class="text-center">
@@ -43,14 +53,6 @@
         </ion-card-content>
       </ion-card>
     </ion-list>
-
-    <ng-template #noQuotes>
-      <div class="flex flex-col items-center justify-center mt-20 text-center text-gray-400 animate-item">
-        <ion-icon name="folder-open-outline" class="w-24 h-24 mb-4 opacity-60"></ion-icon>
-        <p class="text-xl font-semibold mb-2">No Quotes available</p>
-        <p class="text-sm">You have not submitted any quotes</p>
-      </div>
-    </ng-template>
   </div>
   <app-tab></app-tab>
 </ion-content>

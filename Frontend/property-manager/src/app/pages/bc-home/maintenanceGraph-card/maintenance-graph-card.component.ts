@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, OnInit, ViewChild } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ChartModule, UIChart } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
@@ -14,7 +14,7 @@ import { ChartOptions } from 'chart.js';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MaintenanceGraphCardComponent {
+export class MaintenanceGraphCardComponent implements OnInit{
   bodyCoporateService = inject(BodyCoporateService);
   bcData = input.required<Graph>();
 

@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { Anomaly, BodyCoporateService, BuildingApiService, getCookieValue, InventoryItemApiService, Notification, NotificationsApiService, PropertyService, FormatAmountPipe } from 'shared';
+import { Anomaly, BodyCoporateService, BuildingApiService, getCookieValue, InventoryItemApiService, Notification, NotificationsApiService, PropertyService, FormatAmountPipe, BudgetApiService, BuildingDetails } from 'shared';
 import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from "primeng/toast";
@@ -20,15 +20,20 @@ export class InventoryAnomalyCardComponent{
     private inviteService: PropertyService, 
     private notificationService: NotificationsApiService, 
     private messageService: MessageService,
-    private buildingService: BuildingApiService){}
+    private buildingService: BuildingApiService,
+    private budgetApiService: BudgetApiService
+  ){}
 
   approveAnomaly(item: Anomaly)
   {
     //Change unit name
     this.inventoryService.updateInventoryItemUnit(item.itemUuid, "NORMAL").subscribe({
-      next: () => {
+      next: async() => {
         const bcId = getCookieValue(document.cookie, 'bodyCorporateId');
         this.bodyCorporateService.loadAnomalies(bcId);
+
+        //Update budget
+        await this.getAndUpdateBudget(item.price*item.quantityInStock, item.buildingUuidFk!)
 
         this.messageService.add({
             severity: 'success',
@@ -135,5 +140,38 @@ export class InventoryAnomalyCardComponent{
         })
       }
     })
+  }
+  private async getAndUpdateBudget(overallPrice: number, buildingId: string) {
+    const targetBuildingId = buildingId;
+
+    if (!targetBuildingId) {
+      console.error("No building ID available for budget update");
+      return;
+    }
+
+    this.budgetApiService.getBudgetsByBuildingId(targetBuildingId).subscribe(
+      (bulidingDetails: BuildingDetails[]) => {
+        const element = bulidingDetails[bulidingDetails.length - 1];
+        const elementID = element.budgetUuid;
+
+        console.log(element);
+
+        const newBudget: BuildingDetails = {
+          budgetUuid: elementID,
+          buildingUuid: targetBuildingId,
+          approvalDate: new Date(),
+          inventoryBudget: (element.inventoryBudget - overallPrice),
+          inventorySpent: overallPrice,
+          maintenanceBudget: element.maintenanceBudget,
+          maintenanceSpent: element.maintenanceSpent
+        };
+        console.log(newBudget);
+        this.budgetApiService.updateBudget(elementID, newBudget).subscribe({
+          error: (err) => {
+            console.error("Couldnt update budget", err);
+          }
+        });
+      }
+    );
   }
 }

@@ -6,4 +6,5 @@ export interface InventoryUsage{
     quantityUsed: number;
     trusteeApproval: boolean;
     approvedDate: Date;
+    approvalDate?: Date;
 }

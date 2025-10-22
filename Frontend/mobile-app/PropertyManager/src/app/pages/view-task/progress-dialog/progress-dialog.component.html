@@ -55,17 +55,22 @@
                 </div>
             </div> -->
             <div class="pt-2 flex flex-col justify-center items-center">
-              <p class="dark:text-gray-300">Take image of the task</p>
+              <p class="dark:text-gray-300">Take image(s) of the task</p>
               <ion-button (click)="capturePhoto()" fill="clear">
                 <ion-icon name="camera-outline"></ion-icon>
+                <span class="ml-2">Add Photo ({{ capturedPhotos.length }})</span>
               </ion-button>
 
-            <div *ngIf="capturedPhoto" class="mt-2 flex flex-col justify-center items-center">
-              <p class="mb-2 dark:text-gray-200">Preview</p>
-              <img [src]="capturedPhoto" alt="captured photo" class="max-w-xs max-h-40 rounded-md">
-              <ion-button (click)="deletePhoto()" fill="clear" color="dark">
-                <ion-icon name="trash-outline"></ion-icon>
-              </ion-button>
+            <div *ngIf="capturedPhotos.length > 0" class="mt-2 mb-4 w-full px-6">
+              <p class="mb-2 dark:text-gray-200 text-sm font-semibold">Photos {{ capturedPhotos.length }}</p>
+              <div class="grid grid-cols-2 gap-2">
+                <div *ngFor="let photo of capturedPhotos; let i = index" class="relative">
+                  <img [src]="photo" alt="Progress photo {{ i + 1}}" class="w-full h-32 object-cover rounded-md border border-gray-300">
+                  <ion-button (click)="deletePhoto(i)" fill="solid" color="danger" size="small" class="absolute top-1 right-1" style="--padding-start: 8px; --padding-end: 8px; height: 28px;">
+                    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                  </ion-button>
+                </div>
+              </div>
             </div>
           </div>
             <div class="flex flex-col mx-5 gap-2 mt-5 pb-5">
@@ -73,13 +78,13 @@
                 <input id="progress-number" type="number" class = "border rounded px-2" formControlName = "progress" required>
             </div>
             <div class = "flex justify-end mt-3">
-                <button type="submit" 
-                    class = "px-3 py-2 rounded cursor-pointer"
+                <button type="submit" [disabled]="form.invalid || isSubmitting || isDone" 
+                    class = "px-3 py-2 rounded flex items-center justify-center gap-2"
                     [class.bg-black]="form.valid"
                     [class.bg-gray-200]="!form.valid"
                     [class.text-white]="form.valid"
                     [disabled]="!form.valid">
-                    Add progress
+                    {{ isSubmitting ? 'Submitting...' : 'Add progress' }}
                 </button>
             </div>
         </div>

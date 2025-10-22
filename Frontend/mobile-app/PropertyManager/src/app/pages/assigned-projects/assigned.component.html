@@ -2,12 +2,22 @@
   <div class="container mx-auto pb-[5rem]" [@fadeInStagger]>
     <app-header />
 
-    <div class="animate-item mt-5 ml-2">
+    <div class="flex justify-center items-center mt-5" *ngIf="loading">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <div class="flex flex-col items-center justify-center mt-20 text-gray-400 text-center animate-item" *ngIf="tasks.length <= 0 && !loading">
+      <ion-icon name="folder-open-outline" class="no-tasks-icon"></ion-icon>
+      <p class="text-xl font-semibold mb-2">No projects available</p>
+      <p class="text-sm">Check back later or contact your admin for assistance.</p>
+    </div>
+
+    <div class="animate-item mt-5 ml-2" *ngIf="!loading && tasks.length > 0">
       <h1 class="text-2xl font-bold dark:text-white">Assigned Projects</h1>
       <div class="w-[17.5rem] h-1 bg-yellow-300 mt-2"></div>
     </div>
 
-    <div *ngIf="tasks.length > 0; else noTasks" class="mt-6 flex flex-wrap justify-center gap-5 p-4">
+    <div *ngIf="!loading && tasks.length > 0" [@fadeInStagger] class="mt-6 flex flex-wrap justify-center gap-5 p-4">
       <ion-card 
         *ngFor="let task of tasks" 
         class="animate-item project-card bg-white"
@@ -25,15 +35,6 @@
         </div>
       </ion-card>
     </div>
-
-    <ng-template #noTasks>
-      <div class="flex flex-col items-center justify-center mt-20 text-gray-400 text-center animate-item">
-        <ion-icon name="folder-open-outline" class="no-tasks-icon"></ion-icon>
-        <p class="text-xl font-semibold mb-2">No projects available</p>
-        <p class="text-sm">Check back later or contact your admin for assistance.</p>
-      </div>
-    </ng-template>
-
     <app-tab />
   </div>
 </ion-content>

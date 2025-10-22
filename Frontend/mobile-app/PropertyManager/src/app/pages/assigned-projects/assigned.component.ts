@@ -23,6 +23,7 @@ import { forkJoin, of } from 'rxjs';
 import { MaintenanceTask } from 'shared';
 import { addIcons } from 'ionicons';
 import { folderOpenOutline } from 'ionicons/icons';
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
   selector: 'app-contractor-assigned-projects',
@@ -35,8 +36,9 @@ import { folderOpenOutline } from 'ionicons/icons';
     IonImg,
     IonIcon,
     HeaderComponent,
-    TabComponent
-  ],
+    TabComponent,
+    ProgressSpinnerModule
+],
   templateUrl: './assigned.component.html',
   styles: `
     .no-tasks-icon {
@@ -65,7 +67,7 @@ import { folderOpenOutline } from 'ionicons/icons';
           stagger(100, [
             animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
           ])
-        ])
+        ], {optional: true})
       ])
     ])
   ]
@@ -75,12 +77,14 @@ export class AssignedComponent implements OnInit {
   contractorId: string | null = null;
   private storage = inject(StorageService);
   private router = inject(Router);
+  loading = true;
 
   constructor(private api: ApiService) {
     addIcons({ folderOpenOutline });
   }
 
   async ngOnInit() {
+    this.loading = true;
     this.contractorId = await this.storage.get('contractorId');
     if (!this.contractorId) {
       console.warn('Contractor ID not found in storage.');
@@ -92,6 +96,12 @@ export class AssignedComponent implements OnInit {
         const filteredTasks = tasks.filter(task => 
           task['cuuid'] === this.contractorId
         );
+
+        if(filteredTasks.length === 0)
+        {
+          this.loading = false;
+          return;
+        }
 
         const taskRequests = filteredTasks.map(task => {
           const taskWithDefault = {
@@ -113,6 +123,7 @@ export class AssignedComponent implements OnInit {
 
         forkJoin(taskRequests).subscribe(taskList => {
           this.tasks = taskList;
+          this.loading = false;
         });
       },
       error: err => console.error('Failed to load tasks', err)

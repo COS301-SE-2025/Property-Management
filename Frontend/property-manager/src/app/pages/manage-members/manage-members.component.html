@@ -2,10 +2,14 @@
 <div class="min-h-screen" [ngStyle]="{ 'background-color': 'var(--bg-color)' }">
   <div class="pt-6 px-4">
     <h2 class="text-2xl font-bold mb-2" [ngStyle]="{ 'color': 'var(--text-color)' }">Manage Members</h2>
-      <div class="h-1 w-80 bg-yellow-400 mb-6"></div>
+    <div class="h-1 w-[17.3rem] bg-yellow-400 mb-6"></div>
     <div class="h-1 w-40 mb-4" [ngStyle]="{ 'background-color': 'var(--accent-color)' }"></div>
 
-    <div class="flex gap-4 justify-center flex-wrap">
+    <div class="flex justify-center items-center mt-10" *ngIf="loading">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <div class="flex gap-4 justify-center flex-wrap" *ngIf="!loading">
 
       <div class="rounded-lg shadow border p-3 min-w-[350px] flex-1 bg-gray-50 dark:bg-[#2d2d2d]">
         <h3 class="text-lg font-semibold mb-2 text-center">Invitation Status</h3>

@@ -2,12 +2,22 @@
   <div class="container mx-auto pb-[5rem]" [@fadeInStagger]>
     <app-header />
 
-    <div class="animate-item mt-5 ml-2">
+    <div class="flex justify-center items-center mt-5" *ngIf="loading">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <div class="flex flex-col items-center justify-center mt-20 text-gray-400 text-center animate-item" *ngIf="tasks.length <= 0 && !loading">
+      <img src="assets/icons/default.svg" alt="No tasks" class="w-24 h-24 mb-4 opacity-60" />
+      <p class="text-xl font-semibold mb-2">No projects available</p>
+      <p class="text-sm">Check back later or contact your admin for assistance.</p>
+    </div>
+
+    <div class="animate-item mt-5 ml-2" *ngIf="!loading && tasks.length > 0">
       <h1 class="text-2xl font-bold dark:text-white">Available Projects</h1>
       <div class="w-[17rem] h-1 bg-yellow-300 mt-2"></div>
     </div>
 
-    <div *ngIf="tasks.length > 0; else noTasks" class="mt-6 flex flex-wrap justify-center gap-5 p-4">
+    <div *ngIf="!loading && tasks.length > 0" [@fadeInStagger] class="mt-6 flex flex-wrap justify-center gap-5 p-4">
       <div *ngFor="let task of tasks"
         class=" animate-item w-[10rem] h-[15rem] shadow-md rounded-xl overflow-hidden bg-white"
         (click)="goToQuotationPage(task)">
@@ -24,16 +34,6 @@
         </div>
       </div>
     </div>
-
-    <ng-template #noTasks>
-      <div class="flex flex-col items-center justify-center mt-20 text-gray-400 text-center animate-item">
-        <img src="assets/icons/default.svg" alt="No tasks" class="w-24 h-24 mb-4 opacity-60" />
-        <p class="text-xl font-semibold mb-2">No projects available</p>
-        <p class="text-sm">Check back later or contact your admin for assistance.</p>
-      </div>
-    </ng-template>
-
-
   </div>
   <app-tab />
 </ion-content>

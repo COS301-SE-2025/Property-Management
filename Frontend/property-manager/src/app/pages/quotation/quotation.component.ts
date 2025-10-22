@@ -6,10 +6,10 @@ import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { FileUpload, FileUploadModule } from 'primeng/fileupload';
+import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
-import { ApiService, getCookieValue } from 'shared'; 
+import { ApiService, BodyCoporateApiService, BuildingApiService, getCookieValue } from 'shared'; 
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePicker, DatePickerModule } from 'primeng/datepicker';
 import { MaintenanceTask,Inventory , InventoryUsage , InventoryUsageApiService} from 'shared';
@@ -95,12 +95,16 @@ export class QuotationComponent implements OnInit{
   editingItems = new Map<string, boolean>();
   draftQuantities = new Map<string, number>();
 
+  bcName: string | null = null;
+
   constructor(
   private messageService: MessageService,
   private apiService: ApiService,
   private inventoryUsageService: InventoryUsageApiService,
   private route: ActivatedRoute,
-  private router: Router
+  private router: Router,
+  private buildingService: BuildingApiService,
+  private bodyCorporateService: BodyCoporateApiService
 ) {
   const storedId = getCookieValue(document.cookie, 'contractorId');
   if (storedId) {
@@ -154,6 +158,38 @@ export class QuotationComponent implements OnInit{
           // });
           return;
         }
+
+        //Get task image
+        if(this.currentTask.img)
+        {
+          this.apiService.getPresignedImageUrl(this.currentTask.img).subscribe({
+            next: (url) => {
+              this.currentTask!.img = url;
+            },
+            error: (err) => {
+              console.warn("Couldnt get image", err);
+              this.currentTask!.img = 'assets/images/no_image.png'
+            }
+          })
+        }
+        else
+        {
+          this.currentTask.img = 'assets/images/no_image.png';
+        }
+
+        //Get body corporate name
+        this.buildingService.getBuildingById(this.currentTask.buuid).subscribe({
+          next: (res) => {
+            if(res.coporateUuid)
+            {
+              this.bodyCorporateService.getBodyCoporate(res.coporateUuid).subscribe({
+                next: (bc) => {
+                  this.bcName = bc.corporateName;
+                }
+              })
+            }
+          }
+        })
 
         // Get the building UUID from the task
         this.buildingUuid = task.buuid || '';

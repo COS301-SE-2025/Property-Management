@@ -16,6 +16,7 @@ import {
 import { MaintenanceTask } from 'shared';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { StorageService } from 'shared';
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
   selector: 'app-contractor-home',
@@ -26,8 +27,9 @@ import { StorageService } from 'shared';
     RouterModule,
     HeaderComponent,
     TabComponent,
-    IonImg
-  ],
+    IonImg,
+    ProgressSpinnerModule
+],
   templateUrl: './contractor-home.component.html',
   styles: ``,
   animations: [
@@ -38,7 +40,7 @@ import { StorageService } from 'shared';
           stagger(100, [
             animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
           ])
-        ])
+        ], {optional: true})
       ])
     ])
   ]
@@ -49,10 +51,12 @@ export class ContractorHomeComponent implements OnInit {
   private storage = inject(StorageService);
   tasks: MaintenanceTask[] = [];
   contractorId: string | null = null;
+  loading = true;
 
   constructor(private router: Router) {}
 
   async ngOnInit() {
+    this.loading = true;
     this.contractorId = await this.storage.get('contractorId');
     if (!this.contractorId) {
       console.warn('Contractor ID not found in storage.');
@@ -61,6 +65,12 @@ export class ContractorHomeComponent implements OnInit {
   
     this.api.getContractorMaintenanceTasks(this.contractorId).subscribe({
       next: (tasks) => {
+
+        if(tasks.length === 0)
+        {
+          this.loading = false;
+          return;
+        }
         const taskRequests = tasks.map(task => {
           const taskWithDefault = {
             ...task,
@@ -81,6 +91,7 @@ export class ContractorHomeComponent implements OnInit {
         });
         forkJoin(taskRequests).subscribe(taskList => {
           this.tasks = taskList;
+          this.loading = false;
         });
       },
       error: err => console.error('Failed to load tasks', err)

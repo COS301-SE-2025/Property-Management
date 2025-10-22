@@ -26,6 +26,8 @@ export class ViewTaskComponent  implements OnInit {
   taskId: string | null = null;
   contractorUser = false;
 
+  isDone = false;
+
   constructor(
     private imageService: ImageApiService, 
     private contractorService: ContractorApiService, 

@@ -9,6 +9,70 @@
     <div class="w-64 h-1 bg-yellow-300 mt-2"></div>
   </div>
  
+  <!-- Task Details Card -->
+  <div class="mb-6 animate-item flex justify-center">
+    <div class="bg-gray-400 rounded-xl w-full max-w-5xl">
+      <div class="text-center rounded-xl p-4">
+        <p-card [ngStyle]="{ 'background-color': 'var(--card-bg-color)', 'color': 'var(--text-color)'}">
+          <ng-template #title>
+            <div class="text-xl font-semibold mb-4">Task Details</div>
+          </ng-template>
+          
+          <div class="flex flex-col md:flex-row gap-6 items-center">
+            <!-- Task Image -->
+            <div class="flex-shrink-0">
+              <img [src]="currentTask?.img" 
+                   class="w-[20rem] h-[18rem] object-cover rounded-lg shadow-md"
+                   alt="Task image">
+            </div>
+            
+            <!-- Task Information -->
+            <div class="flex-1 text-left space-y-4">
+              <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-6 h-6 mt-1">
+                  <svg class="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold mb-2">Description</h3>
+                  <p class="text-sm" [ngStyle]="{ 'color': 'var(--text-color)' }">{{currentTask?.des}}</p>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div *ngIf="currentTask?.maxBudget" class="flex items-start gap-3">
+                  <div class="flex-shrink-0 w-6 h-6 mt-1">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-semibold mb-2">Maximum Budget</h3>
+                    <p class="text-sm font-medium text-yellow-600">R{{currentTask?.maxBudget}}</p>
+                  </div>
+                </div>
+                
+                <div *ngIf="bcName" class="flex items-start gap-3">
+                  <div class="flex-shrink-0 w-6 h-6 mt-1">
+                    <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-semibold mb-2">Assigned By</h3>
+                    <p class="text-sm" [ngStyle]="{ 'color': 'var(--text-color)' }">{{bcName}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rest of your existing code remains the same -->
   <!-- Main Content Container - Side by Side Layout -->
   <div class="flex flex-col lg:flex-row gap-6 animate-item h-full items-start justify-center">
     
