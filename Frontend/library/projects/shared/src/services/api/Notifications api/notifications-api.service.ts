@@ -42,6 +42,6 @@ export class NotificationsApiService {
   }
 
   getInviteById(inviteUuid: string): Observable<any> {
-    return this.http.get<any>(`/api/invites/${inviteUuid}`, { withCredentials: true });
+    return this.http.get<any>(`${this.url}/invites/${inviteUuid}`, { withCredentials: true });
   }
 }

@@ -18,6 +18,7 @@ export class VerifyEmailComponent {
 
   public emptyField = false;
   public errorMessage = '';
+  public loading = false;
 
   constructor(private authService: AuthService, private router: Router) {
     const storedUsername = sessionStorage.getItem('pendingUsername');
@@ -46,6 +47,7 @@ export class VerifyEmailComponent {
 
     this.emptyField = false;
     this.errorMessage = '';
+    this.loading = true;
 
     try {
       if(this.userType === 'bodyCorporate') {
@@ -67,6 +69,10 @@ export class VerifyEmailComponent {
     } catch (error) {
       console.error('Verification failed:', error);
       this.errorMessage = 'Verification failed. Please check your code and try again.';
+      this.emptyField = true;
+    }
+    finally{
+      this.loading = false;
     }
   }
 }
