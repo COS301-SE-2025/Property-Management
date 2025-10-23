@@ -127,7 +127,7 @@ describe('NotificationsApiService', () => {
         expect(response).toEqual(mockInvite);
       });
 
-      const req = httpMock.expectOne(`/api/invites/${inviteUuid}`);
+      const req = httpMock.expectOne(`${mockApiUrl}/invites/${inviteUuid}`);
       expect(req.request.method).toBe('GET');
       req.flush(mockInvite);
     });
@@ -143,7 +143,7 @@ describe('NotificationsApiService', () => {
         }
       });
 
-      const req = httpMock.expectOne(`/api/invites/${inviteUuid}`);
+      const req = httpMock.expectOne(`${mockApiUrl}/invites/invite-123`);
       req.error(new ErrorEvent('Network error'));
     });
   });
